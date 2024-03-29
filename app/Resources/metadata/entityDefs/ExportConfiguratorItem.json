@@ -134,7 +134,7 @@
     },
     "fallbackLanguage": {
       "type": "varchar",
-      "view": "export:views/export-feed/fields/fallback-language"
+      "view": "export:views/export-configurator-item/fields/fallback-language"
     },
     "entity": {
       "type": "varchar",
