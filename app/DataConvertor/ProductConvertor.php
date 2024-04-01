@@ -67,12 +67,10 @@ class ProductConvertor extends Convertor
         }
 
         if (!empty($productAttribute)) {
-            // exit if replaceAttributeValues disabled
-            if (empty($configuration['replaceAttributeValues'])) {
-                return $result;
-            }
+
             $type = $this->getTypeForAttribute($productAttribute->get('attributeType'), $configuration['attributeValue']);
             $result = $this->convertType($type, $productAttribute->toArray(), array_merge($configuration, ['field' => $this->getFieldForAttribute($configuration)]));
+
         }
 
         $eventPayload = [
@@ -96,15 +94,18 @@ class ProductConvertor extends Convertor
     {
         $result = null;
 
-        // find Global
-        $key = implode('_', [$record['id'], $configuration['attributeId'], $language, '']);
-        if (isset($pavCollectionKeys[$key])) {
-            $result = $this->getMemoryStorage()->get($pavCollectionKeys[$key]);
-        }
-
         // find Channel
         if (!empty($configuration['channelId'])) {
             $key = implode('_', [$record['id'], $configuration['attributeId'], $language, $configuration['channelId']]);
+            if (isset($pavCollectionKeys[$key])) {
+                $result = $this->getMemoryStorage()->get($pavCollectionKeys[$key]);
+            }
+        }
+
+
+        if(empty($configuration['channelId']) || (empty($result) && !empty($configuration['replaceAttributeValues']))){
+            // find Global
+            $key = implode('_', [$record['id'], $configuration['attributeId'], $language, '']);
             if (isset($pavCollectionKeys[$key])) {
                 $result = $this->getMemoryStorage()->get($pavCollectionKeys[$key]);
             }
