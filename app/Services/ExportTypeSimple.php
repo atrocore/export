@@ -301,7 +301,7 @@ class ExportTypeSimple extends AbstractExportType
         $data = $this->createCacheFile();
 
         // create tmp CSV file
-        $fileName = 'upload' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        $fileName = 'upload' . DIRECTORY_SEPARATOR . '.tmp' . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
         $this->createDir($fileName);
         $fileName .= DIRECTORY_SEPARATOR . $input->name;
         $this->storeCsvFile($exportJob->getData(), $fileName);
@@ -338,7 +338,7 @@ class ExportTypeSimple extends AbstractExportType
             return false;
         }
 
-        $fileName = 'upload' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        $fileName = 'upload' . DIRECTORY_SEPARATOR . '.tmp' . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
 
         $this->createDir($fileName);
 

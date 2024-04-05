@@ -337,8 +337,8 @@ abstract class AbstractExportType extends Base
     {
         // prepare full file name
         $fileName = Util::generateId() . ".txt";
-        $filePath = $this->createPath();
-        $fullFilePath = $this->getConfig()->get('filesPath', 'upload/files/') . $filePath;
+        $fullFilePath = 'upload' . DIRECTORY_SEPARATOR . '.tmp' . DIRECTORY_SEPARATOR . Util::generateId();
+
         Util::createDir($fullFilePath);
 
         /**
@@ -350,13 +350,14 @@ abstract class AbstractExportType extends Base
 
         $res = [
             'configuration' => [],
-            'fullFileName'  => $fullFilePath . '/' . $fileName,
+            'fullFileName'  => $fullFilePath . DIRECTORY_SEPARATOR . $fileName,
             'count'         => 0,
         ];
 
         foreach ($this->data['feed']['data']['configuration'] as $rowNumber => $row) {
             $res['configuration'][$rowNumber] = $this->prepareRow($row);
         }
+
         // clearing file if it needs
         file_put_contents($res['fullFileName'], '');
 
@@ -535,19 +536,9 @@ abstract class AbstractExportType extends Base
         return $this->getContainer()->get('language')->translate($key, $tab, $scope);
     }
 
-    protected function getSelectManager(string $name): \Espo\Core\SelectManagers\Base
-    {
-        return $this->getContainer()->get('selectManagerFactory')->create($name);
-    }
-
     protected function getLanguage(string $locale): Language
     {
         return new Language($this->getContainer(), $locale);
-    }
-
-    protected function createPath(): string
-    {
-        return $this->getContainer()->get('filePathBuilder')->createPath(FilePathBuilder::UPLOAD);
     }
 
     protected function getContainer(): Container
