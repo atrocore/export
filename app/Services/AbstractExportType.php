@@ -374,13 +374,13 @@ abstract class AbstractExportType extends Base
                 foreach ($res['configuration'] as $row) {
                     $result = $this->convertor->convert($record, $row);
 
-                    if ($row['zip'] && isset($result['__assetPaths'])) {
+                    if ($row['zip'] && isset($result['__filePaths'])) {
                         $base_dir = ($this->data['zipPath'] ?? '') . $row['column'] . '/';
                         if (!$this->zipArchive->locateName($base_dir)) {
                             $this->zipArchive->addEmptyDir($base_dir);
                         }
                         $fileNumber = 0;
-                        foreach ($result['__assetPaths'] as $path) {
+                        foreach ($result['__filePaths'] as $path) {
                             $fileNumber++;
                             $preparedFileName = $fileName = basename($path);
 
@@ -406,7 +406,7 @@ abstract class AbstractExportType extends Base
                                 $this->zipArchive->addFile($path, $base_dir . $fileName);
                             }
                         }
-                        unset($result['__assetPaths']);
+                        unset($result['__filePaths']);
                     }
 
                     $rowData[] = $result;

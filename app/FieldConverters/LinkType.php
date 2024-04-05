@@ -55,23 +55,20 @@ class LinkType extends AbstractType
 
                 if (!empty($foreign)) {
                     if ($configuration['zip']) {
-                        $result['__assetPaths'] = [];
+                        $result['__filePaths'] = [];
                     }
                     /**
                      * For main image
                      */
                     if ($field === 'mainImage' || (in_array($entity, ['Category', 'Product']) && $field === 'image') || $foreignEntity == 'Attachment') {
-                        $path = $foreign->getFilePath();
-                        $foreign = $foreign->getAsset();
                         if ($configuration['zip']) {
-                            $result['__assetPaths'][] = $path;
+                            $result['__filePaths'][] = $foreign->getFilePath();
                         }
-                        $this->convertor->getService('Asset')->prepareEntityForOutput($foreign);
+                        $this->convertor->getService('File')->prepareEntityForOutput($foreign);
                     } else {
-                        if ($foreignEntity === 'Asset') {
+                        if ($foreignEntity === 'File') {
                             if ($configuration['zip']) {
-                                $attachment = $this->convertor->getEntity('Attachment', $foreign->get('fileId'));
-                                $result['__assetPaths'][] = $attachment->getFilePath();
+                                $result['__filePaths'][] = $foreign->getFilePath();
                             }
                         }
                     }
@@ -79,13 +76,8 @@ class LinkType extends AbstractType
                     $foreignData = $foreign->toArray();
                     $fieldResult = [];
                     foreach ($exportBy as $v) {
-                        $assetUrl = $this->prepareAssetUrl($v, $foreignEntity, $foreignData);
-                        if ($assetUrl !== null) {
-                            $fieldResult[$v] = $assetUrl;
-                            if ($configuration['zip']) {
-                                $result['__assetPaths'][] = str_replace(rtrim($this->convertor->getConfig()->get('siteUrl'), '/') . '/', '', $assetUrl);
-                            }
-                            continue 1;
+                        if ($v === 'downloadUrl' && $configuration['zip']) {
+                            $result['__filePaths'][] = $foreign->getFilePath();
                         }
 
                         $foreignType = $this->convertor->getTypeForField($foreignEntity, $v);
@@ -218,23 +210,6 @@ class LinkType extends AbstractType
         } else {
             $fieldResult[$field] = $this->convertor->convertType($foreignType, $foreignData, $foreignConfiguration)[$column];
         }
-    }
-
-    /**
-     * @deprecated  fix this hack soon
-     */
-    protected function prepareAssetUrl(string $name, string $foreignEntity, array $foreignData): ?string
-    {
-        if (substr($name, -3) === 'Url') {
-            $foreignFieldName = substr($name, 0, -3);
-            if ($this->convertor->getMetadata()->get(['entityDefs', $foreignEntity, 'fields', $foreignFieldName, 'type']) === 'asset') {
-                if (!empty($foreignData["{$foreignFieldName}PathsData"]['download'])) {
-                    return rtrim($this->convertor->getConfig()->get('siteUrl'), '/') . '/' . $foreignData["{$foreignFieldName}PathsData"]['download'];
-                }
-            }
-        }
-
-        return null;
     }
 
     protected function getFieldName(string $field): string

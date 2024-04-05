@@ -13,4 +13,8 @@ namespace Export\FieldConverters;
 
 class FileType extends LinkType
 {
+    protected function getForeignEntityName(string $entity, string $field): string
+    {
+        return 'File';
+    }
 }

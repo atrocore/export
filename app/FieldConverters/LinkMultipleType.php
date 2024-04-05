@@ -116,14 +116,14 @@ class LinkMultipleType extends LinkType
         $exportBy = isset($configuration['exportBy']) ? $configuration['exportBy'] : ['id'];
 
         if ($configuration['zip'] && in_array($foreignEntity, ['Asset', 'ProductAsset'])) {
-            $result['__assetPaths'] = [];
+            $result['__filePaths'] = [];
             foreach ($foreignList as $foreignData) {
                 $fileId = $foreignEntity === 'ProductAsset'
                     ? $this->convertor->getEntity('Asset',$foreignData['assetId'])->get('fileId')
                     : $foreignData['fileId'];
                 if($fileId !== null){
                     $attachment = $this->convertor->getEntity('Attachment', $fileId);
-                    $result['__assetPaths'][] = $attachment->getFilePath();
+                    $result['__filePaths'][] = $attachment->getFilePath();
                 }
             }
         }
@@ -135,7 +135,7 @@ class LinkMultipleType extends LinkType
                 if ($assetUrl !== null) {
                     $fieldResult[$v] = $assetUrl;
                     if ($configuration['zip']) {
-                        $result['__assetPaths'][] = str_replace(rtrim($this->convertor->getConfig()->get('siteUrl'), '/') . '/', '', $assetUrl);
+                        $result['__filePaths'][] = str_replace(rtrim($this->convertor->getConfig()->get('siteUrl'), '/') . '/', '', $assetUrl);
                     }
                     continue 1;
                 }
