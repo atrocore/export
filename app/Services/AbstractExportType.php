@@ -23,7 +23,7 @@ use Espo\Core\Utils\Json;
 use Espo\Core\Utils\Language;
 use Espo\Core\Utils\Metadata;
 use Espo\Core\Utils\Util;
-use Espo\Entities\Attachment;
+use Atro\Entities\File;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
 use Espo\ORM\EntityManager;
@@ -115,7 +115,7 @@ abstract class AbstractExportType extends Base
         return null;
     }
 
-    public function export(array $data, ExportJob $exportJob): Attachment
+    public function export(array $data, ExportJob $exportJob): File
     {
         $this->setData($data);
         $this->convertor = $this->getDataConvertor();
@@ -123,7 +123,7 @@ abstract class AbstractExportType extends Base
         return $this->runExport($exportJob);
     }
 
-    abstract public function runExport(ExportJob $exportJob): Attachment;
+    abstract public function runExport(ExportJob $exportJob): File;
 
     protected function setData(array $data): void
     {
