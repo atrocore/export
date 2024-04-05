@@ -15,7 +15,6 @@ namespace Export\Services;
 
 use Atro\Core\EventManager\Manager;
 use Atro\Entities\Folder;
-use Espo\Core\EventManager\Event;
 use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Exceptions\Error;
 use Espo\Core\Exceptions\Exception;
@@ -31,8 +30,6 @@ use PhpOffice\PhpSpreadsheet\Cell\DataType;
 class ExportTypeSimple extends AbstractExportType
 {
     protected $fullCollection = null;
-
-    protected string $zipFileName = '';
 
     public function runExport(ExportJob $exportJob): File
     {
@@ -301,7 +298,7 @@ class ExportTypeSimple extends AbstractExportType
         $data = $this->createCacheFile();
 
         // create tmp CSV file
-        $fileName = 'upload' . DIRECTORY_SEPARATOR . '.tmp' . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
         $this->createDir($fileName);
         $fileName .= DIRECTORY_SEPARATOR . $input->name;
         $this->storeCsvFile($exportJob->getData(), $fileName);
@@ -338,7 +335,7 @@ class ExportTypeSimple extends AbstractExportType
             return false;
         }
 
-        $fileName = 'upload' . DIRECTORY_SEPARATOR . '.tmp' . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
 
         $this->createDir($fileName);
 
@@ -353,7 +350,7 @@ class ExportTypeSimple extends AbstractExportType
         return true;
     }
 
-    protected function exportXlsx(ExportJob $exportJob): Attachment
+    protected function exportXlsx(ExportJob $exportJob): File
     {
         $metadata = $this->getMetadata();
 
@@ -381,8 +378,7 @@ class ExportTypeSimple extends AbstractExportType
         $attachment->set('storage', 'UploadDir');
         $attachment->set('storageFilePath', $this->createPath());
 
-        $this->initZipArchive(
-            array_map(function ($sheet) {
+        $this->initZipArchive(array_map(function ($sheet) {
                 return $sheet['configuration'];
             }, $sheets)
         );

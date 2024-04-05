@@ -15,7 +15,6 @@ namespace Export\Services;
 
 use Espo\Core\Container;
 use Espo\Core\Exceptions\Error;
-use Espo\Core\FilePathBuilder;
 use Espo\Core\Services\Base;
 use Espo\Core\Twig\Twig;
 use Espo\Core\Utils\Config;
@@ -33,13 +32,15 @@ use Export\Entities\ExportJob;
 
 abstract class AbstractExportType extends Base
 {
+    public const TMP_DIR = 'upload' . DIRECTORY_SEPARATOR . '.tmp';
+
     protected array $data;
 
     protected Convertor $convertor;
 
     private int $iteration = 0;
     protected $zipArchive = null;
-    protected $zipAttachment = null;
+    protected $zipFileName = null;
 
     public static function getAllFieldsConfiguration(string $scope, Metadata $metadata, Language $language): array
     {
@@ -337,7 +338,7 @@ abstract class AbstractExportType extends Base
     {
         // prepare full file name
         $fileName = Util::generateId() . ".txt";
-        $fullFilePath = 'upload' . DIRECTORY_SEPARATOR . '.tmp' . DIRECTORY_SEPARATOR . Util::generateId();
+        $fullFilePath = self::TMP_DIR . DIRECTORY_SEPARATOR . Util::generateId();
 
         Util::createDir($fullFilePath);
 
