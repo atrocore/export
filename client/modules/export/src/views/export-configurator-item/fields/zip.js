@@ -50,9 +50,13 @@ Espo.define('export:views/export-configurator-item/fields/zip', 'views/fields/bo
                 return false;
             }
 
+            if (type === 'file') {
+                return true;
+            }
+
             let foreignEntity = this.getMetadata().get(['entityDefs', this.model.get('entity'), 'links', this.model.get('name'), 'entity']);
 
-            return ['Asset', 'Attachment', 'ProductAsset'].includes(foreignEntity);
+            return ['File', 'ProductFile'].includes(foreignEntity);
         },
 
     })
