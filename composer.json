@@ -2,7 +2,7 @@
   "name": "atrocore/export-feeds",
   "description": "",
   "require": {
-    "atrocore/core": "~1.9.1",
+    "atrocore/core": "~1.10.0",
     "phpoffice/phpspreadsheet": "~1.16.0",
     "twig/twig": "^3.4",
     "ext-zip": "*",
@@ -13,7 +13,7 @@
     "jdorn/sql-formatter": "v1.2.16"
   },
   "conflict": {
-    "atrocore/pim": "<1.11.26 || >=1.13.0",
+    "atrocore/pim": "<1.11.26 || >=1.14.0",
     "atrocore/import-feed": "<1.5.52"
   },
   "autoload": {

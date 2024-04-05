@@ -103,9 +103,9 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
                     if (!fieldData.disabled && !fieldData.exportDisabled && !['jsonObject', 'linkMultiple'].includes(fieldData.type)) {
                         if (fieldData.type === 'link') {
                             result = this.pushLinkFields(result, entity, field);
-                        } else if (fieldData.type === 'asset') {
+                        } else if (fieldData.type === 'file') {
                             result = this.pushLinkFields(result, entity, field);
-                            result[field + 'Url'] = this.translate(field, 'fields', entity) + ' ' + this.translate('url', 'fields', 'Attachment');
+                            result[field + 'Url'] = this.translate(field, 'fields', entity) + ' ' + this.translate('url', 'fields', 'File');
                         } else {
                             result[field] = this.translate(field, 'fields', entity);
                         }
@@ -163,7 +163,7 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
                 }
             }
 
-            return ['image', 'asset', 'link', 'extensibleEnum', 'linkMultiple', 'extensibleMultiEnum', 'file', 'measure'].includes(type) && (this.params.options || []).length;
+            return ['link', 'extensibleEnum', 'linkMultiple', 'extensibleMultiEnum', 'file', 'measure'].includes(type) && (this.params.options || []).length;
         },
 
         getAttribute(attributeId) {

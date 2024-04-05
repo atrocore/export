@@ -46,7 +46,7 @@ Espo.define('export:views/export-configurator-item/fields/zip', 'views/fields/bo
             }
 
             let type = this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'type']);
-            if (!['linkMultiple', 'link', 'image', 'asset', 'file'].includes(type)) {
+            if (!['linkMultiple', 'link', 'file'].includes(type)) {
                 return false;
             }
 

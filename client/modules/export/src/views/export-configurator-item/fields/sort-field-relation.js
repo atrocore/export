@@ -54,7 +54,7 @@ Espo.define('export:views/export-configurator-item/fields/sort-field-relation', 
                 let notAllowedType = ['jsonObject', 'linkMultiple'];
                 $.each(fields, function (field, fieldData) {
                     if (fieldData.notStorable !== true && !notAllowedType.includes(fieldData.type) && fieldData.exportDisabled !== true) {
-                        if (fieldData.type === 'link' || fieldData.type === 'asset') {
+                        if (fieldData.type === 'link' || fieldData.type === 'file') {
                             this.translatedOptions[field + 'Id'] = this.translate(field, 'fields', entity) + ' ID';
 
                             // add relation fields
@@ -63,7 +63,7 @@ Espo.define('export:views/export-configurator-item/fields/sort-field-relation', 
                                 let foreignFields = this.getMetadata().get(['entityDefs', foreignEntity, 'fields']) || {};
                                 $.each(foreignFields, function (foreignField, foreignFieldData) {
                                     if (foreignFieldData.notStorable !== true && !notAllowedType.includes(foreignFieldData.type) && foreignFieldData.exportDisabled !== true) {
-                                        if (foreignFieldData.type === 'link' || foreignFieldData.type === 'asset') {
+                                        if (foreignFieldData.type === 'link' || foreignFieldData.type === 'file') {
                                             this.translatedOptions[field + '.' + foreignField + 'Id'] = this.translate(field, 'fields', entity) + ': ' + this.translate(foreignField, 'fields', foreignEntity) + ' ID';
                                         } else {
                                             this.translatedOptions[field + '.' + foreignField] = this.translate(field, 'fields', entity) + ': ' + this.translate(foreignField, 'fields', foreignEntity);
