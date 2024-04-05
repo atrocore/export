@@ -298,9 +298,8 @@ class ExportTypeSimple extends AbstractExportType
         $data = $this->createCacheFile();
 
         // create tmp CSV file
-        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId() . DIRECTORY_SEPARATOR . $input->name;;
         $this->createDir($fileName);
-        $fileName .= DIRECTORY_SEPARATOR . $input->name;
         $this->storeCsvFile($exportJob->getData(), $fileName);
 
         // create file via self URL
@@ -335,11 +334,11 @@ class ExportTypeSimple extends AbstractExportType
             return false;
         }
 
-        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId() . DIRECTORY_SEPARATOR . $this->getExportFileName(
+                'zip'
+            );
 
         $this->createDir($fileName);
-
-        $fileName .= DIRECTORY_SEPARATOR . $this->getExportFileName('zip');
 
         $this->zipArchive = new \ZipArchive();
         if ($this->zipArchive->open($fileName, \ZipArchive::CREATE) !== true) {
@@ -367,23 +366,18 @@ class ExportTypeSimple extends AbstractExportType
             ];
         }
 
-        $repository = $this->getEntityManager()->getRepository('Attachment');
+        $input = new \stdClass();
+        $input->name = $this->getExportFileName('xlsx');
+        $input->hidden = true;
+        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
-        // create attachment
-        $attachment = $repository->get();
-        $attachment->set('name', $this->getExportFileName('xlsx'));
-        $attachment->set('role', 'Export');
-        $attachment->set('relatedType', 'ExportJob');
-        $attachment->set('relatedId', $this->data['exportJobId']);
-        $attachment->set('storage', 'UploadDir');
-        $attachment->set('storageFilePath', $this->createPath());
-
-        $this->initZipArchive(array_map(function ($sheet) {
+        $this->initZipArchive(
+            array_map(function ($sheet) {
                 return $sheet['configuration'];
             }, $sheets)
         );
 
-        $fileName = $repository->getFilePath($attachment);
+        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . Util::generateId() . $input->name;
 
         $this->createDir($fileName);
 
@@ -409,7 +403,7 @@ class ExportTypeSimple extends AbstractExportType
             $count += $data['count'];
 
             // prepare CSV filename
-            $pathParts = explode('/', $repository->getFilePath($attachment));
+            $pathParts = explode(DIRECTORY_SEPARATOR, $fileName);
             array_pop($pathParts);
             $pathParts[] = Util::generateId() . '.csv';
             $csvFileName = implode('/', $pathParts);
@@ -512,14 +506,17 @@ class ExportTypeSimple extends AbstractExportType
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save($fileName);
 
+        // create file via self URL
+        $fileData = $this->getService('File')->createFileViaUrl($input, $this->getConfig()->getSiteUrl() . DIRECTORY_SEPARATOR . $fileName);
+
+        // delete tmp file
+        unlink($fileName);
+
         $exportJob->set('count', $count);
 
-        $attachment->set('type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $attachment->set('size', \filesize($repository->getFilePath($attachment)));
+        $file = $this->getEntityManager()->getRepository('File')->get($fileData['id']);
 
-        $this->getEntityManager()->saveEntity($attachment);
-
-        return $this->exportAsZip($attachment);
+        return $this->exportAsZip($file);
     }
 
     private function processXlsxNumericCell(Cell $cell, $decimalMark, $thousandSeparator): void
