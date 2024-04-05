@@ -305,8 +305,7 @@ class ExportTypeSimple extends AbstractExportType
         $this->createDir($fileName);
         $this->storeCsvFile($exportJob->getData(), $fileName);
 
-        // create file via self URL
-        $fileData = $this->getService('File')->createFileViaUrl($input, $this->getConfig()->getSiteUrl() . DIRECTORY_SEPARATOR . $fileName);
+        $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
 
         // delete tmp file
         unlink($fileName);
@@ -506,8 +505,7 @@ class ExportTypeSimple extends AbstractExportType
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save($fileName);
 
-        // create file via self URL
-        $fileData = $this->getService('File')->createFileViaUrl($input, $this->getConfig()->getSiteUrl() . DIRECTORY_SEPARATOR . $fileName);
+        $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
 
         // delete tmp file
         unlink($fileName);
@@ -553,8 +551,7 @@ class ExportTypeSimple extends AbstractExportType
 
             $this->getEntityManager()->removeEntity($file);
 
-            // create file via self URL
-            $fileData = $this->getService('File')->createFileViaUrl($input, $this->getConfig()->getSiteUrl() . DIRECTORY_SEPARATOR . $this->zipFileName);
+            $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $this->zipFileName);
 
             //  delete tmp zip file
             unlink($this->zipFileName);
