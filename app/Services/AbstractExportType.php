@@ -336,11 +336,9 @@ abstract class AbstractExportType extends Base
 
     protected function createCacheFile(): array
     {
-        // prepare full file name
+        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        Util::createDir($tmpDir);
         $fileName = Util::generateId() . ".txt";
-        $fullFilePath = self::TMP_DIR . DIRECTORY_SEPARATOR . Util::generateId();
-
-        Util::createDir($fullFilePath);
 
         /**
          * Set language prism
@@ -351,7 +349,7 @@ abstract class AbstractExportType extends Base
 
         $res = [
             'configuration' => [],
-            'fullFileName'  => $fullFilePath . DIRECTORY_SEPARATOR . $fileName,
+            'fullFileName'  => $tmpDir . DIRECTORY_SEPARATOR . $fileName,
             'count'         => 0,
         ];
 

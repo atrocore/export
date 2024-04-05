@@ -247,7 +247,7 @@ class ExportTypeSimple extends AbstractExportType
                 $exportJob->set('state', 'Failed');
             }
         }
-        $this->deleteTmpFile($path);
+        unlink($path);
     }
 
     protected function downloadXsd($url, $path)
@@ -301,7 +301,7 @@ class ExportTypeSimple extends AbstractExportType
         $exportJob->set('data', array_merge($exportJob->getData(), $data));
 
         // create tmp CSV file
-        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId() . DIRECTORY_SEPARATOR . $input->name;;
+        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId() . DIRECTORY_SEPARATOR . $input->name;
         $this->createDir($fileName);
         $this->storeCsvFile($exportJob->getData(), $fileName);
 
@@ -309,18 +309,11 @@ class ExportTypeSimple extends AbstractExportType
         $fileData = $this->getService('File')->createFileViaUrl($input, $this->getConfig()->getSiteUrl() . DIRECTORY_SEPARATOR . $fileName);
 
         // delete tmp file
-        $this->deleteTmpFile($fileName);
+        unlink($fileName);
 
         $file = $this->getEntityManager()->getRepository('File')->get($fileData['id']);
 
         return $this->exportAsZip($file);
-    }
-
-    protected function deleteTmpFile(string $fileName): void
-    {
-        if (file_exists($fileName)) {
-            unlink($fileName);
-        }
     }
 
     protected function canBuildZipArchive(array $configurations)
@@ -384,7 +377,7 @@ class ExportTypeSimple extends AbstractExportType
             }, $sheets)
         );
 
-        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . Util::generateId() . $input->name;
+        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $exportJob->get('id') . DIRECTORY_SEPARATOR . Util::generateId() . $input->name;
 
         $this->createDir($fileName);
 
@@ -500,7 +493,7 @@ class ExportTypeSimple extends AbstractExportType
             }
 
             // delete csv file
-            $this->deleteTmpFile($csvFileName);
+            unlink($csvFileName);
         }
 
         try {
@@ -517,7 +510,7 @@ class ExportTypeSimple extends AbstractExportType
         $fileData = $this->getService('File')->createFileViaUrl($input, $this->getConfig()->getSiteUrl() . DIRECTORY_SEPARATOR . $fileName);
 
         // delete tmp file
-        $this->deleteTmpFile($fileName);
+        unlink($fileName);
 
         $exportJob->set('count', $count);
 
@@ -564,7 +557,7 @@ class ExportTypeSimple extends AbstractExportType
             $fileData = $this->getService('File')->createFileViaUrl($input, $this->getConfig()->getSiteUrl() . DIRECTORY_SEPARATOR . $this->zipFileName);
 
             //  delete tmp zip file
-            $this->deleteTmpFile($this->zipFileName);
+            unlink($this->zipFileName);
 
             return $this->getEntityManager()->getRepository('File')->get($fileData['id']);
         }
@@ -657,7 +650,7 @@ class ExportTypeSimple extends AbstractExportType
         fclose($fp);
 
         // remove cache file
-        $this->deleteTmpFile($data['fullFileName']);
+        unlink($data['fullFileName']);
     }
 
     protected function createDir(string $fileName): void
