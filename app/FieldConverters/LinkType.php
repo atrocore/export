@@ -76,7 +76,7 @@ class LinkType extends AbstractType
                     $foreignData = $foreign->toArray();
                     $fieldResult = [];
                     foreach ($exportBy as $v) {
-                        if ($v === 'downloadUrl' && $configuration['zip']) {
+                        if ($configuration['zip']) {
                             $result['__filePaths'][] = $foreign->getFilePath();
                         }
 
