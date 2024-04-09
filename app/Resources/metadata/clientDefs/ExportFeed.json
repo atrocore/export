@@ -489,6 +489,20 @@
             }
           ]
         }
+      },
+      "exportByMaxDepth": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
+            }
+          ]
+        }
       }
     }
   }

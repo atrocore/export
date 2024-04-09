@@ -106,7 +106,8 @@
     "replaceAttributeValues": "Nicht existierende kanalspezifische Attributwerte mit globalen Werten ersetzen.",
     "markForNoRelation": "Gibt an, wie eine nicht verknüpfte Beziehung beschriftet werden soll.",
     "nullValue": "Der Wert wird als \"NULL\"-Wert interpretiert.",
-    "emptyValue": "Der Wert wird als \"leerer\" Wert zusätzlich zur leeren Zelle interpretiert."
+    "emptyValue": "Der Wert wird als \"leerer\" Wert zusätzlich zur leeren Zelle interpretiert.",
+    "exportByMaxDepth": "Gibt die maximale Tiefe der Beziehungen im Konfiguratorfeld \"Verwandte Entitätsfelder\" an"
   },
   "boolFilters": {
     "onlyExportFailed24Hours": "Nur Export Feeds, die in den letzten 24 Stunden fehlgeschlagen sind",
