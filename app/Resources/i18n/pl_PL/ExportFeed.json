@@ -113,7 +113,7 @@
     "convertCollectionToString": "Pola i atrybuty typu: multi-enum, tablica, relacja jeden do wielu.",
     "convertRelationsToString": "Pola relacji będą oddzielone separatorem pól dla relacji.",
     "replaceAttributeValues": "Zastąp nieistniejące wartości atrybutów specyficzne dla kanału globalnymi wartościami.",
-    "exportByMaxDepth": "Określa maksymalną głębokość relacji w polu konfiguratora \"Related Entity Fields\""
+    "exportByMaxDepth": "Określa maksymalną głębokość relacji w polu konfiguratora \"Powiązane pola encji\""
 
   },
   "boolFilters": {
