@@ -115,7 +115,8 @@
     "replaceAttributeValues": "Replace non-existing channel specific attribute values with global values.",
     "markForNoRelation": "Specify how a not linked relation should be labeled.",
     "nullValue": "Value will be interpreted as \"NULL\" value.",
-    "emptyValue": "Value will be interpreted as \"empty\" value additionally to the empty cell."
+    "emptyValue": "Value will be interpreted as \"empty\" value additionally to the empty cell.",
+    "exportByMaxDepth": "Specifies maximum depth of relations in the configurator field \"Related Entity Fields\""
   },
   "boolFilters": {
     "onlyExportFailed24Hours": "Only Export Feeds that failed during last 24 hours",
