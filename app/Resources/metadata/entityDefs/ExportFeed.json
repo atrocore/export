@@ -314,6 +314,7 @@
       "notStorable": true,
       "dataField": true,
       "prohibitedEmptyValue": true,
+      "tooltip": true,
       "optionsIds": [
         "1",
         "2"
