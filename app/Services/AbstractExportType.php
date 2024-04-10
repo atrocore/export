@@ -15,7 +15,6 @@ namespace Export\Services;
 
 use Espo\Core\Container;
 use Espo\Core\Exceptions\Error;
-use Espo\Core\FilePathBuilder;
 use Espo\Core\Services\Base;
 use Espo\Core\Twig\Twig;
 use Espo\Core\Utils\Config;
@@ -23,7 +22,7 @@ use Espo\Core\Utils\Json;
 use Espo\Core\Utils\Language;
 use Espo\Core\Utils\Metadata;
 use Espo\Core\Utils\Util;
-use Espo\Entities\Attachment;
+use Atro\Entities\File;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
 use Espo\ORM\EntityManager;
@@ -33,13 +32,15 @@ use Export\Entities\ExportJob;
 
 abstract class AbstractExportType extends Base
 {
+    public const TMP_DIR = 'upload' . DIRECTORY_SEPARATOR . '.tmp';
+
     protected array $data;
 
     protected Convertor $convertor;
 
     private int $iteration = 0;
     protected $zipArchive = null;
-    protected $zipAttachment = null;
+    protected $zipFileName = null;
 
     public static function getAllFieldsConfiguration(string $scope, Metadata $metadata, Language $language): array
     {
@@ -115,7 +116,7 @@ abstract class AbstractExportType extends Base
         return null;
     }
 
-    public function export(array $data, ExportJob $exportJob): Attachment
+    public function export(array $data, ExportJob $exportJob): File
     {
         $this->setData($data);
         $this->convertor = $this->getDataConvertor();
@@ -123,7 +124,7 @@ abstract class AbstractExportType extends Base
         return $this->runExport($exportJob);
     }
 
-    abstract public function runExport(ExportJob $exportJob): Attachment;
+    abstract public function runExport(ExportJob $exportJob): File;
 
     protected function setData(array $data): void
     {
@@ -335,11 +336,9 @@ abstract class AbstractExportType extends Base
 
     protected function createCacheFile(): array
     {
-        // prepare full file name
+        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        Util::createDir($tmpDir);
         $fileName = Util::generateId() . ".txt";
-        $filePath = $this->createPath();
-        $fullFilePath = $this->getConfig()->get('filesPath', 'upload/files/') . $filePath;
-        Util::createDir($fullFilePath);
 
         /**
          * Set language prism
@@ -350,13 +349,14 @@ abstract class AbstractExportType extends Base
 
         $res = [
             'configuration' => [],
-            'fullFileName'  => $fullFilePath . '/' . $fileName,
+            'fullFileName'  => $tmpDir . DIRECTORY_SEPARATOR . $fileName,
             'count'         => 0,
         ];
 
         foreach ($this->data['feed']['data']['configuration'] as $rowNumber => $row) {
             $res['configuration'][$rowNumber] = $this->prepareRow($row);
         }
+
         // clearing file if it needs
         file_put_contents($res['fullFileName'], '');
 
@@ -374,13 +374,13 @@ abstract class AbstractExportType extends Base
                 foreach ($res['configuration'] as $row) {
                     $result = $this->convertor->convert($record, $row);
 
-                    if ($row['zip'] && isset($result['__assetPaths'])) {
+                    if ($row['zip'] && isset($result['__filePaths'])) {
                         $base_dir = ($this->data['zipPath'] ?? '') . $row['column'] . '/';
                         if (!$this->zipArchive->locateName($base_dir)) {
                             $this->zipArchive->addEmptyDir($base_dir);
                         }
                         $fileNumber = 0;
-                        foreach ($result['__assetPaths'] as $path) {
+                        foreach ($result['__filePaths'] as $path) {
                             $fileNumber++;
                             $preparedFileName = $fileName = basename($path);
 
@@ -406,7 +406,7 @@ abstract class AbstractExportType extends Base
                                 $this->zipArchive->addFile($path, $base_dir . $fileName);
                             }
                         }
-                        unset($result['__assetPaths']);
+                        unset($result['__filePaths']);
                     }
 
                     $rowData[] = $result;
@@ -535,19 +535,9 @@ abstract class AbstractExportType extends Base
         return $this->getContainer()->get('language')->translate($key, $tab, $scope);
     }
 
-    protected function getSelectManager(string $name): \Espo\Core\SelectManagers\Base
-    {
-        return $this->getContainer()->get('selectManagerFactory')->create($name);
-    }
-
     protected function getLanguage(string $locale): Language
     {
         return new Language($this->getContainer(), $locale);
-    }
-
-    protected function createPath(): string
-    {
-        return $this->getContainer()->get('filePathBuilder')->createPath(FilePathBuilder::UPLOAD);
     }
 
     protected function getContainer(): Container

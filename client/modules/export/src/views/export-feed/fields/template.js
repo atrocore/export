@@ -88,7 +88,7 @@ Espo.define('export:views/export-feed/fields/template', 'views/fields/script', D
                     templateData.push(`"${fieldName}": {% if entity.${fieldName} %}{{ entity.${fieldName} }}{% else %}null{% endif %}`);
                 } else if (['varchar', 'enum', 'text', 'wysiwyg'].includes(fieldDefs.type)) {
                     templateData.push(`"${fieldName}": {% if entity.${fieldName} %}"{{ entity.${fieldName} | escapeStr | raw }}"{% else %}null{% endif %}`);
-                } else if (['link', 'asset', 'file', 'image'].includes(fieldDefs.type)) {
+                } else if (['link', 'file'].includes(fieldDefs.type)) {
                     templateData.push(`"${fieldName}Id": {% if entity.${fieldName} %}"{{ entity.${fieldName}Id }}"{% else %}null{% endif %}`);
                     templateData.push(`"${fieldName}Name": {% if entity.${fieldName} %}"{{ entity.${fieldName}Name | escapeStr | raw }}"{% else %}null{% endif %}`);
                 } else if (['array', 'multiEnum'].includes(fieldDefs.type)) {

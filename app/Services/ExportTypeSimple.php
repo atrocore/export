@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace Export\Services;
 
 use Atro\Core\EventManager\Manager;
-use Espo\Core\EventManager\Event;
+use Atro\Entities\Folder;
 use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Exceptions\Error;
 use Espo\Core\Exceptions\Exception;
 use Espo\Core\Utils\Util;
-use Espo\Entities\Attachment;
+use Atro\Entities\File;
 use Espo\ORM\EntityCollection;
 use Export\Entities\ExportJob;
 use Export\TemplateLoaders\AbstractTemplate;
@@ -31,7 +31,7 @@ class ExportTypeSimple extends AbstractExportType
 {
     protected $fullCollection = null;
 
-    public function runExport(ExportJob $exportJob): Attachment
+    public function runExport(ExportJob $exportJob): File
     {
         $this->getMemoryStorage()->set('exportJobId', $exportJob->get('id'));
 
@@ -97,7 +97,38 @@ class ExportTypeSimple extends AbstractExportType
         return $this->fullCollection;
     }
 
-    protected function exportJson(ExportJob $exportJob): Attachment
+    public function createExportFileFolder(\Export\Entities\ExportFeed $exportFeed): Folder
+    {
+        /** @var \Atro\Repositories\Folder $folderRepo */
+        $folderRepo = $this->getEntityManager()->getRepository('Folder');
+
+        $root = $folderRepo->where(['code' => 'export_feeds'])->findOne();
+        if (empty($root)) {
+            $root = $folderRepo->get();
+            $root->set([
+                'name'   => 'Export Feeds',
+                'hidden' => true,
+                'code'   => 'export_feeds'
+            ]);
+            $this->getEntityManager()->saveEntity($root);
+        }
+
+        $folder = $folderRepo->where(['code' => $exportFeed->get('id')])->findOne();
+        if (empty($folder)) {
+            $folder = $folderRepo->get();
+            $folder->set([
+                'name'   => $exportFeed->get('name'),
+                'hidden' => true,
+                'code'   => $exportFeed->get('id')
+            ]);
+            $this->getEntityManager()->saveEntity($folder);
+            $folderRepo->relate($folder, 'parents', $root);
+        }
+
+        return $folder;
+    }
+
+    protected function exportJson(ExportJob $exportJob): File
     {
         if (!empty($this->data['feed']['separateJob'])) {
             $collection = $this->getCollection();
@@ -116,33 +147,17 @@ class ExportTypeSimple extends AbstractExportType
             }
         }
 
-        $repository = $this->getEntityManager()->getRepository('Attachment');
+        $input = new \stdClass();
+        $input->name = $this->getExportFileName('json');
+        $input->hidden = true;
+        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
-        // create attachment
-        $attachment = $repository->get();
-        $attachment->set('name', $this->getExportFileName('json'));
-        $attachment->set('role', 'Export');
-        $attachment->set('relatedType', 'ExportJob');
-        $attachment->set('relatedId', $this->data['exportJobId']);
-        $attachment->set('storage', 'UploadDir');
-        $attachment->set('storageFilePath', $this->createPath());
+        $fileData = $this->getService('File')->createFileViaContents($input, $contents);
 
-        $this->beforeStore($this, $attachment, 'json');
-
-        $fileName = $repository->getFilePath($attachment);
-
-        $this->createDir($fileName);
-        file_put_contents($fileName, $contents);
-
-        $attachment->set('type', 'application/json');
-        $attachment->set('size', \filesize($fileName));
-
-        $this->getEntityManager()->saveEntity($attachment);
-
-        return $attachment;
+        return $this->getEntityManager()->getRepository('File')->get($fileData['id']);
     }
 
-    protected function exportSql(ExportJob $exportJob): Attachment
+    protected function exportSql(ExportJob $exportJob): File
     {
         if (!empty($this->data['feed']['separateJob'])) {
             $collection = $this->getCollection();
@@ -154,37 +169,23 @@ class ExportTypeSimple extends AbstractExportType
 
         $contents = $this->renderTemplateContents((string)$this->data['feed']['template'], ['entities' => $collection], $this->data['feed']['originTemplateName']);
 
-        $contents = join("\n", array_map(function ($query) {
-            return trim($query);
-        }, \SqlFormatter::splitQuery($contents)));
+        $contents = join(
+            "\n", array_map(function ($query) {
+                return trim($query);
+            }, \SqlFormatter::splitQuery($contents))
+        );
 
-        $repository = $this->getEntityManager()->getRepository('Attachment');
+        $input = new \stdClass();
+        $input->name = $this->getExportFileName('sql');
+        $input->hidden = true;
+        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
-        // create attachment
-        $attachment = $repository->get();
-        $attachment->set('name', $this->getExportFileName('sql'));
-        $attachment->set('role', 'Export');
-        $attachment->set('relatedType', 'ExportJob');
-        $attachment->set('relatedId', $this->data['exportJobId']);
-        $attachment->set('storage', 'UploadDir');
-        $attachment->set('storageFilePath', $this->createPath());
+        $fileData = $this->getService('File')->createFileViaContents($input, $contents);
 
-        $this->beforeStore($this, $attachment, 'sql');
-
-        $fileName = $repository->getFilePath($attachment);
-
-        $this->createDir($fileName);
-        file_put_contents($fileName, $contents);
-
-        $attachment->set('type', 'application/sql');
-        $attachment->set('size', \filesize($fileName));
-
-        $this->getEntityManager()->saveEntity($attachment);
-
-        return $attachment;
+        return $this->getEntityManager()->getRepository('File')->get($fileData['id']);
     }
 
-    protected function exportXml(ExportJob $exportJob): Attachment
+    protected function exportXml(ExportJob $exportJob): File
     {
         if (!empty($this->data['feed']['separateJob'])) {
             $collection = $this->getCollection();
@@ -196,48 +197,38 @@ class ExportTypeSimple extends AbstractExportType
 
         $contents = $this->renderTemplateContents((string)$this->data['feed']['template'], ['entities' => $collection], $this->data['feed']['originTemplateName']);
 
-        $repository = $this->getEntityManager()->getRepository('Attachment');
+        $input = new \stdClass();
+        $input->name = $this->getExportFileName('xml');
+        $input->hidden = true;
+        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
-        // create attachment
-        $attachment = $repository->get();
-        $attachment->set('name', $this->getExportFileName('xml'));
-        $attachment->set('role', 'Export');
-        $attachment->set('relatedType', 'ExportJob');
-        $attachment->set('relatedId', $this->data['exportJobId']);
-        $attachment->set('storage', 'UploadDir');
-        $attachment->set('storageFilePath', $this->createPath());
+        $fileData = $this->getService('File')->createFileViaContents($input, $contents);
 
-        $this->beforeStore($this, $attachment, 'xml');
+        $file = $this->getEntityManager()->getRepository('File')->get($fileData['id']);
 
-        $fileName = $repository->getFilePath($attachment);
+        $this->validateXml($file, $exportJob);
 
-        $this->createDir($fileName);
-        file_put_contents($fileName, $contents);
-
-        $attachment->set('type', 'application/xml');
-        $attachment->set('size', \filesize($fileName));
-
-        $this->getEntityManager()->saveEntity($attachment);
-
-        $this->validateXml($fileName, $exportJob);
-
-        return $attachment;
+        return $file;
     }
 
-    protected function validateXml($filename, ExportJob $exportJob)
+    protected function validateXml(File $file, ExportJob $exportJob)
     {
         $dom = new \DOMDocument();
-        $dom->load($filename);
+        $dom->load($file->getFilePath());
         libxml_use_internal_errors(true);
-        $sxe = new \SimpleXMLElement($filename, 0, true);
+        $sxe = new \SimpleXMLElement($file->getFilePath(), 0, true);
         $schemaLocation = $sxe->attributes('xsi', true)->schemaLocation;
         $regex = '/https?\:\/\/[^\" ]+/i';
         preg_match($regex, (string)$schemaLocation, $matches);
-        if (empty($matches[0])) return;
+        if (empty($matches[0])) {
+            return;
+        }
 
         $path = tempnam(sys_get_temp_dir(), "xsd");
 
-        if ($this->downloadXsd($matches[0], $path) != "200") return;
+        if ($this->downloadXsd($matches[0], $path) != "200") {
+            return;
+        }
 
         if (!$dom->schemaValidate($path)) {
             $logs = [];
@@ -295,43 +286,42 @@ class ExportTypeSimple extends AbstractExportType
         return $log;
     }
 
-    protected function exportCsv(ExportJob $exportJob): Attachment
+    protected function exportCsv(ExportJob $exportJob): File
     {
-        $repository = $this->getEntityManager()->getRepository('Attachment');
-
-        // create attachment
-        $attachment = $repository->get();
-        $attachment->set('name', $this->getExportFileName('csv'));
-        $attachment->set('role', 'Export');
-        $attachment->set('relatedType', 'ExportJob');
-        $attachment->set('relatedId', $this->data['exportJobId']);
-        $attachment->set('storage', 'UploadDir');
-        $attachment->set('storageFilePath', $this->createPath());
-
-        $this->beforeStore($this, $attachment, 'csv');
+        $input = new \stdClass();
+        $input->name = $this->getExportFileName('csv');
+        $input->hidden = true;
+        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
         $this->initZipArchive([$this->data['feed']['data']['configuration']]);
 
         $data = $this->createCacheFile();
+
         $exportJob->set('count', $data['count']);
         $exportJob->set('data', array_merge($exportJob->getData(), $data));
 
-        $this->storeCsvFile($exportJob->getData(), $repository->getFilePath($attachment));
+        // create tmp CSV file
+        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId() . DIRECTORY_SEPARATOR . $input->name;
+        $this->createDir($fileName);
+        $this->storeCsvFile($exportJob->getData(), $fileName);
 
-        $attachment->set('type', 'text/csv');
-        $attachment->set('size', \filesize($repository->getFilePath($attachment)));
+        $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
 
-        $this->getEntityManager()->saveEntity($attachment);
+        // delete tmp file
+        unlink($fileName);
 
-        return $this->exportAsZip($attachment);
+        $file = $this->getEntityManager()->getRepository('File')->get($fileData['id']);
+
+        return $this->exportAsZip($file);
     }
-
 
     protected function canBuildZipArchive(array $configurations)
     {
         foreach ($configurations as $configuration) {
             foreach ($configuration as $field) {
-                if ($field['zip']) return true;
+                if ($field['zip']) {
+                    return true;
+                }
             }
         }
         return false;
@@ -339,28 +329,26 @@ class ExportTypeSimple extends AbstractExportType
 
     protected function initZipArchive(array $configurations)
     {
-        if (!$this->canBuildZipArchive($configurations)) return false;
-        $repository = $this->getEntityManager()->getRepository('Attachment');
-        $zipAttachment = $repository->get();
-        $zipAttachment->set('name', $this->getExportFileName('zip'));
-        $zipAttachment->set('role', 'Export');
-        $zipAttachment->set('relatedType', 'ExportJob');
-        $zipAttachment->set('relatedId', $this->data['exportJobId']);
-        $zipAttachment->set('storage', 'UploadDir');
-        $zipAttachment->set('storageFilePath', $this->createPath());
-        $zipAttachment->set('type', 'application/zip');
-        $fileName = $repository->getFilePath($zipAttachment);
+        if (!$this->canBuildZipArchive($configurations)) {
+            return false;
+        }
+
+        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId() . DIRECTORY_SEPARATOR . $this->getExportFileName(
+                'zip'
+            );
+
         $this->createDir($fileName);
 
         $this->zipArchive = new \ZipArchive();
         if ($this->zipArchive->open($fileName, \ZipArchive::CREATE) !== true) {
             throw new Exception("cannot open archive $fileName\n");
         }
-        $this->zipAttachment = $zipAttachment;
+        $this->zipFileName = $fileName;
+
         return true;
     }
 
-    protected function exportXlsx(ExportJob $exportJob): Attachment
+    protected function exportXlsx(ExportJob $exportJob): File
     {
         $metadata = $this->getMetadata();
 
@@ -377,24 +365,18 @@ class ExportTypeSimple extends AbstractExportType
             ];
         }
 
-        $repository = $this->getEntityManager()->getRepository('Attachment');
+        $input = new \stdClass();
+        $input->name = $this->getExportFileName('xlsx');
+        $input->hidden = true;
+        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
-        // create attachment
-        $attachment = $repository->get();
-        $attachment->set('name', $this->getExportFileName('xlsx'));
-        $attachment->set('role', 'Export');
-        $attachment->set('relatedType', 'ExportJob');
-        $attachment->set('relatedId', $this->data['exportJobId']);
-        $attachment->set('storage', 'UploadDir');
-        $attachment->set('storageFilePath', $this->createPath());
+        $this->initZipArchive(
+            array_map(function ($sheet) {
+                return $sheet['configuration'];
+            }, $sheets)
+        );
 
-        $this->initZipArchive(array_map(function ($sheet) {
-            return $sheet['configuration'];
-        }, $sheets));
-
-        $this->beforeStore($this, $attachment, 'xlsx');
-
-        $fileName = $repository->getFilePath($attachment);
+        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $exportJob->get('id') . DIRECTORY_SEPARATOR . Util::generateId() . $input->name;
 
         $this->createDir($fileName);
 
@@ -420,7 +402,7 @@ class ExportTypeSimple extends AbstractExportType
             $count += $data['count'];
 
             // prepare CSV filename
-            $pathParts = explode('/', $repository->getFilePath($attachment));
+            $pathParts = explode(DIRECTORY_SEPARATOR, $fileName);
             array_pop($pathParts);
             $pathParts[] = Util::generateId() . '.csv';
             $csvFileName = implode('/', $pathParts);
@@ -465,21 +447,27 @@ class ExportTypeSimple extends AbstractExportType
                                 foreach ($column->getCellIterator($startRow) as $cell) {
                                     $cell->setValueExplicit($cell->getValue(), DataType::TYPE_STRING2);
                                 }
-                            } else if ($cellType == 'float') {
-                                foreach ($column->getCellIterator($startRow) as $cell) {
-                                    $this->processXlsxNumericCell($cell, $decimalMark, $thousandSeparator);
-                                }
-                            } else if ($cellType == 'currency') {
-                                foreach ($column->getCellIterator($startRow) as $cell) {
-                                    // if currency field exported using value only mask
-                                    if (preg_match("/^[\d\W]+$/", (string) $cell->getValue())) {
+                            } else {
+                                if ($cellType == 'float') {
+                                    foreach ($column->getCellIterator($startRow) as $cell) {
                                         $this->processXlsxNumericCell($cell, $decimalMark, $thousandSeparator);
                                     }
-                                }
-                            } else if ($cellType == 'int' && $thousandSeparator) {
-                                foreach ($column->getCellIterator($startRow) as $cell) {
-                                    if (is_string($cell->getValue())) {
-                                        $this->processXlsxNumericCell($cell, $decimalMark, $thousandSeparator);
+                                } else {
+                                    if ($cellType == 'currency') {
+                                        foreach ($column->getCellIterator($startRow) as $cell) {
+                                            // if currency field exported using value only mask
+                                            if (preg_match("/^[\d\W]+$/", (string)$cell->getValue())) {
+                                                $this->processXlsxNumericCell($cell, $decimalMark, $thousandSeparator);
+                                            }
+                                        }
+                                    } else {
+                                        if ($cellType == 'int' && $thousandSeparator) {
+                                            foreach ($column->getCellIterator($startRow) as $cell) {
+                                                if (is_string($cell->getValue())) {
+                                                    $this->processXlsxNumericCell($cell, $decimalMark, $thousandSeparator);
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -489,9 +477,11 @@ class ExportTypeSimple extends AbstractExportType
                                 foreach ($column->getCellIterator($startRow) as $cell) {
                                     $cell->setValueExplicit($cell->getValue(), DataType::TYPE_STRING2);
                                 }
-                            } else if (in_array($sheetCol['attributeValue'], ['valueNumeric', 'valueFrom', 'valueTo'])) {
-                                foreach ($column->getCellIterator($startRow) as $cell) {
-                                    $this->processXlsxNumericCell($cell, $decimalMark, $thousandSeparator);
+                            } else {
+                                if (in_array($sheetCol['attributeValue'], ['valueNumeric', 'valueFrom', 'valueTo'])) {
+                                    foreach ($column->getCellIterator($startRow) as $cell) {
+                                        $this->processXlsxNumericCell($cell, $decimalMark, $thousandSeparator);
+                                    }
                                 }
                             }
                             break;
@@ -515,19 +505,21 @@ class ExportTypeSimple extends AbstractExportType
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save($fileName);
 
+        $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
+
+        // delete tmp file
+        unlink($fileName);
+
         $exportJob->set('count', $count);
 
-        $attachment->set('type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $attachment->set('size', \filesize($repository->getFilePath($attachment)));
+        $file = $this->getEntityManager()->getRepository('File')->get($fileData['id']);
 
-        $this->getEntityManager()->saveEntity($attachment);
-
-        return $this->exportAsZip($attachment);
+        return $this->exportAsZip($file);
     }
 
     private function processXlsxNumericCell(Cell $cell, $decimalMark, $thousandSeparator): void
     {
-        $cellValue = (string) $cell->getValue();
+        $cellValue = (string)$cell->getValue();
 
         if ($thousandSeparator && str_contains($cellValue, $thousandSeparator)) {
             $cellValue = str_replace($thousandSeparator, "", $cellValue);
@@ -546,19 +538,28 @@ class ExportTypeSimple extends AbstractExportType
         }
     }
 
-    protected function exportAsZip(Attachment $attachment): Attachment
+    protected function exportAsZip(File $file): File
     {
         if (!empty($this->zipArchive)) {
-            $repository = $this->getEntityManager()->getRepository('Attachment');
-            $this->zipArchive->addFile($attachment->getFilePath(), $attachment->get('name'));
+            $this->zipArchive->addFile($file->getFilePath(), $file->get('name'));
             $this->zipArchive->close();
-            $this->zipAttachment->set('size', \filesize($repository->getFilePath($this->zipAttachment)));
-            $this->getEntityManager()->saveEntity($this->zipAttachment);
-            $this->getEntityManager()->removeEntity($attachment);
-            return $this->zipAttachment;
+
+            $input = new \stdClass();
+            $input->name = $this->getExportFileName('zip');
+            $input->hidden = true;
+            $input->folderId = $file->get('folderId');
+
+            $this->getEntityManager()->removeEntity($file);
+
+            $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $this->zipFileName);
+
+            //  delete tmp zip file
+            unlink($this->zipFileName);
+
+            return $this->getEntityManager()->getRepository('File')->get($fileData['id']);
         }
 
-        return $attachment;
+        return $file;
     }
 
     protected function prepareColumns(array $data): array
@@ -659,12 +660,6 @@ class ExportTypeSimple extends AbstractExportType
             mkdir($dir, 0777, true);
             sleep(1);
         }
-    }
-
-    protected function beforeStore(ExportTypeSimple $typeService, Attachment $attachment, string $format)
-    {
-        $event = new Event(['data' => $this->data, 'typeService' => $typeService, 'attachment' => $attachment, 'extension' => $format]);
-        $this->getEventManager()->dispatch('ExportTypeSimpleService', 'beforeStore', $event);
     }
 
     public function getUrlColumns(): array

@@ -74,6 +74,9 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
                 if (this.model.get('entity') === 'ProductAttributeValue' && this.model.get('name') === 'value') {
                     entity = 'ExtensibleEnumOption'
                 }
+                if (this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'type']) === 'file') {
+                    entity = 'File';
+                }
             } else {
                 if (this.model.get('attributeId')) {
                     let attribute = this.getAttribute(this.model.get('attributeId'));
@@ -83,29 +86,21 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
                         entity = 'Unit'
                     } else if (attribute.type === 'link' || attribute.type === 'linkMultiple') {
                         entity = attribute.entityType;
+                    } else if (attribute.type === 'file') {
+                        entity = 'File';
                     }
                 }
             }
 
             if (entity) {
-                /**
-                 * For main image
-                 */
-                if (this.model.get('name') === 'mainImage' || ['Category', 'Product'].includes(this.model.get('entity')) && this.model.get('name') === 'image') {
-                    entity = 'Asset';
-                }
-
                 let fields = this.getMetadata().get(['entityDefs', entity, 'fields']) || {};
                 let sortedFields = Object.keys(fields).sort((v1, v2) => this.translate(v1, 'fields', entity).localeCompare(this.translate(v2, 'fields', entity)));
 
                 sortedFields.forEach(field => {
                     let fieldData = fields[field];
                     if (!fieldData.disabled && !fieldData.exportDisabled && !['jsonObject', 'linkMultiple'].includes(fieldData.type)) {
-                        if (fieldData.type === 'link') {
+                        if (fieldData.type === 'link' || fieldData.type === 'file') {
                             result = this.pushLinkFields(result, entity, field);
-                        } else if (fieldData.type === 'asset') {
-                            result = this.pushLinkFields(result, entity, field);
-                            result[field + 'Url'] = this.translate(field, 'fields', entity) + ' ' + this.translate('url', 'fields', 'Attachment');
                         } else {
                             result[field] = this.translate(field, 'fields', entity);
                         }
@@ -163,7 +158,7 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
                 }
             }
 
-            return ['image', 'asset', 'link', 'extensibleEnum', 'linkMultiple', 'extensibleMultiEnum', 'file', 'measure'].includes(type) && (this.params.options || []).length;
+            return ['link', 'extensibleEnum', 'linkMultiple', 'extensibleMultiEnum', 'file', 'measure'].includes(type) && (this.params.options || []).length;
         },
 
         getAttribute(attributeId) {

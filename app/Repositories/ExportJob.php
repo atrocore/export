@@ -16,6 +16,7 @@ namespace Export\Repositories;
 use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
+use Export\Services\AbstractExportType;
 
 class ExportJob extends Base
 {
@@ -36,6 +37,7 @@ class ExportJob extends Base
 
         $this->addDependency('language');
         $this->addDependency('queueManager');
+        $this->addDependency('fileManager');
     }
 
     protected function beforeSave(Entity $entity, array $options = [])
@@ -77,6 +79,11 @@ class ExportJob extends Base
                 if ($entity->get('state') === 'Canceled') {
                     $this->cancelQmJob($qmJob);
                 }
+            }
+
+            // delete tmp dir
+            if (in_array($entity->get('state'), ['Success', 'Failed', 'Canceled'])) {
+                $this->getInjection('fileManager')->removeAllInDir(AbstractExportType::TMP_DIR . DIRECTORY_SEPARATOR . $entity->get('id'));
             }
         }
 

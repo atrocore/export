@@ -99,7 +99,9 @@ class LinkMultipleType extends LinkType
 
         $foreignList = [];
         if (isset($foreignResult['collection'])) {
-            $foreignList = $foreignResult['collection']->toArray();
+            foreach ($foreignResult['collection'] as $v) {
+                $foreignList[] = array_merge($v->toArray(), ['_entity' => $v]);
+            }
         } elseif (isset($foreignResult['list'])) {
             $foreignList = $foreignResult['list'];
         }
@@ -115,29 +117,12 @@ class LinkMultipleType extends LinkType
 
         $exportBy = isset($configuration['exportBy']) ? $configuration['exportBy'] : ['id'];
 
-        if ($configuration['zip'] && in_array($foreignEntity, ['Asset', 'ProductAsset'])) {
-            $result['__assetPaths'] = [];
-            foreach ($foreignList as $foreignData) {
-                $fileId = $foreignEntity === 'ProductAsset'
-                    ? $this->convertor->getEntity('Asset',$foreignData['assetId'])->get('fileId')
-                    : $foreignData['fileId'];
-                if($fileId !== null){
-                    $attachment = $this->convertor->getEntity('Attachment', $fileId);
-                    $result['__assetPaths'][] = $attachment->getFilePath();
-                }
-            }
-        }
-
         foreach ($foreignList as $foreignData) {
             $fieldResult = [];
             foreach ($exportBy as $v) {
-                $assetUrl = $this->prepareAssetUrl($v, $foreignEntity, $foreignData);
-                if ($assetUrl !== null) {
-                    $fieldResult[$v] = $assetUrl;
-                    if ($configuration['zip']) {
-                        $result['__assetPaths'][] = str_replace(rtrim($this->convertor->getConfig()->get('siteUrl'), '/') . '/', '', $assetUrl);
-                    }
-                    continue 1;
+                if ($configuration['zip']) {
+                    $foreign = $foreignData['_entity'] ?? $this->convertor->getEntity($foreignEntity, $foreignData['id']);
+                    $result['__filePaths'][] = $foreign->getFilePath();
                 }
 
                 $foreignType = $this->convertor->getTypeForField($foreignEntity, $v);
@@ -146,7 +131,7 @@ class LinkMultipleType extends LinkType
 
                 // prepare type for product attribute value
                 if ($entity === 'Product' && $field === 'productAttributeValues' && $v === 'value') {
-                    $foreignType = $foreignData['attributeType'] === 'asset' ? 'varchar' : $foreignData['attributeType'];
+                    $foreignType = $foreignData['attributeType'] === 'file' ? 'varchar' : $foreignData['attributeType'];
                 }
 
                 $foreignConfiguration = array_merge($configuration, ['entity'=>  $foreignEntity,'field' => $v]);

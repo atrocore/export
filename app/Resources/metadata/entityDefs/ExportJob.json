@@ -119,11 +119,6 @@
     "queueItem": {
       "type": "belongsTo",
       "entity": "QueueItem"
-    },
-    "file": {
-      "type": "belongsTo",
-      "entity": "Attachment",
-      "skipOrmDefs": true
     }
   },
   "collection": {
