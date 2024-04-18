@@ -179,7 +179,7 @@ class ExportTypeSimple extends AbstractExportType
         $input->name = $this->getExportFileName('sql');
         $input->hidden = true;
         $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
-
+        $contents = empty($contents) ? " " : $contents;
         $fileData = $this->getService('File')->createFileViaContents($input, $contents);
 
         return $this->getEntityManager()->getRepository('File')->get($fileData['id']);
