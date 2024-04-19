@@ -15,12 +15,12 @@ namespace Export\Services;
 
 use Atro\Core\EventManager\Manager;
 use Atro\Entities\Folder;
-use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Exceptions\Error;
 use Espo\Core\Exceptions\Exception;
 use Espo\Core\Utils\Util;
 use Atro\Entities\File;
 use Espo\ORM\EntityCollection;
+use Export\Core\Exceptions\NothingToExport;
 use Export\Entities\ExportJob;
 use Export\TemplateLoaders\AbstractTemplate;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
@@ -44,7 +44,7 @@ class ExportTypeSimple extends AbstractExportType
 
         if ($exportJob->get('count') === 0) {
             $this->getEntityManager()->removeEntity($attachment);
-            throw new BadRequest($this->translate('noDataFound', 'exceptions', 'ExportFeed'));
+            throw new NothingToExport($this->translate('noDataFound', 'exceptions', 'ExportFeed'));
         }
 
         return $attachment;

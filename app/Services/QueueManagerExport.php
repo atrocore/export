@@ -18,18 +18,10 @@ use Espo\Core\Exceptions\Error;
 use Espo\Core\Utils\Metadata;
 use Espo\ORM\Entity;
 use Espo\Services\QueueManagerBase;
+use Export\Core\Exceptions\NothingToExport;
 
-/**
- * Class QueueManagerExport
- */
 class QueueManagerExport extends QueueManagerBase
 {
-    /**
-     * @param array $data
-     *
-     * @return bool
-     * @throws Error
-     */
     public function run(array $data = []): bool
     {
         $exportJob = $this->getEntityManager()->getEntity('ExportJob', $data['exportJobId']);
@@ -42,7 +34,13 @@ class QueueManagerExport extends QueueManagerBase
         try {
             /** @var AbstractExportType $typeService */
             $typeService = $this->getContainer()->get('serviceFactory')->create('ExportFeed')->getExportTypeService($data['feed']['type']);
-            $exportJob->set('fileId', $typeService->export($data, $exportJob)->get('id'));
+            try {
+                $file = $typeService->export($data, $exportJob);
+            } catch (NothingToExport $e) {
+            }
+            if (!empty($file)) {
+                $exportJob->set('fileId', $file->get('id'));
+            }
             if ($exportJob->get('state') == 'Running') {
                 $exportJob->set('state', 'Success');
             }
