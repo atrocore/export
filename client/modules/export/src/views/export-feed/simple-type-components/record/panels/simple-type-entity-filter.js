@@ -39,7 +39,7 @@ Espo.define('export:views/export-feed/simple-type-components/record/panels/simpl
                 this.searchManager = new SearchManager(this.collection, `exportSimpleType`, null, this.getDateTime(), (this.model.get('data') || {}).whereData || [], true);
 
                 let searchView = 'export:views/export-feed/simple-type-components/record/entity-search';
-                if (this.scope === 'Product') {
+                if (this.scope === 'Product' && this.getMetadata().get('scopes.Product.module') === 'Pim') {
                     searchView = 'export:views/export-feed/simple-type-components/record/product-search';
                 }
 

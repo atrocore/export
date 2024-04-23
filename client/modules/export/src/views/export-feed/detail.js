@@ -21,7 +21,6 @@ Espo.define('export:views/export-feed/detail', 'views/detail',
                         "exportFeedLanguage": this.model.get('language') && this.model.get('language') !== '' ? this.model.get('language') : null,
                         "entity": this.model.get('entity'),
                         "type": "Field",
-                        "scope": this.model.get('channelId') ? 'Channel' : 'Global',
                         "channelId": this.model.get('channelId'),
                         "channelName": this.model.get('channelName')
                     }

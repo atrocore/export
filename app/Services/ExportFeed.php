@@ -256,7 +256,7 @@ class ExportFeed extends Base
             $post->attributeId = $attribute->get('id');
 
             if (!empty($feed->get('channelId'))) {
-                $post->scope = 'Channel';
+//                $post->scope = 'Channel';
                 $post->channelId = $feed->get('channelId');
                 $post->channelName = $feed->get('channelName');
             }
