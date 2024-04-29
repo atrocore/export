@@ -20,7 +20,7 @@ class BoolType extends AbstractType
         $field = $configuration['field'];
         $column = $configuration['column'];
 
-        if($result[$field] === null){
+        if($record[$field] === null){
             $result[$column] = $configuration['nullValue'];
         }else{
             $result[$column] = !empty($record[$field]) ? 'TRUE' : 'FALSE';
