@@ -113,11 +113,9 @@ class LinkType extends AbstractType
     protected function prepareExportByField(string $foreignEntity, string $configuratorField, string &$foreignType, array &$foreignData): void
     {
         if ($configuratorField === 'sharedDownloadUrl') {
-            echo '<pre>';
-            print_r('123');
-            die();
+            $foreignData['sharedDownloadUrl'] = $this->getSharedDownloadUrl($this->getMemoryStorage()->get('exportJobId'), $foreignData['id']);
+            return;
         }
-
 
         $exportByFieldParts = explode(".", $configuratorField);
         $parts = count($exportByFieldParts);

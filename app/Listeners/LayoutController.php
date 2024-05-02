@@ -31,6 +31,28 @@ class LayoutController extends AbstractListener
         }
     }
 
+    protected function modifySharingDetail(Event $event): void
+    {
+        $result = Json::decode($event->getArgument('result'), true);
+
+        if (strpos(json_encode($result[0]['rows']), '"name":"exportFeed"') === false) {
+            $result[0]['rows'][] = [['name' => 'exportFeed'], false];
+        }
+
+        $event->setArgument('result', Json::encode($result));
+    }
+
+    protected function modifySharingDetailSmall(Event $event): void
+    {
+        $result = Json::decode($event->getArgument('result'), true);
+
+        if (strpos(json_encode($result[0]['rows']), '"name":"exportFeed"') === false) {
+            $result[0]['rows'][] = [['name' => 'exportFeed'], false];
+        }
+
+        $event->setArgument('result', Json::encode($result));
+    }
+
     protected function modifyActionDetail(Event $event): void
     {
         $result = Json::decode($event->getArgument('result'), true);
