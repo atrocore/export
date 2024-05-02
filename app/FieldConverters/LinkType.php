@@ -60,7 +60,7 @@ class LinkType extends AbstractType
                     /**
                      * For main image
                      */
-                    if ($field === 'mainImage' || (in_array($entity, ['Category', 'Product']) && $field === 'image') || $foreignEntity == 'Attachment') {
+                    if ($field === 'mainImage' && in_array($entity, ['Category', 'Product'])) {
                         if ($configuration['zip']) {
                             $result['__filePaths'][] = $foreign->getFilePath();
                         }
@@ -76,16 +76,16 @@ class LinkType extends AbstractType
                     $foreignData = $foreign->toArray();
                     $fieldResult = [];
                     foreach ($exportBy as $v) {
-                        if ($configuration['zip']) {
-                            $result['__filePaths'][] = $foreign->getFilePath();
-                        }
-
                         $foreignType = $this->convertor->getTypeForField($foreignEntity, $v);
 
                         $this->prepareExportByField($foreignEntity, $v, $foreignType, $foreignData);
 
                         $foreignConfiguration = array_merge($configuration, ['field' => $v]);
                         $this->convertForeignType($fieldResult, $foreignType, $foreignConfiguration, $foreignData, $v, $record);
+
+                        if ($configuration['zip']) {
+                            $result['__filePaths'][] = $foreign->getFilePath();
+                        }
                     }
 
                     if (!empty($fieldResult)) {
@@ -112,6 +112,13 @@ class LinkType extends AbstractType
 
     protected function prepareExportByField(string $foreignEntity, string $configuratorField, string &$foreignType, array &$foreignData): void
     {
+        if ($configuratorField === 'sharedDownloadUrl') {
+            echo '<pre>';
+            print_r('123');
+            die();
+        }
+
+
         $exportByFieldParts = explode(".", $configuratorField);
         $parts = count($exportByFieldParts);
         if ($parts !== 2 && $parts !== 3) {
