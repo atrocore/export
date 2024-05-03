@@ -14,7 +14,7 @@
   },
   "conflict": {
     "atrocore/pim": "<1.11.26 || >=1.14.0",
-    "atrocore/import-feed": "<1.5.52"
+    "atrocore/import": "<1.5.52"
   },
   "autoload": {
     "psr-4": {
