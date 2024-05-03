@@ -1,0 +1,14 @@
+{
+  "fields": {
+    "exportFeed": {
+      "type": "link",
+      "readOnly": true
+    }
+  },
+  "links": {
+    "exportFeed": {
+      "type": "belongsTo",
+      "entity": "ExportFeed"
+    }
+  }
+}

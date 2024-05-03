@@ -21,9 +21,9 @@ class VarcharType extends AbstractType
         $column = $configuration['column'];
         $result[$column] = $configuration['nullValue'];
 
-        if (array_key_exists($field,$record)) {
+        if (array_key_exists($field, $record)) {
             $value = $record[$field];
-            if(($value === null || $value === '') && array_key_exists($configuration['fallbackField'], $record) ){
+            if (($value === null || $value === '') && array_key_exists($configuration['fallbackField'], $record)) {
                 $value = $record[$configuration['fallbackField']];
             }
 
@@ -31,6 +31,10 @@ class VarcharType extends AbstractType
                 $result[$column] = $value === null ? $configuration['nullValue'] : $configuration['emptyValue'];
             } else {
                 $result[$column] = $value;
+            }
+        } else {
+            if ($field === 'sharedDownloadUrl') {
+                $result[$column] = $this->getSharedDownloadUrl($this->getMemoryStorage()->get('exportJobId'), $record['id']);
             }
         }
     }

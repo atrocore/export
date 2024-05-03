@@ -1,0 +1,17 @@
+{
+  "fields": {
+    "sharedDownloadUrl": {
+      "type": "varchar",
+      "notStorable": true,
+      "readOnly": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "filterDisabled": true,
+      "importDisabled": true,
+      "emHidden": true
+    }
+  }
+}

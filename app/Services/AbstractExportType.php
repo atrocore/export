@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\Services;
 
+use Atro\Core\Exceptions\BadRequest;
 use Espo\Core\Container;
 use Espo\Core\Exceptions\Error;
 use Espo\Core\Services\Base;
@@ -164,32 +165,32 @@ abstract class AbstractExportType extends Base
         $feedLanguage = $this->data['feed']['language'];
         $feedFallbackLanguage = $this->data['feed']['fallbackLanguage'];
 
-        if(
+        if (
             $row['type'] === 'Field'
             && !empty($feedLanguage)
-            && $this->getMetadata()->get(['entityDefs', $row['entity'], 'fields', $row['field'],'isMultilang'], false)
-        ){
+            && $this->getMetadata()->get(['entityDefs', $row['entity'], 'fields', $row['field'], 'isMultilang'], false)
+        ) {
             $row['language'] = $feedLanguage;
             $row['fallbackLanguage'] = $feedFallbackLanguage;
         }
 
-        if(
+        if (
             $row['type'] === 'Attribute'
             && !empty($feedLanguage)
             && $this->getEntityManager()
                 ->getRepository('Attribute')
                 ->get($row['attributeId'])
                 ->get('isMultilang')
-        ){
+        ) {
             $row['language'] = $feedLanguage;
             $row['fallbackLanguage'] = $feedFallbackLanguage;
         }
 
-        if ($row['type'] === 'Field' && !empty($row['fallbackLanguage']) ) {
-            if($row['fallbackLanguage'] === 'main'){
+        if ($row['type'] === 'Field' && !empty($row['fallbackLanguage'])) {
+            if ($row['fallbackLanguage'] === 'main') {
                 $row['fallbackField'] = $row['field'];
-            }else{
-                $row['fallbackField']  = $row['field'].ucfirst(Util::toCamelCase(strtolower($row['fallbackLanguage'])));
+            } else {
+                $row['fallbackField'] = $row['field'] . ucfirst(Util::toCamelCase(strtolower($row['fallbackLanguage'])));
             }
         }
 
@@ -381,6 +382,9 @@ abstract class AbstractExportType extends Base
                         }
                         $fileNumber = 0;
                         foreach ($result['__filePaths'] as $path) {
+                            if (!file_exists($path)) {
+                                throw new BadRequest("File '{$path}' does not exist.");
+                            }
                             $fileNumber++;
                             $preparedFileName = $fileName = basename($path);
 

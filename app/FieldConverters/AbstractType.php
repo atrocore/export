@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Atro\Core\Exceptions\Error;
 use Atro\Core\KeyValueStorages\StorageInterface;
 use Espo\Core\Utils\Metadata;
 use Export\DataConvertor\Convertor;
@@ -36,5 +37,31 @@ abstract class AbstractType
     protected function getMetadata(): Metadata
     {
         return $this->convertor->getMetadata();
+    }
+
+    protected function getSharedDownloadUrl(string $exportJobId, string $fileId): string
+    {
+        $exportJob = $this->convertor->getEntityManager()->getRepository('ExportJob')->get($exportJobId);
+        if (empty($exportJob)) {
+            throw new Error("ExportJob '$exportJobId' does not exist.");
+        }
+
+        /** @var \Espo\Repositories\Sharing $sharingRepo */
+        $sharingRepo = $this->convertor->getEntityManager()->getRepository('Sharing');
+
+        $where = [
+            'fileId'       => $fileId,
+            'exportFeedId' => $exportJob->get('exportFeedId')
+        ];
+
+        if (empty($sharing = $sharingRepo->where($where)->findOne())) {
+            $sharing = $sharingRepo->get();
+            $sharing->set($where);
+            $sharingRepo->save($sharing);
+        }
+
+        $this->convertor->getService('Sharing')->prepareEntityForOutput($sharing);
+
+        return $sharing->get('link');
     }
 }

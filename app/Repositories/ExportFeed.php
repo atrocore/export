@@ -183,6 +183,13 @@ class ExportFeed extends Base
         parent::beforeRemove($entity, $options);
 
         $this->removeConfiguratorItems('ExportFeed', $entity->get('id'));
+
+        $shares = $this->getEntityManager()->getRepository('Sharing')
+            ->where(['exportFeedId' => $entity->get('id')])
+            ->find();
+        foreach ($shares as $share) {
+            $this->getEntityManager()->removeEntity($share);
+        }
     }
 
     protected function init()
