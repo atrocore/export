@@ -1,5 +1,5 @@
 {
-  "name": "atrocore/export-feeds",
+  "name": "atrocore/export",
   "description": "",
   "require": {
     "atrocore/core": "~1.10.0",
@@ -24,7 +24,7 @@
   "extra": {
     "treoId": "Export",
     "name": {
-      "default": "Export Feeds"
+      "default": "Export"
     },
     "description": {
       "default": "This module allows you to configure and execute multiple feeds for manual data export from any system entity and its direct relations. Different file formats can be used."
