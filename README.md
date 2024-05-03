@@ -1,3 +1,3 @@
-# Export Feeds
+# Export
 
-Technical documentation is available here: https://help.atrocore.com/#/modules/export-feeds
+Technical documentation is available here: https://help.atrocore.com/#/modules/export
