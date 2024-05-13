@@ -56,12 +56,20 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
             this.listenTo(Backbone.Events, 'search', searchView => {
                 if (searchView.searchManager.type === 'exportSimpleType') {
                     this.model.set('data', _.extend({}, this.model.get('data'), {
-                        where: Espo.Utils.cloneDeep(searchView.searchManager.getWhere()),
-                        whereData: Espo.Utils.cloneDeep(searchView.searchManager.get()),
+                        where: this.getWhere(searchView),
+                        whereData: this.getWhereData(searchView),
                         whereScope: this.model.get('entity'),
                     }));
                 }
             });
+        },
+
+        getWhere(searchView) {
+            return Espo.Utils.cloneDeep(searchView.searchManager.getWhere());
+        },
+
+        getWhereData(searchView) {
+            return Espo.Utils.cloneDeep(searchView.searchManager.get());
         },
 
         actionShowFullList(data) {

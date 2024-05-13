@@ -13,6 +13,10 @@ Espo.define('export:views/export-feed/simple-type-components/record/panels/simpl
 
         template: 'export:export-feed/simple-type-components/record/panels/simple-type-entity-filter',
 
+        entitySearchView: 'export:views/export-feed/simple-type-components/record/entity-search',
+
+        productSearchView: 'export:views/export-feed/simple-type-components/record/product-search',
+
         searchManager: null,
 
         collection: null,
@@ -38,9 +42,9 @@ Espo.define('export:views/export-feed/simple-type-components/record/panels/simpl
                 this.collection = collection;
                 this.searchManager = new SearchManager(this.collection, `exportSimpleType`, null, this.getDateTime(), (this.model.get('data') || {}).whereData || [], true);
 
-                let searchView = 'export:views/export-feed/simple-type-components/record/entity-search';
+                let searchView = this.entitySearchView;
                 if (this.scope === 'Product' && this.getMetadata().get('scopes.Product.module') === 'Pim') {
-                    searchView = 'export:views/export-feed/simple-type-components/record/product-search';
+                    searchView = this.productSearchView;
                 }
 
                 this.createView('search', searchView, {
