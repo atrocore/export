@@ -64,7 +64,7 @@ class ExportJob extends Base
         }
 
         // delete forever
-        $daysToDeleteForever = $days + 14;
+        $daysToDeleteForever = $days + $this->getConfig()->get('exportJobsDeletedMaxDays', 14);
         $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $qb
             ->delete('export_job')
