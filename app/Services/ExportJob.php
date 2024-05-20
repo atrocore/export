@@ -64,11 +64,11 @@ class ExportJob extends Base
         }
 
         // delete forever
-        $daysToDeleteForever = $days + 14;
+        $daysToDeleteForever = $this->getConfig()->get('exportJobsDeletedMaxDays', 14);
         $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $qb
             ->delete('export_job')
-            ->where('modified_at < :maxDate')
+            ->where('modified_at <= :maxDate')
             ->andWhere('deleted = :true')
             ->setParameter('maxDate', (new \DateTime())->modify("-$daysToDeleteForever days")->format('Y-m-d H:i:s'))
             ->setParameter('true', true, ParameterType::BOOLEAN)

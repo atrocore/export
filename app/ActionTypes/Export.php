@@ -107,6 +107,9 @@ class Export implements TypeInterface
         }
 
         $payload['executeNow'] = empty($action->get('inBackground'));
+        if (property_exists($input, 'actionSetLinkerId')) {
+            $payload['actionSetLinkerId'] = $input->actionSetLinkerId;
+        }
 
         $service->runExport($exportFeed->get('id'), json_encode($payload));
 
