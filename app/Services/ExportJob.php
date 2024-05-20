@@ -21,7 +21,7 @@ class ExportJob extends Base
 {
     protected $mandatorySelectAttributeList = ['exportFeedId', 'exportFeedName', 'state', 'stateMessage'];
 
-    public function deleteOld(int $days): bool
+    public function deleteOld(int $days = 14): bool
     {
         if ($days === 0) {
             return true;
