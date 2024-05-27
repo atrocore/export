@@ -26,10 +26,6 @@
     "exportFeed": "Экспорт. фид",
     "channel": "Канал"
   },
-  "labels": {
-    "Field": "Поле",
-    "Fixed value": "Фиксированное значение"
-  },
   "options": {
     "boolFilterFieldValue": {
       "+": "истина",
