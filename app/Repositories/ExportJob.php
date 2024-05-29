@@ -89,6 +89,7 @@ class ExportJob extends Base
 
         if (!empty($feed = $entity->get('exportFeed'))) {
             $jobs = $this
+                ->select(['id'])
                 ->where([
                     'exportFeedId' => $feed->get('id'),
                     'state'        => ['Success', 'Failed', 'Canceled']

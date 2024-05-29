@@ -30,6 +30,7 @@ class ExportJob extends Base
         // delete
         while (true) {
             $toDelete = $this->getEntityManager()->getRepository('ExportJob')
+                ->select(['id'])
                 ->where(['modifiedAt<' => (new \DateTime())->modify("-$days days")->format('Y-m-d H:i:s')])
                 ->limit(0, 2000)
                 ->order('modifiedAt')
