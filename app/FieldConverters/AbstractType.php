@@ -46,7 +46,6 @@ abstract class AbstractType
             throw new Error("ExportJob '$exportJobId' does not exist.");
         }
 
-        /** @var \Espo\Repositories\Sharing $sharingRepo */
         $sharingRepo = $this->convertor->getEntityManager()->getRepository('Sharing');
 
         $where = [
