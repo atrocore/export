@@ -1,0 +1,22 @@
+{
+  "fields": {
+    "exportFeed": "",
+    "exportFeeds": "",
+    "maximumHoursToLookBack": "",
+    "maximumDaysForJobExist": ""
+  },
+  "links": {
+    "exportFeed": "",
+    "exportFeeds": ""
+  },
+  "options": {
+    "job": {
+      "ExportFeed": "",
+      "TrialExport": "",
+      "ExportJobRemove": ""
+    }
+  },
+  "tooltips": {
+    "exportFeeds": ""
+  }
+}
