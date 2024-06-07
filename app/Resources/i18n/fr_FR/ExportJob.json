@@ -1,0 +1,35 @@
+{
+  "fields": {
+    "exportFeed": "",
+    "file": "",
+    "state": "",
+    "stateMessage": "",
+    "start": "",
+    "end": "",
+    "count": ""
+  },
+  "links": {
+    "exportFeed": ""
+  },
+  "labels": {
+    "Create ExportJob": "",
+    "Pending": "",
+    "Success": "",
+    "Running": "",
+    "Failed": "",
+    "Canceled": "",
+    "exportDownloadNotification": ""
+  },
+  "exceptions": {
+    "wrongJobState": "",
+    "notExecutableJob": ""
+  },
+  "boolFilters": {
+    "onlyExportFailed24Hours": "",
+    "onlyExportFailed7Days": "",
+    "onlyExportFailed28Days": ""
+  },
+  "messages": {
+    "xmlValidationFailed": ""
+  }
+}
