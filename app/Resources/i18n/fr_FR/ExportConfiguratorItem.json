@@ -1,0 +1,66 @@
+{
+  "fields": {
+    "name": "",
+    "column": "",
+    "columnType": "",
+    "exportFeed": "",
+    "attribute": "",
+    "exportBy": "",
+    "remove": "",
+    "exportIntoSeparateColumns": "",
+    "type": "",
+    "language": "",
+    "channel": "",
+    "mask": "",
+    "filterField": "",
+    "filterFieldValue": "",
+    "offsetRelation": "",
+    "limitRelation": "",
+    "sortFieldRelation": "",
+    "sortOrderRelation": "",
+    "fixedValue": "",
+    "previousItem": "",
+    "zip": "",
+    "attributeValue": "",
+    "fileNameTemplate": "",
+    "exportByForListAttribute": "",
+    "fallbackLanguage": ""
+  },
+  "links": {
+    "exportFeed": "",
+    "channel": ""
+  },
+  "labels": {
+    "exportByForAttributeValue": ""
+  },
+  "columnType": {
+    "name": "",
+    "internal": "",
+    "custom": ""
+  },
+  "options": {
+    "boolFilterFieldValue": {
+      "+": "",
+      "-": ""
+    },
+    "attributeValue": {
+      "value": "",
+      "valueFrom": "",
+      "valueTo": "",
+      "valueUnit": "",
+      "id": "",
+      "valueNumeric": "",
+      "valueString": ""
+    }
+  },
+  "tooltips": {
+    "exportIntoSeparateColumns": "",
+    "filterField": "",
+    "filterFieldValue": "",
+    "column": ""
+  },
+  "exceptions": {
+    "noSuchAttribute": "",
+    "unknownModifier": ""
+  }
+}
