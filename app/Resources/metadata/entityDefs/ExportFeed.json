@@ -287,7 +287,7 @@
     },
     "originTemplate": {
       "type": "text",
-      "rows": 20,
+      "rowsMax": 20,
       "useDisabledTextareaInViewMode": true,
       "notStorable": true,
       "readOnly": true
@@ -295,7 +295,7 @@
     "template": {
       "type": "text",
       "useDisabledTextareaInViewMode": true,
-      "rows": 20,
+      "rowsMax": 20,
       "required": false,
       "tooltip": true,
       "view": "export:views/export-feed/fields/template"
