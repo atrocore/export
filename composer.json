@@ -22,7 +22,7 @@
     }
   },
   "extra": {
-    "treoId": "Export",
+    "atroId": "Export",
     "name": {
       "default": "Export"
     },
