@@ -177,6 +177,11 @@ class LinkType extends AbstractType
             }
         }
 
+        if ($exportByFieldParts[$parts - 1] === 'sharedDownloadUrl') {
+            $foreignData[$configuratorField] = $this->getSharedDownloadUrl($this->getMemoryStorage()->get('exportJobId'), $foreignLinkData['collection'][0]->get('id'));
+            return;
+        }
+
         $foreignData[$configuratorField] = $foreignLinkData['collection'][0]->get($exportByFieldParts[$parts - 1]);
 
         $foreignType = $this->convertor->getTypeForField($foreignLinkData['collection'][0]->getEntityType(), $exportByFieldParts[$parts - 1]);
