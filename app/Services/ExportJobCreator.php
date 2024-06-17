@@ -17,7 +17,7 @@ use Atro\Core\QueueManager;
 use Espo\Core\ServiceFactory;
 use Espo\Core\Utils\Util;
 use Espo\Entities\User;
-use Espo\Services\QueueManagerBase;
+use Atro\Services\QueueManagerBase;
 
 class ExportJobCreator extends QueueManagerBase
 {

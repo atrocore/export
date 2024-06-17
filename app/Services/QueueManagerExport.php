@@ -17,7 +17,7 @@ use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Exceptions\Error;
 use Espo\Core\Utils\Metadata;
 use Espo\ORM\Entity;
-use Espo\Services\QueueManagerBase;
+use Atro\Services\QueueManagerBase;
 use Export\Core\Exceptions\NothingToExport;
 
 class QueueManagerExport extends QueueManagerBase
