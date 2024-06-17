@@ -25,7 +25,7 @@ class JsonObjectType extends AbstractType
         if (!$value) {
             $result[$column] = $configuration['nullValue'];
         } else {
-            $result[$column] = json_encode($value);
+            $result[$column] = @json_encode($value);
         }
     }
 }
