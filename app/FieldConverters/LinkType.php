@@ -123,6 +123,10 @@ class LinkType extends AbstractType
             return;
         }
 
+        if (empty($exportByFieldParts[$parts - 1])) {
+            return;
+        }
+
         $configuration = $this->getMemoryStorage()->get('configurationItemData');
 
         $relEntityType = $this->getMetadata()->get(['entityDefs', $foreignEntity, 'links', $exportByFieldParts[0], 'entity']);
@@ -177,14 +181,12 @@ class LinkType extends AbstractType
             }
         }
 
-        if (!empty($exportByFieldParts[$parts - 1])) {
-            if ($exportByFieldParts[$parts - 1] === 'sharedDownloadUrl') {
-                $foreignData[$configuratorField] = $this->getSharedDownloadUrl($this->getMemoryStorage()->get('exportJobId'), $foreignLinkData['collection'][0]->get('id'));
-                return;
-            }
-
-            $foreignData[$configuratorField] = $foreignLinkData['collection'][0]->get($exportByFieldParts[$parts - 1]);
+        if ($exportByFieldParts[$parts - 1] === 'sharedDownloadUrl') {
+            $foreignData[$configuratorField] = $this->getSharedDownloadUrl($this->getMemoryStorage()->get('exportJobId'), $foreignLinkData['collection'][0]->get('id'));
+            return;
         }
+
+        $foreignData[$configuratorField] = $foreignLinkData['collection'][0]->get($exportByFieldParts[$parts - 1]);
 
 
         $foreignType = $this->convertor->getTypeForField($foreignLinkData['collection'][0]->getEntityType(), $exportByFieldParts[$parts - 1]);
