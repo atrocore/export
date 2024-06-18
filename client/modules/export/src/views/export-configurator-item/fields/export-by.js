@@ -98,7 +98,7 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
 
                 sortedFields.forEach(field => {
                     let fieldData = fields[field];
-                    if (!fieldData.disabled && !fieldData.exportDisabled && !['linkMultiple'].includes(fieldData.type)) {
+                    if (!fieldData.disabled && !fieldData.exportDisabled && fieldData.type !== 'linkMultiple') {
                         if (fieldData.type === 'link' || fieldData.type === 'file') {
                             result = this.pushLinkFields(result, entity, field);
                         } else {
