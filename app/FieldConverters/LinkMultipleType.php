@@ -122,7 +122,7 @@ class LinkMultipleType extends LinkType
             foreach ($exportBy as $v) {
                 if ($configuration['zip']) {
                     $foreign = $foreignData['_entity'] ?? $this->convertor->getEntity($foreignEntity, $foreignData['id']);
-                    $result['__filePaths'][] = $foreign->getFilePath();
+                    $result['__fileEntities'][] = $foreign;
                 }
 
                 $foreignType = $this->convertor->getTypeForField($foreignEntity, $v);

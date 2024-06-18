@@ -15,8 +15,8 @@ namespace Export\Services;
 
 use Atro\Core\EventManager\Manager;
 use Atro\Entities\Folder;
-use Espo\Core\Exceptions\Error;
-use Espo\Core\Exceptions\Exception;
+use Atro\Core\Exceptions\Error;
+use Atro\Core\Exceptions\Exception;
 use Espo\Core\Utils\Util;
 use Atro\Entities\File;
 use Espo\ORM\EntityCollection;
@@ -333,11 +333,11 @@ class ExportTypeSimple extends AbstractExportType
             return false;
         }
 
-        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId() . DIRECTORY_SEPARATOR . $this->getExportFileName(
-                'zip'
-            );
+        $zipDir = $this->getZipTmpDir();
 
-        $this->createDir($fileName);
+        Util::createDir($zipDir);
+
+        $fileName = $zipDir . DIRECTORY_SEPARATOR . $this->getExportFileName('zip');
 
         $this->zipArchive = new \ZipArchive();
         if ($this->zipArchive->open($fileName, \ZipArchive::CREATE) !== true) {
@@ -554,7 +554,7 @@ class ExportTypeSimple extends AbstractExportType
             $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $this->zipFileName);
 
             //  delete tmp zip file
-            unlink($this->zipFileName);
+            Util::removeDir($this->getZipTmpDir());
 
             return $this->getEntityManager()->getRepository('File')->get($fileData['id']);
         }
