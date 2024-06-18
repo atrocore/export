@@ -98,7 +98,7 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
 
                 sortedFields.forEach(field => {
                     let fieldData = fields[field];
-                    if (!fieldData.disabled && !fieldData.exportDisabled && !['jsonObject', 'linkMultiple'].includes(fieldData.type)) {
+                    if (!fieldData.disabled && !fieldData.exportDisabled && !['linkMultiple'].includes(fieldData.type)) {
                         if (fieldData.type === 'link' || fieldData.type === 'file') {
                             result = this.pushLinkFields(result, entity, field);
                         } else {
@@ -124,7 +124,7 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
             if (linkEntity) {
                 result[fieldPrefix + field + 'Id'] = translationPrefix + this.translate(field, 'fields', entity) + ': ID';
                 $.each(this.getMetadata().get(['entityDefs', linkEntity, 'fields']), (linkField, linkFieldDefs) => {
-                    if (!linkFieldDefs.disabled && !linkFieldDefs.exportDisabled && !['jsonObject', 'linkMultiple'].includes(linkFieldDefs.type)) {
+                    if (!linkFieldDefs.disabled && !linkFieldDefs.exportDisabled && linkFieldDefs.type !== 'linkMultiple') {
                         if (linkFieldDefs.type === 'link') {
                             this.pushLinkFields(result, linkEntity, linkField, depth + 1, fieldPrefix + field + '.', translationPrefix + this.translate(field, 'fields', entity) + ': ')
                         }
