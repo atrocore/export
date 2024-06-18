@@ -55,20 +55,20 @@ class LinkType extends AbstractType
 
                 if (!empty($foreign)) {
                     if ($configuration['zip']) {
-                        $result['__filePaths'] = [];
+                        $result['__fileEntities'] = [];
                     }
                     /**
                      * For main image
                      */
                     if ($field === 'mainImage' && in_array($entity, ['Category', 'Product'])) {
                         if ($configuration['zip']) {
-                            $result['__filePaths'][] = $foreign->getFilePath();
+                            $result['__fileEntities'][] = $foreign;
                         }
                         $this->convertor->getService('File')->prepareEntityForOutput($foreign);
                     } else {
                         if ($foreignEntity === 'File') {
                             if ($configuration['zip']) {
-                                $result['__filePaths'][] = $foreign->getFilePath();
+                                $result['__fileEntities'][] = $foreign;
                             }
                         }
                     }
@@ -84,7 +84,7 @@ class LinkType extends AbstractType
                         $this->convertForeignType($fieldResult, $foreignType, $foreignConfiguration, $foreignData, $v, $record);
 
                         if ($configuration['zip']) {
-                            $result['__filePaths'][] = $foreign->getFilePath();
+                            $result['__fileEntities'][] = $foreign;
                         }
                     }
 

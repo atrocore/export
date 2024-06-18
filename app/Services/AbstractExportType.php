@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Export\Services;
 
 use Atro\Core\Exceptions\BadRequest;
-use Espo\Core\Container;
-use Espo\Core\Exceptions\Error;
+use Atro\Core\Container;
+use Atro\Core\Exceptions\Error;
 use Espo\Core\Services\Base;
-use Espo\Core\Twig\Twig;
+use Atro\Core\Twig\Twig;
 use Espo\Core\Utils\Config;
 use Espo\Core\Utils\Json;
 use Espo\Core\Utils\Language;
@@ -35,12 +35,13 @@ abstract class AbstractExportType extends Base
 {
     public const TMP_DIR = 'upload' . DIRECTORY_SEPARATOR . '.tmp';
 
+
     protected array $data;
 
     protected Convertor $convertor;
 
     private int $iteration = 0;
-    protected $zipArchive = null;
+    protected ?\ZipArchive $zipArchive = null;
     protected $zipFileName = null;
 
     public static function getAllFieldsConfiguration(string $scope, Metadata $metadata, Language $language): array
@@ -337,6 +338,7 @@ abstract class AbstractExportType extends Base
 
     protected function createCacheFile(): array
     {
+        $zipDir = $this->getZipTmpDir();
         $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
         Util::createDir($tmpDir);
         $fileName = Util::generateId() . ".txt";
@@ -375,13 +377,16 @@ abstract class AbstractExportType extends Base
                 foreach ($res['configuration'] as $row) {
                     $result = $this->convertor->convert($record, $row);
 
-                    if ($row['zip'] && isset($result['__filePaths'])) {
+                    if ($row['zip'] && isset($result['__fileEntities'])) {
                         $base_dir = ($this->data['zipPath'] ?? '') . $row['column'] . '/';
                         if (!$this->zipArchive->locateName($base_dir)) {
                             $this->zipArchive->addEmptyDir($base_dir);
                         }
                         $fileNumber = 0;
-                        foreach ($result['__filePaths'] as $path) {
+                        /* @var $fileEntity File */
+                        foreach ($result['__fileEntities'] as $fileEntity) {
+                            $path = $fileEntity->findOrCreateLocalFilePath($zipDir);
+
                             if (!file_exists($path)) {
                                 throw new BadRequest("File '{$path}' does not exist.");
                             }
@@ -410,7 +415,7 @@ abstract class AbstractExportType extends Base
                                 $this->zipArchive->addFile($path, $base_dir . $fileName);
                             }
                         }
-                        unset($result['__filePaths']);
+                        unset($result['__fileEntities']);
                     }
 
                     $rowData[] = $result;
@@ -425,6 +430,11 @@ abstract class AbstractExportType extends Base
         fclose($file);
 
         return $res;
+    }
+
+    public function getZipTmpDir(): string
+    {
+        return \Atro\Services\MassDownload::ZIP_TMP_DIR . DIRECTORY_SEPARATOR . 'export' . DIRECTORY_SEPARATOR . $this->data['exportJobId'];
     }
 
     protected function putProductAttributeValues(array $configuration, array &$records): void
