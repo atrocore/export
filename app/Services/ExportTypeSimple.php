@@ -668,7 +668,7 @@ class ExportTypeSimple extends AbstractExportType
         $data = $this->data['feed']['data'];
 
         foreach ($data['configuration'] as $row) {
-            if (is_array($row['exportBy']) && $row['exportBy'][0] === "url") {
+            if (is_array($row['exportBy']) && $row['exportBy'][0] === "downloadUrl") {
                 $urlColumns[] = $row['column'];
             }
         }
