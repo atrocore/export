@@ -51,7 +51,7 @@ class QueueManagerExport extends QueueManagerBase
             $exportJob->set('state', 'Failed');
             $exportJob->set('stateMessage', $e->getMessage());
             $this->getEntityManager()->saveEntity($exportJob);
-            $GLOBALS['log']->error('Export Error: ' . $e->getMessage());
+//            $GLOBALS['log']->error('Export Error: ' . $e->getMessage());
 
             if (!empty($data['executeNow'])) {
                 throw new BadRequest($e->getMessage());
