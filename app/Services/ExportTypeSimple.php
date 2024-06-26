@@ -153,14 +153,10 @@ class ExportTypeSimple extends AbstractExportType
             }
         }
 
-        $folder = $this->createExportFileFolder($exportJob->get('exportFeed'));
         $input = new \stdClass();
         $input->name = $this->getExportFileName('json');
         $input->hidden = true;
-        $input->folderId = $folder->get('id');
-        if (!empty($folder->getStorage())) {
-            $input->storageId = $folder->getStorage()->get('id');
-        }
+        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
         $fileData = $this->getService('File')->createFileViaContents($input, $contents);
 
@@ -185,14 +181,10 @@ class ExportTypeSimple extends AbstractExportType
             }, \SqlFormatter::splitQuery($contents))
         );
 
-        $folder = $this->createExportFileFolder($exportJob->get('exportFeed'));
         $input = new \stdClass();
         $input->name = $this->getExportFileName('sql');
         $input->hidden = true;
-        $input->folderId = $folder->get('id');
-        if (!empty($folder->getStorage())) {
-            $input->storageId = $folder->getStorage()->get('id');
-        }
+        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
         $contents = empty($contents) ? " " : $contents;
         $fileData = $this->getService('File')->createFileViaContents($input, $contents);
@@ -212,14 +204,10 @@ class ExportTypeSimple extends AbstractExportType
 
         $contents = $this->renderTemplateContents((string)$this->data['feed']['template'], ['entities' => $collection], $this->data['feed']['originTemplateName']);
 
-        $folder = $this->createExportFileFolder($exportJob->get('exportFeed'));
         $input = new \stdClass();
         $input->name = $this->getExportFileName('xml');
         $input->hidden = true;
-        $input->folderId = $folder->get('id');
-        if (!empty($folder->getStorage())) {
-            $input->storageId = $folder->getStorage()->get('id');
-        }
+        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
         $fileData = $this->getService('File')->createFileViaContents($input, $contents);
 
@@ -307,14 +295,10 @@ class ExportTypeSimple extends AbstractExportType
 
     protected function exportCsv(ExportJob $exportJob): File
     {
-        $folder = $this->createExportFileFolder($exportJob->get('exportFeed'));
         $input = new \stdClass();
         $input->name = $this->getExportFileName('csv');
         $input->hidden = true;
-        $input->folderId = $folder->get('id');
-        if (!empty($folder->getStorage())) {
-            $input->storageId = $folder->getStorage()->get('id');
-        }
+        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
         $this->initZipArchive([$this->data['feed']['data']['configuration']]);
 
@@ -388,14 +372,10 @@ class ExportTypeSimple extends AbstractExportType
             ];
         }
 
-        $folder = $this->createExportFileFolder($exportJob->get('exportFeed'));
         $input = new \stdClass();
         $input->name = $this->getExportFileName('xlsx');
         $input->hidden = true;
-        $input->folderId = $folder->get('id');
-        if (!empty($folder->getStorage())) {
-            $input->storageId = $folder->getStorage()->get('id');
-        }
+        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
         $this->initZipArchive(
             array_map(function ($sheet) {

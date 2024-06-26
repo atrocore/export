@@ -144,11 +144,14 @@ abstract class AbstractExportType extends Base
 
 
         if (!empty($this->data['feed']['fileNameMask'])) {
-            $newFileName = $this->getTwig()->renderTemplate((string)$this->data['feed']['fileNameMask'], [
-                'iteration' => $this->data['iteration'],
-                'fileName'  => $fileName,
-                'feed'      => $this->data['feed']
-            ]);
+            $data = [
+                'feed'     => $this->data['feed'],
+                'fileName' => $fileName
+            ];
+            if (array_key_exists('iteration', $this->data)) {
+                $data['iteration'] = $this->data['iteration'];
+            }
+            $newFileName = $this->getTwig()->renderTemplate((string)$this->data['feed']['fileNameMask'], $data);
 
             if (!empty($newFileName)) {
                 $fileName = $newFileName;
