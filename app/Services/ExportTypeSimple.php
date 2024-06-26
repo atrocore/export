@@ -555,7 +555,6 @@ class ExportTypeSimple extends AbstractExportType
             $input->name = $this->getExportFileName('zip');
             $input->hidden = true;
             $input->folderId = $file->get('folderId');
-            $input->storageId = $file->get('storageId');
 
             $this->getEntityManager()->removeEntity($file);
 
