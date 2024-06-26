@@ -136,14 +136,27 @@ abstract class AbstractExportType extends Base
     protected function getExportFileName(string $extension): string
     {
         $fileName = preg_replace("/[^a-z0-9.!?]/", '', mb_strtolower($this->data['feed']['name']));
-
         if (!empty($this->data['iteration'])) {
             $fileName .= '_' . $this->data['iteration'];
         }
 
-        $fileName .= '_' . date('YmdHis') . '.' . $extension;
+        $fileName .= '_' . date('YmdHis');
 
-        return $fileName;
+
+        if (!empty($this->data['feed']['fileNameMask'])) {
+            $newFileName = $this->getTwig()->renderTemplate((string)$this->data['feed']['fileNameMask'], [
+                'iteration' => $this->data['iteration'],
+                'fileName'  => $fileName,
+                'feed'      => $this->data['feed']
+            ]);
+
+            if (!empty($newFileName)) {
+                $fileName = $newFileName;
+            }
+        }
+
+
+        return $fileName . '.' . $extension;
     }
 
     protected function prepareRow(array $row): array

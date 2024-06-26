@@ -102,27 +102,33 @@ class ExportTypeSimple extends AbstractExportType
         /** @var \Atro\Repositories\Folder $folderRepo */
         $folderRepo = $this->getEntityManager()->getRepository('Folder');
 
-        $root = $folderRepo->where(['code' => 'export_feeds'])->findOne();
-        if (empty($root)) {
-            $root = $folderRepo->get();
-            $root->set([
-                'name'   => 'Export Feeds',
-                'hidden' => true,
-                'code'   => 'export_feeds'
-            ]);
-            $this->getEntityManager()->saveEntity($root);
+        if (!empty($exportFeed->getFeedField('folderId'))) {
+            $folder = $folderRepo->get($exportFeed->getFeedField('folderId'));
         }
 
-        $folder = $folderRepo->where(['code' => $exportFeed->get('id')])->findOne();
         if (empty($folder)) {
-            $folder = $folderRepo->get();
-            $folder->set([
-                'name'   => $exportFeed->get('name'),
-                'hidden' => true,
-                'code'   => $exportFeed->get('id')
-            ]);
-            $this->getEntityManager()->saveEntity($folder);
-            $folderRepo->relate($folder, 'parents', $root);
+            $root = $folderRepo->where(['code' => 'export_feeds'])->findOne();
+            if (empty($root)) {
+                $root = $folderRepo->get();
+                $root->set([
+                    'name'   => 'Export Feeds',
+                    'hidden' => true,
+                    'code'   => 'export_feeds'
+                ]);
+                $this->getEntityManager()->saveEntity($root);
+            }
+
+            $folder = $folderRepo->where(['code' => $exportFeed->get('id')])->findOne();
+            if (empty($folder)) {
+                $folder = $folderRepo->get();
+                $folder->set([
+                    'name'   => $exportFeed->get('name'),
+                    'hidden' => true,
+                    'code'   => $exportFeed->get('id')
+                ]);
+                $this->getEntityManager()->saveEntity($folder);
+                $folderRepo->relate($folder, 'parents', $root);
+            }
         }
 
         return $folder;
@@ -147,10 +153,14 @@ class ExportTypeSimple extends AbstractExportType
             }
         }
 
+        $folder = $this->createExportFileFolder($exportJob->get('exportFeed'));
         $input = new \stdClass();
         $input->name = $this->getExportFileName('json');
         $input->hidden = true;
-        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
+        $input->folderId = $folder->get('id');
+        if (!empty($folder->getStorage())) {
+            $input->storageId = $folder->getStorage()->get('id');
+        }
 
         $fileData = $this->getService('File')->createFileViaContents($input, $contents);
 
@@ -175,10 +185,15 @@ class ExportTypeSimple extends AbstractExportType
             }, \SqlFormatter::splitQuery($contents))
         );
 
+        $folder = $this->createExportFileFolder($exportJob->get('exportFeed'));
         $input = new \stdClass();
         $input->name = $this->getExportFileName('sql');
         $input->hidden = true;
-        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
+        $input->folderId = $folder->get('id');
+        if (!empty($folder->getStorage())) {
+            $input->storageId = $folder->getStorage()->get('id');
+        }
+
         $contents = empty($contents) ? " " : $contents;
         $fileData = $this->getService('File')->createFileViaContents($input, $contents);
 
@@ -197,10 +212,14 @@ class ExportTypeSimple extends AbstractExportType
 
         $contents = $this->renderTemplateContents((string)$this->data['feed']['template'], ['entities' => $collection], $this->data['feed']['originTemplateName']);
 
+        $folder = $this->createExportFileFolder($exportJob->get('exportFeed'));
         $input = new \stdClass();
         $input->name = $this->getExportFileName('xml');
         $input->hidden = true;
-        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
+        $input->folderId = $folder->get('id');
+        if (!empty($folder->getStorage())) {
+            $input->storageId = $folder->getStorage()->get('id');
+        }
 
         $fileData = $this->getService('File')->createFileViaContents($input, $contents);
 
@@ -288,10 +307,14 @@ class ExportTypeSimple extends AbstractExportType
 
     protected function exportCsv(ExportJob $exportJob): File
     {
+        $folder = $this->createExportFileFolder($exportJob->get('exportFeed'));
         $input = new \stdClass();
         $input->name = $this->getExportFileName('csv');
         $input->hidden = true;
-        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
+        $input->folderId = $folder->get('id');
+        if (!empty($folder->getStorage())) {
+            $input->storageId = $folder->getStorage()->get('id');
+        }
 
         $this->initZipArchive([$this->data['feed']['data']['configuration']]);
 
@@ -365,10 +388,14 @@ class ExportTypeSimple extends AbstractExportType
             ];
         }
 
+        $folder = $this->createExportFileFolder($exportJob->get('exportFeed'));
         $input = new \stdClass();
         $input->name = $this->getExportFileName('xlsx');
         $input->hidden = true;
-        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
+        $input->folderId = $folder->get('id');
+        if (!empty($folder->getStorage())) {
+            $input->storageId = $folder->getStorage()->get('id');
+        }
 
         $this->initZipArchive(
             array_map(function ($sheet) {
@@ -548,6 +575,7 @@ class ExportTypeSimple extends AbstractExportType
             $input->name = $this->getExportFileName('zip');
             $input->hidden = true;
             $input->folderId = $file->get('folderId');
+            $input->storageId = $file->get('storageId');
 
             $this->getEntityManager()->removeEntity($file);
 

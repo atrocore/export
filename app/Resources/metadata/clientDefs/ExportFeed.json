@@ -503,6 +503,32 @@
             }
           ]
         }
+      },
+      "folder": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "simple"
+              ]
+            }
+          ]
+        }
+      },
+      "fileNameMask": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "simple"
+              ]
+            }
+          ]
+        }
       }
     }
   }

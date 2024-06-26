@@ -323,6 +323,25 @@
         "1",
         "2"
       ]
+    },
+    "folderId": {
+      "type": "varchar",
+      "view": "export:views/export-feed/fields/folder",
+      "notStorable": true,
+      "dataField": true,
+      "filterDisabled": true
+    },
+    "folderName": {
+      "type": "varchar",
+      "notStorable": true,
+      "filterDisabled": true
+    },
+    "fileNameMask": {
+      "type": "wysiwyg",
+      "view": "views/fields/script",
+      "notStorable": true,
+      "dataField": true,
+      "filterDisabled": true
     }
   },
   "links": {
@@ -364,6 +383,11 @@
       "relationName": "scheduledJobExportFeed",
       "foreign": "exportFeeds",
       "entity": "ScheduledJob"
+    },
+    "folder": {
+      "type": "belongsTo",
+      "entity": "Folder",
+      "skipOrmDefs": true
     }
   },
   "collection": {

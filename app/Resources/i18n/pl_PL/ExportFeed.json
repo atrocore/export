@@ -36,7 +36,9 @@
     "fallbackLanguage": "Język zapasowy",
     "originTemplateName": "Nazwa szablonu",
     "originTemplate": "Szablon źródłowy",
-    "isTemplateEditable": "Edytowalny"
+    "isTemplateEditable": "Edytowalny",
+    "fileNameMask": "Maska nazwy pliku",
+    "folderId": "Falcówka"
   },
   "links": {
     "configuratorItems": "Konfigurator",

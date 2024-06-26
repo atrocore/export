@@ -365,6 +365,13 @@ class ExportFeed extends Base
         if ($entity->get('type') === 'simple') {
             $entity->set('convertCollectionToString', true);
             $entity->set('convertRelationsToString', true);
+
+            if (!empty($entity->get('folderId'))) {
+                $folder = $this->getEntityManager()->getEntity('Folder', $entity->get('folderId'));
+                if (!empty($folder)) {
+                    $entity->set('folderName', $folder->get('name'));
+                }
+            }
         }
 
         if (empty($entity->get('lastStatus')) || empty($entity->get('lastTime'))) {

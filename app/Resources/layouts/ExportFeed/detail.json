@@ -21,7 +21,9 @@
         {
           "name": "description"
         },
-        {"name" :  "code"}
+        {
+          "name": "code"
+        }
       ],
       [
         {
@@ -79,6 +81,14 @@
         {
           "name": "template",
           "fullWidth": true
+        }
+      ],
+      [
+        {
+          "name": "folderId"
+        },
+        {
+          "name": "fileNameMask"
         }
       ]
     ]
