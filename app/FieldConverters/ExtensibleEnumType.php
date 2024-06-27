@@ -51,7 +51,8 @@ class ExtensibleEnumType extends LinkType
             return;
         }
 
-        if (empty($extensibleEnumId = $entity->get('extensibleEnumId'))) {
+        $extensibleEnums = $entity->get('extensibleEnums');
+        if (count($extensibleEnums) == 0 || empty($extensibleEnumId = $extensibleEnums[0]->get('id'))) {
             return;
         }
 
