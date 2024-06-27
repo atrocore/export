@@ -85,7 +85,7 @@
       ],
       [
         {
-          "name": "folderId"
+          "name": "folder"
         },
         {
           "name": "fileNameMask"

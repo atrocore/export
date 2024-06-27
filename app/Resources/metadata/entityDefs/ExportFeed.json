@@ -324,24 +324,12 @@
         "2"
       ]
     },
-    "folderId": {
-      "type": "varchar",
-      "view": "export:views/export-feed/fields/folder",
-      "notStorable": true,
-      "dataField": true,
-      "filterDisabled": true
-    },
-    "folderName": {
-      "type": "varchar",
-      "notStorable": true,
-      "filterDisabled": true
+    "folder": {
+      "type": "link"
     },
     "fileNameMask": {
       "type": "wysiwyg",
-      "view": "views/fields/script",
-      "notStorable": true,
-      "dataField": true,
-      "filterDisabled": true
+      "view": "views/fields/script"
     }
   },
   "links": {
@@ -386,8 +374,7 @@
     },
     "folder": {
       "type": "belongsTo",
-      "entity": "Folder",
-      "skipOrmDefs": true
+      "entity": "Folder"
     }
   },
   "collection": {

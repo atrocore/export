@@ -38,8 +38,7 @@
     "originTemplateName": "Vorlagenname",
     "originTemplate": "Ursprungsvorlage",
     "isTemplateEditable": "Editierbar",
-    "fileNameMask": "Dateinamenmaske",
-    "folderId": "Mappe"
+    "fileNameMask": "Dateinamenmaske"
   },
   "links": {
     "configuratorItems": "Konfigurator",

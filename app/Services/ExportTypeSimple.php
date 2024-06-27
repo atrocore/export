@@ -99,14 +99,12 @@ class ExportTypeSimple extends AbstractExportType
 
     public function createExportFileFolder(\Export\Entities\ExportFeed $exportFeed): Folder
     {
-        /** @var \Atro\Repositories\Folder $folderRepo */
-        $folderRepo = $this->getEntityManager()->getRepository('Folder');
-
-        if (!empty($exportFeed->getFeedField('folderId'))) {
-            $folder = $folderRepo->get($exportFeed->getFeedField('folderId'));
-        }
+        $folder = $exportFeed->get('folder');
 
         if (empty($folder)) {
+            /** @var \Atro\Repositories\Folder $folderRepo */
+            $folderRepo = $this->getEntityManager()->getRepository('Folder');
+
             $root = $folderRepo->where(['code' => 'export_feeds'])->findOne();
             if (empty($root)) {
                 $root = $folderRepo->get();

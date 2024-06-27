@@ -37,8 +37,7 @@
     "originTemplateName": "Nazwa szablonu",
     "originTemplate": "Szablon źródłowy",
     "isTemplateEditable": "Edytowalny",
-    "fileNameMask": "Maska nazwy pliku",
-    "folderId": "Falcówka"
+    "fileNameMask": "Maska nazwy pliku"
   },
   "links": {
     "configuratorItems": "Konfigurator",

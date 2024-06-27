@@ -37,8 +37,7 @@
     "originTemplateName": "Назва шаблону",
     "originTemplate": "Оригінальний шаблон",
     "isTemplateEditable": "Редагувати",
-    "fileNameMask": "Маска імені файлу",
-    "folderId": "Папка"
+    "fileNameMask": "Маска імені файлу"
   },
   "links": {
     "exportJobs": "Завдання експорту",

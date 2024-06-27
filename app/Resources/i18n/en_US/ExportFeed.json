@@ -37,8 +37,7 @@
     "originTemplateName": "Template Name",
     "originTemplate": "Origin Template",
     "isTemplateEditable": "Editable",
-    "fileNameMask": "File Name Mask",
-    "folderId": "Folder"
+    "fileNameMask": "File Name Mask"
   },
   "links": {
     "configuratorItems": "Configurator",
