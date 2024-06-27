@@ -36,7 +36,8 @@
     "fallbackLanguage": "Резервна мова",
     "originTemplateName": "Назва шаблону",
     "originTemplate": "Оригінальний шаблон",
-    "isTemplateEditable": "Редагувати"
+    "isTemplateEditable": "Редагувати",
+    "fileNameMask": "Маска імені файлу"
   },
   "links": {
     "exportJobs": "Завдання експорту",

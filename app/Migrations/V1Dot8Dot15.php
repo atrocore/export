@@ -1,0 +1,49 @@
+<?php
+/**
+ * AtroCore Software
+ *
+ * This source file is available under GNU General Public License version 3 (GPLv3).
+ * Full copyright and license information is available in LICENSE.txt, located in the root directory.
+ *
+ * @copyright  Copyright (c) AtroCore GmbH (https://www.atrocore.com)
+ * @license    GPLv3 (https://www.gnu.org/licenses/)
+ */
+
+namespace Export\Migrations;
+
+use Atro\Core\Migration\Base;
+
+class V1Dot8Dot15 extends Base
+{
+    public function getMigrationDateTime(): ?\DateTime
+    {
+        return \DateTime('2024-06-27 11:00:00');
+    }
+
+    public function up(): void
+    {
+        if ($this->isPgSQL()) {
+            $this->execute("ALTER TABLE export_feed ADD file_name_mask TEXT DEFAULT NULL;");
+            $this->execute("ALTER TABLE export_feed ADD folder_id VARCHAR(24) DEFAULT NULL;");
+            $this->execute("CREATE INDEX IDX_EXPORT_FEED_FOLDER_ID ON export_feed (folder_id, deleted)");
+        } else {
+            $this->execute("ALTER TABLE export_feed ADD file_name_mask LONGTEXT DEFAULT NULL, ADD folder_id VARCHAR(24) DEFAULT NULL;");
+            $this->execute("CREATE INDEX IDX_EXPORT_FEED_FOLDER_ID ON export_feed (folder_id, deleted);");
+        }
+    }
+
+    public function down(): void
+    {
+        $this->execute("DROP INDEX idx_export_feed_folder_id;");
+        $this->execute("ALTER TABLE export_feed DROP file_name_mask;");
+        $this->execute("ALTER TABLE export_feed DROP folder_id");
+    }
+
+    protected function execute(string $query): void
+    {
+        try {
+            $this->getPDO()->exec($query);
+        } catch (\Throwable $e) {
+        }
+    }
+}

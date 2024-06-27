@@ -99,30 +99,34 @@ class ExportTypeSimple extends AbstractExportType
 
     public function createExportFileFolder(\Export\Entities\ExportFeed $exportFeed): Folder
     {
-        /** @var \Atro\Repositories\Folder $folderRepo */
-        $folderRepo = $this->getEntityManager()->getRepository('Folder');
+        $folder = $exportFeed->get('folder');
 
-        $root = $folderRepo->where(['code' => 'export_feeds'])->findOne();
-        if (empty($root)) {
-            $root = $folderRepo->get();
-            $root->set([
-                'name'   => 'Export Feeds',
-                'hidden' => true,
-                'code'   => 'export_feeds'
-            ]);
-            $this->getEntityManager()->saveEntity($root);
-        }
-
-        $folder = $folderRepo->where(['code' => $exportFeed->get('id')])->findOne();
         if (empty($folder)) {
-            $folder = $folderRepo->get();
-            $folder->set([
-                'name'   => $exportFeed->get('name'),
-                'hidden' => true,
-                'code'   => $exportFeed->get('id')
-            ]);
-            $this->getEntityManager()->saveEntity($folder);
-            $folderRepo->relate($folder, 'parents', $root);
+            /** @var \Atro\Repositories\Folder $folderRepo */
+            $folderRepo = $this->getEntityManager()->getRepository('Folder');
+
+            $root = $folderRepo->where(['code' => 'export_feeds'])->findOne();
+            if (empty($root)) {
+                $root = $folderRepo->get();
+                $root->set([
+                    'name'   => 'Export Feeds',
+                    'hidden' => true,
+                    'code'   => 'export_feeds'
+                ]);
+                $this->getEntityManager()->saveEntity($root);
+            }
+
+            $folder = $folderRepo->where(['code' => $exportFeed->get('id')])->findOne();
+            if (empty($folder)) {
+                $folder = $folderRepo->get();
+                $folder->set([
+                    'name'   => $exportFeed->get('name'),
+                    'hidden' => true,
+                    'code'   => $exportFeed->get('id')
+                ]);
+                $this->getEntityManager()->saveEntity($folder);
+                $folderRepo->relate($folder, 'parents', $root);
+            }
         }
 
         return $folder;
@@ -179,6 +183,7 @@ class ExportTypeSimple extends AbstractExportType
         $input->name = $this->getExportFileName('sql');
         $input->hidden = true;
         $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
+
         $contents = empty($contents) ? " " : $contents;
         $fileData = $this->getService('File')->createFileViaContents($input, $contents);
 

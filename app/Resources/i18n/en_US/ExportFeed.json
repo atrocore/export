@@ -36,7 +36,8 @@
     "fallbackLanguage": "Fallback Language",
     "originTemplateName": "Template Name",
     "originTemplate": "Origin Template",
-    "isTemplateEditable": "Editable"
+    "isTemplateEditable": "Editable",
+    "fileNameMask": "File Name Mask"
   },
   "links": {
     "configuratorItems": "Configurator",

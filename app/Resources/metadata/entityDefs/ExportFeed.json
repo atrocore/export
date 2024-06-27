@@ -323,6 +323,13 @@
         "1",
         "2"
       ]
+    },
+    "folder": {
+      "type": "link"
+    },
+    "fileNameMask": {
+      "type": "wysiwyg",
+      "view": "views/fields/script"
     }
   },
   "links": {
@@ -364,6 +371,10 @@
       "relationName": "scheduledJobExportFeed",
       "foreign": "exportFeeds",
       "entity": "ScheduledJob"
+    },
+    "folder": {
+      "type": "belongsTo",
+      "entity": "Folder"
     }
   },
   "collection": {
