@@ -97,8 +97,6 @@ class Convertor
         $this->getMemoryStorage()->delete(LinkType::MEMORY_EXPORT_BY_KEY);
 
         $this->getMemoryStorage()->delete(LinkMultipleType::MEMORY_RELATION_KEY);
-
-        $this->getMemoryStorage()->delete(ExtensibleEnumType::MEMORY_EXTENSIBLE_ENUMS);
     }
 
     public function getMemoryStorage(): StorageInterface

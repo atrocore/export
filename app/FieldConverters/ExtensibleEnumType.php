@@ -18,8 +18,6 @@ use Espo\ORM\Entity;
 
 class ExtensibleEnumType extends LinkType
 {
-    public const MEMORY_EXTENSIBLE_ENUMS = 'extensibleEnums';
-
     protected function getFieldName(string $field): string
     {
         return $field;
@@ -47,30 +45,28 @@ class ExtensibleEnumType extends LinkType
      *
      * @return void
      */
-    protected function prepareEntity(Entity $entity): void
+    protected function prepareEntity(Entity $entity, array $config): void
     {
         if (!$entity instanceof ExtensibleEnumOption) {
             return;
         }
 
         $extensibleEnumId = null;
-        $extensibleEnums = $this->getMemoryStorage()->get(self::MEMORY_EXTENSIBLE_ENUMS) ?? [];
+        if (!empty($config['attributeId'])) {
+            $attributesKeys = $this->getMemoryStorage()->get('attributesKeys') ?? [];
+            if (isset($attributesKeys[$config['attributeId']]) && !empty($pavKey = $attributesKeys[$config['attributeId']][0])) {
+                $pav = $this->getMemoryStorage()->get($pavKey);
 
-        foreach ($extensibleEnums as $eeId => $eeoIds) {
-            if (in_array($entity->get('id'), $eeoIds)) {
-                $extensibleEnumId = $eeId;
-                break;
+                if (!empty($pav)) {
+                    $extensibleEnumId = $pav->get('attributeExtensibleEnumId');
+                }
             }
+        } else {
+            $extensibleEnumId = $this->getMetadata()->get(['entityDefs', $config['entity'], 'fields', $config['field'], 'extensibleEnumId']);
         }
 
         if (empty($extensibleEnumId)) {
-            $ee = $entity->get('extensibleEnums');
-            if (count($ee) == 0 || empty($extensibleEnumId = $ee[0]->get('id'))) {
-                return;
-            }
-
-            $extensibleEnums[$extensibleEnumId] = array_column($ee[0]->get('extensibleEnumOptions')->toArray(), 'id');
-            $this->getMemoryStorage()->set(self::MEMORY_EXTENSIBLE_ENUMS, $extensibleEnums);
+            return;
         }
 
         $data = $this->convertor

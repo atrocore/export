@@ -296,7 +296,7 @@ class LinkType extends AbstractType
         $res = $this->convertor->getService($foreignEntity)->findEntities($params);
 
         foreach ($res['collection'] as $re) {
-            $this->prepareEntity($re);
+            $this->prepareEntity($re, $configuration);
             $itemKey = $this->convertor->getEntityManager()->getRepository($re->getEntityType())->getCacheKey($re->get('id'));
             $this->getMemoryStorage()->set($itemKey, $re);
             $linkedEntitiesKeys[$configuration['id']][] = $itemKey;
@@ -311,7 +311,7 @@ class LinkType extends AbstractType
         return $this->getMemoryStorage()->get($itemKey);
     }
 
-    protected function prepareEntity(Entity $entity): void
+    protected function prepareEntity(Entity $entity, array $config): void
     {
     }
 }
