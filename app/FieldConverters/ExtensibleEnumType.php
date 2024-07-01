@@ -18,6 +18,8 @@ use Espo\ORM\Entity;
 
 class ExtensibleEnumType extends LinkType
 {
+    public const MEMORY_EXTENSIBLE_ENUMS = 'extensibleEnums';
+
     protected function getFieldName(string $field): string
     {
         return $field;
@@ -51,9 +53,24 @@ class ExtensibleEnumType extends LinkType
             return;
         }
 
-        $extensibleEnums = $entity->get('extensibleEnums');
-        if (count($extensibleEnums) == 0 || empty($extensibleEnumId = $extensibleEnums[0]->get('id'))) {
-            return;
+        $extensibleEnumId = null;
+        $extensibleEnums = $this->getMemoryStorage()->get(self::MEMORY_EXTENSIBLE_ENUMS) ?? [];
+
+        foreach ($extensibleEnums as $eeId => $eeoIds) {
+            if (in_array($entity->get('id'), $eeoIds)) {
+                $extensibleEnumId = $eeId;
+                break;
+            }
+        }
+
+        if (empty($extensibleEnumId)) {
+            $ee = $entity->get('extensibleEnums');
+            if (count($ee) == 0 || empty($extensibleEnumId = $ee[0]->get('id'))) {
+                return;
+            }
+
+            $extensibleEnums[$extensibleEnumId] = array_column($ee[0]->get('extensibleEnumOptions')->toArray(), 'id');
+            $this->getMemoryStorage()->set(self::MEMORY_EXTENSIBLE_ENUMS, $extensibleEnums);
         }
 
         $data = $this->convertor
