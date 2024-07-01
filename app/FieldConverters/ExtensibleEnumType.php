@@ -53,7 +53,7 @@ class ExtensibleEnumType extends LinkType
 
         $extensibleEnumId = null;
         if (!empty($config['attributeId'])) {
-            $attribute = $this->convertor->getEntityManager->getRepository('Attribute')->get($config['attributeId']);
+            $attribute = $this->convertor->getEntityManager()->getRepository('Attribute')->get($config['attributeId']);
             if (!empty($attribute)){
                 $extensibleEnumId = $attribute->get('extensibleEnumId');
             }
