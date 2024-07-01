@@ -21,7 +21,6 @@ use Espo\Core\Utils\Metadata;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityManager;
 use Espo\Services\Record;
-use Export\FieldConverters\ExtensibleEnumType;
 use Export\FieldConverters\LinkMultipleType;
 use Export\FieldConverters\LinkType;
 
