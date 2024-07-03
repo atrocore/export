@@ -36,9 +36,6 @@ class ExportFeed extends Base
         }
 
         try {
-            /**
-             * Prepare language configuration
-             */
             $this->getConnection()->createQueryBuilder()
                 ->update('export_feed', 't')
                 ->set($this->getConnection()->quoteIdentifier('language'), ':language')
@@ -48,7 +45,10 @@ class ExportFeed extends Base
                 ->setParameter('id', $exportFeed->get('id'))
                 ->setParameter('languages', $languages, Connection::PARAM_STR_ARRAY)
                 ->executeQuery();
+        } catch (\Throwable $e) {
+        }
 
+        try {
             $this->getConnection()->createQueryBuilder()
                 ->update('export_configurator_item', 't')
                 ->set($this->getConnection()->quoteIdentifier('deleted'), ':true')
@@ -56,10 +56,10 @@ class ExportFeed extends Base
                 ->setParameter('true', true, ParameterType::BOOLEAN)
                 ->setParameter('languages', $languages, Connection::PARAM_STR_ARRAY)
                 ->executeQuery();
+        } catch (\Throwable $e) {
+        }
 
-            /**
-             * Prepare scope|channel configuration
-             */
+        try {
             $this->getConnection()->createQueryBuilder()
                 ->update('export_configurator_item', 't')
                 ->set('channel_id', ':null')
@@ -68,7 +68,10 @@ class ExportFeed extends Base
                 ->setParameter('null', null)
                 ->setParameter('false', false, ParameterType::BOOLEAN)
                 ->executeQuery();
+        } catch (\Throwable $e) {
+        }
 
+        try {
             $this->getConnection()->createQueryBuilder()
                 ->update('export_configurator_item', 't')
                 ->set('deleted', ':true')
@@ -81,7 +84,10 @@ class ExportFeed extends Base
                 ->setParameter('type', 'Attribute')
                 ->setParameter('false', false, ParameterType::BOOLEAN)
                 ->executeQuery();
+        } catch (\Throwable $e) {
+        }
 
+        try {
             $this->getConnection()->createQueryBuilder()
                 ->update('export_configurator_item', 't')
                 ->set('deleted', ':true')
@@ -94,7 +100,6 @@ class ExportFeed extends Base
                 ->setParameter('false', false, ParameterType::BOOLEAN)
                 ->executeQuery();
         } catch (\Throwable $e) {
-            $GLOBALS['log']->error('Remove invalid configurator items failed: ' . $e->getMessage());
         }
     }
 
