@@ -17,11 +17,24 @@ class ExportJob extends Base
 {
     protected function access(&$result)
     {
-        $exportFeeds = $this->getEntityManager()->getRepository('ExportFeed')
-            ->select(['id'])
-            ->find($this->createSelectManager('ExportFeed')->getSelectParams([], true, true));
+        $repository = $this->getEntityManager()->getRepository('ExportFeed');
 
-        $result['whereClause'][] = ['OR' => ['exportFeedId' => array_column($exportFeeds->toArray(), 'id')]];
+        $sp = $this->createSelectManager('ExportFeed')->getSelectParams([], true, true);
+        $sp['select'] = ['id'];
+
+        $qb = $repository->getMapper()->createSelectQueryBuilder($repository->get(), $sp);
+
+        $mainTableAlias = $this->getRepository()->getMapper()->getQueryConverter()->getMainTableAlias();
+        $innerSql = str_replace($mainTableAlias, "t_ej", $qb->getSql());
+
+        $where = [
+            'innerSql' => [
+                "sql"        => "$mainTableAlias.export_feed_id IN ({$innerSql})",
+                "parameters" => $qb->getParameters()
+            ]
+        ];
+
+        $result['whereClause'][] = ['OR' => $where];
     }
 
     protected function boolFilterOnlyExportFailed24Hours(array &$result): void
