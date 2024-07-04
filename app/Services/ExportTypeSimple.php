@@ -151,6 +151,10 @@ class ExportTypeSimple extends AbstractExportType
             }
         }
 
+        if (empty($contents)) {
+            $contents = '{}';
+        }
+
         $input = new \stdClass();
         $input->name = $this->getExportFileName('json');
         $input->hidden = true;
