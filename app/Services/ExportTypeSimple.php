@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\Services;
 
+use Atro\Core\EventManager\Event;
 use Atro\Core\EventManager\Manager;
 use Atro\Entities\Folder;
 use Atro\Core\Exceptions\Error;
@@ -46,6 +47,8 @@ class ExportTypeSimple extends AbstractExportType
             $this->getEntityManager()->removeEntity($attachment);
             throw new NothingToExport($this->translate('noDataFound', 'exceptions', 'ExportFeed'));
         }
+
+        $this->getEventManager()->dispatch('ExportTypeSimpleService', 'afterRunExport', new Event(['typeService' => $this, 'data' => $this->data, 'file' => $attachment]));
 
         return $attachment;
     }
