@@ -28,10 +28,7 @@ Espo.define('export:views/export-configurator-item/fields/remove', 'view', funct
 
                     this.notify('Removing...');
 
-                    this.ajaxRequest(`ExportConfiguratorItem/${this.model.get('id')}?skip404=1`, 'DELETE').then(response => {
-                        this.notify('Removed', 'success');
-                        $('.action[data-action=refresh][data-panel=configuratorItems]').click();
-                    });
+                    $(`[data-action="quickRemove"][data-id="${this.model.get('id')}"]`).trigger('click')
                 }
             }
         },
