@@ -1,12 +1,12 @@
 {
   "fields": {
-    "exportFeed": "",
+    "exportFeed": "Exportation de flux",
     "exportFeeds": "",
     "maximumHoursToLookBack": "",
     "maximumDaysForJobExist": ""
   },
   "links": {
-    "exportFeed": "",
+    "exportFeed": "Flux d'export",
     "exportFeeds": ""
   },
   "options": {
