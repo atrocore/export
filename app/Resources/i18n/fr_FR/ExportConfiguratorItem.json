@@ -1,18 +1,18 @@
 {
   "fields": {
-    "name": "",
-    "column": "",
-    "columnType": "",
-    "exportFeed": "",
-    "attribute": "",
-    "exportBy": "",
-    "remove": "",
-    "exportIntoSeparateColumns": "",
-    "type": "",
-    "language": "",
-    "channel": "",
-    "mask": "",
-    "filterField": "",
+    "name": "Champ",
+    "column": "Nom de la colonne",
+    "columnType": "Étiquette de la colonne",
+    "exportFeed": "Exportation de flux",
+    "attribute": "Attribut",
+    "exportBy": "Champs d'entité connexes",
+    "remove": "Enlever",
+    "exportIntoSeparateColumns": "Séparer",
+    "type": "Type",
+    "language": "Langue",
+    "channel": "Canal",
+    "mask": "Masque",
+    "filterField": "Champ du filtre",
     "filterFieldValue": "",
     "offsetRelation": "",
     "limitRelation": "",
@@ -27,7 +27,7 @@
     "fallbackLanguage": ""
   },
   "links": {
-    "exportFeed": "",
+    "exportFeed": "Flux d'export",
     "channel": ""
   },
   "labels": {
