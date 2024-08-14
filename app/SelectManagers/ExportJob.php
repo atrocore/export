@@ -15,28 +15,6 @@ use Espo\Core\SelectManagers\Base;
 
 class ExportJob extends Base
 {
-    protected function access(&$result)
-    {
-        $repository = $this->getEntityManager()->getRepository('ExportFeed');
-
-        $sp = $this->createSelectManager('ExportFeed')->getSelectParams([], true, true);
-        $sp['select'] = ['id'];
-
-        $qb = $repository->getMapper()->createSelectQueryBuilder($repository->get(), $sp);
-
-        $mainTableAlias = $this->getRepository()->getMapper()->getQueryConverter()->getMainTableAlias();
-        $innerSql = str_replace($mainTableAlias, "t_ej", $qb->getSql());
-
-        $where = [
-            'innerSql' => [
-                "sql"        => "$mainTableAlias.export_feed_id IN ({$innerSql})",
-                "parameters" => $qb->getParameters()
-            ]
-        ];
-
-        $result['whereClause'][] = ['OR' => $where];
-    }
-
     protected function boolFilterOnlyExportFailed24Hours(array &$result): void
     {
         $result['whereClause'][] = [
