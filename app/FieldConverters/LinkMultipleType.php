@@ -13,7 +13,10 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Atro\ORM\DB\RDB\Mapper;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\ORM\EntityCollection;
+use Espo\ORM\IEntity;
 
 class LinkMultipleType extends LinkType
 {
@@ -174,6 +177,79 @@ class LinkMultipleType extends LinkType
             }
             $result[$column] = implode($configuration['delimiter'], $preparedLinks);
         }
+    }
+
+    public function queryCallback(QueryBuilder $qb, IEntity $relEntity, array $params, Mapper $mapper): void
+    {
+        echo '<pre>';
+        print_r('333');
+        die();
+
+
+
+//        $textFilterParams = [];
+//        foreach ($this->textFilterParams as $row) {
+//            if (isset($row['value']) || $row['value'] !== '') {
+//                $this->textFilter($row['value'], $textFilterParams);
+//            }
+//        }
+//
+//        $textFilterQuery = $mapper->createSelectQueryBuilder($relEntity, $textFilterParams);
+//
+//        if (empty($this->textFilter)) {
+//            return;
+//        }
+//
+//        $textFilter = $this->textFilter;
+//        if (mb_strpos($textFilter, 'ft:') === 0) {
+//            $textFilter = mb_substr($textFilter, 3);
+//        }
+//
+//        $tableAlias = $mapper->getQueryConverter()->getMainTableAlias();
+//
+//        /** @var \Pim\Repositories\ProductAttributeValue $pavRepo */
+//        $pavRepo = $this->getEntityManager()->getRepository('ProductAttributeValue');
+//
+//        $where = [
+//            'type'  => 'and',
+//            'value' => [
+//                [
+//                    'type'      => 'in',
+//                    'attribute' => 'attributeType',
+//                    'value'     => ['varchar', 'text', 'wysiwyg', 'extensibleEnum']
+//                ],
+//                [
+//                    'type'  => 'or',
+//                    'value' => [
+//                        [
+//                            'type'      => 'like',
+//                            'attribute' => 'textValue',
+//                            'value'     => "$textFilter%"
+//                        ],
+//                        [
+//                            'type'      => 'like',
+//                            'attribute' => 'varcharValue',
+//                            'value'     => "$textFilter%"
+//                        ]
+//                    ]
+//                ]
+//            ]
+//        ];
+//
+//        $sp = $this->createSelectManager('ProductAttributeValue')->getSelectParams(['where' => [$where]], true, true);
+//        $sp['select'] = ['productId'];
+//
+//        $qb1 = $pavRepo->getMapper()->createSelectQueryBuilder($pavRepo->get(), $sp);
+//        $qb->andWhere(
+//            $qb->expr()->or(
+//                "{$tableAlias}.id IN ({$qb1->getSql()})",
+//                $textFilterQuery->getQueryPart('where')
+//            )
+//        );
+//
+//        foreach (array_merge($qb1->getParameters(), $textFilterQuery->getParameters()) as $param => $val) {
+//            $qb->setParameter($param, $val, Mapper::getParameterType($val));
+//        }
     }
 
     protected function findLinkedEntities(string $entity, array $record, string $field, array $params): array

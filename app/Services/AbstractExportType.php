@@ -16,6 +16,8 @@ namespace Export\Services;
 use Atro\Core\Exceptions\BadRequest;
 use Atro\Core\Container;
 use Atro\Core\Exceptions\Error;
+use Atro\ORM\DB\RDB\Mapper;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\Core\Services\Base;
 use Atro\Core\Twig\Twig;
 use Espo\Core\Utils\Config;
@@ -27,6 +29,7 @@ use Atro\Entities\File;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
 use Espo\ORM\EntityManager;
+use Espo\ORM\IEntity;
 use Espo\Services\Record;
 use Export\DataConvertor\Convertor;
 use Export\Entities\ExportJob;
@@ -248,6 +251,15 @@ abstract class AbstractExportType extends Base
         return $params;
     }
 
+    public function queryCallback(QueryBuilder $qb, IEntity $relEntity, array $params, Mapper $mapper): void
+    {
+        foreach ($this->getMemoryStorage()->get('exportConfiguration') ?? [] as $item) {
+            $this->getDataConvertor()
+                ->createFieldConverter($this->getDataConvertor()->getTypeForField($item['entity'], $item['field']))
+                ->queryCallback($qb, $relEntity, $params, $mapper);
+        }
+    }
+
     protected function getRecords(int $offset = 0): array
     {
         if (!empty($this->data['feed']['separateJob']) && !empty($this->iteration)) {
@@ -263,6 +275,7 @@ abstract class AbstractExportType extends Base
         $params['offset'] = $offset;
         $params['maxSize'] = $this->data['limit'];
         $params['withDeleted'] = !empty($this->data['feed']['data']['withDeleted']);
+        $params['__callbacks'][] = [$this, 'queryCallback'];
 
         if (!empty($this->data['feed']['sortOrderField'])) {
             $params['sortBy'] = $this->data['feed']['sortOrderField'];
@@ -375,6 +388,8 @@ abstract class AbstractExportType extends Base
         foreach ($this->data['feed']['data']['configuration'] as $rowNumber => $row) {
             $res['configuration'][$rowNumber] = $this->prepareRow($row);
         }
+
+        $this->getMemoryStorage()->set('exportConfiguration', $res['configuration']);
 
         // clearing file if it needs
         file_put_contents($res['fullFileName'], '');

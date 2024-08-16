@@ -15,7 +15,10 @@ namespace Export\FieldConverters;
 
 use Atro\Core\Exceptions\Error;
 use Atro\Core\KeyValueStorages\StorageInterface;
+use Atro\ORM\DB\RDB\Mapper;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\Core\Utils\Metadata;
+use Espo\ORM\IEntity;
 use Export\DataConvertor\Convertor;
 
 abstract class AbstractType
@@ -28,6 +31,10 @@ abstract class AbstractType
     }
 
     abstract public function convertToString(array &$result, array $record, array $configuration): void;
+
+    public function queryCallback(QueryBuilder $qb, IEntity $relEntity, array $params, Mapper $mapper): void
+    {
+    }
 
     protected function getMemoryStorage(): StorageInterface
     {
