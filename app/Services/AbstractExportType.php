@@ -345,6 +345,7 @@ abstract class AbstractExportType extends Base
         $params['offset'] = $offset;
         $params['maxSize'] = $this->data['limit'];
         $params['withDeleted'] = !empty($this->data['feed']['data']['withDeleted']);
+        $params['__callbacks'][] = [$this, 'queryCallback'];
 
         if (!empty($this->data['feed']['sortOrderField'])) {
             $params['sortBy'] = $this->data['feed']['sortOrderField'];
