@@ -15,6 +15,7 @@ namespace Export\FieldConverters;
 
 use Atro\Core\Container;
 use Atro\Core\Exceptions\Error;
+use Atro\Core\Utils\Database\DBAL\Schema\Converter;
 use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -201,7 +202,8 @@ class LinkMultipleType extends LinkType
 
             $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
 
-            $keySet = $mapper->getKeys($relEntity, $configuration['field']);
+            $entity = $this->convertor->getEntityManager()->getEntity($configuration['entity']);
+            $keySet = $mapper->getKeys($entity, $configuration['field']);
 
             $nearColumn = $mapper->getQueryConverter()->toDb($keySet['nearKey']);
             $distantColumn = $mapper->getQueryConverter()->toDb($keySet['distantKey']);
@@ -232,11 +234,15 @@ class LinkMultipleType extends LinkType
 
             $innerSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
 
+            if (Converter::isPgSQL($container->get('connection'))) {
+                $qb->addSelect("(SELECT GROUP_CONCAT({$uniqueHash}_c.$distantColumn SEPARATOR ',') FROM ($innerSql) AS {$uniqueHash}_c) AS $alias");
+            } else {
+                $qb->addSelect("(SELECT string_agg({$uniqueHash}_c.$distantColumn::text, ',') FROM ($innerSql) AS {$uniqueHash}_c) AS $alias");
+            }
+
             foreach ($qb1->getParameters() as $pName => $pValue) {
                 $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
             }
-
-            $qb->addSelect("(SELECT string_agg({$uniqueHash}_c.$distantColumn::text, ',') FROM ($innerSql) AS {$uniqueHash}_c) AS $alias");
         }
     }
 
