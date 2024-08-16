@@ -211,8 +211,6 @@ class LinkMultipleType extends LinkType
             $relTable = $mapper->getQueryConverter()->toDb($linkDefs['relationName']);
             $relTableAlias = $uniqueHash . '_r';
 
-            $alias = $mapper->getQueryConverter()->fieldToAlias("{$configuration['field']}Ids");
-
             /** @var \Espo\Core\SelectManagers\Base $selectManager */
             $selectManager = $container->get('selectManagerFactory')->create($linkDefs['entity']);
 
@@ -227,7 +225,7 @@ class LinkMultipleType extends LinkType
 
             $entity = $this->convertor->getEntityManager()->getEntity($linkDefs['entity']);
             $qb1 = $mapper->createSelectQueryBuilder($entity, $sp, true);
-            $qb1->select("$mtAlias.id AS category_id");
+            $qb1->select("$mtAlias.id AS $distantColumn");
             $qb1->join($mtAlias, $relTable, $relTableAlias, "$mtAlias.id=$relTableAlias.$distantColumn AND $relTableAlias.deleted=:false");
             $qb1->setParameter('false', false, ParameterType::BOOLEAN);
             $qb1->andWhere("$relTableAlias.$nearColumn=mt_alias.id");
@@ -235,9 +233,9 @@ class LinkMultipleType extends LinkType
             $innerSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
 
             if (Converter::isPgSQL($container->get('connection'))) {
-                $qb->addSelect("(SELECT GROUP_CONCAT({$uniqueHash}_c.$distantColumn SEPARATOR ',') FROM ($innerSql) AS {$uniqueHash}_c) AS $alias");
+                $qb->addSelect("(SELECT string_agg({$uniqueHash}_c.$distantColumn::text, ',') FROM ($innerSql) AS {$uniqueHash}_c) AS {$configuration['id']}");
             } else {
-                $qb->addSelect("(SELECT string_agg({$uniqueHash}_c.$distantColumn::text, ',') FROM ($innerSql) AS {$uniqueHash}_c) AS $alias");
+                $qb->addSelect("(SELECT GROUP_CONCAT({$uniqueHash}_c.$distantColumn SEPARATOR ',') FROM ($innerSql) AS {$uniqueHash}_c) AS {$configuration['id']}");
             }
 
             foreach ($qb1->getParameters() as $pName => $pValue) {
@@ -253,7 +251,26 @@ class LinkMultipleType extends LinkType
             throw new \Error('No configuration id found.');
         }
 
+        $ids = explode(',', $record['_entity']->rowData[$configuration['id']]);
+
+        echo '<pre>';
+        print_r($ids);
+        die();
+
+
+
         $records = $this->getMemoryStorage()->get('exportRecordsPart') ?? [];
+
+        $ids = [];
+        foreach ($records as $record) {
+            $ids = array_merge($ids, explode(',', $record['_entity']->rowData[$field . 'Ids']));
+        }
+        $ids = array_values(array_unique($ids));
+
+
+        echo '<pre>';
+        print_r($ids);
+        die();
 
         // load to memory
         $this->loadToMemory($records, $entity, $field, $params, $configuration);
