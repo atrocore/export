@@ -13,7 +13,10 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Atro\Core\Container;
+use Atro\Core\Exceptions\Error;
 use Atro\ORM\DB\RDB\Mapper;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\Core\Utils\Util;
 use Espo\ORM\EntityCollection;
@@ -180,41 +183,60 @@ class LinkMultipleType extends LinkType
         }
     }
 
-    public function queryCallback(QueryBuilder $qb, IEntity $relEntity, array $params, Mapper $mapper, array $configuration): void
+    public function queryCallback(Container $container, QueryBuilder $qb, Mapper $mapper, array $configuration): void
     {
-        $linkDefs = $this->getMetadata()->get(['entityDefs', $configuration['entity'], 'links', $configuration['field']]);
+        $linkDefs = $this->getMetadata()
+            ->get(['entityDefs', $configuration['entity'], 'links', $configuration['field']]);
+
+        $uniqueHash = Util::generateId();
 
         if ($linkDefs['type'] === 'belongsTo') {
             echo '<pre>';
             print_r('Stop: belongsTo');
             die();
         } else {
+            if (empty($linkDefs['entity']) || empty($linkDefs['relationName'])) {
+                throw new Error("Invalid relation metadata");
+            }
+
             $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
 
-            $uniqueHash = Util::generateId();
             $keySet = $mapper->getKeys($relEntity, $configuration['field']);
-
-            $relTable = $mapper->getQueryConverter()->toDb($linkDefs['relationName']);
-            $relTableAlias = $uniqueHash . '_r';
 
             $nearColumn = $mapper->getQueryConverter()->toDb($keySet['nearKey']);
             $distantColumn = $mapper->getQueryConverter()->toDb($keySet['distantKey']);
 
-            $foreignTable = $mapper->getQueryConverter()->toDb($linkDefs['entity']);
-            $foreignTableAlias = $uniqueHash . '_f';
+            $relTable = $mapper->getQueryConverter()->toDb($linkDefs['relationName']);
+            $relTableAlias = $uniqueHash . '_r';
 
             $alias = $mapper->getQueryConverter()->fieldToAlias("{$configuration['field']}Ids");
 
-            $sql = "(SELECT string_agg({$uniqueHash}_c.$distantColumn::text, ',') FROM (
-                  SELECT $foreignTableAlias.id AS $distantColumn
-                  FROM $foreignTable $foreignTableAlias
-                  JOIN $relTable $relTableAlias ON $foreignTableAlias.id=$relTableAlias.$distantColumn AND $relTableAlias.deleted=false
-                  WHERE $relTableAlias.$nearColumn=$mtAlias.id AND $foreignTableAlias.deleted=false
-                  ORDER BY $foreignTableAlias.id
-                  OFFSET 0 LIMIT 5
-                ) AS {$uniqueHash}_c) AS $alias";
+            /** @var \Espo\Core\SelectManagers\Base $selectManager */
+            $selectManager = $container->get('selectManagerFactory')->create($linkDefs['entity']);
 
-            $qb->addSelect($sql);
+            $sp = $selectManager->getSelectParams([
+                'where'   => $configuration['searchFilter']['where'] ?? null,
+                'sortBy'  => $configuration['sortFieldRelation'] ?? 'id',
+                'asc'     => $configuration['sortOrderRelation'] === 'ASC',
+                'offset'  => $configuration['offsetRelation'] ?? 0,
+                'maxSize' => $configuration['limitRelation'] ?? 5
+            ], true, true);
+            $sp['select'] = ['id'];
+
+            $entity = $this->convertor->getEntityManager()->getEntity($linkDefs['entity']);
+            $qb1 = $mapper->createSelectQueryBuilder($entity, $sp, true);
+            $qb1->select("$mtAlias.id AS category_id");
+            $qb1->join($mtAlias, $relTable, $relTableAlias, "$mtAlias.id=$relTableAlias.$distantColumn AND $relTableAlias.deleted=:false");
+            $qb1->setParameter('false', false, ParameterType::BOOLEAN);
+            $qb1->andWhere("$relTableAlias.$nearColumn=mt_alias.id");
+
+            $innerSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
+
+            foreach ($qb1->getParameters() as $pName => $pValue) {
+                $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
+            }
+
+            $qb->addSelect("(SELECT string_agg({$uniqueHash}_c.$distantColumn::text, ',') FROM ($innerSql) AS {$uniqueHash}_c) AS $alias");
         }
     }
 

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Atro\Core\Container;
 use Atro\Core\Exceptions\Error;
 use Atro\Core\KeyValueStorages\StorageInterface;
 use Atro\ORM\DB\RDB\Mapper;
@@ -32,7 +33,7 @@ abstract class AbstractType
 
     abstract public function convertToString(array &$result, array $record, array $configuration): void;
 
-    public function queryCallback(QueryBuilder $qb, IEntity $relEntity, array $params, Mapper $mapper, array $configuration): void
+    public function queryCallback(Container $container, QueryBuilder $qb, Mapper $mapper, array $configuration): void
     {
     }
 
