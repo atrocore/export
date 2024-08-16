@@ -32,7 +32,7 @@ abstract class AbstractType
 
     abstract public function convertToString(array &$result, array $record, array $configuration): void;
 
-    public function queryCallback(QueryBuilder $qb, IEntity $relEntity, array $params, Mapper $mapper): void
+    public function queryCallback(QueryBuilder $qb, IEntity $relEntity, array $params, Mapper $mapper, array $configuration): void
     {
     }
 

@@ -15,6 +15,7 @@ namespace Export\FieldConverters;
 
 use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Espo\Core\Utils\Util;
 use Espo\ORM\EntityCollection;
 use Espo\ORM\IEntity;
 
@@ -179,77 +180,42 @@ class LinkMultipleType extends LinkType
         }
     }
 
-    public function queryCallback(QueryBuilder $qb, IEntity $relEntity, array $params, Mapper $mapper): void
+    public function queryCallback(QueryBuilder $qb, IEntity $relEntity, array $params, Mapper $mapper, array $configuration): void
     {
-        echo '<pre>';
-        print_r('333');
-        die();
+        $linkDefs = $this->getMetadata()->get(['entityDefs', $configuration['entity'], 'links', $configuration['field']]);
 
+        if ($linkDefs['type'] === 'belongsTo') {
+            echo '<pre>';
+            print_r('Stop: belongsTo');
+            die();
+        } else {
+            $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
 
+            $uniqueHash = Util::generateId();
+            $keySet = $mapper->getKeys($relEntity, $configuration['field']);
 
-//        $textFilterParams = [];
-//        foreach ($this->textFilterParams as $row) {
-//            if (isset($row['value']) || $row['value'] !== '') {
-//                $this->textFilter($row['value'], $textFilterParams);
-//            }
-//        }
-//
-//        $textFilterQuery = $mapper->createSelectQueryBuilder($relEntity, $textFilterParams);
-//
-//        if (empty($this->textFilter)) {
-//            return;
-//        }
-//
-//        $textFilter = $this->textFilter;
-//        if (mb_strpos($textFilter, 'ft:') === 0) {
-//            $textFilter = mb_substr($textFilter, 3);
-//        }
-//
-//        $tableAlias = $mapper->getQueryConverter()->getMainTableAlias();
-//
-//        /** @var \Pim\Repositories\ProductAttributeValue $pavRepo */
-//        $pavRepo = $this->getEntityManager()->getRepository('ProductAttributeValue');
-//
-//        $where = [
-//            'type'  => 'and',
-//            'value' => [
-//                [
-//                    'type'      => 'in',
-//                    'attribute' => 'attributeType',
-//                    'value'     => ['varchar', 'text', 'wysiwyg', 'extensibleEnum']
-//                ],
-//                [
-//                    'type'  => 'or',
-//                    'value' => [
-//                        [
-//                            'type'      => 'like',
-//                            'attribute' => 'textValue',
-//                            'value'     => "$textFilter%"
-//                        ],
-//                        [
-//                            'type'      => 'like',
-//                            'attribute' => 'varcharValue',
-//                            'value'     => "$textFilter%"
-//                        ]
-//                    ]
-//                ]
-//            ]
-//        ];
-//
-//        $sp = $this->createSelectManager('ProductAttributeValue')->getSelectParams(['where' => [$where]], true, true);
-//        $sp['select'] = ['productId'];
-//
-//        $qb1 = $pavRepo->getMapper()->createSelectQueryBuilder($pavRepo->get(), $sp);
-//        $qb->andWhere(
-//            $qb->expr()->or(
-//                "{$tableAlias}.id IN ({$qb1->getSql()})",
-//                $textFilterQuery->getQueryPart('where')
-//            )
-//        );
-//
-//        foreach (array_merge($qb1->getParameters(), $textFilterQuery->getParameters()) as $param => $val) {
-//            $qb->setParameter($param, $val, Mapper::getParameterType($val));
-//        }
+            $relTable = $mapper->getQueryConverter()->toDb($linkDefs['relationName']);
+            $relTableAlias = $uniqueHash . '_r';
+
+            $nearColumn = $mapper->getQueryConverter()->toDb($keySet['nearKey']);
+            $distantColumn = $mapper->getQueryConverter()->toDb($keySet['distantKey']);
+
+            $foreignTable = $mapper->getQueryConverter()->toDb($linkDefs['entity']);
+            $foreignTableAlias = $uniqueHash . '_f';
+
+            $alias = $mapper->getQueryConverter()->fieldToAlias("{$configuration['field']}Ids");
+
+            $sql = "(SELECT string_agg({$uniqueHash}_c.$distantColumn::text, ',') FROM (
+                  SELECT $foreignTableAlias.id AS $distantColumn
+                  FROM $foreignTable $foreignTableAlias
+                  JOIN $relTable $relTableAlias ON $foreignTableAlias.id=$relTableAlias.$distantColumn AND $relTableAlias.deleted=false
+                  WHERE $relTableAlias.$nearColumn=$mtAlias.id AND $foreignTableAlias.deleted=false
+                  ORDER BY $foreignTableAlias.id
+                  OFFSET 0 LIMIT 5
+                ) AS {$uniqueHash}_c) AS $alias";
+
+            $qb->addSelect($sql);
+        }
     }
 
     protected function findLinkedEntities(string $entity, array $record, string $field, array $params): array
