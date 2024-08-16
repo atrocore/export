@@ -12,9 +12,8 @@ Espo.define('export:acl/export-job', 'acl', function (Dep) {
 
     return Dep.extend({
 
-        checkModel: function (model, data, action, precise) {
-            return model.get('editable');
-        },
-
+        checkModelEdit: function (model, data, precise) {
+            return Dep.prototype.checkModel.call(this, model, data, 'read', precise)
+        }
     });
 });

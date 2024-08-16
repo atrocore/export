@@ -77,15 +77,4 @@ class ExportJob extends Base
 
         return true;
     }
-
-    public function prepareEntityForOutput(Entity $entity)
-    {
-        parent::prepareEntityForOutput($entity);
-
-        if (empty($feed = $entity->get('exportFeed'))) {
-            return;
-        }
-
-        $entity->set('editable', $this->getAcl()->check($feed, 'edit'));
-    }
 }
