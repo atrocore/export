@@ -1,6 +1,5 @@
 {
   "controller": "controllers/record",
-  "acl": "export:acl/export-job",
   "boolFilterList": [
     "onlyMy",
     "onlyExportFailed24Hours",

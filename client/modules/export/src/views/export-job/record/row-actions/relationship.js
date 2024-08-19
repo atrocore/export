@@ -13,9 +13,10 @@ Espo.define('export:views/export-job/record/row-actions/relationship', 'views/re
     return Dep.extend({
 
         getActionList() {
-            let list = [];
+            let list = [],
+                scope = this.scope || this.options.scope;
 
-            if (['Pending', 'Running'].includes(this.model.get('state')) && this.options.acl.edit) {
+            if (['Pending', 'Running'].includes(this.model.get('state')) && this.getAcl().check(scope, 'edit')) {
                 list.push({
                     action: 'cancelExportJob',
                     label: 'Cancel',
@@ -25,7 +26,7 @@ Espo.define('export:views/export-job/record/row-actions/relationship', 'views/re
                 });
             }
 
-            if (['Failed', 'Canceled'].includes(this.model.get('state')) && this.options.acl.edit) {
+            if (['Failed', 'Canceled'].includes(this.model.get('state')) && this.getAcl().check(scope, 'edit')) {
                 list.push({
                     action: 'tryAgainExportJob',
                     label: 'tryAgain',
@@ -35,7 +36,7 @@ Espo.define('export:views/export-job/record/row-actions/relationship', 'views/re
                 });
             }
 
-            if (this.options.acl.delete) {
+            if (this.getAcl().check(scope, 'delete')) {
                 list.push({
                     action: 'removeRelated',
                     label: 'Remove',
