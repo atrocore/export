@@ -253,11 +253,14 @@ class LinkMultipleType extends LinkType
         // load to memory
         $this->loadToMemory($relEntityType, $configuration);
 
-        $ids = explode(',', $record['_entity']->rowData[$configuration['id']]);
-
         $collection = new EntityCollection([], $relEntityType);
-        foreach ($ids as $id) {
-            $collection->append($this->getMemoryStorage()->get($this->createKey($relEntityType, $id)));
+        if (!empty($record['_entity']->rowData[$configuration['id']])) {
+            $ids = explode(',', $record['_entity']->rowData[$configuration['id']]);
+            foreach ($ids as $id) {
+                if ($id && trim($id) !== '') {
+                    $collection->append($this->getMemoryStorage()->get($this->createKey($configuration['id'], $id)));
+                }
+            }
         }
 
         return ['collection' => $collection];
@@ -275,9 +278,14 @@ class LinkMultipleType extends LinkType
 
         $ids = [];
         foreach ($this->getMemoryStorage()->get('exportRecordsPart') ?? [] as $record) {
-            $ids = array_merge($ids, explode(',', $record['_entity']->rowData[$configuration['id']]));
+            if (!empty($record['_entity']->rowData[$configuration['id']])) {
+                foreach (explode(',', $record['_entity']->rowData[$configuration['id']]) as $id) {
+                    if ($id && trim($id) !== '' && !in_array($id, $ids)) {
+                        $ids[] = $id;
+                    }
+                }
+            }
         }
-        $ids = array_values(array_unique($ids));
 
         $res = $this->convertor->getService($relEntityType)
             ->findEntities([
@@ -294,16 +302,16 @@ class LinkMultipleType extends LinkType
 
         $linkedEntitiesKeys = [];
         foreach ($res['collection'] as $re) {
-            $key = $this->createKey($relEntityType, $re->get('id'));
-            $this->getMemoryStorage()->set("export_{$relEntityType}_id_{$re->get('id')}", $re);
+            $key = $this->createKey($configuration['id'], $re->get('id'));
+            $this->getMemoryStorage()->set($key, $re);
             $linkedEntitiesKeys[$configuration['id']][] = $key;
         }
 
         $this->getMemoryStorage()->set("{$configuration['id']}_ids", $linkedEntitiesKeys);
     }
 
-    protected function createKey(string $entityType, string $id): string
+    protected function createKey(string $configurationId, string $id): string
     {
-        return "export_{$entityType}_id_{$id}";
+        return "export_{$configurationId}_id_{$id}";
     }
 }
