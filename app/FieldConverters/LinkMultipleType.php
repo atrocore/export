@@ -183,61 +183,63 @@ class LinkMultipleType extends LinkType
 
     public function queryCallback(Container $container, QueryBuilder $qb, Mapper $mapper, array $configuration): void
     {
-        $linkDefs = $this->getMetadata()
+        $linkDefs = $this
+            ->getMetadata()
             ->get(['entityDefs', $configuration['entity'], 'links', $configuration['field']]);
+
+        if (empty($linkDefs['entity'])) {
+            throw new Error("Invalid relation metadata");
+        }
 
         $uniqueHash = Util::generateId();
 
-        if ($linkDefs['type'] === 'belongsTo') {
-            echo '<pre>';
-            print_r('Stop: belongsTo');
-            die();
+        $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
+
+        $entity = $this->convertor->getEntityManager()->getEntity($configuration['entity']);
+        $keySet = $mapper->getKeys($entity, $configuration['field']);
+
+        /** @var \Espo\Core\SelectManagers\Base $selectManager */
+        $selectManager = $container->get('selectManagerFactory')->create($linkDefs['entity']);
+
+        $sp = $selectManager->getSelectParams([
+            'where'   => $configuration['searchFilter']['where'] ?? null,
+            'sortBy'  => $configuration['sortFieldRelation'] ?? 'id',
+            'asc'     => $configuration['sortOrderRelation'] === 'ASC',
+            'offset'  => $configuration['offsetRelation'] ?? 0,
+            'maxSize' => $configuration['limitRelation'] ?? 5
+        ], true, true);
+
+        $sp['select'] = ['id'];
+
+        $entity = $this->convertor->getEntityManager()->getEntity($linkDefs['entity']);
+        $qb1 = $mapper->createSelectQueryBuilder($entity, $sp, true);
+        $qb1->select("$mtAlias.id AS {$configuration['id']}_col");
+
+        if (empty($linkDefs['relationName'])) {
+            $foreignKey = $mapper->getQueryConverter()->toDb($keySet['foreignKey']);
+            $qb1->andWhere("$mtAlias.$foreignKey=mt_alias.id");
         } else {
-            if (empty($linkDefs['entity']) || empty($linkDefs['relationName'])) {
-                throw new Error("Invalid relation metadata");
-            }
-
-            $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
-
-            $entity = $this->convertor->getEntityManager()->getEntity($configuration['entity']);
-            $keySet = $mapper->getKeys($entity, $configuration['field']);
-
             $nearColumn = $mapper->getQueryConverter()->toDb($keySet['nearKey']);
             $distantColumn = $mapper->getQueryConverter()->toDb($keySet['distantKey']);
 
             $relTable = $mapper->getQueryConverter()->toDb($linkDefs['relationName']);
             $relTableAlias = $uniqueHash . '_r';
 
-            /** @var \Espo\Core\SelectManagers\Base $selectManager */
-            $selectManager = $container->get('selectManagerFactory')->create($linkDefs['entity']);
-
-            $sp = $selectManager->getSelectParams([
-                'where'   => $configuration['searchFilter']['where'] ?? null,
-                'sortBy'  => $configuration['sortFieldRelation'] ?? 'id',
-                'asc'     => $configuration['sortOrderRelation'] === 'ASC',
-                'offset'  => $configuration['offsetRelation'] ?? 0,
-                'maxSize' => $configuration['limitRelation'] ?? 5
-            ], true, true);
-            $sp['select'] = ['id'];
-
-            $entity = $this->convertor->getEntityManager()->getEntity($linkDefs['entity']);
-            $qb1 = $mapper->createSelectQueryBuilder($entity, $sp, true);
-            $qb1->select("$mtAlias.id AS $distantColumn");
             $qb1->join($mtAlias, $relTable, $relTableAlias, "$mtAlias.id=$relTableAlias.$distantColumn AND $relTableAlias.deleted=:false");
             $qb1->setParameter('false', false, ParameterType::BOOLEAN);
             $qb1->andWhere("$relTableAlias.$nearColumn=mt_alias.id");
+        }
 
-            $innerSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
+        $innerSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
 
-            if (Converter::isPgSQL($container->get('connection'))) {
-                $qb->addSelect("(SELECT string_agg({$uniqueHash}_c.$distantColumn::text, ',') FROM ($innerSql) AS {$uniqueHash}_c) AS {$configuration['id']}");
-            } else {
-                $qb->addSelect("(SELECT GROUP_CONCAT({$uniqueHash}_c.$distantColumn SEPARATOR ',') FROM ($innerSql) AS {$uniqueHash}_c) AS {$configuration['id']}");
-            }
+        if (Converter::isPgSQL($container->get('connection'))) {
+            $qb->addSelect("(SELECT string_agg({$uniqueHash}_c.{$configuration['id']}_col::text, ',') FROM ($innerSql) AS {$uniqueHash}_c) AS {$configuration['id']}");
+        } else {
+            $qb->addSelect("(SELECT GROUP_CONCAT({$uniqueHash}_c.{$configuration['id']}_col SEPARATOR ',') FROM ($innerSql) AS {$uniqueHash}_c) AS {$configuration['id']}");
+        }
 
-            foreach ($qb1->getParameters() as $pName => $pValue) {
-                $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
-            }
+        foreach ($qb1->getParameters() as $pName => $pValue) {
+            $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
         }
     }
 
