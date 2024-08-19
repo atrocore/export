@@ -21,12 +21,9 @@ use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\Core\Utils\Util;
 use Espo\ORM\EntityCollection;
-use Espo\ORM\IEntity;
 
 class LinkMultipleType extends LinkType
 {
-    public const MEMORY_RELATION_KEY = 'relRecords';
-
     public function convertToString(array &$result, array $record, array $configuration): void
     {
         $field = $configuration['field'];
@@ -247,141 +244,66 @@ class LinkMultipleType extends LinkType
     protected function findLinkedEntities(string $entity, array $record, string $field, array $params): array
     {
         $configuration = $this->getMemoryStorage()->get('configurationItemData');
-        if (empty($configuration['id'])){
+        if (empty($configuration['id'])) {
             throw new \Error('No configuration id found.');
         }
 
-        $ids = explode(',', $record['_entity']->rowData[$configuration['id']]);
-
-        echo '<pre>';
-        print_r($ids);
-        die();
-
-
-
-        $records = $this->getMemoryStorage()->get('exportRecordsPart') ?? [];
-
-        $ids = [];
-        foreach ($records as $record) {
-            $ids = array_merge($ids, explode(',', $record['_entity']->rowData[$field . 'Ids']));
-        }
-        $ids = array_values(array_unique($ids));
-
-
-        echo '<pre>';
-        print_r($ids);
-        die();
-
-        // load to memory
-        $this->loadToMemory($records, $entity, $field, $params, $configuration);
-
         $relEntityType = $this->getMetadata()->get(['entityDefs', $entity, 'links', $field, 'entity']);
 
+        // load to memory
+        $this->loadToMemory($relEntityType, $configuration);
+
+        $ids = explode(',', $record['_entity']->rowData[$configuration['id']]);
+
         $collection = new EntityCollection([], $relEntityType);
-
-        $linkedEntitiesKeys = $this->getMemoryStorage()->get(self::MEMORY_KEY) ?? [];
-        if (!isset($linkedEntitiesKeys[$configuration['id']])) {
-            return ['collection' => $collection];
-        }
-
-        $keySet = $this->getKeySet($entity, $field);
-
-        $nearKey = $keySet['nearKey'] ?? $keySet['foreignKey'];
-
-        $number = 0;
-
-        $relRecords = $this->getMemoryStorage()->get(self::MEMORY_RELATION_KEY) ?? [];
-        foreach ($linkedEntitiesKeys[$configuration['id']] as $key) {
-            $relEntity = $this->getMemoryStorage()->get($key);
-            $relIds = $relRecords[$configuration['id']][$relEntity->get('id')] ?? null;
-            if ($relIds !== null) {
-                if (!in_array($record[$keySet['key']], $relIds)) {
-                    continue;
-                }
-            } else {
-                if ($relEntity->get($nearKey) !== $record[$keySet['key']]) {
-                    continue;
-                }
-            }
-
-            if (isset($params['offset']) && $number < $params['offset']) {
-                $number++;
-                continue;
-            }
-
-            if (isset($params['maxSize']) && $collection->count() >= $params['maxSize']) {
-                break;
-            }
-
-            $collection->append($relEntity);
+        foreach ($ids as $id) {
+            $collection->append($this->getMemoryStorage()->get($this->createKey($relEntityType, $id)));
         }
 
         return ['collection' => $collection];
     }
 
-    protected function loadToMemory(array $records, string $entityType, string $relationName, array $params, array $configuration): void
+    protected function loadToMemory(string $relEntityType, array $configuration): void
     {
-        $linkedEntitiesKeys = $this->getMemoryStorage()->get(self::MEMORY_KEY) ?? [];
-        if (isset($linkedEntitiesKeys[$configuration['id']])) {
+        $offset = $this->getMemoryStorage()->get('exportRecordsPartOffset');
+        if (!empty($this->getMemoryStorage()->get("{$configuration['id']}_ids"))
+            && $this->getMemoryStorage()->get('linkMultipleTypeNumber') === $offset) {
             return;
         }
 
-        $params['offset'] = 0;
-        $params['maxSize'] = $this->convertor->getConfig()->get('exportMemoryItemsCount', 10000);
+        $this->getMemoryStorage()->set('linkMultipleTypeNumber', $offset);
 
-        $linkDefs = $this->getMetadata()->get(['entityDefs', $entityType, 'links', $relationName]);
-
-        if (!isset($linkDefs['entity'])) {
-            throw new \Error("Metadata error. No 'entity' parameter for '$relationName' relation.");
+        $ids = [];
+        foreach ($this->getMemoryStorage()->get('exportRecordsPart') ?? [] as $record) {
+            $ids = array_merge($ids, explode(',', $record['_entity']->rowData[$configuration['id']]));
         }
+        $ids = array_values(array_unique($ids));
 
-        if ($linkDefs['type'] === 'belongsTo') {
-            $params['where'][] = [
-                'type'      => 'in',
-                'attribute' => 'id',
-                'value'     => array_column($records, lcfirst($linkDefs['entity']) . 'Id')
-            ];
-        } else {
-            if (empty($linkDefs['foreign'])) {
-                throw new \Error("Metadata error. No 'foreign' parameter for '$relationName' relation.");
-            }
-            $params['where'][] = [
-                'type'      => 'linkedWith',
-                'attribute' => $linkDefs['foreign'],
-                'value'     => array_column($records, 'id')
-            ];
-        }
+        $res = $this->convertor->getService($relEntityType)
+            ->findEntities([
+                'where'        => [
+                    [
+                        'type'      => 'in',
+                        'attribute' => 'id',
+                        'value'     => $ids
+                    ]
+                ],
+                'disableCount' => true,
+                'maxSize'      => count($ids)
+            ]);
 
-        $res = $this->convertor->getService($linkDefs['entity'])->findEntities($params);
-
-        // load relation ids
-        if (!empty($res['collection'][0]) && $linkDefs['type'] === 'hasMany' && !empty($linkDefs['relationName'])) {
-            $keySet = $this->getKeySet($entityType, $relationName);
-            $relationCollection = $this->convertor->getEntityManager()->getRepository(ucfirst($linkDefs['relationName']))
-                ->select(['id', $keySet['nearKey'], $keySet['distantKey']])
-                ->where([
-                    $keySet['nearKey']    => array_column($records, 'id'),
-                    $keySet['distantKey'] => array_column($res['collection']->toArray(), 'id'),
-                ])
-                ->find();
-            $relRecords = $this->getMemoryStorage()->get(self::MEMORY_RELATION_KEY) ?? [];
-            foreach ($relationCollection as $relEntity) {
-                $relRecords[$configuration['id']][$relEntity->get($keySet['distantKey'])][] = $relEntity->get($keySet['nearKey']);
-            }
-            $this->getMemoryStorage()->set(self::MEMORY_RELATION_KEY, $relRecords);
-        }
-
+        $linkedEntitiesKeys = [];
         foreach ($res['collection'] as $re) {
-            $itemKey = $this->convertor->getEntityManager()->getRepository($re->getEntityType())->getCacheKey($re->get('id'));
-            $this->getMemoryStorage()->set($itemKey, $re);
-            $linkedEntitiesKeys[$configuration['id']][] = $itemKey;
+            $key = $this->createKey($relEntityType, $re->get('id'));
+            $this->getMemoryStorage()->set("export_{$relEntityType}_id_{$re->get('id')}", $re);
+            $linkedEntitiesKeys[$configuration['id']][] = $key;
         }
-        $this->getMemoryStorage()->set(self::MEMORY_KEY, $linkedEntitiesKeys);
+
+        $this->getMemoryStorage()->set("{$configuration['id']}_ids", $linkedEntitiesKeys);
     }
 
-    public function getKeySet(string $entityType, string $link): array
+    protected function createKey(string $entityType, string $id): string
     {
-        $entityRepository = $this->convertor->getEntityManager()->getRepository($entityType);
-        return $entityRepository->getMapper()->getKeys($entityRepository->get(), $link);
+        return "export_{$entityType}_id_{$id}";
     }
 }
