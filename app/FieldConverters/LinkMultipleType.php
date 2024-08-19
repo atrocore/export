@@ -265,9 +265,9 @@ class LinkMultipleType extends LinkType
 
     protected function loadToMemory(string $relEntityType, array $configuration): void
     {
+        $checkNumber = $this->getMemoryStorage()->get('linkMultipleTypeNumber');
         $offset = $this->getMemoryStorage()->get('exportRecordsPartOffset');
-        if (!empty($this->getMemoryStorage()->get("{$configuration['id']}_ids"))
-            && $this->getMemoryStorage()->get('linkMultipleTypeNumber') === $offset) {
+        if (!empty($this->getMemoryStorage()->get("{$configuration['id']}_ids")) && $checkNumber === $offset) {
             return;
         }
 
