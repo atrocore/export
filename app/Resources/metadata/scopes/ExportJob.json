@@ -15,5 +15,6 @@
   "overviewFilters": false,
   "hasAssignedUser": true,
   "hasTeam": true,
-  "hasOwner": true
+  "hasOwner": true,
+  "notificationDisabled": true
 }
