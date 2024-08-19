@@ -13,12 +13,17 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Atro\Core\Container;
+use Atro\Core\Exceptions\Error;
+use Atro\Core\Utils\Database\DBAL\Schema\Converter;
+use Atro\ORM\DB\RDB\Mapper;
+use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\Query\QueryBuilder;
+use Espo\Core\Utils\Util;
 use Espo\ORM\EntityCollection;
 
 class LinkMultipleType extends LinkType
 {
-    public const MEMORY_RELATION_KEY = 'relRecords';
-
     public function convertToString(array &$result, array $record, array $configuration): void
     {
         $field = $configuration['field'];
@@ -176,125 +181,139 @@ class LinkMultipleType extends LinkType
         }
     }
 
+    public function queryCallback(Container $container, QueryBuilder $qb, Mapper $mapper, array $configuration): void
+    {
+        $linkDefs = $this
+            ->getMetadata()
+            ->get(['entityDefs', $configuration['entity'], 'links', $configuration['field']]);
+
+        if (empty($linkDefs['entity'])) {
+            throw new Error("Invalid relation metadata");
+        }
+
+        $uniqueHash = Util::generateId();
+
+        $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
+
+        $entity = $this->convertor->getEntityManager()->getEntity($configuration['entity']);
+        $keySet = $mapper->getKeys($entity, $configuration['field']);
+
+        /** @var \Espo\Core\SelectManagers\Base $selectManager */
+        $selectManager = $container->get('selectManagerFactory')->create($linkDefs['entity']);
+
+        $sp = $selectManager->getSelectParams([
+            'where'   => $configuration['searchFilter']['where'] ?? null,
+            'sortBy'  => $configuration['sortFieldRelation'] ?? 'id',
+            'asc'     => $configuration['sortOrderRelation'] === 'ASC',
+            'offset'  => $configuration['offsetRelation'] ?? 0,
+            'maxSize' => $configuration['limitRelation'] ?? 5
+        ], true, true);
+
+        $sp['select'] = ['id'];
+
+        $entity = $this->convertor->getEntityManager()->getEntity($linkDefs['entity']);
+        $qb1 = $mapper->createSelectQueryBuilder($entity, $sp, true);
+        $qb1->select("$mtAlias.id AS {$configuration['id']}_col");
+
+        if (empty($linkDefs['relationName'])) {
+            $foreignKey = $mapper->getQueryConverter()->toDb($keySet['foreignKey']);
+            $qb1->andWhere("$mtAlias.$foreignKey=mt_alias.id");
+        } else {
+            $nearColumn = $mapper->getQueryConverter()->toDb($keySet['nearKey']);
+            $distantColumn = $mapper->getQueryConverter()->toDb($keySet['distantKey']);
+
+            $relTable = $mapper->getQueryConverter()->toDb($linkDefs['relationName']);
+            $relTableAlias = $uniqueHash . '_r';
+
+            $qb1->join($mtAlias, $relTable, $relTableAlias, "$mtAlias.id=$relTableAlias.$distantColumn AND $relTableAlias.deleted=:false");
+            $qb1->setParameter('false', false, ParameterType::BOOLEAN);
+            $qb1->andWhere("$relTableAlias.$nearColumn=mt_alias.id");
+        }
+
+        $innerSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
+
+        if (Converter::isPgSQL($container->get('connection'))) {
+            $qb->addSelect("(SELECT string_agg({$uniqueHash}_c.{$configuration['id']}_col::text, ',') FROM ($innerSql) AS {$uniqueHash}_c) AS {$configuration['id']}");
+        } else {
+            $qb->addSelect("(SELECT GROUP_CONCAT({$uniqueHash}_c.{$configuration['id']}_col SEPARATOR ',') FROM ($innerSql) AS {$uniqueHash}_c) AS {$configuration['id']}");
+        }
+
+        foreach ($qb1->getParameters() as $pName => $pValue) {
+            $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
+        }
+    }
+
     protected function findLinkedEntities(string $entity, array $record, string $field, array $params): array
     {
         $configuration = $this->getMemoryStorage()->get('configurationItemData');
-        if (empty($configuration['id'])){
+        if (empty($configuration['id'])) {
             throw new \Error('No configuration id found.');
         }
 
-        $records = $this->getMemoryStorage()->get('exportRecordsPart') ?? [];
-
-        // load to memory
-        $this->loadToMemory($records, $entity, $field, $params, $configuration);
-
         $relEntityType = $this->getMetadata()->get(['entityDefs', $entity, 'links', $field, 'entity']);
 
+        // load to memory
+        $this->loadToMemory($relEntityType, $configuration);
+
         $collection = new EntityCollection([], $relEntityType);
-
-        $linkedEntitiesKeys = $this->getMemoryStorage()->get(self::MEMORY_KEY) ?? [];
-        if (!isset($linkedEntitiesKeys[$configuration['id']])) {
-            return ['collection' => $collection];
-        }
-
-        $keySet = $this->getKeySet($entity, $field);
-
-        $nearKey = $keySet['nearKey'] ?? $keySet['foreignKey'];
-
-        $number = 0;
-
-        $relRecords = $this->getMemoryStorage()->get(self::MEMORY_RELATION_KEY) ?? [];
-        foreach ($linkedEntitiesKeys[$configuration['id']] as $key) {
-            $relEntity = $this->getMemoryStorage()->get($key);
-            $relIds = $relRecords[$configuration['id']][$relEntity->get('id')] ?? null;
-            if ($relIds !== null) {
-                if (!in_array($record[$keySet['key']], $relIds)) {
-                    continue;
-                }
-            } else {
-                if ($relEntity->get($nearKey) !== $record[$keySet['key']]) {
-                    continue;
+        if (!empty($record['_entity']->rowData[$configuration['id']])) {
+            $ids = explode(',', $record['_entity']->rowData[$configuration['id']]);
+            foreach ($ids as $id) {
+                if ($id && trim($id) !== '') {
+                    $collection->append($this->getMemoryStorage()->get($this->createKey($configuration['id'], $id)));
                 }
             }
-
-            if (isset($params['offset']) && $number < $params['offset']) {
-                $number++;
-                continue;
-            }
-
-            if (isset($params['maxSize']) && $collection->count() >= $params['maxSize']) {
-                break;
-            }
-
-            $collection->append($relEntity);
         }
 
         return ['collection' => $collection];
     }
 
-    protected function loadToMemory(array $records, string $entityType, string $relationName, array $params, array $configuration): void
+    protected function loadToMemory(string $relEntityType, array $configuration): void
     {
-        $linkedEntitiesKeys = $this->getMemoryStorage()->get(self::MEMORY_KEY) ?? [];
-        if (isset($linkedEntitiesKeys[$configuration['id']])) {
+        $checkNumber = $this->getMemoryStorage()->get('linkMultipleTypeNumber');
+        $offset = $this->getMemoryStorage()->get('exportRecordsPartOffset');
+        if (!empty($this->getMemoryStorage()->get("{$configuration['id']}_ids")) && $checkNumber === $offset) {
             return;
         }
 
-        $params['offset'] = 0;
-        $params['maxSize'] = $this->convertor->getConfig()->get('exportMemoryItemsCount', 10000);
+        $this->getMemoryStorage()->set('linkMultipleTypeNumber', $offset);
 
-        $linkDefs = $this->getMetadata()->get(['entityDefs', $entityType, 'links', $relationName]);
-
-        if (!isset($linkDefs['entity'])) {
-            throw new \Error("Metadata error. No 'entity' parameter for '$relationName' relation.");
-        }
-
-        if ($linkDefs['type'] === 'belongsTo') {
-            $params['where'][] = [
-                'type'      => 'in',
-                'attribute' => 'id',
-                'value'     => array_column($records, lcfirst($linkDefs['entity']) . 'Id')
-            ];
-        } else {
-            if (empty($linkDefs['foreign'])) {
-                throw new \Error("Metadata error. No 'foreign' parameter for '$relationName' relation.");
+        $ids = [];
+        foreach ($this->getMemoryStorage()->get('exportRecordsPart') ?? [] as $record) {
+            if (!empty($record['_entity']->rowData[$configuration['id']])) {
+                foreach (explode(',', $record['_entity']->rowData[$configuration['id']]) as $id) {
+                    if ($id && trim($id) !== '' && !in_array($id, $ids)) {
+                        $ids[] = $id;
+                    }
+                }
             }
-            $params['where'][] = [
-                'type'      => 'linkedWith',
-                'attribute' => $linkDefs['foreign'],
-                'value'     => array_column($records, 'id')
-            ];
         }
 
-        $res = $this->convertor->getService($linkDefs['entity'])->findEntities($params);
+        $res = $this->convertor->getService($relEntityType)
+            ->findEntities([
+                'where'        => [
+                    [
+                        'type'      => 'in',
+                        'attribute' => 'id',
+                        'value'     => $ids
+                    ]
+                ],
+                'disableCount' => true,
+                'maxSize'      => count($ids)
+            ]);
 
-        // load relation ids
-        if (!empty($res['collection'][0]) && $linkDefs['type'] === 'hasMany' && !empty($linkDefs['relationName'])) {
-            $keySet = $this->getKeySet($entityType, $relationName);
-            $relationCollection = $this->convertor->getEntityManager()->getRepository(ucfirst($linkDefs['relationName']))
-                ->select(['id', $keySet['nearKey'], $keySet['distantKey']])
-                ->where([
-                    $keySet['nearKey']    => array_column($records, 'id'),
-                    $keySet['distantKey'] => array_column($res['collection']->toArray(), 'id'),
-                ])
-                ->find();
-            $relRecords = $this->getMemoryStorage()->get(self::MEMORY_RELATION_KEY) ?? [];
-            foreach ($relationCollection as $relEntity) {
-                $relRecords[$configuration['id']][$relEntity->get($keySet['distantKey'])][] = $relEntity->get($keySet['nearKey']);
-            }
-            $this->getMemoryStorage()->set(self::MEMORY_RELATION_KEY, $relRecords);
-        }
-
+        $linkedEntitiesKeys = [];
         foreach ($res['collection'] as $re) {
-            $itemKey = $this->convertor->getEntityManager()->getRepository($re->getEntityType())->getCacheKey($re->get('id'));
-            $this->getMemoryStorage()->set($itemKey, $re);
-            $linkedEntitiesKeys[$configuration['id']][] = $itemKey;
+            $key = $this->createKey($configuration['id'], $re->get('id'));
+            $this->getMemoryStorage()->set($key, $re);
+            $linkedEntitiesKeys[$configuration['id']][] = $key;
         }
-        $this->getMemoryStorage()->set(self::MEMORY_KEY, $linkedEntitiesKeys);
+
+        $this->getMemoryStorage()->set("{$configuration['id']}_ids", $linkedEntitiesKeys);
     }
 
-    public function getKeySet(string $entityType, string $link): array
+    protected function createKey(string $configurationId, string $id): string
     {
-        $entityRepository = $this->convertor->getEntityManager()->getRepository($entityType);
-        return $entityRepository->getMapper()->getKeys($entityRepository->get(), $link);
+        return "export_{$configurationId}_id_{$id}";
     }
 }
