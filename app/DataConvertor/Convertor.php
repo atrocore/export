@@ -85,9 +85,9 @@ class Convertor
         // prepare configuration and record for attribute type
         if (!empty($configuration['attributeId'])) {
             $configuration['field'] = $configuration['id'];
-            $record[$configuration['field']] = $record['_entity']->rowData["{$configuration['id']}_{$configuration['channelId']}"];
+            $record[$configuration['field']] = $record['_entity']->rowData["{$configuration['id']}_{$configuration['channelId']}"] ?? null;
             if ($record[$configuration['field']] === null && !empty($configuration['channelId'])) {
-                $record[$configuration['field']] = $record['_entity']->rowData["{$configuration['id']}_"];
+                $record[$configuration['field']] = $record['_entity']->rowData["{$configuration['id']}_"] ?? null;
             }
         }
 
