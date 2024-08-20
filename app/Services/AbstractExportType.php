@@ -404,7 +404,7 @@ abstract class AbstractExportType extends Base
             $this->getMemoryStorage()->set('exportRecordsPartOffset', $offset);
             $this->getMemoryStorage()->set('exportRecordsPart', $records);
             $offset = $offset + $limit;
-            $this->putProductAttributeValues($res['configuration'], $records);
+//            $this->putProductAttributeValues($res['configuration'], $records);
             foreach ($records as $record) {
                 $rowData = [];
                 foreach ($res['configuration'] as $row) {

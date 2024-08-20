@@ -21,9 +21,9 @@ class ProductConvertor extends Convertor
 {
     public function convert(array $record, array $configuration): array
     {
-        if (isset($configuration['attributeId'])) {
-            return $this->convertAttributeValue($record, $configuration);
-        }
+//        if (isset($configuration['attributeId'])) {
+//            return $this->convertAttributeValue($record, $configuration);
+//        }
 
         return parent::convert($record, $configuration);
     }
