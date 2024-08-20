@@ -26,33 +26,45 @@ class VarcharType extends AbstractType
             return;
         }
 
-        /** @var \Doctrine\DBAL\Connection $connection */
-        $connection = $container->get('connection');
+        $attribute = $this->convertor->getEntity('Attribute', $configuration['attributeId']);
 
-        $alias = "alias_" . $configuration['id'];
         $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
 
-        $selectColumn = 'text_value';
+        $selectColumn = 'varchar_value';
+        if ($attribute->get('type') === 'text') {
+            $selectColumn = 'text_value';
+        }
         if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] === 'id') {
             $selectColumn = 'id';
         }
 
-        $qb1 = $connection->createQueryBuilder()
-            ->select("$alias.$selectColumn")
-            ->from('product_attribute_value', $alias)
-            ->where("$alias.attribute_id = :{$alias}_attributeId")
-            ->andWhere("$alias.deleted = :false")
-            ->andWhere("$alias.channel_id = :{$alias}_channelId")
-            ->andWhere("$alias.language = :{$alias}_language")
-            ->andWhere("$alias.product_id =$mtAlias.id")
-            ->setParameter("{$alias}_attributeId", $configuration['attributeId'])
-            ->setParameter("{$alias}_channelId", $configuration['channelId'] ?? '')
-            ->setParameter("{$alias}_language", $configuration['language'])
-            ->setParameter("false", false, ParameterType::BOOLEAN);
+        /** @var \Doctrine\DBAL\Connection $connection */
+        $connection = $container->get('connection');
 
-        $qb->addSelect("({$qb1->getSQL()}) AS {$configuration['id']}");
-        foreach ($qb1->getParameters() as $pName => $pValue) {
-            $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
+        $channelsIds = [''];
+        if (!empty($configuration['channelId'])) {
+            $channelsIds[] = $configuration['channelId'];
+        }
+
+        foreach ($channelsIds as $channelId) {
+            $alias = "alias_{$configuration['id']}_{$channelId}";
+            $qb1 = $connection->createQueryBuilder()
+                ->select("$alias.$selectColumn")
+                ->from('product_attribute_value', $alias)
+                ->where("$alias.attribute_id = :{$alias}_attributeId")
+                ->andWhere("$alias.deleted = :false")
+                ->andWhere("$alias.channel_id = :{$alias}_channelId")
+                ->andWhere("$alias.language = :{$alias}_language")
+                ->andWhere("$alias.product_id =$mtAlias.id")
+                ->setParameter("{$alias}_attributeId", $configuration['attributeId'])
+                ->setParameter("{$alias}_channelId", $channelId)
+                ->setParameter("{$alias}_language", $configuration['language'])
+                ->setParameter("false", false, ParameterType::BOOLEAN);
+
+            $qb->addSelect("({$qb1->getSQL()}) AS {$configuration['id']}_{$channelId}");
+            foreach ($qb1->getParameters() as $pName => $pValue) {
+                $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
+            }
         }
     }
 
@@ -61,11 +73,6 @@ class VarcharType extends AbstractType
         $field = $configuration['field'];
         $column = $configuration['column'];
         $result[$column] = $configuration['nullValue'];
-
-        if (!empty($configuration['attributeId'])) {
-            $field = $configuration['id'];
-            $record[$field] = $record['_entity']->rowData[$configuration['id']];
-        }
 
         if (array_key_exists($field, $record)) {
             $value = $record[$field];

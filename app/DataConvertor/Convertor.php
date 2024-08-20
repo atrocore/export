@@ -81,6 +81,16 @@ class Convertor
         $this->getMemoryStorage()->set('configurationItemData', $configuration);
 
         $fieldConverter = new $fieldConverterClass($this);
+
+        // prepare configuration and record for attribute type
+        if (!empty($configuration['attributeId'])) {
+            $configuration['field'] = $configuration['id'];
+            $record[$configuration['field']] = $record['_entity']->rowData["{$configuration['id']}_{$configuration['channelId']}"];
+            if ($record[$configuration['field']] === null && !empty($configuration['channelId'])) {
+                $record[$configuration['field']] = $record['_entity']->rowData["{$configuration['id']}_"];
+            }
+        }
+
         $fieldConverter->convertToString($result, $record, $configuration);
 
         return $result;
