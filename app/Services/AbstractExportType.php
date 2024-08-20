@@ -404,7 +404,6 @@ abstract class AbstractExportType extends Base
             $this->getMemoryStorage()->set('exportRecordsPartOffset', $offset);
             $this->getMemoryStorage()->set('exportRecordsPart', $records);
             $offset = $offset + $limit;
-//            $this->putProductAttributeValues($res['configuration'], $records);
             foreach ($records as $record) {
                 $rowData = [];
                 foreach ($res['configuration'] as $row) {
@@ -468,61 +467,6 @@ abstract class AbstractExportType extends Base
     public function getZipTmpDir(): string
     {
         return \Atro\Services\MassDownload::ZIP_TMP_DIR . DIRECTORY_SEPARATOR . 'export' . DIRECTORY_SEPARATOR . $this->data['exportJobId'];
-    }
-
-    protected function putProductAttributeValues(array $configuration, array &$records): void
-    {
-        $attributesIds = [];
-        foreach ($configuration as $row) {
-            if (!empty($row['attributeId']) && $row['entity'] === 'Product') {
-                $attributesIds[] = $row['attributeId'];
-            }
-        }
-
-        if (!empty($attributesIds)) {
-            // load attributes to memory
-            if (empty($this->getMemoryStorage()->get('attributesLoaded'))) {
-                $attributeRepository = $this->getEntityManager()->getRepository('Attribute');
-                $attributes = $attributeRepository->where(['id' => $attributesIds])->find();
-                foreach ($attributes as $attribute) {
-                    $attributeRepository->putToCache($attribute->get('id'), $attribute);
-                }
-                $this->getMemoryStorage()->set('attributesLoaded', true);
-            }
-
-            $pavWhere = [
-                [
-                    'type'      => 'in',
-                    'attribute' => 'productId',
-                    'value'     => array_column($records, 'id')
-                ],
-                [
-                    'type'      => 'in',
-                    'attribute' => 'attributeId',
-                    'value'     => $attributesIds
-                ]
-            ];
-
-            $res = $this
-                ->getService('ProductAttributeValue')
-                ->findEntities([
-                    'where'        => $pavWhere,
-                    'disableCount' => true
-                ]);
-
-            $pavRepo = $this->getEntityManager()->getRepository('ProductAttributeValue');
-
-            $pavCollectionKeys = [];
-            $attributesKeys = [];
-            foreach ($res['collection'] as $pav) {
-                $itemKey = $pavRepo->getCacheKey($pav->get('id'));
-                $this->getMemoryStorage()->set($itemKey, $pav);
-                $pavCollectionKeys[implode('_', [$pav->get('productId'), $pav->get('attributeId'), $pav->get('language'), $pav->get('channelId')])] = $itemKey;
-                $attributesKeys[$pav->get('attributeId')][] = $itemKey;
-            }
-            $this->getMemoryStorage()->set('pavCollectionKeys', $pavCollectionKeys);
-            $this->getMemoryStorage()->set('attributesKeys', $attributesKeys);
-        }
     }
 
     protected function getDelimiter(): string
