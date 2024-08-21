@@ -17,14 +17,7 @@ class VarcharType extends AbstractType
 {
     public function getSelectColumn(array $configuration): string
     {
-        /** @var \Pim\Entities\Attribute $attribute */
-        $attribute = $this->convertor->getEntityManager()->getEntity('Attribute', $configuration['attributeId']);
-
         $selectColumn = 'varchar_value';
-
-        if ($attribute->get('type') === 'text') {
-            $selectColumn = 'text_value';
-        }
 
         if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] === 'id') {
             $selectColumn = 'id';
