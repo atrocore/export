@@ -173,6 +173,10 @@ abstract class AbstractExportType extends Base
             $row['channelId'] = null;
         }
 
+        if (!empty($row['attributeId'])) {
+            $row['field'] = $row['id'];
+        }
+
         $row['delimiter'] = !empty($feedData['delimiter']) ? $feedData['delimiter'] : ',';
         $row['emptyValue'] = !empty($feedData['emptyValue']) ? $feedData['emptyValue'] : '';
         $row['nullValue'] = array_key_exists('nullValue', $feedData) ? $feedData['nullValue'] : 'Null';
@@ -401,6 +405,21 @@ abstract class AbstractExportType extends Base
         $offset = $this->data['offset'];
 
         while (!empty($records = $this->getRecords($offset))) {
+            // prepare records for attribute types
+            foreach ($res['configuration'] as $conf) {
+                foreach ($records as &$record) {
+                    if (!empty($conf['attributeId'])) {
+                        $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}_{$conf['channelId']}"] ?? null;
+                        if ($record[$conf['field']] === null && !empty($conf['channelId'])) {
+                            $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}_"] ?? null;
+                        }
+                        // for link types
+                        $record[$conf['field'] . 'Id'] = $record[$conf['field']];
+                    }
+                }
+                unset($record);
+            }
+
             $this->getMemoryStorage()->set('exportRecordsPartOffset', $offset);
             $this->getMemoryStorage()->set('exportRecordsPart', $records);
             $offset = $offset + $limit;

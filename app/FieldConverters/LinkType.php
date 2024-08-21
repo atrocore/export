@@ -285,11 +285,7 @@ class LinkType extends AbstractType
 
         $ids = [];
         foreach ($records as $v) {
-            if (!empty($configuration['attributeId']) && !array_key_exists($fieldName, $v)) {
-                $val = $this->convertor->prepareRecordValueForPav($configuration, $v);
-            } else {
-                $val = $v[$fieldName];
-            }
+            $val = $v[$fieldName];
             if (is_array($val)) {
                 $ids = array_merge($ids, $val);
             } else {

@@ -81,36 +81,9 @@ class Convertor
         $this->getMemoryStorage()->set('configurationItemData', $configuration);
 
         $fieldConverter = new $fieldConverterClass($this);
-
-        // prepare configuration and record for attribute type
-        if (!empty($configuration['attributeId'])) {
-            $configuration['field'] = $configuration['id'];
-            $record[$configuration['field']] = $this->prepareRecordValueForPav($configuration, $record);
-
-            // for link types
-            $record[$configuration['field'] . 'Id'] = $record[$configuration['field']];
-        }
-
         $fieldConverter->convertToString($result, $record, $configuration);
 
         return $result;
-    }
-
-    /**
-     * For product_attribute_value we have to select values via specific queries. This function prepare value.
-     *
-     * @param array $configuration
-     * @param array $record
-     * @return null|mixed
-     */
-    public function prepareRecordValueForPav(array $configuration, array $record)
-    {
-        $value = $record['_entity']->rowData["{$configuration['id']}_{$configuration['channelId']}"] ?? null;
-        if ($value === null && !empty($configuration['channelId'])) {
-            $value = $record['_entity']->rowData["{$configuration['id']}_"] ?? null;
-        }
-
-        return $value;
     }
 
     public function getEntity(string $scope, string $id)
