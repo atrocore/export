@@ -32,4 +32,34 @@ class ProductAttributeValueConvertor extends Convertor
 
         return parent::convert($record, $configuration);
     }
+
+    protected function getTypeForAttributeValue(string $attributeType, ?string $attributeValue): string
+    {
+        if ($attributeValue == null) {
+            $attributeValue = 'value';
+        }
+
+        if ($attributeValue === 'id') {
+            return 'varchar';
+        }
+
+        if ($attributeValue === 'value'
+            && in_array($attributeType, ['int', 'float', 'rangeInt', 'rangeFloat', 'varchar'])) {
+            return 'valueWithUnit';
+        }
+
+        if ($attributeValue === 'valueUnit') {
+            return 'unit';
+        }
+
+        if ($attributeType === 'rangeInt') {
+            return 'int';
+        }
+
+        if ($attributeType === 'rangeFloat') {
+            return 'float';
+        }
+
+        return $attributeType;
+    }
 }

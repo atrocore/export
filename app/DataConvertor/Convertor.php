@@ -24,7 +24,6 @@ use Espo\ORM\Entity;
 use Espo\ORM\EntityManager;
 use Espo\Services\Record;
 use Export\FieldConverters\AbstractType;
-use Export\FieldConverters\LinkMultipleType;
 use Export\FieldConverters\LinkType;
 
 class Convertor
@@ -159,36 +158,6 @@ class Convertor
     public function getAttributeById(string $attributeId): ?Entity
     {
         return $this->getEntityManager()->getEntity('Attribute', $attributeId);
-    }
-
-    public function getTypeForAttributeValue(string $attributeType, ?string $attributeValue): string
-    {
-        if ($attributeValue == null) {
-            $attributeValue = 'value';
-        }
-
-        if ($attributeValue === 'id') {
-            return 'varchar';
-        }
-
-        if ($attributeValue === 'value' && in_array($attributeType,
-                ['int', 'float', 'rangeInt', 'rangeFloat', 'varchar'])) {
-            return 'valueWithUnit';
-        }
-
-        if ($attributeValue === 'valueUnit') {
-            return 'unit';
-        }
-
-        if ($attributeType === 'rangeInt') {
-            return 'int';
-        }
-
-        if ($attributeType === 'rangeFloat') {
-            return 'float';
-        }
-
-        return $attributeType;
     }
 
     public function getConfigurationItemType(array $configuration): string
