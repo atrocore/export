@@ -27,7 +27,7 @@ class ProductAttributeValueConvertor extends Convertor
                 $configuration['field'] = 'valueFrom';
             }
 
-            return $this->convertType($this->getTypeForAttribute($type, 'value'), $record, $configuration);
+            return $this->convertType($this->getTypeForAttributeValue($type, 'value'), $record, $configuration);
         }
 
         return parent::convert($record, $configuration);

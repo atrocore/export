@@ -255,7 +255,7 @@ abstract class AbstractExportType extends Base
     {
         foreach ($this->getMemoryStorage()->get('exportConfiguration') ?? [] as $item) {
             $this->getDataConvertor()
-                ->createFieldConverter($this->getDataConvertor()->getTypeForField($item['entity'], $item['field']))
+                ->createFieldConverter($this->getDataConvertor()->getConfigurationItemType($item))
                 ->queryCallback($this->getContainer(), $qb, $mapper, $item);
         }
     }
