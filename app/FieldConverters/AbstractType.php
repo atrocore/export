@@ -16,12 +16,10 @@ namespace Export\FieldConverters;
 use Atro\Core\Container;
 use Atro\Core\Exceptions\Error;
 use Atro\Core\KeyValueStorages\StorageInterface;
-use Atro\Core\Utils\Database\DBAL\Schema\Converter;
 use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\Core\Utils\Metadata;
-use Espo\ORM\IEntity;
 use Export\DataConvertor\Convertor;
 
 abstract class AbstractType
@@ -35,12 +33,13 @@ abstract class AbstractType
 
     abstract public function convertToString(array &$result, array $record, array $configuration): void;
 
+    public function getSelectColumn(array $configuration): string
+    {
+        return 'id';
+    }
+
     public function queryCallbackForAttribute(Container $container, QueryBuilder $qb, Mapper $mapper, array $conf): void
     {
-        echo '<pre>';
-        print_r('123');
-        die();
-
         $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
 
         /** @var \Doctrine\DBAL\Connection $connection */
@@ -54,6 +53,7 @@ abstract class AbstractType
         foreach ($channelsIds as $channelId) {
             $alias = "alias_{$conf['id']}_{$channelId}";
             $qb1 = $connection->createQueryBuilder()
+                ->select("$alias.{$this->getSelectColumn($conf)}")
                 ->from('product_attribute_value', $alias)
                 ->where("$alias.attribute_id = :{$alias}_attributeId")
                 ->andWhere("$alias.deleted = :false")
@@ -64,31 +64,6 @@ abstract class AbstractType
                 ->setParameter("{$alias}_channelId", $channelId)
                 ->setParameter("{$alias}_language", $conf['language'])
                 ->setParameter("false", false, ParameterType::BOOLEAN);
-
-//            (SELECT GROUP_CONCAT(
-//                CONCAT(IFNULL(pav1.id, 'N/A'), ':',
-//                    IFNULL(pav1.bool_value, 'N/A'), ':',
-//                    IFNULL(pav1.text_value, 'N/A')
-//                ) SEPARATOR ', ')
-
-////            $innerSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
-//
-            if (Converter::isPgSQL($container->get('connection'))) {
-                $qb1->select("STRING_AGG(
-                    COALESCE($alias.id::text, 'N/A') || '::atro::' ||
-                    COALESCE($alias.bool_value::text, 'N/A') || '::atro::' ||
-                    COALESCE($alias.date_value::text, 'N/A') || '::atro::' ||
-                    COALESCE($alias.datetime_value::text, 'N/A') || '::atro::' ||
-                    COALESCE($alias.int_value::text, 'N/A') || '::atro::' ||
-                    COALESCE($alias.int_value1::text, 'N/A') || '::atro::' ||
-                    COALESCE($alias.float_value::text, 'N/A') || '::atro::' ||
-                    COALESCE($alias.float_value1::text, 'N/A') || '::atro::' ||
-                    COALESCE($alias.varchar_value::text, 'N/A') || '::atro::' ||
-                    COALESCE($alias.reference_value::text, 'N/A') || '::atro::' ||
-                    COALESCE($alias.text_value, 'N/A'),
-                    ', ')");
-            } else {
-            }
 
             $qb->addSelect("({$qb1->getSQL()}) AS {$conf['id']}_{$channelId}");
             foreach ($qb1->getParameters() as $pName => $pValue) {
