@@ -33,7 +33,7 @@ abstract class AbstractType
 
     abstract public function convertToString(array &$result, array $record, array $configuration): void;
 
-    public function getSelectColumn(array $configuration): string
+    public function getAttributeSelectColumn(array $configuration): string
     {
         return 'id';
     }
@@ -53,7 +53,7 @@ abstract class AbstractType
         foreach ($channelsIds as $channelId) {
             $alias = "alias_{$conf['id']}_{$channelId}";
             $qb1 = $connection->createQueryBuilder()
-                ->select("$alias.{$this->getSelectColumn($conf)}")
+                ->select("$alias.{$this->getAttributeSelectColumn($conf)}")
                 ->from('product_attribute_value', $alias)
                 ->where("$alias.attribute_id = :{$alias}_attributeId")
                 ->andWhere("$alias.deleted = :false")

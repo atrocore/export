@@ -15,6 +15,16 @@ namespace Export\FieldConverters;
 
 class FloatType extends AbstractType
 {
+    public function getAttributeSelectColumn(array $configuration): string
+    {
+        $selectColumn = parent::getAttributeSelectColumn($configuration);
+        if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] !== 'id') {
+            $selectColumn = 'float_value';
+        }
+
+        return $selectColumn;
+    }
+
     public function convertToString(array &$result, array $record, array $configuration): void
     {
         $field = $configuration['field'];

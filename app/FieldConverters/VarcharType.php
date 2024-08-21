@@ -15,9 +15,9 @@ namespace Export\FieldConverters;
 
 class VarcharType extends AbstractType
 {
-    public function getSelectColumn(array $configuration): string
+    public function getAttributeSelectColumn(array $configuration): string
     {
-        $selectColumn = parent::getSelectColumn($configuration);
+        $selectColumn = parent::getAttributeSelectColumn($configuration);
         if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] === 'value') {
             $selectColumn = 'varchar_value';
         }
