@@ -20,48 +20,48 @@ use Doctrine\DBAL\Query\QueryBuilder;
 
 class BoolType extends AbstractType
 {
-    public function queryCallback(Container $container, QueryBuilder $qb, Mapper $mapper, array $configuration): void
-    {
-        if (empty($configuration['attributeId'])) {
-            return;
-        }
-
-        $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
-
-        $selectColumn = 'bool_value';
-        if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] === 'id') {
-            $selectColumn = 'id';
-        }
-
-        /** @var \Doctrine\DBAL\Connection $connection */
-        $connection = $container->get('connection');
-
-        $channelsIds = [''];
-        if (!empty($configuration['channelId'])) {
-            $channelsIds[] = $configuration['channelId'];
-        }
-
-        foreach ($channelsIds as $channelId) {
-            $alias = "alias_{$configuration['id']}_{$channelId}";
-            $qb1 = $connection->createQueryBuilder()
-                ->select("$alias.$selectColumn")
-                ->from('product_attribute_value', $alias)
-                ->where("$alias.attribute_id = :{$alias}_attributeId")
-                ->andWhere("$alias.deleted = :false")
-                ->andWhere("$alias.channel_id = :{$alias}_channelId")
-                ->andWhere("$alias.language = :{$alias}_language")
-                ->andWhere("$alias.product_id =$mtAlias.id")
-                ->setParameter("{$alias}_attributeId", $configuration['attributeId'])
-                ->setParameter("{$alias}_channelId", $channelId)
-                ->setParameter("{$alias}_language", $configuration['language'])
-                ->setParameter("false", false, ParameterType::BOOLEAN);
-
-            $qb->addSelect("({$qb1->getSQL()}) AS {$configuration['id']}_{$channelId}");
-            foreach ($qb1->getParameters() as $pName => $pValue) {
-                $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
-            }
-        }
-    }
+//    public function queryCallback(Container $container, QueryBuilder $qb, Mapper $mapper, array $configuration): void
+//    {
+//        if (empty($configuration['attributeId'])) {
+//            return;
+//        }
+//
+//        $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
+//
+//        $selectColumn = 'bool_value';
+//        if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] === 'id') {
+//            $selectColumn = 'id';
+//        }
+//
+//        /** @var \Doctrine\DBAL\Connection $connection */
+//        $connection = $container->get('connection');
+//
+//        $channelsIds = [''];
+//        if (!empty($configuration['channelId'])) {
+//            $channelsIds[] = $configuration['channelId'];
+//        }
+//
+//        foreach ($channelsIds as $channelId) {
+//            $alias = "alias_{$configuration['id']}_{$channelId}";
+//            $qb1 = $connection->createQueryBuilder()
+//                ->select("$alias.$selectColumn")
+//                ->from('product_attribute_value', $alias)
+//                ->where("$alias.attribute_id = :{$alias}_attributeId")
+//                ->andWhere("$alias.deleted = :false")
+//                ->andWhere("$alias.channel_id = :{$alias}_channelId")
+//                ->andWhere("$alias.language = :{$alias}_language")
+//                ->andWhere("$alias.product_id =$mtAlias.id")
+//                ->setParameter("{$alias}_attributeId", $configuration['attributeId'])
+//                ->setParameter("{$alias}_channelId", $channelId)
+//                ->setParameter("{$alias}_language", $configuration['language'])
+//                ->setParameter("false", false, ParameterType::BOOLEAN);
+//
+//            $qb->addSelect("({$qb1->getSQL()}) AS {$configuration['id']}_{$channelId}");
+//            foreach ($qb1->getParameters() as $pName => $pValue) {
+//                $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
+//            }
+//        }
+//    }
 
     public function convertToString(array &$result, array $record, array $configuration): void
     {
