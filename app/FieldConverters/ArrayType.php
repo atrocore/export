@@ -15,6 +15,16 @@ namespace Export\FieldConverters;
 
 class ArrayType extends AbstractType
 {
+    public function getSelectColumn(array $configuration): string
+    {
+        $selectColumn = parent::getSelectColumn($configuration);
+        if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] === 'value') {
+            $selectColumn = 'text_value';
+        }
+
+        return $selectColumn;
+    }
+
     public function convertToString(array &$result, array $record, array $configuration): void
     {
         $field = $configuration['field'];
@@ -25,6 +35,9 @@ class ArrayType extends AbstractType
 
         $result[$column] = $nullValue;
         if (isset($record[$field])) {
+            if (!empty($configuration['attributeId'])) {
+                $record[$field] = @json_decode($record[$field], true);
+            }
             if (empty($record[$field])) {
                 $result[$column] = $record[$field] === null ? $nullValue : $emptyValue;
             } else {
