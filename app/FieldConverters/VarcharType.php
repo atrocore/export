@@ -17,10 +17,9 @@ class VarcharType extends AbstractType
 {
     public function getSelectColumn(array $configuration): string
     {
-        $selectColumn = 'varchar_value';
-
-        if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] === 'id') {
-            $selectColumn = 'id';
+        $selectColumn = parent::getSelectColumn($configuration);
+        if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] === 'value') {
+            $selectColumn = 'varchar_value';
         }
 
         return $selectColumn;

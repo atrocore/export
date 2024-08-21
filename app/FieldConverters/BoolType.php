@@ -17,9 +17,9 @@ class BoolType extends AbstractType
 {
     public function getSelectColumn(array $configuration): string
     {
-        $selectColumn = 'bool_value';
-        if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] === 'id') {
-            $selectColumn = 'id';
+        $selectColumn = parent::getSelectColumn($configuration);
+        if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] === 'value') {
+            $selectColumn = 'bool_value';
         }
 
         return $selectColumn;
