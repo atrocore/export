@@ -21,6 +21,11 @@ class LinkType extends AbstractType
     public const MEMORY_KEY = 'linked_entities_keys';
     public const MEMORY_EXPORT_BY_KEY = 'export_by';
 
+    public function getAttributeSelectColumn(array $configuration): string
+    {
+        return 'reference_value';
+    }
+
     public function convertToString(array &$result, array $record, array $configuration): void
     {
         $field = $configuration['field'];
@@ -80,7 +85,7 @@ class LinkType extends AbstractType
 
                         $this->prepareExportByField($foreignEntity, $v, $foreignType, $foreignData);
 
-                        $foreignConfiguration = array_merge($configuration, ['field' => $v]);
+                        $foreignConfiguration = array_merge($configuration, ['field' => $v, 'attributeId' => null]);
                         $this->convertForeignType($fieldResult, $foreignType, $foreignConfiguration, $foreignData, $v, $record);
 
                         if ($configuration['zip']) {
@@ -280,7 +285,11 @@ class LinkType extends AbstractType
 
         $ids = [];
         foreach ($records as $v) {
-            $val = $v[$fieldName];
+            if (!empty($configuration['attributeId']) && !array_key_exists($fieldName, $v)) {
+                $val = $this->convertor->prepareRecordValueForPav($configuration, $v);
+            } else {
+                $val = $v[$fieldName];
+            }
             if (is_array($val)) {
                 $ids = array_merge($ids, $val);
             } else {

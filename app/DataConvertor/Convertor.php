@@ -85,15 +85,32 @@ class Convertor
         // prepare configuration and record for attribute type
         if (!empty($configuration['attributeId'])) {
             $configuration['field'] = $configuration['id'];
-            $record[$configuration['field']] = $record['_entity']->rowData["{$configuration['id']}_{$configuration['channelId']}"] ?? null;
-            if ($record[$configuration['field']] === null && !empty($configuration['channelId'])) {
-                $record[$configuration['field']] = $record['_entity']->rowData["{$configuration['id']}_"] ?? null;
-            }
+            $record[$configuration['field']] = $this->prepareRecordValueForPav($configuration, $record);
+
+            // for link types
+            $record[$configuration['field'] . 'Id'] = $record[$configuration['field']];
         }
 
         $fieldConverter->convertToString($result, $record, $configuration);
 
         return $result;
+    }
+
+    /**
+     * For product_attribute_value we have to select values via specific queries. This function prepare value.
+     *
+     * @param array $configuration
+     * @param array $record
+     * @return null|mixed
+     */
+    public function prepareRecordValueForPav(array $configuration, array $record)
+    {
+        $value = $record['_entity']->rowData["{$configuration['id']}_{$configuration['channelId']}"] ?? null;
+        if ($value === null && !empty($configuration['channelId'])) {
+            $value = $record['_entity']->rowData["{$configuration['id']}_"] ?? null;
+        }
+
+        return $value;
     }
 
     public function getEntity(string $scope, string $id)
@@ -162,8 +179,11 @@ class Convertor
 
     public function getConfigurationItemType(array $configuration): string
     {
-        if (isset($configuration['attributeId'])) {
+        if (!empty($configuration['attributeId'])) {
             $type = $this->getTypeForAttribute($configuration['attributeId']);
+            if ($configuration['attributeValue'] === 'valueUnit') {
+                $type = 'unit';
+            }
         } else {
             $type = $this->getTypeForField($configuration['entity'], $configuration['field']);
         }
