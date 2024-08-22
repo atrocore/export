@@ -44,18 +44,23 @@ class ValueWithUnitType extends AbstractType
             $field = $configuration['field'];
             $type = $attribute->get('type');
 
-            if (!empty($record[$field])) {
-                $valueParts = explode('::atro::', $record[$field]);
+            $prepareUnitValueFnc = function (string $value): array {
+                $valueParts = explode('::atro::', $value);
+                return [
+                    $valueParts[0] === 'N/A' ? null : (float)$valueParts[0],
+                    !empty($valueParts[1]) && $valueParts[1] === 'N/A' ? null : $valueParts[1]
+                ];
+            };
 
-                $value = $valueParts[0] === 'N/A' ? null : (float)$valueParts[0];
-                $unitId = !empty($valueParts[1]) && $valueParts[1] === 'N/A' ? null : $valueParts[1];
+            if (!empty($record[$field])) {
+                list($value, $unitId) = $prepareUnitValueFnc((string) $record[$field]);
             } else {
                 $value = null;
                 $unitId = null;
             }
 
             $valueResult = $this->convertor->convertType($type, [$field => $value], array_merge($configuration, ['field' => $field]))[$column];
-            $unitResult = $this->convertor->convertType('unit', ["{$field}Id" => $unitId], array_merge($configuration, ['field' => $field, 'exportBy' => ['name'], 'markForNoRelation' => '']))[$column];
+            $unitResult = $this->convertor->convertType('unit', ["{$field}Id" => $unitId], array_merge($configuration, ['field' => $field, 'exportBy' => ['name'], 'markForNoRelation' => '', 'prepareUnitValueFnc' => $prepareUnitValueFnc]))[$column];
         }
 
         if (in_array($type, ['rangeFloat', 'rangeInt'])) {

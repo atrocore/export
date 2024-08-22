@@ -281,7 +281,11 @@ class LinkType extends AbstractType
 
         $ids = [];
         foreach ($records as $v) {
-            $val = $v[$fieldName];
+            if (array_key_exists('prepareUnitValueFnc', $configuration)) {
+                list($numberValue, $val) = $configuration['prepareUnitValueFnc']((string)$v[$field]);
+            } else {
+                $val = $v[$fieldName];
+            }
             if (is_array($val)) {
                 $ids = array_merge($ids, $val);
             } else {
