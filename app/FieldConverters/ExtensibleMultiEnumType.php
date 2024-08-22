@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\ORM\EntityCollection;
 
 class ExtensibleMultiEnumType extends LinkMultipleType
@@ -67,5 +68,10 @@ class ExtensibleMultiEnumType extends LinkMultipleType
         }
 
         return ['collection' => $collection];
+    }
+
+    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
+    {
+        $qb->select("$alias.text_value");
     }
 }

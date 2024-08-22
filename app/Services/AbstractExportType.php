@@ -413,8 +413,23 @@ abstract class AbstractExportType extends Base
                         if ($record[$conf['field']] === null && !empty($conf['channelId'])) {
                             $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}_"] ?? null;
                         }
-                        // for link types
-                        $record[$conf['field'] . 'Id'] = $record[$conf['field']];
+
+                        switch ($this->getAttribute($conf['attributeId'])->get('type')) {
+                            case 'extensibleEnum':
+                            case 'file':
+                            case 'measure':
+                            case 'unit':
+                            case 'link':
+                                $record[$conf['field'] . 'Id'] = $record[$conf['field']];
+                                break;
+                            case 'array':
+                            case 'extensibleMultiEnum':
+                            case 'linkMultiple':
+                                if (!empty($record[$conf['field']]) && is_string($record[$conf['field']])) {
+                                    $record[$conf['field']] = @json_decode($record[$conf['field']], true);
+                                }
+                                break;
+                        }
                     }
                 }
                 unset($record);

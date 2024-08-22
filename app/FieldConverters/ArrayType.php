@@ -27,9 +27,6 @@ class ArrayType extends AbstractType
 
         $result[$column] = $nullValue;
         if (isset($record[$field])) {
-            if (!empty($configuration['attributeId'])) {
-                $record[$field] = @json_decode($record[$field], true);
-            }
             if (empty($record[$field])) {
                 $result[$column] = $record[$field] === null ? $nullValue : $emptyValue;
             } else {

@@ -183,6 +183,11 @@ class LinkMultipleType extends LinkType
 
     public function queryCallback(Container $container, QueryBuilder $qb, Mapper $mapper, array $configuration): void
     {
+        if (!empty($configuration['attributeId'])) {
+            $this->queryCallbackForAttribute($container, $qb, $mapper, $configuration);
+            return;
+        }
+
         $linkDefs = $this
             ->getMetadata()
             ->get(['entityDefs', $configuration['entity'], 'links', $configuration['field']]);

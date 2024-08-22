@@ -286,10 +286,12 @@ class LinkType extends AbstractType
             } else {
                 $val = $v[$fieldName];
             }
-            if (is_array($val)) {
-                $ids = array_merge($ids, $val);
-            } else {
-                $ids[] = $val;
+            if (!empty($val)) {
+                if (is_array($val)) {
+                    $ids = array_merge($ids, $val);
+                } else {
+                    $ids[] = $val;
+                }
             }
         }
 
