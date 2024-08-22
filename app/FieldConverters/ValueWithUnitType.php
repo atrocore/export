@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Atro\Core\Utils\Database\DBAL\Schema\Converter;
 use Doctrine\DBAL\Query\QueryBuilder;
 
 class ValueWithUnitType extends AbstractType
@@ -43,12 +44,12 @@ class ValueWithUnitType extends AbstractType
             $field = $configuration['field'];
             $type = $attribute->get('type');
 
-            if (!empty($record[$field])){
+            if (!empty($record[$field])) {
                 $valueParts = explode('::atro::', $record[$field]);
 
                 $value = $valueParts[0] === 'N/A' ? null : (float)$valueParts[0];
                 $unitId = !empty($valueParts[1]) && $valueParts[1] === 'N/A' ? null : $valueParts[1];
-            }else{
+            } else {
                 $value = null;
                 $unitId = null;
             }
@@ -88,6 +89,10 @@ class ValueWithUnitType extends AbstractType
     {
         $attribute = $this->convertor->getAttributeById($conf['attributeId']);
 
-        $qb->select("STRING_AGG(COALESCE($alias.{$attribute->get('type')}_value::text, 'N/A') || '::atro::' || COALESCE($alias.reference_value, 'N/A'), ', ')");
+        if (Converter::isPgSQL($qb->getConnection())) {
+            $qb->select("STRING_AGG(COALESCE($alias.{$attribute->get('type')}_value::text, 'N/A') || '::atro::' || COALESCE($alias.reference_value, 'N/A'), ', ')");
+        } else {
+            $qb->select("GROUP_CONCAT(CONCAT(IFNULL($alias.{$attribute->get('type')}_value, 'N/A'), '::atro::', IFNULL($alias.reference_value, 'N/A')) SEPARATOR ', ')");
+        }
     }
 }
