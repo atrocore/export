@@ -33,9 +33,8 @@ abstract class AbstractType
 
     abstract public function convertToString(array &$result, array $record, array $configuration): void;
 
-    public function getAttributeSelectColumn(array $configuration): string
+    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
     {
-        return 'id';
     }
 
     public function queryCallbackForAttribute(Container $container, QueryBuilder $qb, Mapper $mapper, array $conf): void
@@ -53,7 +52,7 @@ abstract class AbstractType
         foreach ($channelsIds as $channelId) {
             $alias = "alias_{$conf['id']}_{$channelId}";
             $qb1 = $connection->createQueryBuilder()
-                ->select("$alias.{$this->getAttributeSelectColumn($conf)}")
+                ->select("$alias.id")
                 ->from('product_attribute_value', $alias)
                 ->where("$alias.attribute_id = :{$alias}_attributeId")
                 ->andWhere("$alias.deleted = :false")
@@ -64,6 +63,8 @@ abstract class AbstractType
                 ->setParameter("{$alias}_channelId", $channelId)
                 ->setParameter("{$alias}_language", $conf['language'])
                 ->setParameter("false", false, ParameterType::BOOLEAN);
+
+            $this->prepareQueryCallbackForAttribute($qb1, $conf, $alias);
 
             $qb->addSelect("({$qb1->getSQL()}) AS {$conf['id']}_{$channelId}");
             foreach ($qb1->getParameters() as $pName => $pValue) {
