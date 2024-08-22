@@ -390,8 +390,12 @@ abstract class AbstractExportType extends Base
             'count'         => 0,
         ];
 
+        $attributesConfiguratorItems = [];
         foreach ($this->data['feed']['data']['configuration'] as $rowNumber => $row) {
             $res['configuration'][$rowNumber] = $this->prepareRow($row);
+            if (!empty($row['attributeId'])) {
+                $attributesConfiguratorItems[] = $res['configuration'][$rowNumber];
+            }
         }
 
         $this->getMemoryStorage()->set('exportConfiguration', $res['configuration']);
@@ -405,36 +409,7 @@ abstract class AbstractExportType extends Base
         $offset = $this->data['offset'];
 
         while (!empty($records = $this->getRecords($offset))) {
-            // prepare records for attribute types
-            foreach ($res['configuration'] as $conf) {
-                foreach ($records as &$record) {
-                    if (!empty($conf['attributeId'])) {
-                        $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}_{$conf['channelId']}"] ?? null;
-                        if ($record[$conf['field']] === null && !empty($conf['channelId'])) {
-                            $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}_"] ?? null;
-                        }
-
-                        switch ($this->getAttribute($conf['attributeId'])->get('type')) {
-                            case 'extensibleEnum':
-                            case 'file':
-                            case 'measure':
-                            case 'unit':
-                            case 'link':
-                                $record[$conf['field'] . 'Id'] = $record[$conf['field']];
-                                break;
-                            case 'array':
-                            case 'extensibleMultiEnum':
-                            case 'linkMultiple':
-                                if (!empty($record[$conf['field']]) && is_string($record[$conf['field']])) {
-                                    $record[$conf['field']] = @json_decode($record[$conf['field']], true);
-                                }
-                                break;
-                        }
-                    }
-                }
-                unset($record);
-            }
-
+            $this->prepareRecordsForProductAttributes($attributesConfiguratorItems, $records);
             $this->getMemoryStorage()->set('exportRecordsPartOffset', $offset);
             $this->getMemoryStorage()->set('exportRecordsPart', $records);
             $offset = $offset + $limit;
@@ -496,6 +471,42 @@ abstract class AbstractExportType extends Base
         fclose($file);
 
         return $res;
+    }
+
+    protected function prepareRecordsForProductAttributes(array $attributesConfiguratorItems, array &$records): void
+    {
+        // prepare records for attribute types
+        foreach ($attributesConfiguratorItems as $conf) {
+            foreach ($records as &$record) {
+                if (!empty($conf['attributeId'])) {
+                    $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}_{$conf['channelId']}"] ?? null;
+                    if ($record[$conf['field']] === null && !empty($conf['channelId'])) {
+                        $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}_"] ?? null;
+                    }
+
+                    // @todo move it into the field convertors
+                    switch ($this->getAttribute($conf['attributeId'])->get('type')) {
+                        case 'extensibleEnum':
+                        case 'file':
+                        case 'measure':
+                        case 'unit':
+                        case 'link':
+                        case 'rangeInt':
+                        case 'rangeFloat':
+                            $record[$conf['field'] . 'Id'] = $record[$conf['field']];
+                            break;
+                        case 'array':
+                        case 'extensibleMultiEnum':
+                        case 'linkMultiple':
+                            if (!empty($record[$conf['field']]) && is_string($record[$conf['field']])) {
+                                $record[$conf['field']] = @json_decode($record[$conf['field']], true);
+                            }
+                            break;
+                    }
+                }
+            }
+            unset($record);
+        }
     }
 
     public function getZipTmpDir(): string
