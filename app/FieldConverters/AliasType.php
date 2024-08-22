@@ -21,7 +21,13 @@ class AliasType extends AbstractType
 
         $result[$column] = $configuration['nullValue'];
 
-        $pavId = $record[$configuration['field']] ?? null;
+        $pavId = null;
+
+        if ($configuration['entity'] === 'ProductAttributeValue') {
+            $pavId = $record['id'];
+        } elseif ($configuration['entity'] === 'Product') {
+            $pavId = $record[$configuration['field']] ?? null;
+        }
 
         if (!empty($pavId)) {
             // @todo this should be optimized
