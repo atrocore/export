@@ -44,8 +44,17 @@ class FloatType extends AbstractType
     protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
     {
         $selectColumn = 'id';
-        if (!empty($conf['attributeValue']) && $conf['attributeValue'] === 'value') {
-            $selectColumn = 'float_value';
+
+        if (!empty($conf['attributeValue'])) {
+            switch ($conf['attributeValue']) {
+                case 'value':
+                case 'valueFrom':
+                    $selectColumn = 'float_value';
+                    break;
+                case 'valueTo':
+                    $selectColumn = 'float_value1';
+                    break;
+            }
         }
 
         $qb->select("$alias.$selectColumn");
