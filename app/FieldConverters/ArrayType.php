@@ -13,18 +13,10 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Doctrine\DBAL\Query\QueryBuilder;
+
 class ArrayType extends AbstractType
 {
-    public function getAttributeSelectColumn(array $configuration): string
-    {
-        $selectColumn = parent::getAttributeSelectColumn($configuration);
-        if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] === 'value') {
-            $selectColumn = 'text_value';
-        }
-
-        return $selectColumn;
-    }
-
     public function convertToString(array &$result, array $record, array $configuration): void
     {
         $field = $configuration['field'];
@@ -46,5 +38,15 @@ class ArrayType extends AbstractType
                 }
             }
         }
+    }
+
+    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
+    {
+        $selectColumn = 'id';
+        if (!empty($conf['attributeValue']) && $conf['attributeValue'] === 'value') {
+            $selectColumn = 'text_value';
+        }
+
+        $qb->select("$alias.$selectColumn");
     }
 }

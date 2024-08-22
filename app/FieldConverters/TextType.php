@@ -13,15 +13,17 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Doctrine\DBAL\Query\QueryBuilder;
+
 class TextType extends VarcharType
 {
-    public function getAttributeSelectColumn(array $configuration): string
+    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
     {
-        $selectColumn = parent::getAttributeSelectColumn($configuration);
-        if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] === 'value') {
+        $selectColumn = 'id';
+        if (!empty($conf['attributeValue']) && $conf['attributeValue'] === 'value') {
             $selectColumn = 'text_value';
         }
 
-        return $selectColumn;
+        $qb->select("$alias.$selectColumn");
     }
 }

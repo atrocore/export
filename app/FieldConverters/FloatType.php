@@ -13,18 +13,10 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Doctrine\DBAL\Query\QueryBuilder;
+
 class FloatType extends AbstractType
 {
-    public function getAttributeSelectColumn(array $configuration): string
-    {
-        $selectColumn = parent::getAttributeSelectColumn($configuration);
-        if (!empty($configuration['attributeValue']) && $configuration['attributeValue'] !== 'id') {
-            $selectColumn = 'float_value';
-        }
-
-        return $selectColumn;
-    }
-
     public function convertToString(array &$result, array $record, array $configuration): void
     {
         $field = $configuration['field'];
@@ -47,5 +39,15 @@ class FloatType extends AbstractType
     protected function floatToNumber(float $value, $decimalMark, $thousandSeparator): string
     {
         return rtrim(rtrim(number_format($value, 10, $decimalMark, $thousandSeparator), '0'), $decimalMark);
+    }
+
+    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
+    {
+        $selectColumn = 'id';
+        if (!empty($conf['attributeValue']) && $conf['attributeValue'] === 'value') {
+            $selectColumn = 'float_value';
+        }
+
+        $qb->select("$alias.$selectColumn");
     }
 }

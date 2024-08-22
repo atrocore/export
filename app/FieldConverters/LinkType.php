@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
 
@@ -20,11 +21,6 @@ class LinkType extends AbstractType
 {
     public const MEMORY_KEY = 'linked_entities_keys';
     public const MEMORY_EXPORT_BY_KEY = 'export_by';
-
-    public function getAttributeSelectColumn(array $configuration): string
-    {
-        return 'reference_value';
-    }
 
     public function convertToString(array &$result, array $record, array $configuration): void
     {
@@ -318,5 +314,10 @@ class LinkType extends AbstractType
 
     protected function prepareEntity(Entity $entity, array $config): void
     {
+    }
+
+    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
+    {
+        $qb->select("$alias.reference_value");
     }
 }

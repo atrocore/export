@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Doctrine\DBAL\Query\QueryBuilder;
+
 class ValueWithUnitType extends AbstractType
 {
-
     private $emptyValue;
     private $nullValue;
 
@@ -25,17 +26,35 @@ class ValueWithUnitType extends AbstractType
         $this->emptyValue = $configuration['emptyValue'];
         $this->nullValue = $configuration['nullValue'];
 
-        if (empty($record['attributeId'])) {
+        $attributeId = null;
+        if (!empty($configuration['attributeId'])) {
+            $attributeId = $configuration['attributeId'];
+        }
+
+        if (empty($attributeId)) {
             $fieldDefs = $this->getMetadata()->get(['entityDefs', $configuration['entity'], 'fields', $configuration['field']]);
             // use main field instead
             $field = $fieldDefs['mainField'];
             $type = $this->getMetadata()->get(['entityDefs', $configuration['entity'], 'fields', $field, 'type']);
+            $valueResult = $this->convertor->convertType($type, $record, array_merge($configuration, ['field' => $field]))[$column];
             $unitResult = $record[$field . 'UnitName'] ?? '';
         } else {
-            $attribute = $this->convertor->getAttributeById($record['attributeId']);
-            $field = 'value';
+            $attribute = $this->convertor->getAttributeById($attributeId);
+            $field = $configuration['field'];
             $type = $attribute->get('type');
-            $unitResult = $this->convertor->convertType('unit', $record, array_merge($configuration, ['field' => $field . 'Unit', 'exportBy' => ['name'], 'markForNoRelation' => '']))[$column];
+
+            if (!empty($record[$field])){
+                $valueParts = explode('::atro::', $record[$field]);
+
+                $value = $valueParts[0] === 'N/A' ? null : (float)$valueParts[0];
+                $unitId = !empty($valueParts[1]) && $valueParts[1] === 'N/A' ? null : $valueParts[1];
+            }else{
+                $value = null;
+                $unitId = null;
+            }
+
+            $valueResult = $this->convertor->convertType($type, [$field => $value], array_merge($configuration, ['field' => $field]))[$column];
+            $unitResult = $this->convertor->convertType('unit', ["{$field}Id" => $unitId], array_merge($configuration, ['field' => $field, 'exportBy' => ['name'], 'markForNoRelation' => '']))[$column];
         }
 
         if (in_array($type, ['rangeFloat', 'rangeInt'])) {
@@ -52,7 +71,6 @@ class ValueWithUnitType extends AbstractType
                 $result[$column] = "<= $valueToResult";
             }
         } else {
-            $valueResult = $this->convertor->convertType($type, $record, array_merge($configuration, ['field' => $field]))[$column];
             $result[$column] = "$valueResult";
         }
 
@@ -64,5 +82,12 @@ class ValueWithUnitType extends AbstractType
     public function isNullorEmptyResult(string $result = null): bool
     {
         return in_array($result, [$this->nullValue, $this->emptyValue]);
+    }
+
+    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
+    {
+        $attribute = $this->convertor->getAttributeById($conf['attributeId']);
+
+        $qb->select("STRING_AGG(COALESCE($alias.{$attribute->get('type')}_value::text, 'N/A') || '::atro::' || COALESCE($alias.reference_value, 'N/A'), ', ')");
     }
 }
