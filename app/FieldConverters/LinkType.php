@@ -260,19 +260,7 @@ class LinkType extends AbstractType
 
         $fieldName = $this->getFieldName($field);
 
-        // if PAV
-        if ($configuration['entity'] === 'Product' && !empty($record['attributeType'])) {
-            $records = [];
-            $attributesKeys = $this->getMemoryStorage()->get('attributesKeys') ?? [];
-            if (isset($attributesKeys[$record['attributeId']])) {
-                foreach ($attributesKeys[$record['attributeId']] as $pavKey) {
-                    $records[] = $this->getMemoryStorage()->get($pavKey)->toArray();
-                }
-            }
-        }
-
         $linkedEntitiesKeys = $this->getMemoryStorage()->get(self::MEMORY_KEY) ?? [];
-
         if (isset($linkedEntitiesKeys[$configuration['id']])) {
             return;
         }
