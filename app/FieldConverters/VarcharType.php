@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Doctrine\DBAL\Query\QueryBuilder;
+
 class VarcharType extends AbstractType
 {
     public function convertToString(array &$result, array $record, array $configuration): void
@@ -37,5 +39,15 @@ class VarcharType extends AbstractType
                 $result[$column] = $this->getSharedDownloadUrl($this->getMemoryStorage()->get('exportJobId'), $record['id']);
             }
         }
+    }
+
+    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
+    {
+        $selectColumn = 'id';
+        if (!empty($conf['attributeValue']) && $conf['attributeValue'] === 'value') {
+            $selectColumn = 'varchar_value';
+        }
+
+        $qb->select("$alias.$selectColumn");
     }
 }

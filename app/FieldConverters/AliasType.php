@@ -18,25 +18,27 @@ class AliasType extends AbstractType
     public function convertToString(array &$result, array $record, array $configuration): void
     {
         $column = $configuration['column'];
-        $attribute = $this->convertor->getAttributeById($record['attributeId']);
-        $aliasedAttributes = $attribute->get('aliasedAttributes');
 
-        if (!empty($aliasedAttributes) && count($aliasedAttributes) > 0) {
+        $result[$column] = $configuration['nullValue'];
+
+        $pavId = null;
+
+        if ($configuration['entity'] === 'ProductAttributeValue') {
+            $pavId = $record['id'];
+        } elseif ($configuration['entity'] === 'Product') {
+            $pavId = $record[$configuration['field']] ?? null;
+        }
+
+        if (!empty($pavId)) {
+            // @todo this should be optimized
+            $pav = $this->convertor->getService('ProductAttributeValue')->getEntity($pavId);
+
             $pavResults = [];
-            foreach ($aliasedAttributes as $aliasedAttribute) {
-                $aliasConfiguration = json_decode(json_encode($configuration), true);
-                $aliasConfiguration['column'] = $column;
-                $aliasConfiguration['exportBy'] = ['name'];
-                $aliasConfiguration['attributeId'] = $aliasedAttribute->get('id');
-                $aliasConfiguration['attributeName'] = $aliasedAttribute->get('name');
-                $type = $aliasedAttribute->get('type');
-                if ($type == 'rangeInt' || $type == 'rangeFloat') {
-                    $aliasConfiguration['attributeValue'] = 'valueFrom';
-                }
-
-                $subResult = $this->convertor->convert(["id" => $record['productId']], $aliasConfiguration);
-                if (isset($subResult[$column]) && $subResult[$column] != $aliasConfiguration['markForNoRelation']) {
-                    $pavResults[] = $subResult[$column];
+            foreach ($pav->get('valueOptionsData') as $item) {
+                if (is_array($item['name'])) {
+                    $pavResults[] = implode(', ', $item['name']);
+                } else {
+                    $pavResults[] = $item['name'];
                 }
             }
 

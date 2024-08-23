@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Export\DataConvertor;
 
 use Atro\Core\EventManager\Manager;
+use Atro\Core\Exceptions\Error;
 use Atro\Core\KeyValueStorages\StorageInterface;
 use Espo\Core\Container;
 use Espo\Core\Utils\Config;
@@ -23,7 +24,6 @@ use Espo\ORM\Entity;
 use Espo\ORM\EntityManager;
 use Espo\Services\Record;
 use Export\FieldConverters\AbstractType;
-use Export\FieldConverters\LinkMultipleType;
 use Export\FieldConverters\LinkType;
 
 class Convertor
@@ -44,9 +44,7 @@ class Convertor
             return [$configuration['column'] => ""];
         }
 
-        $type = $this->getTypeForField($configuration['entity'], $configuration['field']);
-
-        return $this->convertType($type, $record, $configuration);
+        return $this->convertType($this->getConfigurationItemType($configuration), $record, $configuration);
     }
 
     public function createFieldConverter(string $type): AbstractType
@@ -69,12 +67,14 @@ class Convertor
                 'record'        => $record,
                 'configuration' => $configuration
             ];
-            $result[$configuration['column']] = $this->container->get('twig')->renderTemplate((string)$template, $templateData);
+            $result[$configuration['column']] = $this->container->get('twig')
+                ->renderTemplate((string)$template, $templateData);
             return $result;
         }
 
         $fieldConverterClass = '\Export\FieldConverters\\' . ucfirst($type) . 'Type';
-        if (!class_exists($fieldConverterClass) || !is_a($fieldConverterClass, \Export\FieldConverters\AbstractType::class, true)) {
+        if (!class_exists($fieldConverterClass) || !is_a($fieldConverterClass,
+                \Export\FieldConverters\AbstractType::class, true)) {
             $fieldConverterClass = '\Export\FieldConverters\VarcharType';
         }
 
@@ -150,7 +150,42 @@ class Convertor
         return $this->getEntityManager()->getEntity('Attribute', $attributeId);
     }
 
-    public function getTypeForAttribute(string $attributeType, ?string $attributeValue): string
+    public function getConfigurationItemType(array $configuration): string
+    {
+        if (!empty($configuration['attributeId'])) {
+            $type = $this->prepareConvertorTypeForAttribute($this->getTypeForAttribute($configuration['attributeId']), $configuration['attributeValue']);
+        } else {
+            $type = $this->getTypeForField($configuration['entity'], $configuration['field']);
+        }
+
+        return $type;
+    }
+
+    public function getTypeForField(string $entityName, ?string $field): string
+    {
+        if ($field === null) {
+            return 'varchar';
+        }
+
+        $fieldDefs = $this->getMetadata()->get(['entityDefs', $entityName, 'fields', $field]);
+        $type = $fieldDefs['type'] ?? 'varchar';
+        if (!empty($fieldDefs['unitField'])) {
+            $type = 'valueWithUnit';
+        }
+        return $type;
+    }
+
+    public function getTypeForAttribute(string $attributeId): string
+    {
+        $attribute = $this->getEntityManager()->getEntity('Attribute', $attributeId);
+        if (empty($attribute)) {
+            throw new Error("Attribute $attributeId does not exists.");
+        }
+
+        return $attribute->get('type');
+    }
+
+    protected function prepareConvertorTypeForAttribute(string $attributeType, ?string $attributeValue): string
     {
         if ($attributeValue == null) {
             $attributeValue = 'value';
@@ -160,7 +195,8 @@ class Convertor
             return 'varchar';
         }
 
-        if ($attributeValue === 'value' && in_array($attributeType, ['int', 'float', 'rangeInt', 'rangeFloat', 'varchar'])) {
+        if ($attributeValue === 'value'
+            && in_array($attributeType, ['int', 'float', 'rangeInt', 'rangeFloat', 'varchar'])) {
             return 'valueWithUnit';
         }
 
@@ -177,17 +213,5 @@ class Convertor
         }
 
         return $attributeType;
-    }
-
-    public function getTypeForField(string $entityName, ?string $field): string
-    {
-        if( $field === null) return 'varchar';
-
-        $fieldDefs = $this->getMetadata()->get(['entityDefs', $entityName, 'fields', $field]);
-        $type = $fieldDefs['type'] ?? 'varchar';
-        if (!empty($fieldDefs['unitField'])) {
-            $type = 'valueWithUnit';
-        }
-        return $type;
     }
 }

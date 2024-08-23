@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Doctrine\DBAL\Query\QueryBuilder;
+
 class BoolType extends AbstractType
 {
     public function convertToString(array &$result, array $record, array $configuration): void
@@ -20,10 +22,20 @@ class BoolType extends AbstractType
         $field = $configuration['field'];
         $column = $configuration['column'];
 
-        if($record[$field] === null){
+        if ($record[$field] === null) {
             $result[$column] = $configuration['nullValue'];
-        }else{
+        } else {
             $result[$column] = !empty($record[$field]) ? 'TRUE' : 'FALSE';
         }
+    }
+
+    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
+    {
+        $selectColumn = 'id';
+        if (!empty($conf['attributeValue']) && $conf['attributeValue'] === 'value') {
+            $selectColumn = 'bool_value';
+        }
+
+        $qb->select("$alias.$selectColumn");
     }
 }
