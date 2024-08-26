@@ -1,1 +1,14 @@
-{}
+{
+  "scopeNames": {
+    "ExportFeed": "Flux d'export",
+    "ExportConfiguratorItem": "Configurateur"
+  },
+  "scopeNamesPlural": {
+    "ExportFeed": "Exporter des flux",
+    "ExportConfiguratorItem": "Configurateur"
+  },
+  "labels": {
+    "Generate": "Générer",
+    "filter": "Filtre"
+  }
+}
