@@ -1,17 +1,17 @@
 {
   "fields": {
     "exportFeed": "Exportation de flux",
-    "exportFeeds": "",
-    "maximumHoursToLookBack": "",
-    "maximumDaysForJobExist": ""
+    "exportFeeds": "Exporter des flux",
+    "maximumHoursToLookBack": "Un maximum d'heures pour regarder en arrière",
+    "maximumDaysForJobExist": "Durée maximale de conservation en jours"
   },
   "links": {
     "exportFeed": "Flux d'export",
-    "exportFeeds": ""
+    "exportFeeds": "Exporter des flux"
   },
   "options": {
     "job": {
-      "ExportFeed": "",
+      "ExportFeed": "Flux d'export",
       "TrialExport": "",
       "ExportJobRemove": ""
     }
