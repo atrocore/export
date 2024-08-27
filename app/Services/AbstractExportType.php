@@ -491,7 +491,9 @@ abstract class AbstractExportType extends Base
                         case 'measure':
                         case 'unit':
                         case 'link':
+                        case 'int':
                         case 'rangeInt':
+                        case 'float':
                         case 'rangeFloat':
                             $record[$conf['field'] . 'Id'] = $record[$conf['field']];
                             break;
