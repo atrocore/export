@@ -44,7 +44,7 @@ class VarcharType extends AbstractType
     protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
     {
         $selectColumn = 'id';
-        if (!empty($conf['attributeValue']) && $conf['attributeValue'] === 'value') {
+        if (!empty($conf['attributeValue']) && $conf['attributeValue'] === 'valueString') {
             $selectColumn = 'varchar_value';
         }
 
