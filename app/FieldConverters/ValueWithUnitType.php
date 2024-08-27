@@ -85,10 +85,8 @@ class ValueWithUnitType extends AbstractType
                 $valueToResult = $this->convertor
                     ->convertType($type, $record, array_merge($configuration, ['field' => $field . 'To']))[$column];
             } else {
-                $valueFromResult = $valueResult;
-                $valueToResult = $this->convertor
-                    ->convertType($type, [$field => $valueTo],
-                        array_merge($configuration, ['field' => $field]))[$column];
+                $valueFromResult = $this->convertor->convertType($type, [$field => $valueFrom], array_merge($configuration, ['field' => $field]))[$column];
+                $valueToResult = $this->convertor->convertType($type, [$field => $valueTo], array_merge($configuration, ['field' => $field]))[$column];
             }
 
             $result[$column] = "";
