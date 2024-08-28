@@ -58,7 +58,7 @@ class ValueWithUnitType extends AbstractType
                 $unitResult = $record['valueUnitData']['name'] ?? '';
             } elseif ($configuration['entity'] === 'Product') {
                 if (!empty($record[$field])) {
-                    list($valueFrom, $valueTo, $unitId) = $this->prepareUnitValue((string)$record[$field]);
+                    list($valueFrom, $valueTo, $unitId) = $this->prepareUnitValue((string)$record[$field], $type);
                     $unitResult = $this->convertor
                         ->convertType(
                             'unit',
@@ -116,12 +116,37 @@ class ValueWithUnitType extends AbstractType
         return in_array($result, [$this->nullValue, $this->emptyValue]);
     }
 
-    public function prepareUnitValue(string $value): array
+    public function prepareUnitValue(string $value, string $type = 'varchar'): array
     {
         $valueParts = explode('::atro::', $value);
+
+        $valueFrom = $valueParts[0] === 'N/A' ? null : $valueParts[0];
+        if ($valueFrom !== null) {
+            switch ($type) {
+                case 'float':
+                    $valueFrom = (float)$valueFrom;
+                    break;
+                case 'int':
+                    $valueFrom = (int)$valueFrom;
+                    break;
+            }
+        }
+
+        $valueTo = $valueParts[1] === 'N/A' ? null : $valueParts[1];
+        if ($valueTo !== null) {
+            switch ($type) {
+                case 'float':
+                    $valueTo = (float)$valueTo;
+                    break;
+                case 'int':
+                    $valueTo = (int)$valueTo;
+                    break;
+            }
+        }
+
         return [
-            $valueParts[0] === 'N/A' ? null : (float)$valueParts[0],
-            $valueParts[1] === 'N/A' ? null : (float)$valueParts[1],
+            $valueFrom,
+            $valueTo,
             !empty($valueParts[2]) && $valueParts[2] === 'N/A' ? null : $valueParts[2]
         ];
     }
@@ -130,15 +155,24 @@ class ValueWithUnitType extends AbstractType
     {
         $attribute = $this->convertor->getAttributeById($conf['attributeId']);
 
-        $type = $attribute->get('type');
-        if (in_array($attribute->get('type'), ['rangeFloat', 'rangeInt'])) {
-            $type = $attribute->get('type') === 'rangeFloat' ? 'float' : 'int';
+        $column = 'float_value';
+        $column1 = 'float_value1';
+
+        switch ($attribute->get('type')) {
+            case 'int':
+            case 'rangeInt':
+                $column = 'int_value';
+                $column1 = 'int_value1';
+                break;
+            case 'varchar':
+                $column = 'varchar_value';
+                break;
         }
 
         if (Converter::isPgSQL($qb->getConnection())) {
-            $qb->select("STRING_AGG(COALESCE($alias.{$type}_value::text, 'N/A') || '::atro::' || COALESCE($alias.{$type}_value1::text, 'N/A') || '::atro::' || COALESCE($alias.reference_value, 'N/A'), ', ')");
+            $qb->select("STRING_AGG(COALESCE($alias.$column::text, 'N/A') || '::atro::' || COALESCE($alias.$column1::text, 'N/A') || '::atro::' || COALESCE($alias.reference_value, 'N/A'), ', ')");
         } else {
-            $qb->select("GROUP_CONCAT(CONCAT(IFNULL($alias.{$type}_value, 'N/A'), '::atro::', IFNULL($alias.{$type}_value1, 'N/A'), '::atro::', IFNULL($alias.reference_value, 'N/A')) SEPARATOR ', ')");
+            $qb->select("GROUP_CONCAT(CONCAT(IFNULL($alias.$column, 'N/A'), '::atro::', IFNULL($alias.$column1, 'N/A'), '::atro::', IFNULL($alias.reference_value, 'N/A')) SEPARATOR ', ')");
         }
     }
 }
