@@ -44,6 +44,7 @@ class IntType extends AbstractType
             switch ($conf['attributeValue']) {
                 case 'value':
                 case 'valueFrom':
+                case 'valueNumeric':
                     $selectColumn = 'int_value';
                     break;
                 case 'valueTo':
