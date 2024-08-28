@@ -479,9 +479,12 @@ abstract class AbstractExportType extends Base
         foreach ($attributesConfiguratorItems as $conf) {
             foreach ($records as &$record) {
                 if (!empty($conf['attributeId'])) {
-                    $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}_{$conf['channelId']}"] ?? null;
-                    if ($record[$conf['field']] === null && !empty($conf['channelId'])) {
-                        $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}_"] ?? null;
+                    $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}_{$conf['channelId']}_{$conf['language']}"] ?? null;
+                    if ($record[$conf['field']] === null && !empty($conf['fallbackLanguage'])) {
+                        $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}_{$conf['channelId']}_" . strtolower($conf['fallbackLanguage'])] ?? null;
+                    }
+                    if (!empty($conf['replaceAttributeValues']) && $record[$conf['field']] === null && !empty($conf['channelId'])) {
+                        $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}__{$conf['language']}"] ?? null;
                     }
 
                     // @todo move it into the field convertors

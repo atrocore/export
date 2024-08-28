@@ -45,30 +45,37 @@ abstract class AbstractType
         $connection = $container->get('connection');
 
         $channelsIds = [''];
-        if (!empty($conf['channelId'])) {
+        if (!empty($conf['replaceAttributeValues']) && !empty($conf['channelId'])) {
             $channelsIds[] = $conf['channelId'];
         }
 
+        $languages = [$conf['language']];
+        if (!empty($conf['fallbackLanguage'])) {
+            $languages[] = $conf['fallbackLanguage'];
+        }
+
         foreach ($channelsIds as $channelId) {
-            $alias = "alias_{$conf['id']}_{$channelId}";
-            $qb1 = $connection->createQueryBuilder()
-                ->select("$alias.id")
-                ->from('product_attribute_value', $alias)
-                ->where("$alias.attribute_id = :{$alias}_attributeId")
-                ->andWhere("$alias.deleted = :false")
-                ->andWhere("$alias.channel_id = :{$alias}_channelId")
-                ->andWhere("$alias.language = :{$alias}_language")
-                ->andWhere("$alias.product_id =$mtAlias.id")
-                ->setParameter("{$alias}_attributeId", $conf['attributeId'])
-                ->setParameter("{$alias}_channelId", $channelId)
-                ->setParameter("{$alias}_language", $conf['language'])
-                ->setParameter("false", false, ParameterType::BOOLEAN);
+            foreach ($languages as $language) {
+                $alias = "alias_{$conf['id']}_{$channelId}_" . strtolower($language);
+                $qb1 = $connection->createQueryBuilder()
+                    ->select("$alias.id")
+                    ->from('product_attribute_value', $alias)
+                    ->where("$alias.attribute_id = :{$alias}_attributeId")
+                    ->andWhere("$alias.deleted = :false")
+                    ->andWhere("$alias.channel_id = :{$alias}_channelId")
+                    ->andWhere("$alias.language = :{$alias}_language")
+                    ->andWhere("$alias.product_id =$mtAlias.id")
+                    ->setParameter("{$alias}_attributeId", $conf['attributeId'])
+                    ->setParameter("{$alias}_channelId", $channelId)
+                    ->setParameter("{$alias}_language", $language)
+                    ->setParameter("false", false, ParameterType::BOOLEAN);
 
-            $this->prepareQueryCallbackForAttribute($qb1, $conf, $alias);
+                $this->prepareQueryCallbackForAttribute($qb1, $conf, $alias);
 
-            $qb->addSelect("({$qb1->getSQL()}) AS {$conf['id']}_{$channelId}");
-            foreach ($qb1->getParameters() as $pName => $pValue) {
-                $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
+                $qb->addSelect("({$qb1->getSQL()}) AS {$conf['id']}_{$channelId}_" . strtolower($language));
+                foreach ($qb1->getParameters() as $pName => $pValue) {
+                    $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
+                }
             }
         }
     }
