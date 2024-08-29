@@ -235,11 +235,24 @@ class LinkType extends AbstractType
 
     protected function getForeignEntityName(string $entity, string $field): string
     {
+        $configuration = $this->getMemoryStorage()->get('configurationItemData');
+        if (!empty($configuration['attributeId'])) {
+            $attribute = $this->convertor->getAttributeById($configuration['attributeId']);
+            if (in_array($attribute->get('type'), ['link', 'linkMultiple'])) {
+                return $attribute->getVirtualField('entityType');
+            }
+        }
+
         return $this->convertor->getMetadata()->get(['entityDefs', $entity, 'links', $field, 'entity']);
     }
 
     protected function needToCallForeignEntity(array $exportBy): bool
     {
+        $configuration = $this->getMemoryStorage()->get('configurationItemData');
+        if (!empty($configuration['attributeId'])) {
+            return true;
+        }
+
         foreach ($exportBy as $v) {
             if (!in_array($v, ['id', 'name'])) {
                 return true;
