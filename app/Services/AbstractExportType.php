@@ -497,6 +497,7 @@ abstract class AbstractExportType extends Base
                         case 'int':
                         case 'rangeInt':
                         case 'float':
+                        case 'varchar':
                         case 'rangeFloat':
                             $record[$conf['field'] . 'Id'] = $record[$conf['field']];
                             break;
