@@ -49,6 +49,7 @@ class FloatType extends AbstractType
             switch ($conf['attributeValue']) {
                 case 'value':
                 case 'valueFrom':
+                case 'valueNumeric':
                     $selectColumn = 'float_value';
                     break;
                 case 'valueTo':
