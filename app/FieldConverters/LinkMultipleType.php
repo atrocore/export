@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use AdvancedDataTypes\Core\Utils\MigrationHelper;
 use Atro\Core\Container;
 use Atro\Core\Exceptions\Error;
 use Atro\Core\Utils\Database\DBAL\Schema\Converter;
@@ -21,6 +22,7 @@ use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\Core\Utils\Util;
 use Espo\ORM\EntityCollection;
+use Pim\Entities\Attribute;
 
 class LinkMultipleType extends LinkType
 {
@@ -181,6 +183,68 @@ class LinkMultipleType extends LinkType
         }
     }
 
+    public function queryCallbackForAttribute(Container $container, QueryBuilder $qb, Mapper $mapper, array $conf): void
+    {
+        if (!class_exists(MigrationHelper::class)) {
+            return;
+        }
+
+        $attribute = $this->convertor->getAttributeById($conf['attributeId']);
+        if (empty($attribute)) {
+            return;
+        }
+
+        $relColumnName = $mapper->toDb(lcfirst($attribute->getVirtualField('entityType')) . 'Id');
+        $relTableName = $mapper->toDb(MigrationHelper::buildRelationName(
+            'ProductAttributeValue',
+            $conf['attributeId'],
+            $attribute->getVirtualField('entityType')
+        ));
+
+        $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
+
+        /** @var \Doctrine\DBAL\Connection $connection */
+        $connection = $container->get('connection');
+
+        $channelsIds = [''];
+        if (!empty($conf['replaceAttributeValues']) && !empty($conf['channelId'])) {
+            $channelsIds[] = $conf['channelId'];
+        }
+
+        $language = 'main';
+
+        foreach ($channelsIds as $channelId) {
+            $uniqueHash = Util::generateId();
+            $qb1 = $connection->createQueryBuilder()
+                ->select("{$uniqueHash}_rel.$relColumnName")
+                ->from($relTableName, "{$uniqueHash}_rel")
+                ->innerJoin("{$uniqueHash}_rel", 'product_attribute_value', "{$uniqueHash}_pav",
+                    "{$uniqueHash}_pav.id={$uniqueHash}_rel.product_attribute_value_id")
+                ->where("{$uniqueHash}_pav.attribute_id = :{$uniqueHash}_attributeId")
+                ->andWhere("{$uniqueHash}_pav.deleted = :false")
+                ->andWhere("{$uniqueHash}_rel.deleted = :false")
+                ->andWhere("{$uniqueHash}_pav.channel_id = :{$uniqueHash}_channelId")
+                ->andWhere("{$uniqueHash}_pav.language = :{$uniqueHash}_language")
+                ->andWhere("{$uniqueHash}_pav.product_id = mt_alias.id")
+                ->setParameter("{$uniqueHash}_attributeId", $conf['attributeId'])
+                ->setParameter("{$uniqueHash}_channelId", $channelId)
+                ->setParameter("{$uniqueHash}_language", $language)
+                ->setParameter("false", false, ParameterType::BOOLEAN);
+
+            $innerSql = str_replace('mt_alias', $mtAlias, $qb1->getSQL());
+
+            if (Converter::isPgSQL($container->get('connection'))) {
+                $qb->addSelect("(SELECT string_agg({$uniqueHash}_c.$relColumnName::text, ',') FROM ($innerSql) AS {$uniqueHash}_c) AS {$conf['id']}_{$channelId}_{$language}");
+            } else {
+                $qb->addSelect("(SELECT GROUP_CONCAT({$uniqueHash}_c.$relColumnName SEPARATOR ',') FROM ($innerSql) AS {$uniqueHash}_c) AS {$conf['id']}_{$channelId}_{$language}");
+            }
+
+            foreach ($qb1->getParameters() as $pName => $pValue) {
+                $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
+            }
+        }
+    }
+
     public function queryCallback(Container $container, QueryBuilder $qb, Mapper $mapper, array $configuration): void
     {
         if (!empty($configuration['attributeId'])) {
@@ -255,17 +319,27 @@ class LinkMultipleType extends LinkType
             throw new \Error('No configuration id found.');
         }
 
-        $relEntityType = $this->getMetadata()->get(['entityDefs', $entity, 'links', $field, 'entity']);
+        $relEntityType = $this->getForeignEntityName($entity, $field);
 
         // load to memory
         $this->loadToMemory($relEntityType, $configuration);
 
         $collection = new EntityCollection([], $relEntityType);
-        if (!empty($record['_entity']->rowData[$configuration['id']])) {
-            $ids = explode(',', $record['_entity']->rowData[$configuration['id']]);
-            foreach ($ids as $id) {
-                if ($id && trim($id) !== '') {
-                    $collection->append($this->getMemoryStorage()->get($this->createKey($configuration['id'], $id)));
+        if (!empty($configuration['attributeId'])) {
+            if (!empty($record[$configuration['field']])) {
+                foreach (explode(',', $record[$configuration['field']]) as $id) {
+                    if ($id && trim($id) !== '') {
+                        $collection->append($this->getMemoryStorage()->get($this->createKey($configuration['id'], $id)));
+                    }
+                }
+            }
+        } else {
+            if (!empty($record['_entity']->rowData[$configuration['id']])) {
+                $ids = explode(',', $record['_entity']->rowData[$configuration['id']]);
+                foreach ($ids as $id) {
+                    if ($id && trim($id) !== '') {
+                        $collection->append($this->getMemoryStorage()->get($this->createKey($configuration['id'], $id)));
+                    }
                 }
             }
         }
@@ -285,10 +359,20 @@ class LinkMultipleType extends LinkType
 
         $ids = [];
         foreach ($this->getMemoryStorage()->get('exportRecordsPart') ?? [] as $record) {
-            if (!empty($record['_entity']->rowData[$configuration['id']])) {
-                foreach (explode(',', $record['_entity']->rowData[$configuration['id']]) as $id) {
-                    if ($id && trim($id) !== '' && !in_array($id, $ids)) {
-                        $ids[] = $id;
+            if (!empty($configuration['attributeId'])) {
+                if (!empty($record[$configuration['field']])) {
+                    foreach (explode(',', $record[$configuration['field']]) as $id) {
+                        if ($id && trim($id) !== '' && !in_array($id, $ids)) {
+                            $ids[] = $id;
+                        }
+                    }
+                }
+            } else {
+                if (!empty($record['_entity']->rowData[$configuration['id']])) {
+                    foreach (explode(',', $record['_entity']->rowData[$configuration['id']]) as $id) {
+                        if ($id && trim($id) !== '' && !in_array($id, $ids)) {
+                            $ids[] = $id;
+                        }
                     }
                 }
             }

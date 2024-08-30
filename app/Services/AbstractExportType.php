@@ -503,7 +503,6 @@ abstract class AbstractExportType extends Base
                             break;
                         case 'array':
                         case 'extensibleMultiEnum':
-                        case 'linkMultiple':
                             if (!empty($record[$conf['field']]) && is_string($record[$conf['field']])) {
                                 $record[$conf['field']] = @json_decode($record[$conf['field']], true);
                             }
