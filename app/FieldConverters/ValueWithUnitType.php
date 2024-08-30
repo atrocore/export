@@ -132,7 +132,7 @@ class ValueWithUnitType extends AbstractType
             }
         }
 
-        $valueTo = $valueParts[1] === 'N/A' ? null : $valueParts[1];
+        $valueTo = !isset($valueParts[1]) || $valueParts[1] === 'N/A' ? null : $valueParts[1];
         if ($valueTo !== null) {
             switch ($type) {
                 case 'float':
@@ -147,7 +147,7 @@ class ValueWithUnitType extends AbstractType
         return [
             $valueFrom,
             $valueTo,
-            !empty($valueParts[2]) && $valueParts[2] === 'N/A' ? null : $valueParts[2]
+            !isset($valueParts[2]) || $valueParts[2] === 'N/A' ? null : $valueParts[2]
         ];
     }
 
