@@ -106,20 +106,6 @@ abstract class AbstractExportType extends Base
         return array_values($configuration);
     }
 
-    public function getCount(array $data): ?int
-    {
-        $this->setData($data);
-
-        if (!empty($this->data['feed']['entity']) && $this->getAcl()->check($this->data['feed']['entity'], 'read')) {
-            $result = $this->getEntityService()->findEntities($this->getSelectParams());
-            if (array_key_exists('total', $result) && $result['total'] > 0) {
-                return $result['total'];
-            }
-        }
-
-        return null;
-    }
-
     public function export(array $data, ExportJob $exportJob): File
     {
         $this->setData($data);
@@ -130,7 +116,7 @@ abstract class AbstractExportType extends Base
 
     abstract public function runExport(ExportJob $exportJob): File;
 
-    protected function setData(array $data): void
+    public function setData(array $data): void
     {
         $this->data = Json::decode(Json::encode($data), true);
     }
@@ -282,7 +268,7 @@ abstract class AbstractExportType extends Base
         return $params;
     }
 
-    protected function getTotal(): int
+    public function getTotal(): int
     {
         if (!empty($this->data['feed']['separateJob']) && !empty($this->iteration)) {
             return 0;
@@ -427,13 +413,69 @@ abstract class AbstractExportType extends Base
             return $res;
         }
 
+        $limit = $this->data['limit'];
+        $offset = $this->data['offset'];
+
+        if (empty($this->data['separateJob']) && $limit < $total) {
+            $priority = empty($this->data['feed']['priority']) ? 'Normal' : (string)$this->data['feed']['priority'];
+            $qmIds = [];
+            $i = 1;
+            while ($offset < $total) {
+                $jobName = $this->data['feed']['name'] . " Chunk #$i";
+
+                $subData = $this->data;
+                $subData['offset'] = $offset;
+
+                $qmIds[] = $this->getContainer()->get('queueManager')
+                    ->createQueueItem($jobName, 'ExportChunk', $subData, $priority);
+                $offset = $offset + $limit;
+                $i++;
+            }
+
+            if (empty($qmIds)) {
+                throw new Error("Something wrong. System can't create any export chunk job.");
+            }
+
+            while (true) {
+                $queueItems = $this->getEntityManager()->getRepository('QueueItem')
+                    ->where(['id' => $qmIds])
+                    ->find();
+
+                if (empty($queueItems[0])) {
+                    break;
+                }
+
+                $success = true;
+                foreach ($queueItems as $queueItem) {
+                    if ($queueItem->get('status') === 'Failed') {
+                        throw new BadRequest($queueItem->get('message'));
+                    }
+
+                    if ($queueItem->get('status') === 'Canceled') {
+                        throw new Error("Export chunk job has been canceled.");
+                    }
+
+                    if ($queueItem->get('status') !== 'Success') {
+                        $success = false;
+                    }
+                }
+
+                if ($success) {
+                    break;
+                }
+
+                sleep(3);
+            }
+
+            echo '<pre>';
+            print_r($queueItems->toArray());
+            die();
+        }
+
         // clearing file if it needs
         file_put_contents($res['fullFileName'], '');
 
         $file = fopen($res['fullFileName'], 'a');
-
-        $limit = $this->data['limit'];
-        $offset = $this->data['offset'];
 
         while (!empty($records = $this->getRecords($offset, $limit))) {
             $this->prepareRecordsForProductAttributes($attributesConfiguratorItems, $records);
