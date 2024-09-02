@@ -263,22 +263,10 @@ abstract class AbstractExportType extends Base
         }
     }
 
-    protected function getRecords(int $offset = 0): array
+    protected function prepareSelectParams():array
     {
-        if (!empty($this->data['feed']['separateJob']) && !empty($this->iteration)) {
-            return [];
-        }
-
-        if (!$this->getAcl()->check($this->data['feed']['entity'], 'read')) {
-            return [];
-        }
-
         $params = $this->getSelectParams();
-        $params['disableCount'] = true;
-        $params['offset'] = $offset;
-        $params['maxSize'] = $this->data['limit'];
         $params['withDeleted'] = !empty($this->data['feed']['data']['withDeleted']);
-        $params['queryCallbacks'][] = [$this, 'queryCallback'];
 
         if (!empty($this->data['feed']['sortOrderField'])) {
             $params['sortBy'] = $this->data['feed']['sortOrderField'];
@@ -290,6 +278,41 @@ abstract class AbstractExportType extends Base
                 $params['asc'] = false;
             }
         }
+
+        return $params;
+    }
+
+    protected function getTotal(): int
+    {
+        if (!empty($this->data['feed']['separateJob']) && !empty($this->iteration)) {
+            return 0;
+        }
+
+        if (!$this->getAcl()->check($this->data['feed']['entity'], 'read')) {
+            return 0;
+        }
+
+        $params = $this->prepareSelectParams();
+        $params['totalOnly'] = true;
+
+        return $this->getEntityService()->findEntities($params)['total'] ?? 0;
+    }
+
+    protected function getRecords(int $offset, int $limit): array
+    {
+        if (!empty($this->data['feed']['separateJob']) && !empty($this->iteration)) {
+            return [];
+        }
+
+        if (!$this->getAcl()->check($this->data['feed']['entity'], 'read')) {
+            return [];
+        }
+
+        $params = $this->prepareSelectParams();
+        $params['disableCount'] = true;
+        $params['offset'] = $offset;
+        $params['maxSize'] = $limit;
+        $params['queryCallbacks'][] = [$this, 'queryCallback'];
 
         /**
          * Set language prism via prism filter
@@ -399,6 +422,11 @@ abstract class AbstractExportType extends Base
 
         $this->getMemoryStorage()->set('exportConfiguration', $res['configuration']);
 
+        $total = $this->getTotal();
+        if (empty($total)) {
+            return $res;
+        }
+
         // clearing file if it needs
         file_put_contents($res['fullFileName'], '');
 
@@ -407,7 +435,7 @@ abstract class AbstractExportType extends Base
         $limit = $this->data['limit'];
         $offset = $this->data['offset'];
 
-        while (!empty($records = $this->getRecords($offset))) {
+        while (!empty($records = $this->getRecords($offset, $limit))) {
             $this->prepareRecordsForProductAttributes($attributesConfiguratorItems, $records);
             $this->getMemoryStorage()->set('exportRecordsPartOffset', $offset);
             $this->getMemoryStorage()->set('exportRecordsPart', $records);
