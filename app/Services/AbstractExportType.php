@@ -36,8 +36,7 @@ use Export\Entities\ExportJob;
 
 abstract class AbstractExportType extends Base
 {
-    public const TMP_DIR = 'upload' . DIRECTORY_SEPARATOR . '.tmp';
-
+    public const TMP_DIR = 'data' . DIRECTORY_SEPARATOR . '.tmp-export';
 
     protected array $data;
 
