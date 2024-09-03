@@ -588,20 +588,16 @@ abstract class AbstractExportType extends Base
                 $preparedFileName = $fileName = basename($path);
 
                 if (!empty($zipFileData['fileNameTemplate'])) {
-                    $parts = explode('.', $fileName);
-                    $ext = array_pop($parts);
-
                     $templateData = $zipFileData['templateData'];
                     $templateData['currentNumber'] = $fileNumber;
                     $templateData['fileName'] = $fileName;
                     $templateData['entity'] = null;
 
-                    $newFileName = $this->getTwig()
-                        ->renderTemplate((string)$zipFileData['fileNameTemplate'], $templateData);
-
-                    if (!empty($newFileName)) {
-                        $preparedFileName = $newFileName . '.' . $ext;
-                    }
+                    $preparedFileName = $this->createZipFileName(
+                        $fileName,
+                        $zipFileData['fileNameTemplate'],
+                        $templateData
+                    );
                 }
 
                 try {
@@ -614,6 +610,22 @@ abstract class AbstractExportType extends Base
         }
 
         return $res;
+    }
+
+    protected function createZipFileName(string $fileName, string $fileNameTemplate, array $templateData): string
+    {
+        $preparedFileName = $fileName;
+
+        $parts = explode('.', $fileName);
+        $ext = array_pop($parts);
+
+        $newFileName = $this->getTwig()->renderTemplate($fileNameTemplate, $templateData);
+
+        if (!empty($newFileName)) {
+            $preparedFileName = $newFileName . '.' . $ext;
+        }
+
+        return $preparedFileName;
     }
 
     protected function createCacheFile(): array
@@ -688,19 +700,18 @@ abstract class AbstractExportType extends Base
                             $preparedFileName = $fileName = basename($path);
 
                             if (!empty($row['fileNameTemplate'])) {
-                                $parts = explode('.', $fileName);
-                                $ext = array_pop($parts);
-
-                                $newFileName = $this->getTwig()->renderTemplate((string)$row['fileNameTemplate'], [
+                                $templateData = [
                                     'currentNumber' => $fileNumber,
-                                    'fileName'      => implode('.', $parts),
+                                    'fileName'      => $fileName,
                                     'entity'        => $record['_entity'] ?? null,
                                     'entityId'      => $record['id']
-                                ]);
+                                ];
 
-                                if (!empty($newFileName)) {
-                                    $preparedFileName = $newFileName . '.' . $ext;
-                                }
+                                $preparedFileName = $this->createZipFileName(
+                                    $fileName,
+                                    $row['fileNameTemplate'],
+                                    $templateData
+                                );
                             }
 
                             try {
