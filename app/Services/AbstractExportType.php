@@ -389,7 +389,6 @@ abstract class AbstractExportType extends Base
     {
         $this->convertor = $this->getDataConvertor();
 
-        $zipDir = $this->getZipTmpDir();
         $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
         Util::createDir($tmpDir);
         $fileName = Util::generateId() . ".txt";
@@ -433,7 +432,7 @@ abstract class AbstractExportType extends Base
                     $result = $this->convertor->convert($record, $row);
                     if ($row['zip'] && isset($result['__fileEntities'])) {
                         foreach ($result['__fileEntities'] as $fileEntity) {
-                            $path = $fileEntity->findOrCreateLocalFilePath($zipDir);
+                            $path = $fileEntity->findOrCreateLocalFilePath($this->getZipTmpDir());
                             if (!file_exists($path)) {
                                 throw new BadRequest("File '{$path}' does not exist.");
                             }
@@ -588,21 +587,17 @@ abstract class AbstractExportType extends Base
                 $fileNumber++;
                 $preparedFileName = $fileName = basename($path);
 
-                if (!empty($row['fileNameTemplate'])) {
-                    $parts = explode('.', $fileName);
-                    $ext = array_pop($parts);
-
+                if (!empty($zipFileData['fileNameTemplate'])) {
                     $templateData = $zipFileData['templateData'];
                     $templateData['currentNumber'] = $fileNumber;
                     $templateData['fileName'] = $fileName;
                     $templateData['entity'] = null;
 
-                    $newFileName = $this->getTwig()
-                        ->renderTemplate((string)$zipFileData['fileNameTemplate'], $templateData);
-
-                    if (!empty($newFileName)) {
-                        $preparedFileName = $newFileName . '.' . $ext;
-                    }
+                    $preparedFileName = $this->createZipFileName(
+                        $fileName,
+                        $zipFileData['fileNameTemplate'],
+                        $templateData
+                    );
                 }
 
                 try {
@@ -615,6 +610,22 @@ abstract class AbstractExportType extends Base
         }
 
         return $res;
+    }
+
+    protected function createZipFileName(string $fileName, string $fileNameTemplate, array $templateData): string
+    {
+        $preparedFileName = $fileName;
+
+        $parts = explode('.', $fileName);
+        $ext = array_pop($parts);
+
+        $newFileName = $this->getTwig()->renderTemplate($fileNameTemplate, $templateData);
+
+        if (!empty($newFileName)) {
+            $preparedFileName = $newFileName . '.' . $ext;
+        }
+
+        return $preparedFileName;
     }
 
     protected function createCacheFile(): array
@@ -631,7 +642,6 @@ abstract class AbstractExportType extends Base
             return $this->createCacheFileByChunks($total);
         }
 
-        $zipDir = $this->getZipTmpDir();
         $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
         Util::createDir($tmpDir);
         $fileName = Util::generateId() . ".txt";
@@ -664,11 +674,12 @@ abstract class AbstractExportType extends Base
 
         $file = fopen($res['fullFileName'], 'a');
 
-        while (!empty($records = $this->getRecords($offset, $limit))) {
+        $records = $this->getRecords($offset, $limit);
+
+        if (!empty($records)) {
             $this->prepareRecordsForProductAttributes($attributesConfiguratorItems, $records);
             $this->getMemoryStorage()->set('exportRecordsPartOffset', $offset);
             $this->getMemoryStorage()->set('exportRecordsPart', $records);
-            $offset = $offset + $limit;
             foreach ($records as $record) {
                 $rowData = [];
                 foreach ($res['configuration'] as $row) {
@@ -680,10 +691,8 @@ abstract class AbstractExportType extends Base
                             $this->zipArchive->addEmptyDir($base_dir);
                         }
                         $fileNumber = 0;
-                        /* @var $fileEntity File */
                         foreach ($result['__fileEntities'] as $fileEntity) {
-                            $path = $fileEntity->findOrCreateLocalFilePath($zipDir);
-
+                            $path = $fileEntity->findOrCreateLocalFilePath($this->getZipTmpDir());
                             if (!file_exists($path)) {
                                 throw new BadRequest("File '{$path}' does not exist.");
                             }
@@ -691,19 +700,18 @@ abstract class AbstractExportType extends Base
                             $preparedFileName = $fileName = basename($path);
 
                             if (!empty($row['fileNameTemplate'])) {
-                                $parts = explode('.', $fileName);
-                                $ext = array_pop($parts);
-
-                                $newFileName = $this->getTwig()->renderTemplate((string)$row['fileNameTemplate'], [
+                                $templateData = [
                                     'currentNumber' => $fileNumber,
-                                    'fileName'      => implode('.', $parts),
+                                    'fileName'      => $fileName,
                                     'entity'        => $record['_entity'] ?? null,
                                     'entityId'      => $record['id']
-                                ]);
+                                ];
 
-                                if (!empty($newFileName)) {
-                                    $preparedFileName = $newFileName . '.' . $ext;
-                                }
+                                $preparedFileName = $this->createZipFileName(
+                                    $fileName,
+                                    $row['fileNameTemplate'],
+                                    $templateData
+                                );
                             }
 
                             try {
@@ -722,7 +730,6 @@ abstract class AbstractExportType extends Base
                 fwrite($file, Json::encode($rowData) . PHP_EOL);
                 $res['count']++;
             }
-            $this->convertor->clearMemoryOfLoadedEntities();
         }
 
         fclose($file);
