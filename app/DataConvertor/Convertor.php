@@ -91,23 +91,6 @@ class Convertor
         return $this->getService($scope)->getEntity($id);
     }
 
-    public function clearMemoryOfLoadedEntities(): void
-    {
-        foreach ($this->getMemoryStorage()->get(LinkType::MEMORY_KEY) ?? [] as $keys) {
-            foreach ($keys as $key) {
-                $this->getMemoryStorage()->delete($key);
-            }
-        }
-        $this->getMemoryStorage()->delete(LinkType::MEMORY_KEY);
-
-        foreach ($this->getMemoryStorage()->get(LinkType::MEMORY_EXPORT_BY_KEY) ?? [] as $keys) {
-            foreach ($keys as $key) {
-                $this->getMemoryStorage()->delete($key);
-            }
-        }
-        $this->getMemoryStorage()->delete(LinkType::MEMORY_EXPORT_BY_KEY);
-    }
-
     public function getMemoryStorage(): StorageInterface
     {
         return $this->container->get('memoryStorage');

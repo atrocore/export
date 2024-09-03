@@ -664,11 +664,12 @@ abstract class AbstractExportType extends Base
 
         $file = fopen($res['fullFileName'], 'a');
 
-        while (!empty($records = $this->getRecords($offset, $limit))) {
+        $records = $this->getRecords($offset, $limit);
+
+        if (!empty($records)) {
             $this->prepareRecordsForProductAttributes($attributesConfiguratorItems, $records);
             $this->getMemoryStorage()->set('exportRecordsPartOffset', $offset);
             $this->getMemoryStorage()->set('exportRecordsPart', $records);
-            $offset = $offset + $limit;
             foreach ($records as $record) {
                 $rowData = [];
                 foreach ($res['configuration'] as $row) {
@@ -680,10 +681,8 @@ abstract class AbstractExportType extends Base
                             $this->zipArchive->addEmptyDir($base_dir);
                         }
                         $fileNumber = 0;
-                        /* @var $fileEntity File */
                         foreach ($result['__fileEntities'] as $fileEntity) {
                             $path = $fileEntity->findOrCreateLocalFilePath($zipDir);
-
                             if (!file_exists($path)) {
                                 throw new BadRequest("File '{$path}' does not exist.");
                             }
@@ -722,7 +721,6 @@ abstract class AbstractExportType extends Base
                 fwrite($file, Json::encode($rowData) . PHP_EOL);
                 $res['count']++;
             }
-            $this->convertor->clearMemoryOfLoadedEntities();
         }
 
         fclose($file);
