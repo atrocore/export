@@ -378,6 +378,13 @@ abstract class AbstractExportType extends Base
         return null;
     }
 
+    /**
+     * Function creates separate cache file. Major worker will collect all parts into ine file.
+     *
+     * @return array
+     * @throws BadRequest
+     * @throws Error
+     */
     public function createCacheChunk(): array
     {
         $this->convertor = $this->getDataConvertor();
@@ -455,6 +462,14 @@ abstract class AbstractExportType extends Base
         ];
     }
 
+    /**
+     * Function split major job to separate jobs. When separate jobs will be finished major jobs create major cache file from the chunks cache files. That was developed for increase export speed.
+     *
+     * @param int $total
+     * @return array
+     * @throws BadRequest
+     * @throws Error
+     */
     protected function createCacheFileByChunks(int $total): array
     {
         $limit = $this->data['limit'];
