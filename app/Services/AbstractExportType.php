@@ -378,8 +378,173 @@ abstract class AbstractExportType extends Base
         return null;
     }
 
+    public function createCacheChunk(): array
+    {
+        $this->convertor = $this->getDataConvertor();
+
+        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        Util::createDir($tmpDir);
+        $fileName = Util::generateId() . ".txt";
+
+        /**
+         * Set language prism
+         */
+        if (!empty($this->data['feed']['language'])) {
+            $GLOBALS['languagePrism'] = $this->data['feed']['language'];
+        }
+
+        $configuration = [];
+        $attributesConfiguratorItems = [];
+        foreach ($this->data['feed']['data']['configuration'] as $rowNumber => $row) {
+            $configuration[$rowNumber] = $this->prepareRow($row);
+            if (!empty($row['attributeId'])) {
+                $attributesConfiguratorItems[] = $configuration[$rowNumber];
+            }
+        }
+
+        $this->getMemoryStorage()->set('exportConfiguration', $configuration);
+
+        $fullFileName = $tmpDir . DIRECTORY_SEPARATOR . $fileName;
+
+        // clearing file if it needs
+        file_put_contents($fullFileName, '');
+
+        $file = fopen($fullFileName, 'a');
+
+        $records = $this->getRecords($this->data['offset'], $this->data['limit']);
+
+        if (!empty($records)) {
+            $this->prepareRecordsForProductAttributes($attributesConfiguratorItems, $records);
+            $this->getMemoryStorage()->set('exportRecordsPartOffset', $this->data['offset']);
+            $this->getMemoryStorage()->set('exportRecordsPart', $records);
+            foreach ($records as $record) {
+                $rowData = [];
+                foreach ($configuration as $row) {
+                    $result = $this->convertor->convert($record, $row);
+                    $rowData[] = $result;
+                }
+                fwrite($file, Json::encode($rowData) . PHP_EOL);
+            }
+        }
+        fclose($file);
+
+        return [
+            'fileName' => $fullFileName
+        ];
+    }
+
+    protected function createCacheFileByChunks(int $total): array
+    {
+        $limit = $this->data['limit'];
+        $offset = $this->data['offset'];
+
+        $priority = empty($this->data['feed']['priority']) ? 'Normal' : (string)$this->data['feed']['priority'];
+        $qmIds = [];
+        $i = 1;
+        while ($offset < $total) {
+            $jobName = $this->data['feed']['name'] . " Chunk #$i";
+
+            $subData = $this->data;
+            $subData['offset'] = $offset;
+            $subData['itemNo'] = $i;
+
+            $qmIds[] = $this->getContainer()->get('queueManager')
+                ->createQueueItem($jobName, 'ExportChunk', $subData, $priority);
+            $offset = $offset + $limit;
+            $i++;
+        }
+
+        if (empty($qmIds)) {
+            throw new Error("Something wrong. System can't create any export chunk job.");
+        }
+
+        while (true) {
+            $queueItems = $this->getEntityManager()->getRepository('QueueItem')
+                ->where(['id' => $qmIds])
+                ->find();
+
+            if (empty($queueItems[0])) {
+                break;
+            }
+
+            $success = true;
+            foreach ($queueItems as $queueItem) {
+                if ($queueItem->get('status') === 'Failed') {
+                    throw new BadRequest($queueItem->get('message'));
+                }
+
+                if ($queueItem->get('status') === 'Canceled') {
+                    throw new Error("Export chunk job has been canceled.");
+                }
+
+                if ($queueItem->get('status') !== 'Success') {
+                    $success = false;
+                }
+            }
+
+            if ($success) {
+                break;
+            }
+
+            sleep(3);
+        }
+
+        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        Util::createDir($tmpDir);
+        $fileName = Util::generateId() . ".txt";
+
+        $res = [
+            'configuration' => [],
+            'fullFileName'  => $tmpDir . DIRECTORY_SEPARATOR . $fileName,
+            'count'         => 0,
+        ];
+
+        foreach ($this->data['feed']['data']['configuration'] as $rowNumber => $row) {
+            $res['configuration'][$rowNumber] = $this->prepareRow($row);
+        }
+
+        $this->getMemoryStorage()->set('exportConfiguration', $res['configuration']);
+
+        // clearing file if it needs
+        file_put_contents($res['fullFileName'], '');
+
+        $file = fopen($res['fullFileName'], 'a');
+
+        $fileNames = [];
+        foreach ($queueItems as $queueItem) {
+            $fileNames[$queueItem->get('data')->itemNo] = $queueItem->get('data')->chunkFileName;
+        }
+
+        foreach ($fileNames as $fileName) {
+            $cacheFile = fopen($fileName, "r");
+            while (($line = fgets($cacheFile)) !== false) {
+                if (empty($line)) {
+                    continue;
+                }
+                fwrite($file, $line . PHP_EOL);
+                $res['count']++;
+            }
+            fclose($cacheFile);
+        }
+        fclose($file);
+
+        return $res;
+    }
+
     protected function createCacheFile(): array
     {
+        $limit = $this->data['limit'];
+        $offset = $this->data['offset'];
+
+        $total = $this->getTotal();
+        if (empty($total)) {
+            return ['count' => 0];
+        }
+
+        if (empty($this->data['separateJob']) && $limit < $total) {
+            return $this->createCacheFileByChunks($total);
+        }
+
         $zipDir = $this->getZipTmpDir();
         $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
         Util::createDir($tmpDir);
@@ -407,70 +572,6 @@ abstract class AbstractExportType extends Base
         }
 
         $this->getMemoryStorage()->set('exportConfiguration', $res['configuration']);
-
-        $total = $this->getTotal();
-        if (empty($total)) {
-            return $res;
-        }
-
-        $limit = $this->data['limit'];
-        $offset = $this->data['offset'];
-
-        if (empty($this->data['separateJob']) && $limit < $total) {
-            $priority = empty($this->data['feed']['priority']) ? 'Normal' : (string)$this->data['feed']['priority'];
-            $qmIds = [];
-            $i = 1;
-            while ($offset < $total) {
-                $jobName = $this->data['feed']['name'] . " Chunk #$i";
-
-                $subData = $this->data;
-                $subData['offset'] = $offset;
-
-                $qmIds[] = $this->getContainer()->get('queueManager')
-                    ->createQueueItem($jobName, 'ExportChunk', $subData, $priority);
-                $offset = $offset + $limit;
-                $i++;
-            }
-
-            if (empty($qmIds)) {
-                throw new Error("Something wrong. System can't create any export chunk job.");
-            }
-
-            while (true) {
-                $queueItems = $this->getEntityManager()->getRepository('QueueItem')
-                    ->where(['id' => $qmIds])
-                    ->find();
-
-                if (empty($queueItems[0])) {
-                    break;
-                }
-
-                $success = true;
-                foreach ($queueItems as $queueItem) {
-                    if ($queueItem->get('status') === 'Failed') {
-                        throw new BadRequest($queueItem->get('message'));
-                    }
-
-                    if ($queueItem->get('status') === 'Canceled') {
-                        throw new Error("Export chunk job has been canceled.");
-                    }
-
-                    if ($queueItem->get('status') !== 'Success') {
-                        $success = false;
-                    }
-                }
-
-                if ($success) {
-                    break;
-                }
-
-                sleep(3);
-            }
-
-            echo '<pre>';
-            print_r($queueItems->toArray());
-            die();
-        }
 
         // clearing file if it needs
         file_put_contents($res['fullFileName'], '');
