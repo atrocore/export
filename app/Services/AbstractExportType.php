@@ -593,7 +593,7 @@ abstract class AbstractExportType extends Base
 
                     $templateData = $zipFileData['templateData'];
                     $templateData['currentNumber'] = $fileNumber;
-                    $templateData['fileName'] = implode('.', $parts);
+                    $templateData['fileName'] = $fileName;
                     $templateData['entity'] = null;
 
                     $newFileName = $this->getTwig()
