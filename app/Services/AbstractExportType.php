@@ -681,7 +681,9 @@ abstract class AbstractExportType extends Base
                                 $newFileName = $this->getTwig()->renderTemplate((string)$row['fileNameTemplate'], [
                                     'currentNumber' => $fileNumber,
                                     'fileName'      => implode('.', $parts),
-                                    'entity'        => $record['_entity']
+                                    'entity'        => $record['_entity'] ?? null,
+                                    'entityId'      => $record['id'],
+                                    'record'        => $record
                                 ]);
 
                                 if (!empty($newFileName)) {
