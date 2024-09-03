@@ -587,7 +587,7 @@ abstract class AbstractExportType extends Base
                 $fileNumber++;
                 $preparedFileName = $fileName = basename($path);
 
-                if (!empty($row['fileNameTemplate'])) {
+                if (!empty($zipFileData['fileNameTemplate'])) {
                     $parts = explode('.', $fileName);
                     $ext = array_pop($parts);
 
