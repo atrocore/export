@@ -42,7 +42,6 @@ abstract class AbstractExportType extends Base
 
     protected Convertor $convertor;
 
-    private int $iteration = 0;
     protected ?\ZipArchive $zipArchive = null;
     protected $zipFileName = null;
 
@@ -270,10 +269,6 @@ abstract class AbstractExportType extends Base
 
     public function getTotal(): int
     {
-        if (!empty($this->data['feed']['separateJob']) && !empty($this->iteration)) {
-            return 0;
-        }
-
         if (!$this->getAcl()->check($this->data['feed']['entity'], 'read')) {
             return 0;
         }
@@ -286,10 +281,6 @@ abstract class AbstractExportType extends Base
 
     protected function getRecords(int $offset, int $limit): array
     {
-        if (!empty($this->data['feed']['separateJob']) && !empty($this->iteration)) {
-            return [];
-        }
-
         if (!$this->getAcl()->check($this->data['feed']['entity'], 'read')) {
             return [];
         }
@@ -337,8 +328,6 @@ abstract class AbstractExportType extends Base
         if (isset($languagePrism)) {
             $GLOBALS['languagePrism'] = $languagePrism;
         }
-
-        $this->iteration++;
 
         return $list;
     }
