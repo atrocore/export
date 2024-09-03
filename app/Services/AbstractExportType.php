@@ -36,8 +36,7 @@ use Export\Entities\ExportJob;
 
 abstract class AbstractExportType extends Base
 {
-    public const TMP_DIR = 'upload' . DIRECTORY_SEPARATOR . '.tmp';
-
+    public const TMP_DIR = 'data' . DIRECTORY_SEPARATOR . '.tmp-export';
 
     protected array $data;
 
@@ -107,20 +106,6 @@ abstract class AbstractExportType extends Base
         return array_values($configuration);
     }
 
-    public function getCount(array $data): ?int
-    {
-        $this->setData($data);
-
-        if (!empty($this->data['feed']['entity']) && $this->getAcl()->check($this->data['feed']['entity'], 'read')) {
-            $result = $this->getEntityService()->findEntities($this->getSelectParams());
-            if (array_key_exists('total', $result) && $result['total'] > 0) {
-                return $result['total'];
-            }
-        }
-
-        return null;
-    }
-
     public function export(array $data, ExportJob $exportJob): File
     {
         $this->setData($data);
@@ -131,7 +116,7 @@ abstract class AbstractExportType extends Base
 
     abstract public function runExport(ExportJob $exportJob): File;
 
-    protected function setData(array $data): void
+    public function setData(array $data): void
     {
         $this->data = Json::decode(Json::encode($data), true);
     }
@@ -264,22 +249,10 @@ abstract class AbstractExportType extends Base
         }
     }
 
-    protected function getRecords(int $offset = 0): array
+    protected function prepareSelectParams():array
     {
-        if (!empty($this->data['feed']['separateJob']) && !empty($this->iteration)) {
-            return [];
-        }
-
-        if (!$this->getAcl()->check($this->data['feed']['entity'], 'read')) {
-            return [];
-        }
-
         $params = $this->getSelectParams();
-        $params['disableCount'] = true;
-        $params['offset'] = $offset;
-        $params['maxSize'] = $this->data['limit'];
         $params['withDeleted'] = !empty($this->data['feed']['data']['withDeleted']);
-        $params['queryCallbacks'][] = [$this, 'queryCallback'];
 
         if (!empty($this->data['feed']['sortOrderField'])) {
             $params['sortBy'] = $this->data['feed']['sortOrderField'];
@@ -291,6 +264,41 @@ abstract class AbstractExportType extends Base
                 $params['asc'] = false;
             }
         }
+
+        return $params;
+    }
+
+    public function getTotal(): int
+    {
+        if (!empty($this->data['feed']['separateJob']) && !empty($this->iteration)) {
+            return 0;
+        }
+
+        if (!$this->getAcl()->check($this->data['feed']['entity'], 'read')) {
+            return 0;
+        }
+
+        $params = $this->prepareSelectParams();
+        $params['totalOnly'] = true;
+
+        return $this->getEntityService()->findEntities($params)['total'] ?? 0;
+    }
+
+    protected function getRecords(int $offset, int $limit): array
+    {
+        if (!empty($this->data['feed']['separateJob']) && !empty($this->iteration)) {
+            return [];
+        }
+
+        if (!$this->getAcl()->check($this->data['feed']['entity'], 'read')) {
+            return [];
+        }
+
+        $params = $this->prepareSelectParams();
+        $params['disableCount'] = true;
+        $params['offset'] = $offset;
+        $params['maxSize'] = $limit;
+        $params['queryCallbacks'][] = [$this, 'queryCallback'];
 
         /**
          * Set language prism via prism filter
@@ -370,8 +378,261 @@ abstract class AbstractExportType extends Base
         return null;
     }
 
+    /**
+     * Function creates separate cache file. Major worker will collect all parts into ine file.
+     *
+     * @return array
+     * @throws BadRequest
+     * @throws Error
+     */
+    public function createCacheChunk(): array
+    {
+        $this->convertor = $this->getDataConvertor();
+
+        $zipDir = $this->getZipTmpDir();
+        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        Util::createDir($tmpDir);
+        $fileName = Util::generateId() . ".txt";
+
+        /**
+         * Set language prism
+         */
+        if (!empty($this->data['feed']['language'])) {
+            $GLOBALS['languagePrism'] = $this->data['feed']['language'];
+        }
+
+        $configuration = [];
+        $attributesConfiguratorItems = [];
+        foreach ($this->data['feed']['data']['configuration'] as $rowNumber => $row) {
+            $configuration[$rowNumber] = $this->prepareRow($row);
+            if (!empty($row['attributeId'])) {
+                $attributesConfiguratorItems[] = $configuration[$rowNumber];
+            }
+        }
+
+        $this->getMemoryStorage()->set('exportConfiguration', $configuration);
+
+        $fullFileName = $tmpDir . DIRECTORY_SEPARATOR . $fileName;
+
+        // clearing file if it needs
+        file_put_contents($fullFileName, '');
+
+        $file = fopen($fullFileName, 'a');
+
+        $records = $this->getRecords($this->data['offset'], $this->data['limit']);
+
+        $files = [];
+
+        if (!empty($records)) {
+            $this->prepareRecordsForProductAttributes($attributesConfiguratorItems, $records);
+            $this->getMemoryStorage()->set('exportRecordsPartOffset', $this->data['offset']);
+            $this->getMemoryStorage()->set('exportRecordsPart', $records);
+            foreach ($records as $record) {
+                $rowData = [];
+                foreach ($configuration as $row) {
+                    $result = $this->convertor->convert($record, $row);
+                    if ($row['zip'] && isset($result['__fileEntities'])) {
+                        foreach ($result['__fileEntities'] as $fileEntity) {
+                            $path = $fileEntity->findOrCreateLocalFilePath($zipDir);
+                            if (!file_exists($path)) {
+                                throw new BadRequest("File '{$path}' does not exist.");
+                            }
+                            $files[] = [
+                                'column'           => $row['column'],
+                                'path'             => $path,
+                                'fileNameTemplate' => $row['fileNameTemplate'] ?? null,
+                                'templateData'     => [
+                                    'entityId' => $record['id'],
+                                    'record'   => $record
+                                ]
+                            ];
+                        }
+                        unset($result['__fileEntities']);
+                    }
+                    $rowData[] = $result;
+                }
+                fwrite($file, Json::encode($rowData) . PHP_EOL);
+            }
+        }
+        fclose($file);
+
+        return [
+            'fileName' => $fullFileName,
+            'files'    => $files
+        ];
+    }
+
+    /**
+     * Function split major job to separate jobs. When separate jobs will be finished major jobs create major cache file from the chunks cache files. That was developed for increase export speed.
+     *
+     * @param int $total
+     * @return array
+     * @throws BadRequest
+     * @throws Error
+     */
+    protected function createCacheFileByChunks(int $total): array
+    {
+        $limit = $this->data['limit'];
+        $offset = $this->data['offset'];
+
+        $priority = empty($this->data['feed']['priority']) ? 'Normal' : (string)$this->data['feed']['priority'];
+        $qmIds = [];
+        $i = 1;
+        while ($offset < $total) {
+            $jobName = $this->data['feed']['name'] . " Chunk #$i";
+
+            $subData = $this->data;
+            $subData['offset'] = $offset;
+            $subData['itemNo'] = $i;
+
+            $qmIds[] = $this->getContainer()->get('queueManager')
+                ->createQueueItem($jobName, 'ExportChunk', $subData, $priority);
+            $offset = $offset + $limit;
+            $i++;
+        }
+
+        if (empty($qmIds)) {
+            throw new Error("Something wrong. System can't create any export chunk job.");
+        }
+
+        while (true) {
+            $queueItems = $this->getEntityManager()->getRepository('QueueItem')
+                ->where(['id' => $qmIds])
+                ->find();
+
+            if (empty($queueItems[0])) {
+                break;
+            }
+
+            $success = true;
+            foreach ($queueItems as $queueItem) {
+                if ($queueItem->get('status') === 'Failed') {
+                    throw new BadRequest($queueItem->get('message'));
+                }
+
+                if ($queueItem->get('status') === 'Canceled') {
+                    throw new Error("Export chunk job has been canceled.");
+                }
+
+                if ($queueItem->get('status') !== 'Success') {
+                    $success = false;
+                }
+            }
+
+            if ($success) {
+                break;
+            }
+
+            sleep(3);
+        }
+
+        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        Util::createDir($tmpDir);
+        $fileName = Util::generateId() . ".txt";
+
+        $res = [
+            'configuration' => [],
+            'fullFileName'  => $tmpDir . DIRECTORY_SEPARATOR . $fileName,
+            'count'         => 0,
+        ];
+
+        foreach ($this->data['feed']['data']['configuration'] as $rowNumber => $row) {
+            $res['configuration'][$rowNumber] = $this->prepareRow($row);
+        }
+
+        $this->getMemoryStorage()->set('exportConfiguration', $res['configuration']);
+
+        // clearing file if it needs
+        file_put_contents($res['fullFileName'], '');
+
+        $file = fopen($res['fullFileName'], 'a');
+
+        $fileNames = [];
+        $zipFilesData = [];
+        foreach ($queueItems as $queueItem) {
+            if (empty($queueItem->get('data')->chunkFileName)) {
+                continue;
+            }
+            $fileNames[$queueItem->get('data')->offset] = $queueItem->get('data')->chunkFileName;
+            foreach ($queueItem->get('data')->files ?? [] as $fileRec) {
+                $zipFilesData[] = json_decode(json_encode($fileRec), true);
+            }
+        }
+        ksort($fileNames);
+
+        foreach ($fileNames as $fileName) {
+            $cacheFile = fopen($fileName, "r");
+            while (($line = fgets($cacheFile)) !== false) {
+                if (empty($line)) {
+                    continue;
+                }
+                fwrite($file, $line . PHP_EOL);
+                $res['count']++;
+            }
+            fclose($cacheFile);
+
+            // delete chunk cache file
+            @unlink($fileName);
+        }
+        fclose($file);
+
+        if (!empty($zipFilesData)) {
+            $fileNumber = 0;
+
+            foreach ($zipFilesData as $zipFileData) {
+                $base_dir = ($this->data['zipPath'] ?? '') . $zipFileData['column'] . '/';
+                if (!$this->zipArchive->locateName($base_dir)) {
+                    $this->zipArchive->addEmptyDir($base_dir);
+                }
+
+                $path = $zipFileData['path'];
+
+                $fileNumber++;
+                $preparedFileName = $fileName = basename($path);
+
+                if (!empty($row['fileNameTemplate'])) {
+                    $parts = explode('.', $fileName);
+                    $ext = array_pop($parts);
+
+                    $templateData = $zipFileData['templateData'];
+                    $templateData['currentNumber'] = $fileNumber;
+                    $templateData['fileName'] = $fileName;
+                    $templateData['entity'] = null;
+
+                    $newFileName = $this->getTwig()
+                        ->renderTemplate((string)$zipFileData['fileNameTemplate'], $templateData);
+
+                    if (!empty($newFileName)) {
+                        $preparedFileName = $newFileName . '.' . $ext;
+                    }
+                }
+
+                try {
+                    $this->zipArchive->addFile($path, $base_dir . $preparedFileName);
+                } catch (\Throwable $e) {
+                    $GLOBALS['log']->error('Export ZIP Error: ' . $e->getMessage());
+                    $this->zipArchive->addFile($path, $base_dir . $fileName);
+                }
+            }
+        }
+
+        return $res;
+    }
+
     protected function createCacheFile(): array
     {
+        $limit = $this->data['limit'];
+        $offset = $this->data['offset'];
+
+        $total = $this->getTotal();
+        if (empty($total)) {
+            return ['count' => 0];
+        }
+
+        if (empty($this->data['separateJob']) && $limit < $total) {
+            return $this->createCacheFileByChunks($total);
+        }
+
         $zipDir = $this->getZipTmpDir();
         $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
         Util::createDir($tmpDir);
@@ -405,10 +666,7 @@ abstract class AbstractExportType extends Base
 
         $file = fopen($res['fullFileName'], 'a');
 
-        $limit = $this->data['limit'];
-        $offset = $this->data['offset'];
-
-        while (!empty($records = $this->getRecords($offset))) {
+        while (!empty($records = $this->getRecords($offset, $limit))) {
             $this->prepareRecordsForProductAttributes($attributesConfiguratorItems, $records);
             $this->getMemoryStorage()->set('exportRecordsPartOffset', $offset);
             $this->getMemoryStorage()->set('exportRecordsPart', $records);
@@ -441,7 +699,9 @@ abstract class AbstractExportType extends Base
                                 $newFileName = $this->getTwig()->renderTemplate((string)$row['fileNameTemplate'], [
                                     'currentNumber' => $fileNumber,
                                     'fileName'      => implode('.', $parts),
-                                    'entity'        => $record['_entity']
+                                    'entity'        => $record['_entity'] ?? null,
+                                    'entityId'      => $record['id'],
+                                    'record'        => $record
                                 ]);
 
                                 if (!empty($newFileName)) {

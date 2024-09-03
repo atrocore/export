@@ -15,6 +15,7 @@ namespace Export;
 
 use Atro\Core\OpenApiGenerator;
 use Atro\Core\ModuleManager\AbstractModule;
+use Espo\Core\Utils\Util;
 
 /**
  * Class Module
@@ -27,6 +28,11 @@ class Module extends AbstractModule
     public static function getLoadOrder(): int
     {
         return 5140;
+    }
+
+    public static function afterUpdate(): void
+    {
+        Util::removeDir(\Export\Services\AbstractExportType::TMP_DIR);
     }
 
     public function prepareApiDocs(array &$data, array $schemas): void
