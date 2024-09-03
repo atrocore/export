@@ -389,7 +389,6 @@ abstract class AbstractExportType extends Base
     {
         $this->convertor = $this->getDataConvertor();
 
-        $zipDir = $this->getZipTmpDir();
         $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
         Util::createDir($tmpDir);
         $fileName = Util::generateId() . ".txt";
@@ -433,7 +432,7 @@ abstract class AbstractExportType extends Base
                     $result = $this->convertor->convert($record, $row);
                     if ($row['zip'] && isset($result['__fileEntities'])) {
                         foreach ($result['__fileEntities'] as $fileEntity) {
-                            $path = $fileEntity->findOrCreateLocalFilePath($zipDir);
+                            $path = $fileEntity->findOrCreateLocalFilePath($this->getZipTmpDir());
                             if (!file_exists($path)) {
                                 throw new BadRequest("File '{$path}' does not exist.");
                             }
@@ -631,7 +630,6 @@ abstract class AbstractExportType extends Base
             return $this->createCacheFileByChunks($total);
         }
 
-        $zipDir = $this->getZipTmpDir();
         $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
         Util::createDir($tmpDir);
         $fileName = Util::generateId() . ".txt";
@@ -682,7 +680,7 @@ abstract class AbstractExportType extends Base
                         }
                         $fileNumber = 0;
                         foreach ($result['__fileEntities'] as $fileEntity) {
-                            $path = $fileEntity->findOrCreateLocalFilePath($zipDir);
+                            $path = $fileEntity->findOrCreateLocalFilePath($this->getZipTmpDir());
                             if (!file_exists($path)) {
                                 throw new BadRequest("File '{$path}' does not exist.");
                             }
