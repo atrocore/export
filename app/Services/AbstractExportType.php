@@ -442,8 +442,7 @@ abstract class AbstractExportType extends Base
                                 'path'             => $path,
                                 'fileNameTemplate' => $row['fileNameTemplate'] ?? null,
                                 'templateData'     => [
-                                    'entityId' => $record['id'],
-                                    'record'   => $record
+                                    'entityId' => $record['id']
                                 ]
                             ];
                         }
@@ -483,7 +482,6 @@ abstract class AbstractExportType extends Base
 
             $subData = $this->data;
             $subData['offset'] = $offset;
-            $subData['itemNo'] = $i;
 
             $qmIds[] = $this->getContainer()->get('queueManager')
                 ->createQueueItem($jobName, 'ExportChunk', $subData, $priority);
@@ -700,8 +698,7 @@ abstract class AbstractExportType extends Base
                                     'currentNumber' => $fileNumber,
                                     'fileName'      => implode('.', $parts),
                                     'entity'        => $record['_entity'] ?? null,
-                                    'entityId'      => $record['id'],
-                                    'record'        => $record
+                                    'entityId'      => $record['id']
                                 ]);
 
                                 if (!empty($newFileName)) {
