@@ -550,6 +550,9 @@ abstract class AbstractExportType extends Base
         $fileNames = [];
         $zipFilesData = [];
         foreach ($queueItems as $queueItem) {
+            if (empty($queueItem->get('data')->chunkFileName)) {
+                continue;
+            }
             $fileNames[$queueItem->get('data')->offset] = $queueItem->get('data')->chunkFileName;
             foreach ($queueItem->get('data')->files ?? [] as $fileRec) {
                 $zipFilesData[] = json_decode(json_encode($fileRec), true);

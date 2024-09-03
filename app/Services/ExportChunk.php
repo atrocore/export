@@ -20,6 +20,15 @@ class ExportChunk extends QueueManagerBase
 {
     public function run(array $data = []): bool
     {
+        $exportJob = $this->getEntityManager()->getEntity('ExportJob', $data['exportJobId']);
+        if (empty($exportJob)) {
+            return false;
+        }
+
+        if (!in_array($exportJob->get('state'), ['Pending', 'Running'])) {
+            return false;
+        }
+
         /** @var AbstractExportType $typeService */
         $typeService = $this->getContainer()->get('serviceFactory')->create('ExportFeed')
             ->getExportTypeService($data['feed']['type'], $data);
