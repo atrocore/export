@@ -28,6 +28,7 @@ class ExportChunk extends QueueManagerBase
 
         $qiData = $this->qmItem->get('data');
         $qiData->chunkFileName = $res['fileName'];
+        $qiData->files = $res['files'];
 
         $this->qmItem->set('data', $qiData);
         $this->getEntityManager()->saveEntity($this->qmItem);
