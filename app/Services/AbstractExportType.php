@@ -627,7 +627,7 @@ abstract class AbstractExportType extends Base
             return ['count' => 0];
         }
 
-        if (empty($this->data['separateJob']) && $limit < $total) {
+        if (empty($this->data['feed']['separateJob']) && $limit < $total) {
             return $this->createCacheFileByChunks($total);
         }
 
