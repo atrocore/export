@@ -469,6 +469,7 @@ abstract class AbstractExportType extends Base
             $jobName = $this->data['feed']['name'] . " Chunk #$i";
 
             $subData = $this->data;
+            $subData['chunkJob'] = true;
             $subData['offset'] = $offset;
 
             $qmIds[] = $this->getContainer()->get('queueManager')

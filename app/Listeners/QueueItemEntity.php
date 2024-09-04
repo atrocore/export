@@ -30,7 +30,7 @@ class QueueItemEntity extends AbstractListener
         // prepare entity
         $entity = $event->getArgument('entity');
 
-        if (!empty($entity->get('data')->exportJobId)) {
+        if (!empty($entity->get('data')->exportJobId) && empty($entity->get('data')->chunkJob)) {
             $this->updateExportJob($entity);
         }
     }
