@@ -29,6 +29,8 @@ class ExportChunk extends QueueManagerBase
             return false;
         }
 
+        $this->getMemoryStorage()->set('exportJobId', $exportJob->get('id'));
+
         /** @var AbstractExportType $typeService */
         $typeService = $this->getContainer()->get('serviceFactory')->create('ExportFeed')
             ->getExportTypeService($data['feed']['type'], $data);
