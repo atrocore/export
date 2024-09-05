@@ -133,6 +133,21 @@ class ExportJob extends Base
         if (in_array($qmJob->get('status'), ['Pending', 'Running'])) {
             $qmJob->set('status', 'Canceled');
             $this->getEntityManager()->saveEntity($qmJob);
+
+            if (!empty($qmJob->get('data')->exportJobId)) {
+                $queueItems = $this->getEntityManager()->getRepository('QueueItem')
+                    ->where([
+                        'data*'  => '%"exportJobId":"' . $qmJob->get('data')->exportJobId . '"%',
+                        'status' => ['Pending', 'Running']
+                    ])
+                    ->find();
+                foreach ($queueItems as $qi) {
+                    if (!empty($qi->get('data')->chunkJob)) {
+                        $qi->set('status', 'Canceled');
+                        $this->getEntityManager()->saveEntity($qi);
+                    }
+                }
+            }
         }
     }
 }

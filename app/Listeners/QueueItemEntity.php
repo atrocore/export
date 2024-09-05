@@ -61,27 +61,10 @@ class QueueItemEntity extends AbstractListener
             return false;
         }
 
-        if ($entity->isAttributeChanged('status')) {
-            if (empty($entity->get('data')->chunkJob)) {
-                if ($entity->get('status') !== 'Success' && $exportJob->get('state') !== $entity->get('status')) {
-                    $exportJob->set('state', $entity->get('status'));
-                    $this->getEntityManager()->saveEntity($exportJob);
-                }
-            } else {
-                if ($entity->get('status') === 'Canceled') {
-                    $queueItems = $this->getEntityManager()->getRepository('QueueItem')
-                        ->where([
-                            'data*'  => '%"exportJobId":"' . $exportJob->get('id') . '"%',
-                            'status' => ['Pending', 'Running']
-                        ])
-                        ->find();
-                    foreach ($queueItems as $qi) {
-                        if (!empty($qi->get('data')->chunkJob)) {
-                            $qi->set('status', 'Canceled');
-                            $this->getEntityManager()->saveEntity($qi);
-                        }
-                    }
-                }
+        if ($entity->isAttributeChanged('status') && empty($entity->get('data')->chunkJob)) {
+            if ($entity->get('status') !== 'Success' && $exportJob->get('state') !== $entity->get('status')) {
+                $exportJob->set('state', $entity->get('status'));
+                $this->getEntityManager()->saveEntity($exportJob);
             }
         }
 
