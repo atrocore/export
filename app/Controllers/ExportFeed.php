@@ -73,6 +73,10 @@ class ExportFeed extends Base
             throw new Exceptions\Forbidden();
         }
 
+        if (!$this->getAcl()->check('ExportJob', 'create')) {
+            throw new Exceptions\Forbidden();
+        }
+
         return $this->getRecordService()->exportFile($data);
     }
 

@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Atro\Core\Container;
+use Atro\ORM\DB\RDB\Mapper;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\ORM\EntityCollection;
 
 class ExtensibleMultiEnumType extends LinkMultipleType
@@ -51,7 +54,13 @@ class ExtensibleMultiEnumType extends LinkMultipleType
         if (count($options) > 1) {
             $sortField = $this->getMemoryStorage()->get('extensibleEnumOptionSortBy');
             if (empty($sortField)) {
-                $sortField = $this->getMetadata()->get(['clientDefs', 'ExtensibleEnum', 'relationshipPanels', 'extensibleEnumOptions', 'sortBy'], 'sortOrder');
+                $sortField = $this->getMetadata()->get([
+                    'clientDefs',
+                    'ExtensibleEnum',
+                    'relationshipPanels',
+                    'extensibleEnumOptions',
+                    'sortBy'
+                ], 'sortOrder');
                 $this->getMemoryStorage()->set('extensibleEnumOptionSortBy', $sortField);
             }
 
@@ -67,5 +76,15 @@ class ExtensibleMultiEnumType extends LinkMultipleType
         }
 
         return ['collection' => $collection];
+    }
+
+    public function queryCallbackForAttribute(Container $container, QueryBuilder $qb, Mapper $mapper, array $conf): void
+    {
+        AbstractType::queryCallbackForAttribute($container, $qb, $mapper, $conf);
+    }
+
+    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
+    {
+        $qb->select("$alias.text_value");
     }
 }

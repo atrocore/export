@@ -7,7 +7,8 @@
     },
     "trial": {
       "type": "int",
-      "default": 0
+      "default": 0,
+      "readOnly": true
     },
     "createdAt": {
       "type": "datetime",
@@ -73,7 +74,8 @@
       "readOnly": true
     },
     "sortOrder": {
-      "type": "int"
+      "type": "int",
+      "readOnly": true
     },
     "count": {
       "type": "int",
@@ -81,7 +83,8 @@
       "readOnly": true
     },
     "data": {
-      "type": "jsonObject"
+      "type": "jsonObject",
+      "readOnly": true
     },
     "editable": {
       "type": "bool",

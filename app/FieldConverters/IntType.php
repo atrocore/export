@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Doctrine\DBAL\Query\QueryBuilder;
+
 class IntType extends AbstractType
 {
     public function convertToString(array &$result, array $record, array $configuration): void
@@ -32,5 +34,25 @@ class IntType extends AbstractType
                 $result[$column] = number_format((float)$record[$field], 0, $decimalMark, $thousandSeparator);
             }
         }
+    }
+
+    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
+    {
+        $selectColumn = 'id';
+
+        if (!empty($conf['attributeValue'])) {
+            switch ($conf['attributeValue']) {
+                case 'value':
+                case 'valueFrom':
+                case 'valueNumeric':
+                    $selectColumn = 'int_value';
+                    break;
+                case 'valueTo':
+                    $selectColumn = 'int_value1';
+                    break;
+            }
+        }
+
+        $qb->select("$alias.$selectColumn");
     }
 }

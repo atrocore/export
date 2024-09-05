@@ -385,9 +385,14 @@ class ExportFeed extends Base
         $entity->set('replaceAttributeValues', !empty($entity->getFeedField('replaceAttributeValues')));
     }
 
-    public function getExportTypeService(string $type): AbstractExportType
+    public function getExportTypeService(string $type, array $data = null): AbstractExportType
     {
-        return $this->getInjection('serviceFactory')->create('ExportType' . ucfirst($type));
+        $res = $this->getInjection('serviceFactory')->create('ExportType' . ucfirst($type));
+        if ($data) {
+            $res->setData($data);
+        }
+
+        return $res;
     }
 
     protected function init()

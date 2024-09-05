@@ -58,7 +58,7 @@ Espo.define('export:views/export-feed/record/detail', 'views/record/detail',
         },
 
         hasExportNow() {
-            return this.model.get('isActive');
+            return this.model.get('isActive') && this.getAcl().check('ExportJob', 'create');
         },
 
         actionExportNow() {

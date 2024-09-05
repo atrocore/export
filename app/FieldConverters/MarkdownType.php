@@ -13,20 +13,6 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
-class UnitType extends LinkType
+class MarkdownType extends TextType
 {
-    protected function getForeignEntityName(string $entity, string $field): string
-    {
-        return 'Unit';
-    }
-
-    protected function needToCallForeignEntity(array $exportBy): bool
-    {
-        foreach ($exportBy as $v) {
-            if ($v != 'id') {
-                return true;
-            }
-        }
-        return false;
-    }
 }

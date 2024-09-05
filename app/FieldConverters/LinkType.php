@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
 
@@ -80,7 +81,7 @@ class LinkType extends AbstractType
 
                         $this->prepareExportByField($foreignEntity, $v, $foreignType, $foreignData);
 
-                        $foreignConfiguration = array_merge($configuration, ['field' => $v]);
+                        $foreignConfiguration = array_merge($configuration, ['field' => $v, 'attributeId' => null]);
                         $this->convertForeignType($fieldResult, $foreignType, $foreignConfiguration, $foreignData, $v, $record);
 
                         if ($configuration['zip']) {
@@ -234,11 +235,24 @@ class LinkType extends AbstractType
 
     protected function getForeignEntityName(string $entity, string $field): string
     {
+        $configuration = $this->getMemoryStorage()->get('configurationItemData');
+        if (!empty($configuration['attributeId'])) {
+            $attribute = $this->convertor->getAttributeById($configuration['attributeId']);
+            if (in_array($attribute->get('type'), ['link', 'linkMultiple'])) {
+                return $attribute->getVirtualField('entityType');
+            }
+        }
+
         return $this->convertor->getMetadata()->get(['entityDefs', $entity, 'links', $field, 'entity']);
     }
 
     protected function needToCallForeignEntity(array $exportBy): bool
     {
+        $configuration = $this->getMemoryStorage()->get('configurationItemData');
+        if (!empty($configuration['attributeId'])) {
+            return true;
+        }
+
         foreach ($exportBy as $v) {
             if (!in_array($v, ['id', 'name'])) {
                 return true;
@@ -259,19 +273,7 @@ class LinkType extends AbstractType
 
         $fieldName = $this->getFieldName($field);
 
-        // if PAV
-        if ($configuration['entity'] === 'Product' && !empty($record['attributeType'])) {
-            $records = [];
-            $attributesKeys = $this->getMemoryStorage()->get('attributesKeys') ?? [];
-            if (isset($attributesKeys[$record['attributeId']])) {
-                foreach ($attributesKeys[$record['attributeId']] as $pavKey) {
-                    $records[] = $this->getMemoryStorage()->get($pavKey)->toArray();
-                }
-            }
-        }
-
         $linkedEntitiesKeys = $this->getMemoryStorage()->get(self::MEMORY_KEY) ?? [];
-
         if (isset($linkedEntitiesKeys[$configuration['id']])) {
             return;
         }
@@ -280,11 +282,17 @@ class LinkType extends AbstractType
 
         $ids = [];
         foreach ($records as $v) {
-            $val = $v[$fieldName];
-            if (is_array($val)) {
-                $ids = array_merge($ids, $val);
+            if (array_key_exists('prepareUnitValueFnc', $configuration)) {
+                list($valueFrom, $valueTo, $val) = $configuration['prepareUnitValueFnc']((string)$v[$field]);
             } else {
-                $ids[] = $val;
+                $val = $v[$fieldName];
+            }
+            if (!empty($val)) {
+                if (is_array($val)) {
+                    $ids = array_merge($ids, $val);
+                } else {
+                    $ids[] = $val;
+                }
             }
         }
 
@@ -313,5 +321,10 @@ class LinkType extends AbstractType
 
     protected function prepareEntity(Entity $entity, array $config): void
     {
+    }
+
+    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
+    {
+        $qb->select("$alias.reference_value");
     }
 }

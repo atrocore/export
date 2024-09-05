@@ -15,28 +15,8 @@ namespace Export\FieldConverters;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 
-class ArrayType extends AbstractType
+class TextType extends VarcharType
 {
-    public function convertToString(array &$result, array $record, array $configuration): void
-    {
-        $field = $configuration['field'];
-        $column = $configuration['column'];
-        $emptyValue = $configuration['emptyValue'];
-        $nullValue = $configuration['nullValue'];
-        $delimiter = $configuration['delimiter'];
-
-        $result[$column] = $nullValue;
-        if (isset($record[$field])) {
-            if (empty($record[$field])) {
-                $result[$column] = $record[$field] === null ? $nullValue : $emptyValue;
-            } else {
-                if (is_array($record[$field])) {
-                    $result[$column] = implode($delimiter, $record[$field]);
-                }
-            }
-        }
-    }
-
     protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
     {
         $selectColumn = 'id';

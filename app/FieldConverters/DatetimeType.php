@@ -13,20 +13,17 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
-class UnitType extends LinkType
-{
-    protected function getForeignEntityName(string $entity, string $field): string
-    {
-        return 'Unit';
-    }
+use Doctrine\DBAL\Query\QueryBuilder;
 
-    protected function needToCallForeignEntity(array $exportBy): bool
+class DatetimeType extends VarcharType
+{
+    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
     {
-        foreach ($exportBy as $v) {
-            if ($v != 'id') {
-                return true;
-            }
+        $selectColumn = 'id';
+        if (!empty($conf['attributeValue']) && $conf['attributeValue'] === 'value') {
+            $selectColumn = 'datetime_value';
         }
-        return false;
+
+        $qb->select("$alias.$selectColumn");
     }
 }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
-class AliasType extends AbstractType
+class ScriptType extends AbstractType
 {
     public function convertToString(array &$result, array $record, array $configuration): void
     {
@@ -33,16 +33,7 @@ class AliasType extends AbstractType
             // @todo this should be optimized
             $pav = $this->convertor->getService('ProductAttributeValue')->getEntity($pavId);
 
-            $pavResults = [];
-            foreach ($pav->get('valueOptionsData') as $item) {
-                if (is_array($item['name'])) {
-                    $pavResults[] = implode(', ', $item['name']);
-                } else {
-                    $pavResults[] = $item['name'];
-                }
-            }
-
-            $result[$column] = implode(' | ', $pavResults);
+            $result[$column] = $pav->get('value');
         }
     }
 }
