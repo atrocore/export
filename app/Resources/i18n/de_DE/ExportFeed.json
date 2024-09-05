@@ -38,7 +38,9 @@
     "originTemplateName": "Vorlagenname",
     "originTemplate": "Ursprungsvorlage",
     "isTemplateEditable": "Editierbar",
-    "fileNameMask": "Dateinamenmaske"
+    "fileNameMask": "Dateinamenmaske",
+    "exportAllField": "Alle Felder exportieren",
+    "fieldList": "Liste der Felder"
   },
   "links": {
     "configuratorItems": "Konfigurator",
@@ -81,7 +83,8 @@
     "delimitersMustBeDifferent": "Alle Feedparameter sollten eindeutige Werte haben.",
     "noExportFeedSelected": "Kein Exportfeed ausgewählt.",
     "columnAlreadyExist": "Eine Spalte mit diesem Namen existiert bereits.",
-    "duplicateAsImport": "Sind Sie sicher, dass Sie aus diesem Export-Feed einen Import-Feed erstellen möchten?"
+    "duplicateAsImport": "Sind Sie sicher, dass Sie aus diesem Export-Feed einen Import-Feed erstellen möchten?",
+    "noFieldSelected": "Keine Felder ausgewählt"
   },
   "additionalTranslates": {
     "exportName": "Datenexport im Feed %s"
