@@ -290,7 +290,8 @@
       "rowsMax": 20,
       "useDisabledTextareaInViewMode": true,
       "notStorable": true,
-      "readOnly": true
+      "readOnly": true,
+      "filterDisabled": true
     },
     "template": {
       "type": "text",
