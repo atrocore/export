@@ -39,7 +39,8 @@
     "isTemplateEditable": "Editable",
     "fileNameMask": "File Name Mask",
     "exportAllField": "Export All fields",
-    "fieldList": "Field List"
+    "fieldList": "Field List",
+    "useExistingExportFeed": "Use existing export feed"
   },
   "links": {
     "configuratorItems": "Configurator",

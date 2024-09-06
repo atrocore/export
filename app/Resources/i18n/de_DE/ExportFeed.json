@@ -40,7 +40,8 @@
     "isTemplateEditable": "Editierbar",
     "fileNameMask": "Dateinamenmaske",
     "exportAllField": "Alle Felder exportieren",
-    "fieldList": "Liste der Felder"
+    "fieldList": "Liste der Felder",
+    "useExistingExportFeed": "UBestehendes Exportfutter verwenden"
   },
   "links": {
     "configuratorItems": "Konfigurator",
