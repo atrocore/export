@@ -37,7 +37,9 @@
     "originTemplateName": "Template Name",
     "originTemplate": "Origin Template",
     "isTemplateEditable": "Editable",
-    "fileNameMask": "File Name Mask"
+    "fileNameMask": "File Name Mask",
+    "exportAllField": "Export All fields",
+    "fieldList": "Field List"
   },
   "links": {
     "configuratorItems": "Configurator",
@@ -89,7 +91,8 @@
     "delimitersMustBeDifferent": "All feed parameters should have unique values.",
     "noExportFeedSelected": "No ExportFeed selected.",
     "columnAlreadyExist": "A column with such name already exists.",
-    "duplicateAsImport": "Are you sure you want to create an import feed from this export feed ?"
+    "duplicateAsImport": "Are you sure you want to create an import feed from this export feed ?",
+    "noFieldSelected": "No fields selected"
   },
   "additionalTranslates": {
     "exportName": "Export: %s",

@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Export\Controllers;
 
-use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Templates\Controllers\Base;
-use Espo\Core\Exceptions;
+use Atro\Core\Exceptions\BadRequest;
+use Atro\Core\Templates\Controllers\Base;
+use Atro\Core\Exceptions;
 use Espo\Core\Utils\Json;
 use Slim\Http\Request;
 
@@ -152,5 +152,18 @@ class ExportFeed extends Base
         }
 
         return json_encode(['template' => $this->getRecordService()->getOriginTemplate($request->get("template"))]);
+    }
+
+    public function actionDirectExportFile($params, $data, Request $request): bool
+    {
+        if (!$request->isPost() || !property_exists($data, 'fileType') || !property_exists($data, 'scope')) {
+            throw new Exceptions\BadRequest();
+        }
+
+        if (empty($data->exportAllField) && empty($data->fieldList)) {
+            throw new Exceptions\BadRequest();
+        }
+
+        return  $this->getRecordService()->directExportFile($data);
     }
 }

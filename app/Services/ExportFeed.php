@@ -13,11 +13,10 @@ declare(strict_types=1);
 
 namespace Export\Services;
 
-use Espo\Core\Exceptions;
+use Atro\Core\Exceptions;
 use Atro\Core\Templates\Services\Base;
 use Espo\Core\Utils\Json;
 use Espo\Core\Utils\Util;
-use Espo\Entities\User;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
 use Espo\Core\EventManager\Event;
@@ -607,6 +606,138 @@ class ExportFeed extends Base
         }
 
         return $result;
+    }
+
+    public function directExportFile(\stdClass $requestData): bool
+    {
+        if (!property_exists($requestData, 'fileType')  || empty($scope = $requestData->scope)) {
+            throw new Exceptions\BadRequest();
+        }
+
+        if (empty($requestData->exportAllField) && empty($requestData->fieldList)) {
+            throw new Exceptions\BadRequest();
+        }
+
+        if(!in_array($requestData->fileType, ['csv', 'xlsx'])) {
+            throw new Exceptions\BadRequest();
+        }
+
+        $baseConfiguration  =  [
+            'columnType' => 'name',
+            'language' => 'main',
+            'fallbackLanguage' => '',
+            'column' => '',
+            'template' => NULL,
+            'emptyValue' => '',
+            'nullValue' => 'Null',
+            'markForNoRelation' => 'Null',
+            'decimalMark' => ',',
+            'fieldDelimiterForRelation' => '|',
+            'convertCollectionToString' => true,
+            'convertRelationsToString' => true,
+            'exportIntoSeparateColumns' => false,
+            'exportBy' =>  [],
+            'offsetRelation' => 0,
+            'limitRelation' => 20,
+            'sortFieldRelation' => '',
+            'sortOrderRelation' => 'ASC',
+            'type' => 'Field',
+            'zip' => false,
+            'entity' => $scope,
+            'sortOrderField' => '',
+            'thousandSeparator' => null,
+            'sortOrderDirection' => '',
+            'field' => '',
+        ];
+
+        $configuration = [];
+        foreach ($this->getMetadata()->get(['entityDefs', $scope, 'fields'], []) as $field => $fieldDefs) {
+            if($fieldDefs['type'] === 'linkMultiple' || !empty($fieldDefs['exportDisabled'])){
+                continue;
+            }
+
+            if(empty($requestData->exportAllField) && !in_array($field, $requestData->fieldList)) {
+                continue;
+            }
+
+            $item = $baseConfiguration;
+            $item['field'] = $field;
+            $item['id'] = Util::generateId();
+            $item['column'] = $this->getInjection('language')->translate($field, 'fields', $scope);
+
+            if(in_array($fieldDefs['type'], ['link', 'extensibleEnum', 'extensibleMultiEnum'])) {
+                $item['exportBy'] = ['name'];
+            }
+
+            if($fieldDefs['type'] == 'file') {
+                $item['exportBy'] = ['downloadUrl'];
+            }
+
+            $configuration[] = (object) $item;
+
+        }
+
+        $data = [
+            'id' => Util::generateId(),
+            'feed' => [
+                'id' =>'no-such-id',
+                'name' => $scope . ' on '.date('Y-m-d H:i:s'),
+                'language' => 'main',
+                'fallbackLanguage' => '',
+                'limit' => 2000,
+                'separateJob' => false,
+                'type' => 'simple',
+                'fileType' => $requestData->fileType,
+                'isFileHeaderRow' => true,
+                'csvFieldDelimiter' => ';',
+                'csvTextQualifier' => 'doubleQuote',
+                'entity' => $scope,
+                'convertCollectionToString' => true,
+                'delimiter' => '~',
+                'emptyValue' => '',
+                'nullValue' => 'Null',
+                'markForNoRelation' => 'Null',
+                'decimalMark' => ',',
+                'thousandSeparator' => null,
+                'priority' => 'Crucial',
+                'data' => (object)[
+                    'where' => [],
+                    'whereData' => [],
+                    'whereScope' => $scope,
+                    'isFileHeaderRow' => true,
+                    'csvFieldDelimiter' => ';',
+                    'csvTextQualifier' => 'doubleQuote',
+                    'entity' => $scope,
+                    'convertCollectionToString' => true,
+                    'delimiter' => '~',
+                    'replaceAttributeValues' => true,
+                    'convertRelationsToString' => true,
+                    'fieldDelimiterForRelation' => '|',
+                    'emptyValue' => '',
+                    'nullValue' => 'Null',
+                    'markForNoRelation' => 'Null',
+                    'decimalMark' => ',',
+                    'thousandSeparator' => NULL,
+                    'exportByMaxDepth' => '1',
+                    'configuration' => $configuration
+                ]
+            ]
+        ];
+
+
+        if (!empty($requestData->entityFilterData)) {
+            if (!empty($requestData->entityFilterData->byWhere)) {
+                $data['feed']['data']->where = array_merge($data['feed']['data']->where, $requestData->entityFilterData->where);
+            } else {
+                $data['feed']['data']->where[] = [
+                    'type'      => 'in',
+                    'attribute' => 'id',
+                    'value'     => $requestData->entityFilterData->ids
+                ];
+            }
+        }
+
+        return $this->pushExport($data);
     }
 
     protected function getChannel(string $channelId): ?Entity

@@ -37,7 +37,9 @@
     "originTemplateName": "Назва шаблону",
     "originTemplate": "Оригінальний шаблон",
     "isTemplateEditable": "Редагувати",
-    "fileNameMask": "Маска імені файлу"
+    "fileNameMask": "Маска імені файлу",
+    "exportAllField": "Експортувати всі поля",
+    "fieldList": "Список полів"
   },
   "links": {
     "exportJobs": "Завдання експорту",
@@ -80,7 +82,8 @@
     "delimitersMustBeDifferent": "Усі параметри фіду повинні мати унікальні значення.",
     "noExportFeedSelected": "Експортний фід не обрано.",
     "columnAlreadyExist": "Колонка з такою назвою вже існує.",
-    "duplicateAsImport": "Ви впевнені, що хочете створити канал імпорту з цього каналу експорту?"
+    "duplicateAsImport": "Ви впевнені, що хочете створити канал імпорту з цього каналу експорту?",
+    "noFieldSelected": "Не вибрано жодного поля"
   },
   "additionalTranslates": {
     "exportName": "Експорт: %s"

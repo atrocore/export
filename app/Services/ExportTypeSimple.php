@@ -300,10 +300,17 @@ class ExportTypeSimple extends AbstractExportType
 
     protected function exportCsv(ExportJob $exportJob): File
     {
+        $exportFeed = $exportJob->get('exportFeed');
+        if(empty($exportFeed)){
+            $exportFeed = $this->getEntityManager()->getEntity('ExportFeed');
+            $exportFeed->set('id', Util::generateId());
+            $exportFeed->set('name', Util::generateId());
+        }
+
         $input = new \stdClass();
         $input->name = $this->getExportFileName('csv');
         $input->hidden = true;
-        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
+        $input->folderId = $this->createExportFileFolder($exportFeed)->get('id');
 
         $this->initZipArchive([$this->data['feed']['data']['configuration']]);
 
@@ -320,7 +327,9 @@ class ExportTypeSimple extends AbstractExportType
         $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
 
         // delete tmp file
-        unlink($fileName);
+        if(file_exists($fileName)){
+            unlink($fileName);
+        }
 
         $file = $this->getEntityManager()->getRepository('File')->get($fileData['id']);
 
@@ -377,10 +386,17 @@ class ExportTypeSimple extends AbstractExportType
             ];
         }
 
+        $exportFeed = $exportJob->get('exportFeed');
+        if(empty($exportFeed)){
+            $exportFeed = $this->getEntityManager()->getEntity('ExportFeed');
+            $exportFeed->set('id', Util::generateId());
+            $exportFeed->set('name', Util::generateId());
+        }
+
         $input = new \stdClass();
         $input->name = $this->getExportFileName('xlsx');
         $input->hidden = true;
-        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
+        $input->folderId = $this->createExportFileFolder($exportFeed)->get('id');
 
         $this->initZipArchive(
             array_map(function ($sheet) {
@@ -520,7 +536,9 @@ class ExportTypeSimple extends AbstractExportType
         $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
 
         // delete tmp file
-        unlink($fileName);
+        if(file_exists($fileName)){
+            unlink($fileName);
+        }
 
         $exportJob->set('count', $count);
 

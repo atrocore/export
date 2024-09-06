@@ -86,5 +86,77 @@ class Module extends AbstractModule
             ],
             "responses"   => OpenApiGenerator::prepareResponses(["type" => "boolean"]),
         ];
+
+        $data['paths']['/ExportFeed/action/directExportFile']['post'] = [
+            'tags'        => ['ExportFeed'],
+            "operationId" => "directExportFile",
+            "summary" => "Directly Export records of an entity to file without",
+            "description" => "The system will run will generate directly an export file of the selected record and the selected fields of the record, this will only support simple type, for more complex type please consider create and appropriate Export feed",
+            'security'    => [['Authorization-Token' => []]],
+            "requestBody" => [
+                "required" => true,
+                "content" => [
+                    "application/json" => [
+                        "schema" => [
+                            "type" => "object",
+                            "properties" => [
+                                "scope" => [
+                                    "type" => "string",
+                                    "example" => "Product"
+                                ],
+                                "fileType" => [
+                                    "type" => "string",
+                                    "example" => "csv"
+                                ],
+                                "fieldList" => [
+                                    "type" => "array",
+                                    "items" => [
+                                        "type" => "string"
+                                    ]
+                                ],
+                                "entityFilterData" => [
+                                    "type" => "object",
+                                    "properties" => [
+                                        "byWhere" => [
+                                            "type" => "boolean"
+                                        ],
+                                        "selectData" => [
+                                            "type" => "object",
+                                            "properties" => [
+                                                "select" => [
+                                                    "type" => "string",
+                                                    "example" => "id,name"
+                                                ]
+                                            ]
+                                        ],
+                                        "where" => [
+                                            "type" => "array",
+                                            "items" => [
+                                                "type" => "object",
+                                                "properties" => [
+                                                    "type" => [
+                                                        "type" => "string",
+                                                        "example" => "isNotNull"
+                                                    ],
+                                                    "attribute" => [
+                                                        "type" => "string",
+                                                        "example" => "name"
+                                                    ],
+                                                    "value" => [
+                                                        "anyOf" => ["string", "number", "array", "boolean"]
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            "responses" => OpenApiGenerator::prepareResponses(["type" => "boolean"])
+        ];
+
     }
 }
