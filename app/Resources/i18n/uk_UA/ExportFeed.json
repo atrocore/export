@@ -39,7 +39,8 @@
     "isTemplateEditable": "Редагувати",
     "fileNameMask": "Маска імені файлу",
     "exportAllField": "Експортувати всі поля",
-    "fieldList": "Список полів"
+    "fieldList": "Список полів",
+    "useExistingExportFeed": "Використовуйте наявний канал експорту"
   },
   "links": {
     "exportJobs": "Завдання експорту",
