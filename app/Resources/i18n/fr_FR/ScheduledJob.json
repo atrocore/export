@@ -12,11 +12,11 @@
   "options": {
     "job": {
       "ExportFeed": "Flux d'export",
-      "TrialExport": "",
-      "ExportJobRemove": ""
+      "TrialExport": "Échec de la nouvelle tentative d'exportation",
+      "ExportJobRemove": "Export Job Remover"
     }
   },
   "tooltips": {
-    "exportFeeds": ""
+    "exportFeeds": "Si aucun flux d'exportation n'est sélectionné, toutes les tâches d'exportation qui ont échoué seront relancées."
   }
 }
