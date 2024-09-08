@@ -1,11 +1,11 @@
 {
   "fields": {
-    "exportFeed": "",
-    "payload": ""
+    "exportFeed": "Экспортный фид",
+    "payload": "Параметры"
   },
   "options": {
     "type": {
-      "export": ""
+      "export": "Экспортный фид"
     }
   }
 }
