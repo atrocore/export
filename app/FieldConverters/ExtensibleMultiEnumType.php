@@ -45,31 +45,8 @@ class ExtensibleMultiEnumType extends LinkMultipleType
             return ['collection' => $collection];
         }
 
-        $options = [];
         foreach ($linkedEntitiesKeys[$configuration['id']] as $v) {
             $option = $this->getMemoryStorage()->get($v);
-            $options[] = $option;
-        }
-
-        if (count($options) > 1) {
-            $sortField = $this->getMemoryStorage()->get('extensibleEnumOptionSortBy');
-            if (empty($sortField)) {
-                $sortField = $this->getMetadata()->get([
-                    'clientDefs',
-                    'ExtensibleEnum',
-                    'relationshipPanels',
-                    'extensibleEnumOptions',
-                    'sortBy'
-                ], 'sortOrder');
-                $this->getMemoryStorage()->set('extensibleEnumOptionSortBy', $sortField);
-            }
-
-            usort($options, function ($a, $b) use ($sortField) {
-                return $a->get($sortField) <=> $b->get($sortField);
-            });
-        }
-
-        foreach ($options as $option) {
             if (in_array($option->get('id'), $record[$field])) {
                 $collection->append($option);
             }
@@ -86,5 +63,31 @@ class ExtensibleMultiEnumType extends LinkMultipleType
     protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
     {
         $qb->select("$alias.text_value");
+    }
+
+    protected function findEntities(string $foreignEntity, array $params): array
+    {
+        $configuration = $this->getMemoryStorage()->get('configurationItemData');
+        if (empty($configuration['id'])) {
+            throw new \Error('No configuration id found.');
+        }
+
+        if (!empty($configuration['attributeId'])) {
+            $key = $this->convertor->getEntityManager()->getRepository('Attribute')->getCacheKey($configuration['attributeId']);
+
+            if (!$this->getMemoryStorage()->has($key)) {
+                $attribute = $this->convertor->getEntity('Attribute', $configuration['attributeId']);
+                $this->getMemoryStorage()->set($key, $attribute);
+            } else {
+                $attribute = $this->getMemoryStorage()->get($key);
+            }
+
+            $params['sortBy'] = 'extensible_enum_extensible_enum_option_mm.sorting';
+            $params['asc'] = true;
+
+            return $this->convertor->getService('ExtensibleEnum')->findLinkedEntities($attribute->get('extensibleEnumId'), 'extensibleEnumOptions', $params);
+        }
+
+        return parent::findEntities($foreignEntity, $params);
     }
 }

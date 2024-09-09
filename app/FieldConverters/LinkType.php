@@ -301,7 +301,7 @@ class LinkType extends AbstractType
         $params['disableCount'] = true;
         $params['where'] = [['type' => 'in', 'attribute' => 'id', 'value' => $ids]];
 
-        $res = $this->convertor->getService($foreignEntity)->findEntities($params);
+        $res = $this->findEntities($foreignEntity, $params);
 
         foreach ($res['collection'] as $re) {
             $this->prepareEntity($re, $configuration);
@@ -310,6 +310,11 @@ class LinkType extends AbstractType
             $linkedEntitiesKeys[$configuration['id']][] = $itemKey;
         }
         $this->getMemoryStorage()->set(self::MEMORY_KEY, $linkedEntitiesKeys);
+    }
+
+    protected function findEntities(string $foreignEntity, array $params): array
+    {
+        return $this->convertor->getService($foreignEntity)->findEntities($params);
     }
 
     protected function getEntity(string $scope, string $id): ?Entity
