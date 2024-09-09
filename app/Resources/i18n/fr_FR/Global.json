@@ -1,0 +1,26 @@
+{
+  "scopeNames": {
+    "ExportFeed": "Flux d'export",
+    "ExportConfiguratorItem": "Configurateur",
+    "ExportJob": "Emploi à l'exportation"
+  },
+  "scopeNamesPlural": {
+    "ExportFeed": "Exporter des flux",
+    "ExportConfiguratorItem": "Configurateur",
+    "ExportJob": "Emplois à l'exportation"
+  },
+  "labels": {
+    "Generate": "Générer",
+    "filter": "Filtre",
+    "tryAgain": "Exporter à nouveau",
+    "addMissingFields": "Ajoutez tous les champs manquants",
+    "selectAttributes": "Sélectionnez le(s) attribut(s)",
+    "removeAllItems": "Supprimer tout",
+    "exportErrorDuring24Hours": "Erreur d'exportation de flux/travaux pendant 24 heures",
+    "exportErrorDuring7Days": "Erreur d'exportation de flux/emplois pendant 7 jours",
+    "exportErrorDuring28Days": "Erreur d'exportation de flux/emplois pendant 28 jours"
+  },
+  "dashlets": {
+    "DataSyncErrorsExport": "Erreurs de synchronisation des données pour l'exportation"
+  }
+}

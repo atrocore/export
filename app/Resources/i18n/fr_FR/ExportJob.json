@@ -1,0 +1,35 @@
+{
+  "fields": {
+    "exportFeed": "Exportation de flux",
+    "file": "Fichier exporté",
+    "state": "État",
+    "stateMessage": "Message",
+    "start": "Démarrer",
+    "end": "Fin",
+    "count": "Compter"
+  },
+  "links": {
+    "exportFeed": "Flux d'export"
+  },
+  "labels": {
+    "Create ExportJob": "Créer une tâche d'export",
+    "Pending": "En attente",
+    "Success": "Succès",
+    "Running": "En cours d'exécution",
+    "Failed": "Échec",
+    "Canceled": "Annulé",
+    "exportDownloadNotification": "Vous pouvez télécharger <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\"></a> le fichier."
+  },
+  "exceptions": {
+    "wrongJobState": "Cet état de travail ne peut pas être défini.",
+    "notExecutableJob": "Le travail ne peut pas être exécuté à nouveau."
+  },
+  "boolFilters": {
+    "onlyExportFailed24Hours": "Uniquement les travaux d'exportation qui ont échoué au cours des dernières 24 heures",
+    "onlyExportFailed7Days": "Uniquement les travaux d'exportation qui ont échoué au cours des 7 derniers jours",
+    "onlyExportFailed28Days": "Uniquement les travaux d'exportation qui ont échoué au cours des 28 derniers jours"
+  },
+  "messages": {
+    "xmlValidationFailed": "La validation du schéma XML a échoué :"
+  }
+}

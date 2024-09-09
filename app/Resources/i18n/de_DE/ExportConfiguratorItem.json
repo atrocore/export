@@ -36,8 +36,6 @@
     "custom": "Benutzerdefinierter Name"
   },
   "labels": {
-    "Field": "Feld",
-    "Fixed value": "Fester Wert",
     "exportByForAttributeValue": "Dies gilt nur für Attribute vom Typ Liste oder Mehrwertliste"
   },
   "options": {
