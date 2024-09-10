@@ -16,5 +16,13 @@
   "importable": true,
   "duplicatableRelations": [
     "configuratorItems"
+  ],
+  "enabledCopyConfigurations": true,
+  "disabledFieldsForCopyConfigurations": [
+    "exportJobs",
+    "exportJobsIds",
+    "scheduledJobs",
+    "scheduledJobsIds",
+    "configuratorItemsIds"
   ]
 }
