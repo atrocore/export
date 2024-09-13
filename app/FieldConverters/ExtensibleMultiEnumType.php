@@ -45,10 +45,12 @@ class ExtensibleMultiEnumType extends LinkMultipleType
             return ['collection' => $collection];
         }
 
-        foreach ($linkedEntitiesKeys[$configuration['id']] as $v) {
-            $option = $this->getMemoryStorage()->get($v);
-            if (in_array($option->get('id'), $record[$field])) {
-                $collection->append($option);
+        if (isset($record[$field]) && is_array($record[$field])) {
+            foreach ($linkedEntitiesKeys[$configuration['id']] as $v) {
+                $option = $this->getMemoryStorage()->get($v);
+                if (in_array($option->get('id'), $record[$field])) {
+                    $collection->append($option);
+                }
             }
         }
 
