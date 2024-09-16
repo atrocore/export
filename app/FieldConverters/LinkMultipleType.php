@@ -183,6 +183,13 @@ class LinkMultipleType extends LinkType
         }
     }
 
+    protected function getLinkedEntitiesKeyForConfiguration(array $configuration): array
+    {
+        $linkedEntitiesKeys = $this->convertor->getMemoryStorage()->get("{$configuration['id']}_ids") ?? [];
+
+        return $linkedEntitiesKeys[$configuration['id']] ?? [];
+    }
+
     public function queryCallbackForAttribute(Container $container, QueryBuilder $qb, Mapper $mapper, array $conf): void
     {
         if (!class_exists(MigrationHelper::class)) {
