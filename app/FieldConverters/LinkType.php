@@ -111,6 +111,13 @@ class LinkType extends AbstractType
         }
     }
 
+    protected function getLinkedEntitiesKeyForConfiguration(array $configuration): array
+    {
+        $linkedEntitiesKeys = $this->convertor->getMemoryStorage()->get(self::MEMORY_KEY) ?? [];
+
+        return $linkedEntitiesKeys[$configuration['id']] ?? [];
+    }
+
     protected function prepareExportByField(string $foreignEntity, string $configuratorField, string &$foreignType, array &$foreignData): void
     {
         if ($configuratorField === 'sharedDownloadUrl') {
@@ -136,9 +143,7 @@ class LinkType extends AbstractType
 
         // load to memory if it needs
         if (!isset($exportByKeys[$configuration['id']])) {
-            $linkedEntitiesKeys = $this->convertor->getMemoryStorage()->get(self::MEMORY_KEY) ?? [];
-
-            $keys = $linkedEntitiesKeys[$configuration['id']] ?? [];
+            $keys = $this->getLinkedEntitiesKeyForConfiguration($configuration);
 
             $ids = [];
             foreach ($keys as $v) {
