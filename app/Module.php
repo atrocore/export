@@ -90,60 +90,80 @@ class Module extends AbstractModule
         $data['paths']['/ExportFeed/action/directExportFile']['post'] = [
             'tags'        => ['ExportFeed'],
             "operationId" => "directExportFile",
-            "summary" => "Directly Export records of an entity to file without",
+            "summary"     => "Directly Export records of an entity to file without",
             "description" => "The system will run will generate directly an export file of the selected record and the selected fields of the record, this will only support simple type, for more complex type please consider create and appropriate Export feed",
             'security'    => [['Authorization-Token' => []]],
             "requestBody" => [
                 "required" => true,
-                "content" => [
+                "content"  => [
                     "application/json" => [
                         "schema" => [
-                            "type" => "object",
+                            "type"       => "object",
                             "properties" => [
-                                "scope" => [
-                                    "type" => "string",
+                                "scope"            => [
+                                    "type"    => "string",
                                     "example" => "Product"
                                 ],
-                                "fileType" => [
-                                    "type" => "string",
+                                "fileType"         => [
+                                    "type"    => "string",
                                     "example" => "csv"
                                 ],
-                                "fieldList" => [
-                                    "type" => "array",
+                                "fieldList"        => [
+                                    "type"  => "array",
                                     "items" => [
                                         "type" => "string"
                                     ]
                                 ],
                                 "entityFilterData" => [
-                                    "type" => "object",
+                                    "type"       => "object",
                                     "properties" => [
-                                        "byWhere" => [
+                                        "byWhere"    => [
                                             "type" => "boolean"
                                         ],
                                         "selectData" => [
-                                            "type" => "object",
+                                            "type"       => "object",
                                             "properties" => [
                                                 "select" => [
-                                                    "type" => "string",
+                                                    "type"    => "string",
                                                     "example" => "id,name"
                                                 ]
                                             ]
                                         ],
-                                        "where" => [
-                                            "type" => "array",
+                                        "where"      => [
+                                            "type"  => "array",
                                             "items" => [
-                                                "type" => "object",
+                                                "type"       => "object",
                                                 "properties" => [
-                                                    "type" => [
-                                                        "type" => "string",
+                                                    "type"      => [
+                                                        "type"    => "string",
                                                         "example" => "isNotNull"
                                                     ],
                                                     "attribute" => [
-                                                        "type" => "string",
+                                                        "type"    => "string",
                                                         "example" => "name"
                                                     ],
-                                                    "value" => [
-                                                        "anyOf" => ["string", "number", "array", "boolean"]
+                                                    "value"     => [
+                                                        "oneOf" => [
+                                                            [
+                                                                "type"    => "integer",
+                                                                "example" => 10
+                                                            ],
+                                                            [
+                                                                "type"    => "number",
+                                                                "example" => 20.35
+                                                            ],
+                                                            [
+                                                                "type"    => "string",
+                                                                "example" => 'red'
+                                                            ],
+                                                            [
+                                                                "type" => "array"
+                                                            ],
+                                                            [
+                                                                "type"    => "boolean",
+                                                                "example" => false
+                                                            ]
+                                                        ]
                                                     ]
                                                 ]
                                             ]
@@ -155,7 +175,7 @@ class Module extends AbstractModule
                     ]
                 ]
             ],
-            "responses" => OpenApiGenerator::prepareResponses(["type" => "boolean"])
+            "responses"   => OpenApiGenerator::prepareResponses(["type" => "boolean"])
         ];
 
     }
