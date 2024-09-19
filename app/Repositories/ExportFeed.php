@@ -23,6 +23,17 @@ use Export\Entities\ExportFeed as ExportFeedEntity;
 
 class ExportFeed extends Base
 {
+    public function updateLastTime(string $exportFeedId, \DateTime $lastTime): void
+    {
+        $this->getConnection()->createQueryBuilder()
+            ->update('export_feed')
+            ->set('last_time', ':lastTime')
+            ->where('id=:id')
+            ->setParameter('lastTime', $lastTime->format('Y-m-d H:i:s'))
+            ->setParameter('id', $exportFeedId)
+            ->executeQuery();
+    }
+
     public function removeInvalidConfiguratorItems(string $exportFeedId): void
     {
         $exportFeed = $this->get($exportFeedId);

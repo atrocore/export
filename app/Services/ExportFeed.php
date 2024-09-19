@@ -515,6 +515,8 @@ class ExportFeed extends Base
 
         $priority = empty($data['feed']['priority']) ? 'Normal' : (string)$data['feed']['priority'];
 
+        $this->getRepository()->updateLastTime($data['feed']['id'], new \DateTime());
+
         if (!empty($data['executeNow'])) {
             $this->getServiceFactory()->create('ExportJobCreator')->run($data);
         } else {
