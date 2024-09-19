@@ -85,6 +85,15 @@ class ExportJob extends Base
             if (in_array($entity->get('state'), ['Success', 'Failed', 'Canceled'])) {
                 $this->getInjection('fileManager')->removeAllInDir(AbstractExportType::TMP_DIR . DIRECTORY_SEPARATOR . $entity->get('id'));
             }
+
+            // update last status
+            $this->getConnection()->createQueryBuilder()
+                ->update('export_feed')
+                ->set('last_status', ':lastStatus')
+                ->where('id=:id')
+                ->setParameter('lastStatus', $entity->get('state'))
+                ->setParameter('id', $entity->get('exportFeedId'))
+                ->executeQuery();
         }
 
         if (!empty($feed = $entity->get('exportFeed'))) {
