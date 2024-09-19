@@ -34,6 +34,17 @@ class ExportFeed extends Base
             ->executeQuery();
     }
 
+    public function updateLastStatus(string $exportFeedId, string $lastStatus): void
+    {
+        $this->getConnection()->createQueryBuilder()
+            ->update('export_feed')
+            ->set('last_status', ':lastStatus')
+            ->where('id=:id')
+            ->setParameter('lastStatus', $lastStatus)
+            ->setParameter('id', $exportFeedId)
+            ->executeQuery();
+    }
+
     public function removeInvalidConfiguratorItems(string $exportFeedId): void
     {
         $exportFeed = $this->get($exportFeedId);
