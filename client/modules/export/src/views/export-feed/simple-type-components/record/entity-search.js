@@ -17,7 +17,7 @@ Espo.define('export:views/export-feed/simple-type-components/record/entity-searc
             Dep.prototype.setup.call(this);
 
             this.presetFilterList = [];
-            this.boolFilterList.push('lastUpdated');
+            this.boolFilterList.push('unexported');
         },
 
         afterRender() {
@@ -38,8 +38,8 @@ Espo.define('export:views/export-feed/simple-type-components/record/entity-searc
                 let filterData = this.getFilterData() || {};
                 if (filterData.where) {
                     filterData.where.forEach((item, k) => {
-                        if (item.type === 'bool' && (item.value || []).includes('lastUpdated')) {
-                            filterData.where[k].data = {lastUpdated: this.options.feedModel.get('id')}
+                        if (item.type === 'bool' && (item.value || []).includes('unexported')) {
+                            filterData.where[k].data = {unexported: this.options.feedModel.get('id')}
                         }
                     });
                 }

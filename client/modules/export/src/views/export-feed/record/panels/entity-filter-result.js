@@ -67,8 +67,8 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
         getWhere(searchView) {
             let where = Espo.Utils.cloneDeep(searchView.searchManager.getWhere());
             where.forEach((item, k) => {
-                if (item.type === 'bool' && (item.value || []).includes('lastUpdated')) {
-                    where[k].data = {lastUpdated: this.model.get('id')}
+                if (item.type === 'bool' && (item.value || []).includes('unexported')) {
+                    where[k].data = {unexported: this.model.get('id')}
                 }
             });
 
