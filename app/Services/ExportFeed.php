@@ -318,39 +318,6 @@ class ExportFeed extends Base
         return parent::findLinkedEntities($id, $link, $params);
     }
 
-    public function prepareCollectionForOutput(EntityCollection $collection, array $selectParams = []): void
-    {
-        parent::prepareCollectionForOutput($collection, $selectParams);
-
-        if (count($collection) > 0) {
-            $connection = $this->getRepository()->getConnection();
-            $qb = $connection->createQueryBuilder();
-
-            $latestJobs = $qb
-                ->select('export_feed_id, MAX(start) AS start, state')
-                ->from($connection->quoteIdentifier('export_job'))
-                ->where('export_feed_id IN (:ids)')
-                ->setParameter('ids', array_column($collection->toArray(), 'id'), \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
-                ->groupBy('export_feed_id')
-                ->addGroupBy('state')
-                ->orderBy('start', 'DESC')
-                ->fetchAllAssociative();
-
-            if (count($latestJobs) > 0) {
-                foreach ($collection as $item) {
-                    foreach ($latestJobs as $job) {
-                        if ($item->id == $job['export_feed_id']) {
-                            $item->set('lastStatus', $job['state']);
-                            $item->set('lastTime', $job['start']);
-
-                            continue 2;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public function prepareEntityForOutput(Entity $entity)
     {
         parent::prepareEntityForOutput($entity);
@@ -364,22 +331,6 @@ class ExportFeed extends Base
         if ($entity->get('type') === 'simple') {
             $entity->set('convertCollectionToString', true);
             $entity->set('convertRelationsToString', true);
-        }
-
-        if (empty($entity->get('lastStatus')) || empty($entity->get('lastTime'))) {
-            $latestJob = $this->getEntityManager()
-                ->getRepository('ExportJob')
-                ->select(['state', 'start'])
-                ->where([
-                    'exportFeedId' => $entity->id
-                ])
-                ->order('start', 'DESC')
-                ->findOne();
-
-            if (!empty($latestJob)) {
-                $entity->set('lastStatus', $latestJob->get('state'));
-                $entity->set('lastTime', $latestJob->get('start'));
-            }
         }
 
         $entity->set('replaceAttributeValues', !empty($entity->getFeedField('replaceAttributeValues')));

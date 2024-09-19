@@ -287,6 +287,24 @@
       "tooltip": true,
       "view": "export:views/export-feed/fields/template"
     },
+    "lastStatus": {
+      "type": "enum",
+      "readOnly": true,
+      "options": [
+        "Pending",
+        "Running",
+        "Success",
+        "Failed",
+        "Canceled"
+      ],
+      "optionColors": [
+        "00AFFF",
+        "FFE208",
+        "1DFF08",
+        "FF0000",
+        "DDDDDD"
+      ]
+    },
     "lastTime": {
       "type": "datetime"
     },
