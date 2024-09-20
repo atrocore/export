@@ -43,6 +43,7 @@ class ExportFeed extends Base
                 }
             }
         }
+
         $qb->executeQuery();
     }
 
