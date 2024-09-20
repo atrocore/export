@@ -47,15 +47,6 @@ class Metadata extends AbstractListener
             $data['clientDefs']['ExportFeed']['relationshipPanels']['configuratorItems']['dragDrop']['maxSize'] = $this->getConfig()->get('recordsPerPageSmall', 20);
         }
 
-        $data['entityDefs']['ExportFeed']['fields']['lastStatus'] = [
-            'type'           => 'enum',
-            'notStorable'    => true,
-            'filterDisabled' => true,
-            'readOnly'       => true,
-            'options'        => $data['entityDefs']['ExportJob']['fields']['state']['options'],
-            'optionColors'   => $data['entityDefs']['ExportJob']['fields']['state']['optionColors']
-        ];
-
         foreach ($this->getMemoryStorage()->get('dynamic_action') ?? [] as $action) {
             if ($action['type'] === 'export') {
                 if ($action['usage'] === 'record' && !empty($action['source_entity'])) {

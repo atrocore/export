@@ -65,7 +65,14 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
         },
 
         getWhere(searchView) {
-            return Espo.Utils.cloneDeep(searchView.searchManager.getWhere());
+            let where = Espo.Utils.cloneDeep(searchView.searchManager.getWhere());
+            where.forEach((item, k) => {
+                if (item.type === 'bool' && (item.value || []).includes('unexported')) {
+                    where[k].data = {unexported: this.model.get('lastTime')}
+                }
+            });
+
+            return where;
         },
 
         getWhereData(searchView) {
