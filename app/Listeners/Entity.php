@@ -24,33 +24,26 @@ class Entity extends AbstractListener
         if (!empty($params['where']) && is_array($params['where'])) {
             foreach ($params['where'] as $k => $item) {
                 if (!empty($item['data']['unexported'])) {
-                    $exportFeed = $this
-                        ->getEntityManager()
-                        ->getRepository('ExportFeed')
-                        ->get($item['data']['unexported']);
+                    $params['where'][$k] = [
+                        'type'      => 'between',
+                        'attribute' => 'modifiedAt',
+                        'value'     => [
+                            $item['data']['unexported'],
+                            (new \DateTime())->modify('-5 seconds')->format('Y-m-d H:i:s')
+                        ],
+                        'dateTime'  => true,
+                        'timeZone'  => 'UTC'
+                    ];
 
-                    if (!empty($exportFeed) && !empty($exportFeed->get('lastTime'))) {
-                        $params['where'][$k] = [
-                            'type'      => 'between',
-                            'attribute' => 'modifiedAt',
-                            'value'     => [
-                                $exportFeed->get('lastTime'),
-                                (new \DateTime())->modify('-5 seconds')->format('Y-m-d H:i:s')
-                            ],
-                            'dateTime'  => true,
-                            'timeZone'  => 'UTC'
-                        ];
-
-                        if ($entityType === 'Product') {
-                            $params['where'][$k] = $this
-                                ->getContainer()
-                                ->get('selectManagerFactory')
-                                ->create('Product')
-                                ->prepareWhereForModifiedAtExpanded($params['where'][$k]);
-                        }
-
-                        $event->setArgument('params', $params);
+                    if ($entityType === 'Product') {
+                        $params['where'][$k] = $this
+                            ->getContainer()
+                            ->get('selectManagerFactory')
+                            ->create('Product')
+                            ->prepareWhereForModifiedAtExpanded($params['where'][$k]);
                     }
+
+                    $event->setArgument('params', $params);
                 }
             }
         }

@@ -39,7 +39,7 @@ Espo.define('export:views/export-feed/simple-type-components/record/entity-searc
                 if (filterData.where) {
                     filterData.where.forEach((item, k) => {
                         if (item.type === 'bool' && (item.value || []).includes('unexported')) {
-                            filterData.where[k].data = {unexported: this.options.feedModel.get('id')}
+                            filterData.where[k].data = {unexported: this.options.feedModel.get('lastTime')}
                         }
                     });
                 }
