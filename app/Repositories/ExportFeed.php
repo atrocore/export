@@ -220,6 +220,15 @@ class ExportFeed extends Base
         }
     }
 
+    protected function afterSave(Entity $entity, array $options = [])
+    {
+        parent::afterSave($entity, $options);
+
+        if ($entity->isAttributeChanged('lastTime')) {
+            $this->updateLastTime($entity->get('id'), new \DateTime($entity->get('lastTime')));
+        }
+    }
+
     protected function beforeRemove(Entity $entity, array $options = [])
     {
         parent::beforeRemove($entity, $options);
