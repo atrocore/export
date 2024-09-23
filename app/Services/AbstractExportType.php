@@ -379,9 +379,9 @@ abstract class AbstractExportType extends Base
     {
         $this->convertor = $this->getDataConvertor();
 
-        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash();
         Util::createDir($tmpDir);
-        $fileName = Util::generateId() . ".txt";
+        $fileName = Util::generateUniqueHash() . ".txt";
 
         /**
          * Set language prism
@@ -514,9 +514,9 @@ abstract class AbstractExportType extends Base
             sleep(3);
         }
 
-        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash();
         Util::createDir($tmpDir);
-        $fileName = Util::generateId() . ".txt";
+        $fileName = Util::generateUniqueHash() . ".txt";
 
         $res = [
             'configuration' => [],
@@ -633,9 +633,9 @@ abstract class AbstractExportType extends Base
             return $this->createCacheFileByChunks($total);
         }
 
-        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash();
         Util::createDir($tmpDir);
-        $fileName = Util::generateId() . ".txt";
+        $fileName = Util::generateUniqueHash() . ".txt";
 
         /**
          * Set language prism

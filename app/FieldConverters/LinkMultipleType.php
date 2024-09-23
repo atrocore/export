@@ -221,7 +221,7 @@ class LinkMultipleType extends LinkType
         $language = 'main';
 
         foreach ($channelsIds as $channelId) {
-            $uniqueHash = Util::generateId();
+            $uniqueHash = Util::generateUniqueHash();
             $qb1 = $connection->createQueryBuilder()
                 ->select("{$uniqueHash}_rel.$relColumnName")
                 ->from($relTableName, "{$uniqueHash}_rel")
@@ -267,7 +267,7 @@ class LinkMultipleType extends LinkType
             throw new Error("Invalid relation metadata");
         }
 
-        $uniqueHash = Util::generateId();
+        $uniqueHash = Util::generateUniqueHash();
 
         $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
 
