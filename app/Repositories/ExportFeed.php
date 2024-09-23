@@ -224,7 +224,7 @@ class ExportFeed extends Base
     {
         parent::afterSave($entity, $options);
 
-        if ($entity->isAttributeChanged('lastTime')) {
+        if ($entity->isAttributeChanged('lastTime') && !empty($entity->get('lastTime'))) {
             $this->updateLastTime($entity->get('id'), new \DateTime($entity->get('lastTime')));
         }
     }
