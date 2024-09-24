@@ -625,9 +625,6 @@ abstract class AbstractExportType extends Base
         $offset = $this->data['offset'];
 
         $total = $this->getTotal();
-        if (empty($total)) {
-            return ['count' => 0];
-        }
 
         if (empty($this->data['feed']['separateJob']) && $limit < $total) {
             return $this->createCacheFileByChunks($total);
@@ -665,9 +662,7 @@ abstract class AbstractExportType extends Base
 
         $file = fopen($res['fullFileName'], 'a');
 
-        $records = $this->getRecords($offset, $limit);
-
-        if (!empty($records)) {
+        if (!empty($total) && !empty($records = $this->getRecords($offset, $limit))) {
             $this->prepareRecordsForProductAttributes($attributesConfiguratorItems, $records);
             $this->getMemoryStorage()->set('exportRecordsPartOffset', $offset);
             $this->getMemoryStorage()->set('exportRecordsPart', $records);
