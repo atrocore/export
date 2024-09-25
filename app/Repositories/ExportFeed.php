@@ -15,8 +15,8 @@ namespace Export\Repositories;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
-use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Templates\Repositories\Base;
+use Atro\Core\Exceptions\BadRequest;
+use Atro\Core\Templates\Repositories\Base;
 use Espo\Core\Utils\Json;
 use Espo\ORM\Entity;
 use Export\Entities\ExportFeed as ExportFeedEntity;
@@ -33,7 +33,7 @@ class ExportFeed extends Base
             ->setParameter('id', $exportFeedId);
 
         $exportFeed = $this->get($exportFeedId);
-        if (!empty($exportFeed->get('data'))) {
+        if (!empty($exportFeed) && !empty($exportFeed->get('data'))) {
             $data = json_decode(json_encode($exportFeed->get('data')), true);
             if (!empty($data['where']) && is_array($data['where'])) {
                 foreach ($data['where'] as $k => $item) {
