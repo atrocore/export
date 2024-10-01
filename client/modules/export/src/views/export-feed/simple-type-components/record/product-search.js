@@ -14,7 +14,8 @@ Espo.define('export:views/export-feed/simple-type-components/record/product-sear
             disableSavePreset: true,
 
             setup() {
-                Filter.prototype.setup.call(this);
+                Dep.prototype.setup.call(this);
+                Filter.prototype.setupFilters.call(this)
             },
 
             afterRender() {

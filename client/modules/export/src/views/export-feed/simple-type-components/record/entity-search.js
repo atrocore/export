@@ -15,7 +15,10 @@ Espo.define('export:views/export-feed/simple-type-components/record/entity-searc
 
         setup() {
             Dep.prototype.setup.call(this);
+            this.setupFilters()
+        },
 
+        setupFilters() {
             this.presetFilterList = [];
             this.boolFilterList.push('unexported');
         },
