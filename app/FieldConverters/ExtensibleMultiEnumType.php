@@ -57,6 +57,19 @@ class ExtensibleMultiEnumType extends LinkMultipleType
         return ['collection' => $collection];
     }
 
+    public function queryCallback(Container $container, QueryBuilder $qb, Mapper $mapper, array $configuration): void
+    {
+        $defs = $this
+            ->getMetadata()
+            ->get(['entityDefs', $configuration['entity'], 'fields', $configuration['field']]);
+
+        if (is_array($defs) && !empty($defs['type']) && $defs['type'] === 'extensibleMultiEnum') {
+            return;
+        }
+
+        parent::queryCallback($container, $qb, $mapper, $configuration);
+    }
+
     public function queryCallbackForAttribute(Container $container, QueryBuilder $qb, Mapper $mapper, array $conf): void
     {
         AbstractType::queryCallbackForAttribute($container, $qb, $mapper, $conf);
