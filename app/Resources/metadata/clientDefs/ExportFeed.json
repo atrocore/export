@@ -362,7 +362,9 @@
               "type": "in",
               "attribute": "type",
               "value": [
-                "simple"
+                "simple",
+                "ftp",
+                "httpPro"
               ]
             }
           ]
@@ -382,7 +384,9 @@
               "type": "in",
               "attribute": "type",
               "value": [
-                "simple"
+                "simple",
+                "ftp",
+                "httpPro"
               ]
             }
           ]
@@ -400,7 +404,9 @@
               "type": "in",
               "attribute": "type",
               "value": [
-                "simple"
+                "simple",
+                "ftp",
+                "httpPro"
               ]
             }
           ]
