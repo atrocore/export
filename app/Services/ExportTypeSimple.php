@@ -304,7 +304,7 @@ class ExportTypeSimple extends AbstractExportType
         if(empty($exportFeed)){
             $exportFeed = $this->getEntityManager()->getEntity('ExportFeed');
             $exportFeed->set('id', Util::generateId());
-            $exportFeed->set('name', Util::generateId());
+            $exportFeed->set('name', Util::generateUniqueHash());
         }
 
         $input = new \stdClass();
@@ -320,7 +320,7 @@ class ExportTypeSimple extends AbstractExportType
         $exportJob->set('data', array_merge($exportJob->getData(), $data));
 
         // create tmp CSV file
-        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId() . DIRECTORY_SEPARATOR . $input->name;
+        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash() . DIRECTORY_SEPARATOR . $input->name;
         $this->createDir($fileName);
         $this->storeCsvFile($exportJob->getData(), $fileName);
 
@@ -390,7 +390,7 @@ class ExportTypeSimple extends AbstractExportType
         if(empty($exportFeed)){
             $exportFeed = $this->getEntityManager()->getEntity('ExportFeed');
             $exportFeed->set('id', Util::generateId());
-            $exportFeed->set('name', Util::generateId());
+            $exportFeed->set('name', Util::generateUniqueHash());
         }
 
         $input = new \stdClass();
@@ -404,7 +404,7 @@ class ExportTypeSimple extends AbstractExportType
             }, $sheets)
         );
 
-        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $exportJob->get('id') . DIRECTORY_SEPARATOR . Util::generateId() . $input->name;
+        $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $exportJob->get('id') . DIRECTORY_SEPARATOR . Util::generateUniqueHash() . $input->name;
 
         $this->createDir($fileName);
 
@@ -432,7 +432,7 @@ class ExportTypeSimple extends AbstractExportType
             // prepare CSV filename
             $pathParts = explode(DIRECTORY_SEPARATOR, $fileName);
             array_pop($pathParts);
-            $pathParts[] = Util::generateId() . '.csv';
+            $pathParts[] = Util::generateUniqueHash() . '.csv';
             $csvFileName = implode('/', $pathParts);
 
             $this->storeCsvFile($data, $csvFileName);

@@ -1,6 +1,6 @@
 {
   "fields": {
-    "exportFeed": "Экспорт. фид",
+    "exportFeed": "Экспортный фид",
     "file": "Файл экспорта",
     "state": "Статус",
     "stateMessage": "Сообщение",

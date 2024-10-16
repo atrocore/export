@@ -1,0 +1,22 @@
+{
+  "fields": {
+    "exportFeed": "Exportation de flux",
+    "exportFeeds": "Exporter des flux",
+    "maximumHoursToLookBack": "Un maximum d'heures pour regarder en arrière",
+    "maximumDaysForJobExist": "Durée maximale de conservation en jours"
+  },
+  "links": {
+    "exportFeed": "Flux d'export",
+    "exportFeeds": "Exporter des flux"
+  },
+  "options": {
+    "job": {
+      "ExportFeed": "Flux d'export",
+      "TrialExport": "Échec de la nouvelle tentative d'exportation",
+      "ExportJobRemove": "Export Job Remover"
+    }
+  },
+  "tooltips": {
+    "exportFeeds": "Si aucun flux d'exportation n'est sélectionné, toutes les tâches d'exportation qui ont échoué seront relancées."
+  }
+}

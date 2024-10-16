@@ -111,6 +111,13 @@ class LinkType extends AbstractType
         }
     }
 
+    protected function getLinkedEntitiesKeyForConfiguration(array $configuration): array
+    {
+        $linkedEntitiesKeys = $this->convertor->getMemoryStorage()->get(self::MEMORY_KEY) ?? [];
+
+        return $linkedEntitiesKeys[$configuration['id']] ?? [];
+    }
+
     protected function prepareExportByField(string $foreignEntity, string $configuratorField, string &$foreignType, array &$foreignData): void
     {
         if ($configuratorField === 'sharedDownloadUrl') {
@@ -136,9 +143,7 @@ class LinkType extends AbstractType
 
         // load to memory if it needs
         if (!isset($exportByKeys[$configuration['id']])) {
-            $linkedEntitiesKeys = $this->convertor->getMemoryStorage()->get(self::MEMORY_KEY) ?? [];
-
-            $keys = $linkedEntitiesKeys[$configuration['id']] ?? [];
+            $keys = $this->getLinkedEntitiesKeyForConfiguration($configuration);
 
             $ids = [];
             foreach ($keys as $v) {
@@ -301,7 +306,7 @@ class LinkType extends AbstractType
         $params['disableCount'] = true;
         $params['where'] = [['type' => 'in', 'attribute' => 'id', 'value' => $ids]];
 
-        $res = $this->convertor->getService($foreignEntity)->findEntities($params);
+        $res = $this->findEntities($foreignEntity, $params);
 
         foreach ($res['collection'] as $re) {
             $this->prepareEntity($re, $configuration);
@@ -310,6 +315,11 @@ class LinkType extends AbstractType
             $linkedEntitiesKeys[$configuration['id']][] = $itemKey;
         }
         $this->getMemoryStorage()->set(self::MEMORY_KEY, $linkedEntitiesKeys);
+    }
+
+    protected function findEntities(string $foreignEntity, array $params): array
+    {
+        return $this->convertor->getService($foreignEntity)->findEntities($params);
     }
 
     protected function getEntity(string $scope, string $id): ?Entity

@@ -346,6 +346,7 @@ abstract class AbstractExportType extends Base
         $params['offset'] = $offset;
         $params['maxSize'] = $this->data['limit'];
         $params['withDeleted'] = !empty($this->data['feed']['data']['withDeleted']);
+        $params['disableCount'] = true;
         $params['queryCallbacks'][] = [$this, 'queryCallback'];
 
         if (!empty($this->data['feed']['sortOrderField'])) {
@@ -378,9 +379,9 @@ abstract class AbstractExportType extends Base
     {
         $this->convertor = $this->getDataConvertor();
 
-        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash();
         Util::createDir($tmpDir);
-        $fileName = Util::generateId() . ".txt";
+        $fileName = Util::generateUniqueHash() . ".txt";
 
         /**
          * Set language prism
@@ -513,9 +514,9 @@ abstract class AbstractExportType extends Base
             sleep(3);
         }
 
-        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash();
         Util::createDir($tmpDir);
-        $fileName = Util::generateId() . ".txt";
+        $fileName = Util::generateUniqueHash() . ".txt";
 
         $res = [
             'configuration' => [],
@@ -624,17 +625,14 @@ abstract class AbstractExportType extends Base
         $offset = $this->data['offset'];
 
         $total = $this->getTotal();
-        if (empty($total)) {
-            return ['count' => 0];
-        }
 
         if (empty($this->data['feed']['separateJob']) && $limit < $total) {
             return $this->createCacheFileByChunks($total);
         }
 
-        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateId();
+        $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash();
         Util::createDir($tmpDir);
-        $fileName = Util::generateId() . ".txt";
+        $fileName = Util::generateUniqueHash() . ".txt";
 
         /**
          * Set language prism
@@ -664,9 +662,7 @@ abstract class AbstractExportType extends Base
 
         $file = fopen($res['fullFileName'], 'a');
 
-        $records = $this->getRecords($offset, $limit);
-
-        if (!empty($records)) {
+        if (!empty($total) && !empty($records = $this->getRecords($offset, $limit))) {
             $this->prepareRecordsForProductAttributes($attributesConfiguratorItems, $records);
             $this->getMemoryStorage()->set('exportRecordsPartOffset', $offset);
             $this->getMemoryStorage()->set('exportRecordsPart', $records);

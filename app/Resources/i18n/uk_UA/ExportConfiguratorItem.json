@@ -47,8 +47,6 @@
     }
   },
   "labels": {
-    "Field": "Поле",
-    "Fixed value": "Фіксоване значення",
     "exportByForAttributeValue": "Це лише для атрибутів типу List або Multi-value list"
   },
   "tooltips": {

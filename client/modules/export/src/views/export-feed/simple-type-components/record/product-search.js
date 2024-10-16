@@ -15,9 +15,7 @@ Espo.define('export:views/export-feed/simple-type-components/record/product-sear
 
             setup() {
                 Dep.prototype.setup.call(this);
-
-                this.presetFilterList = [];
-                this.boolFilterList = [];
+                Filter.prototype.setupFilters.call(this)
             },
 
             afterRender() {

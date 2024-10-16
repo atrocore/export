@@ -183,6 +183,13 @@ class LinkMultipleType extends LinkType
         }
     }
 
+    protected function getLinkedEntitiesKeyForConfiguration(array $configuration): array
+    {
+        $linkedEntitiesKeys = $this->convertor->getMemoryStorage()->get("{$configuration['id']}_ids") ?? [];
+
+        return $linkedEntitiesKeys[$configuration['id']] ?? [];
+    }
+
     public function queryCallbackForAttribute(Container $container, QueryBuilder $qb, Mapper $mapper, array $conf): void
     {
         if (!class_exists(MigrationHelper::class)) {
@@ -214,7 +221,7 @@ class LinkMultipleType extends LinkType
         $language = 'main';
 
         foreach ($channelsIds as $channelId) {
-            $uniqueHash = Util::generateId();
+            $uniqueHash = Util::generateUniqueHash();
             $qb1 = $connection->createQueryBuilder()
                 ->select("{$uniqueHash}_rel.$relColumnName")
                 ->from($relTableName, "{$uniqueHash}_rel")
@@ -260,7 +267,7 @@ class LinkMultipleType extends LinkType
             throw new Error("Invalid relation metadata");
         }
 
-        $uniqueHash = Util::generateId();
+        $uniqueHash = Util::generateUniqueHash();
 
         $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
 

@@ -15,14 +15,51 @@ namespace Export\Repositories;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
-use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Templates\Repositories\Base;
+use Atro\Core\Exceptions\BadRequest;
+use Atro\Core\Templates\Repositories\Base;
 use Espo\Core\Utils\Json;
 use Espo\ORM\Entity;
 use Export\Entities\ExportFeed as ExportFeedEntity;
 
 class ExportFeed extends Base
 {
+    public function updateLastTime(string $exportFeedId, \DateTime $lastTime): void
+    {
+        $qb = $this->getConnection()->createQueryBuilder()
+            ->update('export_feed')
+            ->set('last_time', ':lastTime')
+            ->where('id=:id')
+            ->setParameter('lastTime', $lastTime->format('Y-m-d H:i:s'))
+            ->setParameter('id', $exportFeedId);
+
+        $exportFeed = $this->get($exportFeedId);
+        if (!empty($exportFeed) && !empty($exportFeed->get('data'))) {
+            $data = json_decode(json_encode($exportFeed->get('data')), true);
+            if (!empty($data['where']) && is_array($data['where'])) {
+                foreach ($data['where'] as $k => $item) {
+                    if (!empty($item['data']['unexported'])) {
+                        $data['where'][$k]['data']['unexported'] = $lastTime->format('Y-m-d H:i:s');
+                        $qb->set('data', ':data')->setParameter('data', json_encode($data));
+                        break;
+                    }
+                }
+            }
+        }
+
+        $qb->executeQuery();
+    }
+
+    public function updateLastStatus(string $exportFeedId, string $lastStatus): void
+    {
+        $this->getConnection()->createQueryBuilder()
+            ->update('export_feed')
+            ->set('last_status', ':lastStatus')
+            ->where('id=:id')
+            ->setParameter('lastStatus', $lastStatus)
+            ->setParameter('id', $exportFeedId)
+            ->executeQuery();
+    }
+
     public function removeInvalidConfiguratorItems(string $exportFeedId): void
     {
         $exportFeed = $this->get($exportFeedId);
@@ -180,6 +217,15 @@ class ExportFeed extends Base
             if (!$entity->isNew() && $entity->has('entity') && $fetchedEntity !== $entity->get('entity')) {
                 $this->removeConfiguratorItems('ExportFeed', $entity->get('id'));
             }
+        }
+    }
+
+    protected function afterSave(Entity $entity, array $options = [])
+    {
+        parent::afterSave($entity, $options);
+
+        if ($entity->isAttributeChanged('lastTime') && !empty($entity->get('lastTime'))) {
+            $this->updateLastTime($entity->get('id'), new \DateTime($entity->get('lastTime')));
         }
     }
 

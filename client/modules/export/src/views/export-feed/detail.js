@@ -27,6 +27,7 @@ Espo.define('export:views/export-feed/detail', 'views/detail',
                 };
 
                 this.listenTo(this.model, 'after:save', () => {
+                    this.model.fetch();
                     $('.action[data-action=refresh][data-panel=configuratorItems]').click();
                 });
 

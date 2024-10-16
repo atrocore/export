@@ -3,7 +3,7 @@
     "name": "Поле",
     "column": "Название колонки",
     "columnType": "Метка колонки",
-    "exportFeed": "Экспорт. фид",
+    "exportFeed": "Экспортный фид",
     "attribute": "Атрибут",
     "remove": "Удалить",
     "exportBy": "Поля связанных сущностей",
@@ -25,10 +25,6 @@
   "links": {
     "exportFeed": "Экспорт. фид",
     "channel": "Канал"
-  },
-  "labels": {
-    "Field": "Поле",
-    "Fixed value": "Фиксированное значение"
   },
   "options": {
     "boolFilterFieldValue": {

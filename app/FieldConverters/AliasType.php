@@ -34,11 +34,13 @@ class AliasType extends AbstractType
             $pav = $this->convertor->getService('ProductAttributeValue')->getEntity($pavId);
 
             $pavResults = [];
-            foreach ($pav->get('valueOptionsData') as $item) {
-                if (is_array($item['name'])) {
-                    $pavResults[] = implode(', ', $item['name']);
-                } else {
-                    $pavResults[] = $item['name'];
+            if (!empty($options = $pav->get('valueOptionsData'))) {
+                foreach ($options as $item) {
+                    if (is_array($item['name'])) {
+                        $pavResults[] = implode(', ', $item['name']);
+                    } else {
+                        $pavResults[] = $item['name'];
+                    }
                 }
             }
 

@@ -1,0 +1,66 @@
+{
+  "fields": {
+    "name": "Champ",
+    "column": "Nom de la colonne",
+    "columnType": "Étiquette de la colonne",
+    "exportFeed": "Exportation de flux",
+    "attribute": "Attribut",
+    "exportBy": "Champs d'entité connexes",
+    "remove": "Enlever",
+    "exportIntoSeparateColumns": "Séparer",
+    "type": "Type",
+    "language": "Langue",
+    "channel": "Canal",
+    "mask": "Masque",
+    "filterField": "Champ du filtre",
+    "filterFieldValue": "Valeur du champ de filtre",
+    "offsetRelation": "Décalage",
+    "limitRelation": "Limite",
+    "sortFieldRelation": "Ordre de tri (champ)",
+    "sortOrderRelation": "Ordre de tri (sens)",
+    "fixedValue": "Valeur fixe",
+    "previousItem": "Point précédent",
+    "zip": "Exporter des fichiers vers une archive ZIP",
+    "attributeValue": "Valeur de l'attribut",
+    "fileNameTemplate": "Modèle de nom de fichier",
+    "exportByForListAttribute": "Champs d'entité connexes pour les listes",
+    "fallbackLanguage": "Langue de secours"
+  },
+  "links": {
+    "exportFeed": "Flux d'export",
+    "channel": "Canal"
+  },
+  "labels": {
+    "exportByForAttributeValue": "Ceci n'est valable que pour les attributs de type liste ou liste multi-valeurs"
+  },
+  "columnType": {
+    "name": "Nom",
+    "internal": "Nom (non traduit) / Locale",
+    "custom": "Nom personnalisé"
+  },
+  "options": {
+    "boolFilterFieldValue": {
+      "+": "vrai",
+      "-": "faux"
+    },
+    "attributeValue": {
+      "value": "Valeur",
+      "valueFrom": "Valeur de",
+      "valueTo": "Valeur à",
+      "valueUnit": "Unité de valeur",
+      "id": "ID (valeur de l'attribut du produit)",
+      "valueNumeric": "Valeur (numérique)",
+      "valueString": "Valeur (Chaîne)"
+    }
+  },
+  "tooltips": {
+    "exportIntoSeparateColumns": "Les enregistrements de données connexes seront exportés sous forme de champs/colonnes différents en utilisant pour le nom le suffixe \"_1\", \"_2\", etc.",
+    "filterField": "Sélectionnez un champ de filtre si vous souhaitez appliquer un filtre aux enregistrements liés.",
+    "filterFieldValue": "Seuls les enregistrements filtrés par la valeur du champ de filtre seront sélectionnés.",
+    "column": "Vous pouvez utiliser des champs d'entités connexes dans le nom de la colonne. Utilisez le nom du champ dans la base de données comme variable, par exemple {{nom}}. La case à cocher \"Séparer les colonnes\" doit être activée."
+  },
+  "exceptions": {
+    "noSuchAttribute": "L'attribut portant le code \"%s\" n'existe pas.",
+    "unknownModifier": "Le modificateur \"%s\" est inconnu."
+  }
+}

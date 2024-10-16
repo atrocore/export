@@ -15,9 +15,12 @@ Espo.define('export:views/export-feed/simple-type-components/record/entity-searc
 
         setup() {
             Dep.prototype.setup.call(this);
+            this.setupFilters()
+        },
 
+        setupFilters() {
             this.presetFilterList = [];
-            // this.boolFilterList = [];
+            this.boolFilterList.push('unexported');
         },
 
         afterRender() {
@@ -36,6 +39,14 @@ Espo.define('export:views/export-feed/simple-type-components/record/entity-searc
 
             this.listenTo(this.options.feedModel, 'save:export-feed', () => {
                 let filterData = this.getFilterData() || {};
+                if (filterData.where) {
+                    filterData.where.forEach((item, k) => {
+                        if (item.type === 'bool' && (item.value || []).includes('unexported')) {
+                            filterData.where[k].data = {unexported: this.options.feedModel.get('lastTime')}
+                        }
+                    });
+                }
+
                 this.options.feedModel.set('data', _.extend({}, this.options.feedModel.get('data'), filterData));
             });
         },

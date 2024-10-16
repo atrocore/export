@@ -20,6 +20,9 @@
     "exportErrorDuring7Days": "Export Feeds/Jobs Error during 7 days",
     "exportErrorDuring28Days": "Export Feeds/Jobs Error during 28 days"
   },
+  "boolFilters": {
+    "unexported": "Unexported"
+  },
   "dashlets": {
     "DataSyncErrorsExport": "Data sync errors for export"
   }
