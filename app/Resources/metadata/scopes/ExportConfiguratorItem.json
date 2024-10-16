@@ -12,10 +12,10 @@
   "type": "Base",
   "module": "Export",
   "object": true,
-  "overviewFilters": false,
   "hasAssignedUser": false,
   "hasTeam": false,
   "hasOwner": false,
   "deleteWithoutConfirmation": true,
-  "notificationDisabled": true
+  "notificationDisabled": true,
+  "hideFieldTypeFilters": true
 }
