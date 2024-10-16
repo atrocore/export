@@ -7,7 +7,6 @@
   "module": "Export",
   "customizable": false,
   "object": true,
-  "overviewFilters": false,
   "hasOwner": true,
   "hasAssignedUser": true,
   "hasTeam": true,
@@ -24,5 +23,6 @@
     "scheduledJobs",
     "scheduledJobsIds",
     "configuratorItemsIds"
-  ]
+  ],
+  "hideFieldTypeFilters": true
 }
