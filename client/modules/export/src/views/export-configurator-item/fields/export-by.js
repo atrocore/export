@@ -32,20 +32,10 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
                 this.checkFieldVisibility();
             }
 
-            if (this.model.get('entity') === 'ProductAttributeValue' && this.model.get('name') === 'value') {
-                this.$el.append(`<span style="color: #999; font-size: 12px">${this.translate('exportByForAttributeValue', 'labels', 'ExportConfiguratorItem')}</span>`)
-                this.$el.closest('.cell').find('.label-text').text(this.translate('exportByForListAttribute', 'fields', 'ExportConfiguratorItem'))
-            } else {
-                this.$el.closest('.cell').find('.label-text').text(this.translate('exportBy', 'fields', 'ExportConfiguratorItem'))
-            }
+            this.$el.closest('.cell').find('.label-text').text(this.translate('exportBy', 'fields', 'ExportConfiguratorItem'))
         },
 
         checkFieldVisibility() {
-            if (this.model.get('entity') === 'ProductAttributeValue' && this.model.get('name') === 'value') {
-                this.show();
-                return
-            }
-
             if (this.isRequired()) {
                 this.show();
             } else {
@@ -70,9 +60,6 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
                 }
                 if (this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'type']) === 'measure') {
                     entity = 'Unit';
-                }
-                if (this.model.get('entity') === 'ProductAttributeValue' && this.model.get('name') === 'value') {
-                    entity = 'ExtensibleEnumOption'
                 }
                 if (this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'type']) === 'file') {
                     entity = 'File';
