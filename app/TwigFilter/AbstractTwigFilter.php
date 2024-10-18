@@ -17,6 +17,6 @@ abstract class AbstractTwigFilter extends \Atro\Core\Twig\AbstractTwigFilter
 {
     public function getFeedData(): array
     {
-        return $this->getTemplateData('feedData');
+        return $this->getTemplateData('feedData') ?? [];
     }
 }
