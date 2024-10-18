@@ -41,7 +41,7 @@ class LinkType extends AbstractType
 
         if (!empty($linkId)) {
             $result[$column] = $configuration['nullValue'];
-            $exportBy = isset($configuration['exportBy']) ? $configuration['exportBy'] : ['id'];
+            $exportBy = !empty($configuration['exportBy']) ? $configuration['exportBy'] : ['name'];
 
             if ($this->needToCallForeignEntity($exportBy) || $configuration['zip']) {
                 $foreignEntity = $this->getForeignEntityName($entity, $field);
