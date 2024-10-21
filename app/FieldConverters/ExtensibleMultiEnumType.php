@@ -30,8 +30,23 @@ class ExtensibleMultiEnumType extends LinkMultipleType
         return 'ExtensibleEnumOption';
     }
 
-    protected function findLinkedEntities(string $entity, array $record, string $field, array $params): array
+    protected function findLinkedEntities(string $entity, array $record, string $field, array $params, array $configuration): array
     {
+        if (!empty($configuration['exportPav'])) {
+            $res = $this
+                ->findEntities('ExtensibleEnumOption', [
+                    'where' => [
+                        [
+                            'type'      => 'in',
+                            'attribute' => 'id',
+                            'value'     => $record['value']
+                        ]
+                    ]
+                ]);
+
+            return ['collection' => $res['collection']];
+        }
+
         $collection = new EntityCollection([], 'ExtensibleEnumOption');
 
         // load to memory

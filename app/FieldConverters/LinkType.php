@@ -47,8 +47,12 @@ class LinkType extends AbstractType
                 $foreignEntity = $this->getForeignEntityName($entity, $field);
                 if (!empty($foreignEntity)) {
                     try {
-                        $this->loadLinkDataToMemory($record, $entity, $field);
-                        $foreign = $this->getEntity($foreignEntity, $linkId);
+                        if (!empty($configuration['exportPav'])) {
+                            $foreign = $this->convertor->getEntity($foreignEntity, $linkId);
+                        } else {
+                            $this->loadLinkDataToMemory($record, $entity, $field);
+                            $foreign = $this->getEntity($foreignEntity, $linkId);
+                        }
                     } catch (\Throwable $e) {
                         $GLOBALS['log']->error('Export. Can not get foreign entity: ' . $e->getMessage());
                     }
