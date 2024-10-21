@@ -95,7 +95,7 @@ class LinkMultipleType extends LinkType
         $params['disableCount'] = true;
 
         try {
-            $foreignResult = $this->findLinkedEntities($entity, $record, $field, $params);
+            $foreignResult = $this->findLinkedEntities($entity, $record, $field, $params, $configuration);
         } catch (\Throwable $e) {
             $GLOBALS['log']->error('Export. Can not get foreign entities: ' . $e->getMessage());
         }
@@ -122,7 +122,7 @@ class LinkMultipleType extends LinkType
 
         $foreignList = array_slice($foreignList, 0, $params['maxSize']);
 
-        $exportBy = isset($configuration['exportBy']) ? $configuration['exportBy'] : ['id'];
+        $exportBy = !empty($configuration['exportBy']) ? $configuration['exportBy'] : ['name'];
 
         foreach ($foreignList as $foreignData) {
             $fieldResult = [];
@@ -136,12 +136,16 @@ class LinkMultipleType extends LinkType
 
                 $this->prepareExportByField($foreignEntity, $v, $foreignType, $foreignData);
 
-                // prepare type for product attribute value
+                $foreignConfiguration = array_merge($configuration, ['entity'=> $foreignEntity, 'field' => $v]);
+
+                // convert product attribute value
                 if ($entity === 'Product' && $field === 'productAttributeValues' && $v === 'value') {
-                    $foreignType = $foreignData['attributeType'] === 'file' ? 'varchar' : $foreignData['attributeType'];
+                    $foreignConfiguration['exportBy'] = ['name'];
+                    $foreignConfiguration['exportPav'] = true;
+                    $foreignConfiguration['attributeId'] = $foreignData['attributeId'];
+                    $foreignType = $this->convertor->prepareConvertorTypeForAttribute($foreignData['attributeType'], 'value');
                 }
 
-                $foreignConfiguration = array_merge($configuration, ['entity'=>  $foreignEntity,'field' => $v]);
                 $this->convertForeignType($fieldResult, $foreignType, $foreignConfiguration, $foreignData, $v, $record);
             }
 
@@ -319,8 +323,12 @@ class LinkMultipleType extends LinkType
         }
     }
 
-    protected function findLinkedEntities(string $entity, array $record, string $field, array $params): array
+    protected function findLinkedEntities(string $entity, array $record, string $field, array $params, array $configuration): array
     {
+        if (!empty($configuration['exportPav'])) {
+            throw new \Error('Export of such attribute is not provided');
+        }
+
         $configuration = $this->getMemoryStorage()->get('configurationItemData');
         if (empty($configuration['id'])) {
             throw new \Error('No configuration id found.');

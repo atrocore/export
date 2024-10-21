@@ -30,9 +30,6 @@
     "exportFeed": "Export Feed",
     "channel": "Channel"
   },
-  "labels": {
-    "exportByForAttributeValue": "This is only for Attribute of type List or Multi-value list"
-  },
   "columnType": {
     "name": "Name",
     "internal": "Name (untranslated) / Locale",

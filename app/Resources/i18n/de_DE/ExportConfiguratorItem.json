@@ -35,9 +35,6 @@
     "internal": "Name (unübersetzt) / Gebietsschema",
     "custom": "Benutzerdefinierter Name"
   },
-  "labels": {
-    "exportByForAttributeValue": "Dies gilt nur für Attribute vom Typ Liste oder Mehrwertliste"
-  },
   "options": {
     "boolFilterFieldValue": {
       "+": "wahr",

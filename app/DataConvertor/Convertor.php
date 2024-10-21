@@ -168,7 +168,7 @@ class Convertor
         return $attribute->get('type');
     }
 
-    protected function prepareConvertorTypeForAttribute(string $attributeType, ?string $attributeValue): string
+    public function prepareConvertorTypeForAttribute(string $attributeType, ?string $attributeValue): string
     {
         if ($attributeValue == null) {
             $attributeValue = 'value';

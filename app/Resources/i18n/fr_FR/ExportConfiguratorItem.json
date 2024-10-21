@@ -30,9 +30,6 @@
     "exportFeed": "Flux d'export",
     "channel": "Canal"
   },
-  "labels": {
-    "exportByForAttributeValue": "Ceci n'est valable que pour les attributs de type liste ou liste multi-valeurs"
-  },
   "columnType": {
     "name": "Nom",
     "internal": "Nom (non traduit) / Locale",
