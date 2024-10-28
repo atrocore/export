@@ -20,6 +20,7 @@ use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\Core\Utils\Metadata;
+use Espo\ORM\Entity;
 use Export\DataConvertor\Convertor;
 
 abstract class AbstractType
@@ -97,7 +98,7 @@ abstract class AbstractType
         return $this->convertor->getMetadata();
     }
 
-    protected function getSharedDownloadUrl(string $exportJobId, string $fileId): string
+    protected function getSharingEntity(string $exportJobId, string $fileId): Entity
     {
         $exportJob = $this->convertor->getEntityManager()->getRepository('ExportJob')->get($exportJobId);
         if (empty($exportJob)) {
@@ -117,8 +118,24 @@ abstract class AbstractType
             $sharingRepo->save($sharing);
         }
 
+        return $sharing;
+    }
+
+    protected function getSharedDownloadUrl(string $exportJobId, string $fileId): string
+    {
+        $sharing = $this->getSharingEntity($exportJobId, $fileId);
+
         $this->convertor->getService('Sharing')->prepareEntityForOutput($sharing);
 
         return $sharing->get('link');
+    }
+
+    protected function getSharedViewUrl(string $exportJobId, string $fileId): string
+    {
+        $sharing = $this->getSharingEntity($exportJobId, $fileId);
+
+        $this->convertor->getService('Sharing')->prepareEntityForOutput($sharing);
+
+        return $sharing->get('viewLink');
     }
 }
