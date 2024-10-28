@@ -1,5 +1,6 @@
 {
   "fields": {
-    "sharedDownloadUrl": "Download URL (freigegeben)"
+    "sharedDownloadUrl": "Download URL (freigegeben)",
+    "sharedViewUrl": "View URL (freigegeben)"
   }
 }

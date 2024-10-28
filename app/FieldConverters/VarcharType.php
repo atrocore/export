@@ -38,6 +38,10 @@ class VarcharType extends AbstractType
             if ($field === 'sharedDownloadUrl') {
                 $result[$column] = $this->getSharedDownloadUrl($this->getMemoryStorage()->get('exportJobId'), $record['id']);
             }
+
+            if ($field === 'sharedViewUrl') {
+                $result[$column] = $this->getSharedViewUrl($this->getMemoryStorage()->get('exportJobId'), $record['id']);
+            }
         }
     }
 

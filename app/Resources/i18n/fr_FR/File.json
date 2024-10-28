@@ -1,5 +1,6 @@
 {
   "fields": {
-    "sharedDownloadUrl": "URL de téléchargement (partagé)"
+    "sharedDownloadUrl": "URL de téléchargement (partagé)",
+    "sharedViewUrl": "Voir l'URL (partagé)"
   }
 }

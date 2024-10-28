@@ -129,6 +129,11 @@ class LinkType extends AbstractType
             return;
         }
 
+        if ($configuratorField === 'sharedViewUrl') {
+            $foreignData['sharedViewUrl'] = $this->getSharedViewUrl($this->getMemoryStorage()->get('exportJobId'), $foreignData['id']);
+            return;
+        }
+
         $exportByFieldParts = explode(".", $configuratorField);
         $parts = count($exportByFieldParts);
         if ($parts !== 2 && $parts !== 3) {
@@ -193,6 +198,11 @@ class LinkType extends AbstractType
 
         if ($exportByFieldParts[$parts - 1] === 'sharedDownloadUrl') {
             $foreignData[$configuratorField] = $this->getSharedDownloadUrl($this->getMemoryStorage()->get('exportJobId'), $foreignLinkData['collection'][0]->get('id'));
+            return;
+        }
+
+        if ($exportByFieldParts[$parts - 1] === 'sharedViewUrl') {
+            $foreignData[$configuratorField] = $this->getSharedViewUrl($this->getMemoryStorage()->get('exportJobId'), $foreignLinkData['collection'][0]->get('id'));
             return;
         }
 
