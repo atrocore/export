@@ -136,7 +136,7 @@ class LinkMultipleType extends LinkType
 
                 $this->prepareExportByField($foreignEntity, $v, $foreignType, $foreignData);
 
-                $foreignConfiguration = array_merge($configuration, ['entity'=> $foreignEntity, 'field' => $v]);
+                $foreignConfiguration = array_merge($configuration, ['entity' => $foreignEntity, 'field' => $v]);
 
                 // convert product attribute value
                 if ($entity === 'Product' && $field === 'productAttributeValues' && $v === 'value') {
@@ -294,6 +294,21 @@ class LinkMultipleType extends LinkType
         $entity = $this->convertor->getEntityManager()->getEntity($linkDefs['entity']);
         $qb1 = $mapper->createSelectQueryBuilder($entity, $sp, true);
         $qb1->select("$mtAlias.id AS {$configuration['id']}_col");
+
+        if (!empty($sp['orderBy']) && strpos($sp['orderBy'], '.')) {
+            $orderByParts = explode('.', $sp['orderBy'], 2);
+            if (!empty($orderByEntity = $this->getMetadata()->get(['entityDefs', $linkDefs['entity'], 'links', $orderByParts[0], 'entity']))) {
+                $joinTable = $mapper->getQueryConverter()->toDb($orderByEntity);
+                $joinColumn = $mapper->getQueryConverter()->toDb($orderByParts[0] . 'Id');
+
+                $orderByHash = Util::generateUniqueHash();
+                $orderByParts[0] = $orderByHash;
+                $orderBy = $mapper->getQueryConverter()->toDb(implode('.', $orderByParts));
+
+                $qb1->leftJoin($mtAlias, $joinTable, $orderByHash, "$mtAlias.$joinColumn = $orderByHash.id");
+                $qb1->orderBy($orderBy, $sp['order'] ?? 'ASC');
+            }
+        }
 
         if (empty($linkDefs['relationName'])) {
             $foreignKey = $mapper->getQueryConverter()->toDb($keySet['foreignKey']);
