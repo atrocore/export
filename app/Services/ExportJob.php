@@ -19,7 +19,7 @@ use Espo\ORM\Entity;
 
 class ExportJob extends Base
 {
-    protected $mandatorySelectAttributeList = ['exportFeedId', 'exportFeedName', 'state', 'stateMessage'];
+    protected $mandatorySelectAttributeList = ['exportFeedId', 'exportFeedName', 'state', 'stateMessage', 'data'];
 
     public function deleteOld(int $days = 14): bool
     {
