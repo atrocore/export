@@ -32,7 +32,7 @@ class ExportJobCreator extends QueueManagerBase
 
         $count = $this->getExportFeedService()->getExportTypeService($data['feed']['type'], $data)->getTotal();
 
-        if (!empty($data['feed']['separateJob']) && $count !== null) {
+        if (!empty($data['feed']['separateJob']) && !empty($count)) {
             $i = 1;
             while ($data['offset'] < $count) {
                 $jobName = $data['feed']['name'];
