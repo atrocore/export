@@ -15,9 +15,11 @@ namespace Export\Services;
 
 use Atro\Core\QueueManager;
 use Espo\Core\ServiceFactory;
+use Espo\Core\Utils\Metadata;
 use Espo\Core\Utils\Util;
 use Espo\Entities\User;
 use Atro\Services\QueueManagerBase;
+use Espo\ORM\EntityCollection;
 
 class ExportJobCreator extends QueueManagerBase
 {
@@ -32,17 +34,28 @@ class ExportJobCreator extends QueueManagerBase
 
         $count = $this->getExportFeedService()->getExportTypeService($data['feed']['type'], $data)->getTotal();
 
-        if (!empty($data['feed']['separateJob']) && $count !== null) {
+        if (!empty($data['feed']['separateJob']) && !empty($count)) {
             $i = 1;
-            while ($data['offset'] < $count) {
-                $jobName = $data['feed']['name'];
-                if ($count > $data['limit']) {
-                    $jobName .= " ($i)";
+            $ids = [true];
+            $offset = 0;
+            $limit = max($data['limit'], 2000);
+            while (!empty($ids)) {
+                $ids = $this->getCollectionIds($data, $offset, $limit);
+                if(empty($ids)){
+                    break;
                 }
-                $data['iteration'] = $i;
-                $this->pushExportJob($jobName, $data);
-                $data['offset'] = $data['offset'] + $data['limit'];
-                $i++;
+                foreach (array_chunk($ids, $data['limit']) as $partIds) {
+                    $data['entityIds'] = $partIds;
+                    $jobName = $data['feed']['name'];
+                    if ($count > $data['limit']) {
+                        $jobName .= " ($i)";
+                    }
+                    $data['iteration'] = $i;
+                    $this->pushExportJob($jobName, $data);
+                    $data['offset'] = $data['offset'] + $data['limit'];
+                    $offset += $limit;
+                    $i++;
+                }
             }
         } else {
             $this->pushExportJob($data['feed']['name'], $data);
@@ -99,5 +112,42 @@ class ExportJobCreator extends QueueManagerBase
     protected function getQM(): QueueManager
     {
         return $this->getContainer()->get('queueManager');
+    }
+
+    protected function getMetadata(): Metadata
+    {
+        return $this->getContainer()->get('metadata');
+    }
+
+    public function getCollectionIds(array $data, int $offset = null, int $limit = 2000): ?array
+    {
+        $params = [
+            'select' => ['id'],
+            'sortBy' => 'id',
+            'asc' => true,
+            'where' => !empty($data['feed']['data']['where']) ? $data['feed']['data']['where'] : [],
+        ];
+
+        $params['offset'] = $offset;
+        $params['maxSize'] = $limit;
+        $params['withDeleted'] = !empty($data['feed']['data']['withDeleted']);
+
+        if (!empty($data['feed']['sortOrderField'])) {
+            $params['sortBy'] = $data['feed']['sortOrderField'];
+            if ($this->getMetadata()->get(['entityDefs', $data['feed']['entity'], 'fields', $params['sortBy'], 'type']) === 'link') {
+                $params['sortBy'] .= 'Id';
+            }
+            $params['asc'] = true;
+            if (!empty($data['feed']['sortOrderDirection']) && $data['feed']['sortOrderDirection'] !== 'ASC') {
+                $params['asc'] = false;
+            }
+        }
+
+        $result = $this->getServiceFactory()->create($data['feed']['entity'])->findEntities($params);
+        if (isset($result['collection']) && count($result['collection']) > 0) {
+            return array_column($result['collection']->toArray(), 'id');
+        }
+
+        return null;
     }
 }
