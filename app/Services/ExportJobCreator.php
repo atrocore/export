@@ -98,27 +98,7 @@ class ExportJobCreator extends QueueManagerBase
         return $exportJob->get('id');
     }
 
-    protected function getExportFeedService(): ExportFeed
-    {
-        return $this->getServiceFactory()->create('ExportFeed');
-    }
-
-    protected function getServiceFactory(): ServiceFactory
-    {
-        return $this->getContainer()->get('serviceFactory');
-    }
-
-    protected function getQM(): QueueManager
-    {
-        return $this->getContainer()->get('queueManager');
-    }
-
-    protected function getMetadata(): Metadata
-    {
-        return $this->getContainer()->get('metadata');
-    }
-
-    public function getCollectionIds(array $data, int $offset = null, int $limit = 2000): ?array
+    protected function getCollectionIds(array $data, int $offset = null, int $limit = 2000): ?array
     {
         $params = [
             'select' => ['id'],
@@ -148,5 +128,25 @@ class ExportJobCreator extends QueueManagerBase
         }
 
         return null;
+    }
+
+    protected function getExportFeedService(): ExportFeed
+    {
+        return $this->getServiceFactory()->create('ExportFeed');
+    }
+
+    protected function getServiceFactory(): ServiceFactory
+    {
+        return $this->getContainer()->get('serviceFactory');
+    }
+
+    protected function getQM(): QueueManager
+    {
+        return $this->getContainer()->get('queueManager');
+    }
+
+    protected function getMetadata(): Metadata
+    {
+        return $this->getContainer()->get('metadata');
     }
 }
