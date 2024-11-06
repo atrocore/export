@@ -19,7 +19,6 @@ use Espo\Core\Utils\Metadata;
 use Espo\Core\Utils\Util;
 use Espo\Entities\User;
 use Atro\Services\QueueManagerBase;
-use Espo\ORM\EntityCollection;
 
 class ExportJobCreator extends QueueManagerBase
 {
