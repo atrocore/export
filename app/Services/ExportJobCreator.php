@@ -35,16 +35,9 @@ class ExportJobCreator extends QueueManagerBase
 
         if (!empty($data['feed']['separateJob']) && !empty($count)) {
             $i = 1;
-            $ids = [true];
-            $offset = 0;
-            $limit = max($data['limit'], 2000);
-            while (!empty($ids)) {
-                $ids = $this->getCollectionIds($data, $offset, $limit);
-                if(empty($ids)){
-                    break;
-                }
-                foreach (array_chunk($ids, $data['limit']) as $partIds) {
-                    $data['entityIds'] = $partIds;
+
+            if($data['limit'] > 2000){
+                while ($data['offset'] < $count) {
                     $jobName = $data['feed']['name'];
                     if ($count > $data['limit']) {
                         $jobName .= " ($i)";
@@ -52,15 +45,41 @@ class ExportJobCreator extends QueueManagerBase
                     $data['iteration'] = $i;
                     $this->pushExportJob($jobName, $data);
                     $data['offset'] = $data['offset'] + $data['limit'];
-                    $offset += $limit;
                     $i++;
                 }
+            }else{
+                $ids = [0];
+                $offset = 0;
+                $limit = 2000;
+
+                while (!empty($ids)) {
+                    $ids = $this->getCollectionIds($data, $offset, $limit);
+                    if (empty($ids)) {
+                        break;
+                    }
+                    foreach (array_chunk($ids, $data['limit']) as  $partIds) {
+                        $data['entityIds'] = $partIds;
+                        $jobName = $data['feed']['name'];
+                        if ($count > $data['limit']) {
+                            $jobName .= " ($i)";
+                        }
+                        $data['iteration'] = $i;
+                        $this->pushExportJob($jobName, $data);
+                        $i++;
+                    }
+                }
             }
+
         } else {
             $this->pushExportJob($data['feed']['name'], $data);
         }
 
         return true;
+    }
+
+    protected function generateAndPushJob($data): array
+    {
+
     }
 
     protected function pushExportJob(string $jobName, array $data): string
