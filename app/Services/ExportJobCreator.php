@@ -36,7 +36,7 @@ class ExportJobCreator extends QueueManagerBase
         if (!empty($data['feed']['separateJob']) && !empty($count)) {
             $i = 1;
 
-            if($data['limit'] > 2000){
+            if ($data['limit'] > 2000) {
                 while ($data['offset'] < $count) {
                     $jobName = $data['feed']['name'];
                     if ($count > $data['limit']) {
@@ -47,7 +47,7 @@ class ExportJobCreator extends QueueManagerBase
                     $data['offset'] = $data['offset'] + $data['limit'];
                     $i++;
                 }
-            }else{
+            } else {
                 $ids = [0];
                 $offset = 0;
                 $limit = 2000;
@@ -57,7 +57,7 @@ class ExportJobCreator extends QueueManagerBase
                     if (empty($ids)) {
                         break;
                     }
-                    foreach (array_chunk($ids, $data['limit']) as  $partIds) {
+                    foreach (array_chunk($ids, $data['limit']) as $partIds) {
                         $data['entityIds'] = $partIds;
                         $jobName = $data['feed']['name'];
                         if ($count > $data['limit']) {
