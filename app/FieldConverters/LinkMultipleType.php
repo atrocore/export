@@ -95,7 +95,7 @@ class LinkMultipleType extends LinkType
         $params['disableCount'] = true;
 
         try {
-            $foreignResult = $this->findLinkedEntities($entity, $record, $field, $params);
+            $foreignResult = $this->findLinkedEntities($entity, $record, $field, $params, $configuration);
         } catch (\Throwable $e) {
             $GLOBALS['log']->error('Export. Can not get foreign entities: ' . $e->getMessage());
         }
@@ -122,7 +122,7 @@ class LinkMultipleType extends LinkType
 
         $foreignList = array_slice($foreignList, 0, $params['maxSize']);
 
-        $exportBy = isset($configuration['exportBy']) ? $configuration['exportBy'] : ['id'];
+        $exportBy = !empty($configuration['exportBy']) ? $configuration['exportBy'] : ['name'];
 
         foreach ($foreignList as $foreignData) {
             $fieldResult = [];
@@ -136,12 +136,16 @@ class LinkMultipleType extends LinkType
 
                 $this->prepareExportByField($foreignEntity, $v, $foreignType, $foreignData);
 
-                // prepare type for product attribute value
+                $foreignConfiguration = array_merge($configuration, ['entity' => $foreignEntity, 'field' => $v]);
+
+                // convert product attribute value
                 if ($entity === 'Product' && $field === 'productAttributeValues' && $v === 'value') {
-                    $foreignType = $foreignData['attributeType'] === 'file' ? 'varchar' : $foreignData['attributeType'];
+                    $foreignConfiguration['exportBy'] = ['name'];
+                    $foreignConfiguration['exportPav'] = true;
+                    $foreignConfiguration['attributeId'] = $foreignData['attributeId'];
+                    $foreignType = $this->convertor->prepareConvertorTypeForAttribute($foreignData['attributeType'], 'value');
                 }
 
-                $foreignConfiguration = array_merge($configuration, ['entity'=>  $foreignEntity,'field' => $v]);
                 $this->convertForeignType($fieldResult, $foreignType, $foreignConfiguration, $foreignData, $v, $record);
             }
 
@@ -291,6 +295,21 @@ class LinkMultipleType extends LinkType
         $qb1 = $mapper->createSelectQueryBuilder($entity, $sp, true);
         $qb1->select("$mtAlias.id AS {$configuration['id']}_col");
 
+        if (!empty($sp['orderBy']) && strpos($sp['orderBy'], '.')) {
+            $orderByParts = explode('.', $sp['orderBy'], 2);
+            if (!empty($orderByEntity = $this->getMetadata()->get(['entityDefs', $linkDefs['entity'], 'links', $orderByParts[0], 'entity']))) {
+                $joinTable = $mapper->getQueryConverter()->toDb($orderByEntity);
+                $joinColumn = $mapper->getQueryConverter()->toDb($orderByParts[0] . 'Id');
+
+                $orderByHash = Util::generateUniqueHash();
+                $orderByParts[0] = $orderByHash;
+                $orderBy = $mapper->getQueryConverter()->toDb(implode('.', $orderByParts));
+
+                $qb1->leftJoin($mtAlias, $joinTable, $orderByHash, "$mtAlias.$joinColumn = $orderByHash.id");
+                $qb1->orderBy($orderBy, $sp['order'] ?? 'ASC');
+            }
+        }
+
         if (empty($linkDefs['relationName'])) {
             $foreignKey = $mapper->getQueryConverter()->toDb($keySet['foreignKey']);
             $qb1->andWhere("$mtAlias.$foreignKey=mt_alias.id");
@@ -319,8 +338,12 @@ class LinkMultipleType extends LinkType
         }
     }
 
-    protected function findLinkedEntities(string $entity, array $record, string $field, array $params): array
+    protected function findLinkedEntities(string $entity, array $record, string $field, array $params, array $configuration): array
     {
+        if (!empty($configuration['exportPav'])) {
+            throw new \Error('Export of such attribute is not provided');
+        }
+
         $configuration = $this->getMemoryStorage()->get('configurationItemData');
         if (empty($configuration['id'])) {
             throw new \Error('No configuration id found.');

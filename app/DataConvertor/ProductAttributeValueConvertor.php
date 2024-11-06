@@ -26,6 +26,7 @@ class ProductAttributeValueConvertor extends Convertor
             if ($type === 'rangeFloat' || $type === "rangeInt") {
                 $configuration['field'] = 'valueFrom';
             }
+            $configuration['exportPav'] = true;
 
             return $this->convertType($this->prepareConvertorTypeForAttribute($type, 'value'), $record, array_merge($configuration, ['attributeId' => $record['attributeId']]));
         }

@@ -30,9 +30,6 @@
     "exportFeed": "Eksportuj kanał",
     "channel": "Kanał"
   },
-  "labels": {
-    "exportByForAttributeValue": "Dotyczy tylko atrybutu typu Lista lub Lista wielowartościowa"
-  },
   "columnType": {
     "name": "Nazwa",
     "internal": "Nazwa (nieprzetłumaczona) / Lokalizacja",

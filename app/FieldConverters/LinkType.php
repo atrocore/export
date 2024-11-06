@@ -41,14 +41,18 @@ class LinkType extends AbstractType
 
         if (!empty($linkId)) {
             $result[$column] = $configuration['nullValue'];
-            $exportBy = isset($configuration['exportBy']) ? $configuration['exportBy'] : ['id'];
+            $exportBy = !empty($configuration['exportBy']) ? $configuration['exportBy'] : ['name'];
 
             if ($this->needToCallForeignEntity($exportBy) || $configuration['zip']) {
                 $foreignEntity = $this->getForeignEntityName($entity, $field);
                 if (!empty($foreignEntity)) {
                     try {
-                        $this->loadLinkDataToMemory($record, $entity, $field);
-                        $foreign = $this->getEntity($foreignEntity, $linkId);
+                        if (!empty($configuration['exportPav'])) {
+                            $foreign = $this->convertor->getEntity($foreignEntity, $linkId);
+                        } else {
+                            $this->loadLinkDataToMemory($record, $entity, $field);
+                            $foreign = $this->getEntity($foreignEntity, $linkId);
+                        }
                     } catch (\Throwable $e) {
                         $GLOBALS['log']->error('Export. Can not get foreign entity: ' . $e->getMessage());
                     }
@@ -125,6 +129,11 @@ class LinkType extends AbstractType
             return;
         }
 
+        if ($configuratorField === 'sharedViewUrl') {
+            $foreignData['sharedViewUrl'] = $this->getSharedViewUrl($this->getMemoryStorage()->get('exportJobId'), $foreignData['id']);
+            return;
+        }
+
         $exportByFieldParts = explode(".", $configuratorField);
         $parts = count($exportByFieldParts);
         if ($parts !== 2 && $parts !== 3) {
@@ -189,6 +198,11 @@ class LinkType extends AbstractType
 
         if ($exportByFieldParts[$parts - 1] === 'sharedDownloadUrl') {
             $foreignData[$configuratorField] = $this->getSharedDownloadUrl($this->getMemoryStorage()->get('exportJobId'), $foreignLinkData['collection'][0]->get('id'));
+            return;
+        }
+
+        if ($exportByFieldParts[$parts - 1] === 'sharedViewUrl') {
+            $foreignData[$configuratorField] = $this->getSharedViewUrl($this->getMemoryStorage()->get('exportJobId'), $foreignLinkData['collection'][0]->get('id'));
             return;
         }
 

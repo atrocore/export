@@ -1,5 +1,6 @@
 {
   "fields": {
-    "sharedDownloadUrl": "Adres URL pobierania (udostępniony)"
+    "sharedDownloadUrl": "Adres URL pobierania (udostępniony)",
+    "sharedViewUrl": "Adres  URL wyświetl (udostępniony)"
   }
 }

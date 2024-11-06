@@ -26,18 +26,22 @@
         "name": "simpleTypeEntityFilter",
         "label": "entityFilter",
         "view": "export:views/export-feed/simple-type-components/record/panels/simple-type-entity-filter",
-        "notRefreshable": true
+        "notRefreshable": true,
+        "canClose": false
       },
       {
         "name": "entityFilterResult",
         "label": "entityFilterResult",
-        "view": "export:views/export-feed/record/panels/entity-filter-result"
+        "view": "export:views/export-feed/record/panels/entity-filter-result",
+        "canClose": false
       }
     ]
   },
   "relationshipPanels": {
     "configuratorItems": {
       "select": false,
+      "canClose": false,
+      "hideShowFullList": true,
       "dragDrop": {
         "isActive": true,
         "maxSize": 20,
@@ -51,6 +55,7 @@
     "exportJobs": {
       "create": false,
       "select": false,
+      "canClose": false,
       "rowActionsView": "export:views/export-job/record/row-actions/relationship",
       "view": "export:views/export-feed/record/panels/export-jobs",
       "layout": "listInExportFeed"

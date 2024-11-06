@@ -19,6 +19,6 @@ abstract class AbstractTwigFunction extends \Atro\Core\Twig\AbstractTwigFunction
 {
     public function getFeedData(): array
     {
-        return $this->getTemplateData('feedData');
+        return $this->getTemplateData('feedData') ?? [];
     }
 }
