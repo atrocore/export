@@ -338,6 +338,10 @@ abstract class AbstractExportType extends Base
             return null;
         }
 
+        if(!empty($this->data['entityIds'])) {
+           return $this->getCollectionFromIds($this->data['entityIds']);
+        }
+
         if ($offset === null) {
             $offset = $this->data['offset'];
         }
@@ -846,5 +850,20 @@ abstract class AbstractExportType extends Base
         parent::init();
 
         $this->addDependency('container');
+    }
+
+    protected function getCollectionFromIds(mixed $entityIds): EntityCollection
+    {
+        $result =  $this->getEntityService()->findEntities([
+            "where" => [
+                [
+                    "attribute" => "id",
+                    "type" => "in",
+                    "value" => $this->data['entityIds']
+                ]
+            ]
+        ]);
+
+        return $result['collection'];
     }
 }
