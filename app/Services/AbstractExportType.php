@@ -861,7 +861,8 @@ abstract class AbstractExportType extends Base
                     "type" => "in",
                     "value" => $this->data['entityIds']
                 ]
-            ]
+            ],
+            "withDeleted" => true
         ]);
 
         return $result['collection'];
