@@ -119,6 +119,7 @@ class ExportJobCreator extends QueueManagerBase
 
     protected function getCollectionIds(array $data, int $offset = null, int $limit = 2000): ?array
     {
+        $data = json_decode(json_encode($data), true);
         $params = [
             'select' => ['id'],
             'sortBy' => 'id',
