@@ -109,6 +109,12 @@ class Export implements TypeInterface
         $payload['executeNow'] = empty($action->get('inBackground'));
         if (property_exists($input, 'actionSetLinkerId')) {
             $payload['actionSetLinkerId'] = $input->actionSetLinkerId;
+
+            if (property_exists($input, 'where')) {
+                $payload['where'] = json_decode(json_encode($input->where), true);
+            } elseif (property_exists($input, 'entityId')) {
+                $payload['where'] = [['type' => 'in', 'attribute' => 'id', 'value' => [$input->entityId]]];
+            }
         }
 
         $service->runExport($exportFeed->get('id'), json_encode($payload));
