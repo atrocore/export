@@ -48,15 +48,21 @@ class ExportJobCreator extends QueueManagerBase
                     $i++;
                 }
             } else {
-                $ids = [0];
                 $offset = 0;
                 $limit = 2000;
 
-                while (!empty($ids)) {
+                $chunks = [];
+
+                while (true) {
                     $ids = $this->getCollectionIds($data, $offset, $limit);
                     if (empty($ids)) {
                         break;
                     }
+                    $chunks[] = $ids;
+                    $offset += $limit;
+                }
+
+                foreach ($chunks as $ids) {
                     foreach (array_chunk($ids, $data['limit']) as $partIds) {
                         $data['entityIds'] = $partIds;
                         $jobName = $data['feed']['name'];
@@ -65,6 +71,7 @@ class ExportJobCreator extends QueueManagerBase
                         }
                         $data['iteration'] = $i;
                         $this->pushExportJob($jobName, $data);
+                        $data['offset'] = $data['offset'] + $data['limit'];
                         $i++;
                     }
                 }
@@ -75,11 +82,6 @@ class ExportJobCreator extends QueueManagerBase
         }
 
         return true;
-    }
-
-    protected function generateAndPushJob($data): array
-    {
-
     }
 
     protected function pushExportJob(string $jobName, array $data): string
@@ -123,8 +125,8 @@ class ExportJobCreator extends QueueManagerBase
         $params = [
             'select' => ['id'],
             'sortBy' => 'id',
-            'asc' => true,
-            'where' => !empty($data['feed']['data']['where']) ? $data['feed']['data']['where'] : [],
+            'asc'    => true,
+            'where'  => !empty($data['feed']['data']['where']) ? $data['feed']['data']['where'] : [],
         ];
 
         $params['offset'] = $offset;
