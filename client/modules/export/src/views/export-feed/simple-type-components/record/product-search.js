@@ -56,6 +56,10 @@ Espo.define('export:views/export-feed/simple-type-components/record/product-sear
                 return Filter.prototype.getFilterData.call(this);
             },
 
+            getWhere() {
+                return Filter.prototype.getWhere.call(this);
+            }
+
         })
     }
 );
