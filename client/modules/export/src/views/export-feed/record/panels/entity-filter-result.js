@@ -65,10 +65,16 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
         },
 
         getWhere(searchView) {
-            let where = Espo.Utils.cloneDeep(searchView.searchManager.getWhere());
+            const where = Espo.Utils.cloneDeep(searchView.searchManager.getWhere());
             where.forEach((item, k) => {
-                if (item.type === 'bool' && (item.value || []).includes('unexported')) {
-                    where[k].data = {unexported: this.model.get('lastTime')}
+                if (item.type === 'bool') {
+                    if (!where[k].data) {
+                        where[k].data = {}
+                    }
+
+                    if ((item.value || []).includes('unexported')) {
+                        where[k].data.unexported = this.model.get('lastTime');
+                    }
                 }
             });
 

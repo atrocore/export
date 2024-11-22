@@ -24,7 +24,7 @@ class Entity extends AbstractListener
         if (!empty($params['where']) && is_array($params['where'])) {
             foreach ($params['where'] as $k => $item) {
                 if (!empty($item['data']['unexported'])) {
-                    $params['where'][$k] = [
+                    $condition = [
                         'type'      => 'between',
                         'attribute' => 'modifiedAt',
                         'value'     => [
@@ -36,11 +36,18 @@ class Entity extends AbstractListener
                     ];
 
                     if ($entityType === 'Product') {
-                        $params['where'][$k] = $this
+                        $params['where'][] = $this
                             ->getContainer()
                             ->get('selectManagerFactory')
                             ->create('Product')
-                            ->prepareWhereForModifiedAtExpanded($params['where'][$k]);
+                            ->prepareWhereForModifiedAtExpanded($condition);
+                    } else {
+                        $params['where'][] = $condition;
+                    }
+
+                    unset($params['where'][$k]['data']['unexported']);
+                    if (isset($item['value']) && is_array($item['value'])) {
+                        $params['where'][$k]['value'] = array_diff($item['value'], ['unexported']);
                     }
 
                     $event->setArgument('params', $params);

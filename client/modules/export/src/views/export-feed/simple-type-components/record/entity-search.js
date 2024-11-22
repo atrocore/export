@@ -38,16 +38,7 @@ Espo.define('export:views/export-feed/simple-type-components/record/entity-searc
             });
 
             this.listenTo(this.options.feedModel, 'save:export-feed', () => {
-                let filterData = this.getFilterData() || {};
-                if (filterData.where) {
-                    filterData.where.forEach((item, k) => {
-                        if (item.type === 'bool' && (item.value || []).includes('unexported')) {
-                            filterData.where[k].data = {unexported: this.options.feedModel.get('lastTime')}
-                        }
-                    });
-                }
-
-                this.options.feedModel.set('data', _.extend({}, this.options.feedModel.get('data'), filterData));
+                this.options.feedModel.set('data', _.extend({}, this.options.feedModel.get('data'), this.getFilterData() || {}));
             });
         },
 
@@ -58,10 +49,27 @@ Espo.define('export:views/export-feed/simple-type-components/record/entity-searc
         getFilterData() {
             this.search();
             return {
-                where: Espo.Utils.cloneDeep(this.searchManager.getWhere()),
+                where: this.getWhere(),
                 whereData: Espo.Utils.cloneDeep(this.searchManager.get()),
                 whereScope: this.scope,
             }
+        },
+
+        getWhere() {
+            const where = Espo.Utils.cloneDeep(this.searchManager.getWhere());
+            where.forEach((item, k) => {
+                if (item.type === 'bool') {
+                    if (!where[k].data) {
+                        where[k].data = {};
+                    }
+
+                    if ((item.value || []).includes('unexported')) {
+                        where[k].data.unexported = this.options.feedModel.get('lastTime')
+                    }
+                }
+            });
+
+            return where;
         },
 
         isLeftDropdown() {
