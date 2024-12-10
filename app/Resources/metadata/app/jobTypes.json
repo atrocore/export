@@ -6,5 +6,9 @@
   "Export": {
     "scheduledJob": false,
     "handler": "\\Export\\Jobs\\Export"
+  },
+  "ExportChunk": {
+    "scheduledJob": false,
+    "handler": "\\Export\\Jobs\\ExportChunk"
   }
 }

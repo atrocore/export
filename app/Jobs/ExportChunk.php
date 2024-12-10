@@ -11,47 +11,40 @@
 
 declare(strict_types=1);
 
-namespace Export\Services;
+namespace Export\Jobs;
 
-use Espo\ORM\Entity;
-use Atro\Services\QueueManagerBase;
+use Atro\Entities\Job;
+use Atro\Jobs\AbstractJob;
+use Atro\Jobs\JobInterface;
+use Export\Services\AbstractExportType;
 
-class ExportChunk extends QueueManagerBase
+class ExportChunk extends AbstractJob implements JobInterface
 {
-    public function run(array $data = []): bool
+    public function run(Job $job): void
     {
+        $data = $job->getPayload();
+
         $exportJob = $this->getEntityManager()->getEntity('ExportJob', $data['exportJobId']);
         if (empty($exportJob)) {
-            return false;
+            return;
         }
 
         if (!in_array($exportJob->get('state'), ['Pending', 'Running'])) {
-            return false;
+            return;
         }
 
         $this->getMemoryStorage()->set('exportJobId', $exportJob->get('id'));
 
         /** @var AbstractExportType $typeService */
-        $typeService = $this->getContainer()->get('serviceFactory')->create('ExportFeed')
-            ->getExportTypeService($data['feed']['type'], $data);
+        $typeService = $this->getServiceFactory()->create('ExportFeed')->getExportTypeService($data['feed']['type'], $data);
 
         $res = $typeService->createCacheChunk();
 
-        $qiData = $this->qmItem->get('data');
+        $qiData = $job->get('payload');
         $qiData->chunkFileName = $res['fileName'];
         $qiData->files = $res['files'];
 
-        $this->qmItem->set('data', $qiData);
-        $this->getEntityManager()->saveEntity($this->qmItem);
-
-        return true;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getNotificationMessage(Entity $queueItem): string
-    {
-        return '';
+        $job->set('payload', $qiData);
+        $this->getEntityManager()->saveEntity($job);
     }
 }

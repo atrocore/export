@@ -467,8 +467,14 @@ abstract class AbstractExportType extends Base
         $limit = $this->data['limit'];
         $offset = $this->data['offset'];
 
+        $priorities = [
+            'Low'    => 50,
+            'Normal' => 100,
+            'High'   => 150
+        ];
+
         $priority = empty($this->data['feed']['priority']) ? 'Normal' : (string)$this->data['feed']['priority'];
-        $qmIds = [];
+        $jobs = [];
         $i = 1;
         while ($offset < $total) {
             $jobName = $this->data['feed']['name'] . " Chunk #$i";
@@ -477,36 +483,40 @@ abstract class AbstractExportType extends Base
             $subData['chunkJob'] = true;
             $subData['offset'] = $offset;
 
-            $qmIds[] = $this->getContainer()->get('queueManager')
-                ->createQueueItem($jobName, 'ExportChunk', $subData, $priority);
+            $jobEntity = $this->getEntityManager()->getEntity('Job');
+            $jobEntity->set([
+                'name'     => $jobName,
+                'type'     => 'ExportChunk',
+                'payload'  => $subData,
+                'priority' => $priorities[$priority]
+            ]);
+            $this->getEntityManager()->saveEntity($jobEntity);
+
+            $jobs[] = $jobEntity;
             $offset = $offset + $limit;
             $i++;
         }
 
-        if (empty($qmIds)) {
+        if (empty($jobs)) {
             throw new Error("Something wrong. System can't create any export chunk job.");
         }
 
         while (true) {
-            $queueItems = $this->getEntityManager()->getRepository('QueueItem')
-                ->where(['id' => $qmIds])
-                ->find();
-
-            if (empty($queueItems[0])) {
+            if (empty($jobs[0])) {
                 break;
             }
 
             $success = true;
-            foreach ($queueItems as $queueItem) {
-                if ($queueItem->get('status') === 'Failed') {
-                    throw new BadRequest($queueItem->get('message'));
+            foreach ($jobs as $job) {
+                if ($job->get('status') === 'Failed') {
+                    throw new BadRequest($job->get('message'));
                 }
 
-                if ($queueItem->get('status') === 'Canceled') {
+                if ($job->get('status') === 'Canceled') {
                     throw new Error("Export chunk job has been canceled.");
                 }
 
-                if ($queueItem->get('status') !== 'Success') {
+                if ($job->get('status') !== 'Success') {
                     $success = false;
                 }
             }
@@ -541,12 +551,12 @@ abstract class AbstractExportType extends Base
 
         $fileNames = [];
         $zipFilesData = [];
-        foreach ($queueItems as $queueItem) {
-            if (empty($queueItem->get('data')->chunkFileName)) {
+        foreach ($jobs as $job) {
+            if (empty($job->get('payload')->chunkFileName)) {
                 continue;
             }
-            $fileNames[$queueItem->get('data')->offset] = $queueItem->get('data')->chunkFileName;
-            foreach ($queueItem->get('data')->files ?? [] as $fileRec) {
+            $fileNames[$job->get('payload')->offset] = $job->get('payload')->chunkFileName;
+            foreach ($job->get('payload')->files ?? [] as $fileRec) {
                 $zipFilesData[] = json_decode(json_encode($fileRec), true);
             }
         }
@@ -770,7 +780,7 @@ abstract class AbstractExportType extends Base
 
     public function getZipTmpDir(): string
     {
-        return \Atro\Services\MassDownload::ZIP_TMP_DIR . DIRECTORY_SEPARATOR . 'export' . DIRECTORY_SEPARATOR . $this->data['exportJobId'];
+        return \Atro\Jobs\MassDownload::ZIP_TMP_DIR . DIRECTORY_SEPARATOR . 'export' . DIRECTORY_SEPARATOR . $this->data['exportJobId'];
     }
 
     protected function getDelimiter(): string
