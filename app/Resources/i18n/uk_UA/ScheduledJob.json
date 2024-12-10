@@ -10,10 +10,8 @@
     "exportFeeds": "Експортний фіди"
   },
   "options": {
-    "job": {
-      "ExportFeed": "Експортний фід",
-      "TrialExport": "Повторне виконання невиконаних завдань експорту",
-      "ExportJobRemove": "Видалення завдань експорту"
+    "type": {
+      "ExportFeed": "Експортний фід"
     }
   },
   "tooltips": {

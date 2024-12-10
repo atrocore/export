@@ -10,10 +10,8 @@
     "exportFeeds": "Exporter des flux"
   },
   "options": {
-    "job": {
-      "ExportFeed": "Flux d'export",
-      "TrialExport": "Échec de la nouvelle tentative d'exportation",
-      "ExportJobRemove": "Export Job Remover"
+    "type": {
+      "ExportFeed": "Flux d'export"
     }
   },
   "tooltips": {

@@ -1,0 +1,6 @@
+{
+  "ExportFeed": {
+    "scheduledJob": true,
+    "handler": "\\Export\\Jobs\\ExportFeed"
+  }
+}

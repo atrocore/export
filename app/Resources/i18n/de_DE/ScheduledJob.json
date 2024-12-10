@@ -10,10 +10,8 @@
     "exportFeeds": "Export Feeds"
   },
   "options": {
-    "job": {
-      "ExportFeed": "Exportfeed",
-      "TrialExport": "Wiederholung von fehlgeschlagenen Export Jobs",
-      "ExportJobRemove": "Entfernung von Export Jobs"
+    "type": {
+      "ExportFeed": "Exportfeed"
     }
   },
   "tooltips": {

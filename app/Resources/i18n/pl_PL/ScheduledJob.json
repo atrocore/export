@@ -10,10 +10,8 @@
 		"exportFeeds": "Eksportuj kanały"
 	},
 	"options": {
-		"job": {
-			"ExportFeed": "Eksportuj kanał",
-			"TrialExport": "Ponowna próba nieudanego eksportu",
-			"ExportJobRemove": "Usuń zadanie eksportu"
+		"type": {
+			"ExportFeed": "Eksportuj kanał"
 		}
 	},
 	"tooltips": {
