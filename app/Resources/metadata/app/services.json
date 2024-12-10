@@ -1,5 +1,4 @@
 {
-  "QueueManagerExport": "\\Export\\Services\\QueueManagerExport",
   "ExportChunk": "\\Export\\Services\\ExportChunk",
   "ExportJobCreator": "\\Export\\Services\\ExportJobCreator",
   "ExportTypeSimple": "\\Export\\Services\\ExportTypeSimple",

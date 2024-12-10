@@ -44,12 +44,12 @@ class ExportJob extends Base
             }
         }
 
-        // delete queue items
+        // delete jobs
         while (true) {
-            $toDeleteItem = $this->getEntityManager()->getRepository('QueueItem')
+            $toDeleteItem = $this->getEntityManager()->getRepository('Job')
                 ->where([
                     'modifiedAt<' => (new \DateTime())->modify("-$days days")->format('Y-m-d H:i:s'),
-                    'serviceName' => ['ExportJobCreator', 'QueueManagerExport'],
+                    'type' => ['ExportJobCreator', 'Export'],
                     'status' => ['Success', 'Failed', 'Canceled']
                 ])
                 ->limit(0, 2000)
