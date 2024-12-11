@@ -1,0 +1,18 @@
+{
+  "ExportFeed": {
+    "scheduledJob": true,
+    "handler": "\\Export\\Jobs\\ExportFeed"
+  },
+  "Export": {
+    "scheduledJob": false,
+    "handler": "\\Export\\Jobs\\Export"
+  },
+  "ExportChunk": {
+    "scheduledJob": false,
+    "handler": "\\Export\\Jobs\\ExportChunk"
+  },
+  "ExportJobCreator": {
+    "scheduledJob": false,
+    "handler": "\\Export\\Jobs\\ExportJobCreator"
+  }
+}

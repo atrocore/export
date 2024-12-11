@@ -28,7 +28,7 @@ class ExportJob extends Base
             return null;
         }
 
-        return $this->getEntityManager()->getRepository('QueueItem')->get($exportJob->get('queueItemId'));
+        return $this->getEntityManager()->getRepository('Job')->get($exportJob->get('queueItemId'));
     }
 
     protected function init()
@@ -36,7 +36,6 @@ class ExportJob extends Base
         parent::init();
 
         $this->addDependency('language');
-        $this->addDependency('queueManager');
         $this->addDependency('fileManager');
     }
 
@@ -127,26 +126,27 @@ class ExportJob extends Base
         parent::afterRemove($entity, $options);
     }
 
-    protected function toPendingQmJob(Entity $qmJob): void
+    protected function toPendingQmJob(Entity $job): void
     {
-        $this->getInjection('queueManager')->tryAgain($qmJob->get('id'));
+        $job->set('status', 'Pending');
+        $this->getEntityManager()->saveEntity($job);
     }
 
-    protected function cancelQmJob(Entity $qmJob): void
+    protected function cancelQmJob(Entity $job): void
     {
-        if (in_array($qmJob->get('status'), ['Pending', 'Running'])) {
-            $qmJob->set('status', 'Canceled');
-            $this->getEntityManager()->saveEntity($qmJob);
+        if (in_array($job->get('status'), ['Pending', 'Running'])) {
+            $job->set('status', 'Canceled');
+            $this->getEntityManager()->saveEntity($job);
 
-            if (!empty($qmJob->get('data')->exportJobId)) {
-                $queueItems = $this->getEntityManager()->getRepository('QueueItem')
+            if (!empty($job->get('payload')->exportJobId)) {
+                $queueItems = $this->getEntityManager()->getRepository('Job')
                     ->where([
-                        'data*'  => '%"exportJobId":"' . $qmJob->get('data')->exportJobId . '"%',
-                        'status' => ['Pending', 'Running']
+                        'payload*' => '%"exportJobId":"' . $job->get('payload')->exportJobId . '"%',
+                        'status'   => ['Pending', 'Running']
                     ])
                     ->find();
                 foreach ($queueItems as $qi) {
-                    if (!empty($qi->get('data')->chunkJob)) {
+                    if (!empty($qi->get('payload')->chunkJob)) {
                         $qi->set('status', 'Canceled');
                         $this->getEntityManager()->saveEntity($qi);
                     }

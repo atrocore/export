@@ -13,55 +13,40 @@ declare(strict_types=1);
 
 namespace Export\Listeners;
 
-use Espo\ORM\Entity;
-use Atro\Listeners\AbstractListener;
 use Atro\Core\EventManager\Event;
+use Atro\Listeners\AbstractListener;
+use Espo\ORM\Entity;
 
-/**
- * Class QueueItemEntity
- */
-class QueueItemEntity extends AbstractListener
+class JobEntity extends AbstractListener
 {
-    /**
-     * @param Event $event
-     */
-    public function afterSave(Event $event)
+    public function afterSave(Event $event): void
     {
         // prepare entity
         $entity = $event->getArgument('entity');
 
-        if (!empty($entity->get('data')->exportJobId)) {
+        if (!empty($entity->get('payload')->exportJobId)) {
             $this->updateExportJob($entity);
         }
     }
 
-    /**
-     * @param Event $event
-     */
-    public function afterRemove(Event $event)
+    public function afterRemove(Event $event): void
     {
         // prepare entity
         $entity = $event->getArgument('entity');
 
-        if (!empty($entity->get('data')->exportJobId)) {
+        if (!empty($entity->get('payload')->exportJobId)) {
             $this->removeExportJob($entity);
         }
     }
 
-    /**
-     * @param Entity $entity
-     *
-     * @return bool
-     * @throws \Espo\Core\Exceptions\Error
-     */
     protected function updateExportJob(Entity $entity): bool
     {
-        $exportJob = $this->getEntityManager()->getEntity('ExportJob', $entity->get('data')->exportJobId);
+        $exportJob = $this->getEntityManager()->getEntity('ExportJob', $entity->get('payload')->exportJobId);
         if (empty($exportJob)) {
             return false;
         }
 
-        if ($entity->isAttributeChanged('status') && empty($entity->get('data')->chunkJob)) {
+        if ($entity->isAttributeChanged('status') && empty($entity->get('payload')->chunkJob)) {
             if ($entity->get('status') !== 'Success' && $exportJob->get('state') !== $entity->get('status')) {
                 $exportJob->set('state', $entity->get('status'));
                 $this->getEntityManager()->saveEntity($exportJob);
@@ -71,14 +56,9 @@ class QueueItemEntity extends AbstractListener
         return true;
     }
 
-    /**
-     * @param Entity $entity
-     *
-     * @return bool
-     */
     protected function removeExportJob(Entity $entity): bool
     {
-        $exportJob = $this->getEntityManager()->getEntity('ExportJob', $entity->get('data')->exportJobId);
+        $exportJob = $this->getEntityManager()->getEntity('ExportJob', $entity->get('payload')->exportJobId);
 
         if (empty($exportJob)) {
             return false;

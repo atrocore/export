@@ -13,22 +13,26 @@ declare(strict_types=1);
 
 namespace Export\Jobs;
 
-use Espo\Core\Jobs\Base;
+use Atro\Entities\Job;
+use Atro\Jobs\AbstractJob;
+use Atro\Jobs\JobInterface;
 
-class ExportFeed extends Base
+class ExportFeed extends AbstractJob implements JobInterface
 {
-    public function run($data, $targetId, $targetType, $scheduledJobId): bool
+    public function run(Job $job): void
     {
-        $scheduledJob = $this->getEntityManager()->getEntity('ScheduledJob', $scheduledJobId);
-        if (empty($scheduledJob) || empty($exportFeedId = $scheduledJob->get('exportFeedId'))) {
-            return true;
+        if (empty($job->get('scheduledJobId'))) {
+            return;
+        }
+
+        $scheduledJob = $this->getEntityManager()->getEntity('ScheduledJob', $job->get('scheduledJobId'));
+        if (empty($scheduledJob) || empty($scheduledJob->get('exportFeedId'))) {
+            return;
         }
 
         $requestData = new \stdClass();
-        $requestData->id = $exportFeedId;
+        $requestData->id = $scheduledJob->get('exportFeedId');
 
         $this->getServiceFactory()->create('ExportFeed')->exportFile($requestData);
-
-        return true;
     }
 }

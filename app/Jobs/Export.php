@@ -11,29 +11,34 @@
 
 declare(strict_types=1);
 
-namespace Export\Services;
+namespace Export\Jobs;
 
-use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Exceptions\Error;
-use Espo\Core\Utils\Metadata;
-use Espo\ORM\Entity;
-use Atro\Services\QueueManagerBase;
+use Atro\Entities\Job;
+use Atro\Jobs\AbstractJob;
+use Atro\Jobs\JobInterface;
+use Atro\Core\Exceptions\BadRequest;
 use Export\Core\Exceptions\NothingToExport;
+use Export\Services\AbstractExportType;
 
-class QueueManagerExport extends QueueManagerBase
+class Export extends AbstractJob implements JobInterface
 {
-    public function run(array $data = []): bool
+    public function run(Job $job): void
+    {
+        $this->runNow($job->getPayload(), $job);
+    }
+
+    public function runNow(array $data, ?Job $job = null):void
     {
         $exportJob = $this->getEntityManager()->getEntity('ExportJob', $data['exportJobId']);
         if (empty($exportJob)) {
-            return false;
+            return;
         }
         $exportJob->set('state', 'Running');
         $this->getEntityManager()->saveEntity($exportJob);
 
         try {
             /** @var AbstractExportType $typeService */
-            $typeService = $this->getContainer()->get('serviceFactory')->create('ExportFeed')->getExportTypeService($data['feed']['type']);
+            $typeService = $this->getServiceFactory()->create('ExportFeed')->getExportTypeService($data['feed']['type']);
             try {
                 $file = $typeService->export($data, $exportJob);
             } catch (NothingToExport $e) {
@@ -46,49 +51,17 @@ class QueueManagerExport extends QueueManagerBase
             }
             $exportJob->set('end', (new \DateTime())->format('Y-m-d H:i:s'));
             $this->getEntityManager()->saveEntity($exportJob);
+
+            $this->createNotification($job, sprintf($this->translate('exportDownloadNotification', 'labels', 'ExportJob'), $exportJob->get('fileId')));
         } catch (\Throwable $e) {
             $exportJob->set('end', (new \DateTime())->format('Y-m-d H:i:s'));
             $exportJob->set('state', 'Failed');
             $exportJob->set('stateMessage', $e->getMessage());
             $this->getEntityManager()->saveEntity($exportJob);
-//            $GLOBALS['log']->error('Export Error: ' . $e->getMessage());
 
             if (!empty($data['executeNow'])) {
                 throw new BadRequest($e->getMessage());
             }
-
-            return false;
         }
-
-        return true;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getNotificationMessage(Entity $queueItem): string
-    {
-        $message = parent::getNotificationMessage($queueItem);
-
-        if ($queueItem->get('status') === 'Success') {
-            try {
-                $exportJob = $this->getEntityManager()->getEntity('ExportJob', $queueItem->get('data')->exportJobId);
-            } catch (\Throwable $e) {
-                $GLOBALS['log']->error('Export Notification Error: ' . $e->getMessage());
-                return $message;
-            }
-
-            $message .= ' ' . sprintf($this->translate('exportDownloadNotification', 'labels', 'ExportJob'), $exportJob->get('fileId'));
-        }
-
-        return $message;
-    }
-
-    /**
-     * @return Metadata
-     */
-    protected function getMetadata(): Metadata
-    {
-        return $this->getContainer()->get('metadata');
     }
 }

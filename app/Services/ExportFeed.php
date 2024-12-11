@@ -20,6 +20,7 @@ use Espo\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
 use Espo\Core\EventManager\Event;
+use Export\Jobs\ExportJobCreator;
 use Export\TemplateLoaders\AbstractTemplate;
 
 class ExportFeed extends Base
@@ -351,7 +352,6 @@ class ExportFeed extends Base
         parent::init();
 
         $this->addDependency('container');
-        $this->addDependency('queueManager');
         $this->addDependency('serviceFactory');
         $this->addDependency('language');
         $this->addDependency('user');
@@ -518,9 +518,16 @@ class ExportFeed extends Base
         $this->getRepository()->updateLastTime($data['feed']['id'], new \DateTime());
 
         if (!empty($data['executeNow'])) {
-            $this->getServiceFactory()->create('ExportJobCreator')->run($data);
+            $this->getInjection('container')->get(ExportJobCreator::class)->runNow($data);
         } else {
-            $this->getInjection('queueManager')->push($name, 'ExportJobCreator', $data, $priority);
+            $jobEntity = $this->getEntityManager()->getEntity('Job');
+            $jobEntity->set([
+                'name'     => $name,
+                'type'     => 'ExportJobCreator',
+                'payload'  => $data,
+                'priority' => AbstractExportType::PRIORITIES[$priority]
+            ]);
+            $this->getEntityManager()->saveEntity($jobEntity);
         }
 
         return true;

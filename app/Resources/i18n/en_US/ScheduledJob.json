@@ -10,13 +10,11 @@
     "exportFeeds": "Export Feeds"
   },
   "options": {
-    "job": {
-      "ExportFeed": "Export Feed",
-      "TrialExport": "Failed Export Job retrial",
-      "ExportJobRemove": "Export Job Remover"
+    "type": {
+      "ExportFeed": "Export Feed"
     }
   },
-  "tooltips":{
+  "tooltips": {
     "exportFeeds": "If no Export Feed is selected, all failed Export Jobs will be retried."
   }
 }

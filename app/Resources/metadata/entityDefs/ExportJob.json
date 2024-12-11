@@ -121,7 +121,7 @@
     },
     "queueItem": {
       "type": "belongsTo",
-      "entity": "QueueItem"
+      "entity": "Job"
     }
   },
   "collection": {
