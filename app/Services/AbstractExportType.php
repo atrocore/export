@@ -38,6 +38,12 @@ abstract class AbstractExportType extends Base
 {
     public const TMP_DIR = 'data' . DIRECTORY_SEPARATOR . '.tmp-export';
 
+    public const PRIORITIES = [
+        'Low'    => 50,
+        'Normal' => 100,
+        'High'   => 150
+    ];
+
     protected array $data;
 
     protected Convertor $convertor;
@@ -467,12 +473,6 @@ abstract class AbstractExportType extends Base
         $limit = $this->data['limit'];
         $offset = $this->data['offset'];
 
-        $priorities = [
-            'Low'    => 50,
-            'Normal' => 100,
-            'High'   => 150
-        ];
-
         $priority = empty($this->data['feed']['priority']) ? 'Normal' : (string)$this->data['feed']['priority'];
         $jobs = [];
         $i = 1;
@@ -488,7 +488,7 @@ abstract class AbstractExportType extends Base
                 'name'     => $jobName,
                 'type'     => 'ExportChunk',
                 'payload'  => $subData,
-                'priority' => $priorities[$priority]
+                'priority' => self::PRIORITIES[$priority]
             ]);
             $this->getEntityManager()->saveEntity($jobEntity);
 

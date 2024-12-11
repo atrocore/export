@@ -1,5 +1,4 @@
 {
-  "ExportJobCreator": "\\Export\\Services\\ExportJobCreator",
   "ExportTypeSimple": "\\Export\\Services\\ExportTypeSimple",
   "DataSyncErrorsExportDashlet": "\\Export\\Services\\DataSyncErrorsExportDashlet"
 }

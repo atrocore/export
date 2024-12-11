@@ -24,8 +24,11 @@ class Export extends AbstractJob implements JobInterface
 {
     public function run(Job $job): void
     {
-        $data = $job->getPayload();
+        $this->runNow($job->getPayload(), $job);
+    }
 
+    public function runNow(array $data, ?Job $job = null):void
+    {
         $exportJob = $this->getEntityManager()->getEntity('ExportJob', $data['exportJobId']);
         if (empty($exportJob)) {
             return;

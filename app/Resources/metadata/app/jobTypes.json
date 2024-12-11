@@ -10,5 +10,9 @@
   "ExportChunk": {
     "scheduledJob": false,
     "handler": "\\Export\\Jobs\\ExportChunk"
+  },
+  "ExportJobCreator": {
+    "scheduledJob": false,
+    "handler": "\\Export\\Jobs\\ExportJobCreator"
   }
 }
