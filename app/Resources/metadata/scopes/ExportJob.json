@@ -22,5 +22,7 @@
   "hasTeam": true,
   "hasOwner": true,
   "notificationDisabled": true,
-  "hideFieldTypeFilters": true
+  "hideFieldTypeFilters": true,
+  "autoDeleteAfterDays": 21,
+  "clearDeletedAfterDays": 35
 }
