@@ -239,12 +239,6 @@
       "noLoad": true,
       "importDisabled": true
     },
-    "scheduledJobs": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutDetailSmallDisabled": true,
-      "noLoad": true
-    },
     "sortOrderField": {
       "type": "varchar",
       "required": false,
@@ -353,12 +347,6 @@
       "type": "hasMany",
       "foreign": "exportFeed",
       "entity": "ExportJob"
-    },
-    "scheduledJobs": {
-      "type": "hasMany",
-      "relationName": "scheduledJobExportFeed",
-      "foreign": "exportFeeds",
-      "entity": "ScheduledJob"
     },
     "folder": {
       "type": "belongsTo",

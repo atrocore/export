@@ -84,7 +84,6 @@ class LayoutController extends AbstractListener
             $newRows[] = $row;
             if ($row[0]['name'] === 'type') {
                 $newRows[] = [['name' => 'exportFeed'], false];
-                $newRows[] = [['name' => 'exportFeeds'], false];
                 if (!$this->checkIfFieldExists('maximumHoursToLookBack', $result[0]['rows'])) {
                     $newRows[] = [['name' => 'maximumHoursToLookBack'], false];
                 }

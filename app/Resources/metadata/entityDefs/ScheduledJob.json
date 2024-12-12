@@ -4,12 +4,6 @@
       "type": "link",
       "tooltip": true
     },
-    "exportFeeds": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutDetailSmallDisabled": true,
-      "tooltip": true
-    },
     "maximumHoursToLookBack": {
       "type": "float",
       "min": 0
@@ -22,12 +16,6 @@
   "links": {
     "exportFeed": {
       "type": "belongsTo",
-      "entity": "ExportFeed"
-    },
-    "exportFeeds": {
-      "type": "hasMany",
-      "relationName": "scheduledJobExportFeed",
-      "foreign": "scheduledJobs",
       "entity": "ExportFeed"
     }
   }
