@@ -6,7 +6,7 @@
           "conditionGroup": [
             {
               "type": "equals",
-              "attribute": "job",
+              "attribute": "type",
               "value": "ExportFeed"
             }
           ]
@@ -26,7 +26,7 @@
           "conditionGroup": [
             {
               "type": "equals",
-              "attribute": "job",
+              "attribute": "type",
               "value": "TrialExport"
             }
           ]
