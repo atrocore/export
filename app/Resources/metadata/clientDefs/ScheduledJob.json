@@ -15,19 +15,8 @@
           "conditionGroup": [
             {
               "type": "equals",
-              "attribute": "job",
-              "value": "ExportFeed"
-            }
-          ]
-        }
-      },
-      "exportFeeds": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "equals",
               "attribute": "type",
-              "value": "TrialExport"
+              "value": "ExportFeed"
             }
           ]
         }
