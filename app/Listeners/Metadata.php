@@ -91,7 +91,7 @@ class Metadata extends AbstractListener
         if (empty($data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumHoursToLookBack']['visible']['conditionGroup'][0])) {
             $data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumHoursToLookBack']['visible']['conditionGroup'][0] = [
                 'type' => 'in',
-                'attribute' => 'job',
+                'attribute' => 'type',
                 'value' => ['ExportFeed']
             ];
         } else {
@@ -101,7 +101,7 @@ class Metadata extends AbstractListener
         if (empty($data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumDaysForJobExist']['visible'])) {
             $data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumDaysForJobExist']['visible']['conditionGroup'][0] = [
                 'type' => 'in',
-                'attribute' => 'job',
+                'attribute' => 'type',
                 'value' => ['ExportJobRemove']
             ];
         } else {
