@@ -1,13 +1,11 @@
 {
   "fields": {
     "exportFeed": "Экспортный фид",
-    "exportFeeds": "Экспортные фиды",
     "maximumHoursToLookBack": "Максимум часов, чтобы оглянуться назад",
     "maximumDaysForJobExist": "Максимальный период хранения в днях"
   },
   "links": {
-    "exportFeed": "Экспортный фид",
-    "exportFeeds": "Экспортные фиды"
+    "exportFeed": "Экспортный фид"
   },
   "options": {
     "type": {

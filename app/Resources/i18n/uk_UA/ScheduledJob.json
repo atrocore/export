@@ -1,20 +1,15 @@
 {
   "fields": {
     "exportFeed": "Експортний фід",
-    "exportFeeds": "Експортний фіди",
     "maximumHoursToLookBack": "Максимальна кількість годин для ретроспективи",
     "maximumDaysForJobExist": "Максимальний термін зберігання в днях"
   },
   "links": {
-    "exportFeed": "Експортний фід",
-    "exportFeeds": "Експортний фіди"
+    "exportFeed": "Експортний фід"
   },
   "options": {
     "type": {
       "ExportFeed": "Експортний фід"
     }
-  },
-  "tooltips": {
-    "exportFeeds": "Якщо експортні фіди не вибрано, усі невдалі завдання експорту буде виконано повторно."
   }
 }

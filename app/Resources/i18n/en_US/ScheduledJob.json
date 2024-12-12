@@ -1,20 +1,15 @@
 {
   "fields": {
     "exportFeed": "Export Feed",
-    "exportFeeds": "Export Feeds",
     "maximumHoursToLookBack": "Maximum hours to look back",
     "maximumDaysForJobExist": "Maximum retention period in days"
   },
   "links": {
-    "exportFeed": "Export Feed",
-    "exportFeeds": "Export Feeds"
+    "exportFeed": "Export Feed"
   },
   "options": {
     "type": {
       "ExportFeed": "Export Feed"
     }
-  },
-  "tooltips": {
-    "exportFeeds": "If no Export Feed is selected, all failed Export Jobs will be retried."
   }
 }

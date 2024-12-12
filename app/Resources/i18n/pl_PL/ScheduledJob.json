@@ -1,20 +1,15 @@
 {
 	"fields": {
 		"exportFeed": "Eksportuj kanał",
-		"exportFeeds": "Eksportuj kanały",
 		"maximumHoursToLookBack": "Maksymalna liczba godzin do przeglądania wstecz",
 		"maximumDaysForJobExist": "Maksymalny okres retencji w dniach"
 	},
 	"links": {
-		"exportFeed": "Eksportuj kanał",
-		"exportFeeds": "Eksportuj kanały"
+		"exportFeed": "Eksportuj kanał"
 	},
 	"options": {
 		"type": {
 			"ExportFeed": "Eksportuj kanał"
 		}
-	},
-	"tooltips": {
-		"exportFeeds": "Jeśli nie zostanie wybrany żaden kanał eksportu, wszystkie nieudane zadania eksportu zostaną ponowione."
 	}
 }
