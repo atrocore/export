@@ -55,42 +55,7 @@ class LinkMultipleType extends LinkType
             $params['exportByChannelId'] = $configuration['channelId'];
         }
 
-        if (!empty($configuration['filterField']) && !empty($configuration['filterFieldValue'])) {
-            switch ($this->convertor->getMetadata()->get(['entityDefs', $foreignEntity, 'fields', $configuration['filterField'], 'type'])) {
-                case 'bool':
-                    switch ($configuration['filterFieldValue']) {
-                        case ['+']:
-                            $params['where'] = [['type' => 'isTrue', 'attribute' => $configuration['filterField']]];
-                            break;
-                        case ['-']:
-                            $params['where'] = [['type' => 'isFalse', 'attribute' => $configuration['filterField']]];
-                            break;
-                    }
-                    break;
-                case 'enum':
-                    $params['where'] = [
-                        [
-                            'type'      => 'in',
-                            'attribute' => $configuration['filterField'],
-                            'value'     => $configuration['filterFieldValue'],
-                        ]
-                    ];
-                    break;
-                case 'multiEnum':
-                    $params['where'] = [
-                        [
-                            'type'      => 'arrayAnyOf',
-                            'attribute' => $configuration['filterField'],
-                            'value'     => $configuration['filterFieldValue'],
-                        ]
-                    ];
-                    break;
-            }
-        }
-
-        if (!empty($configuration['searchFilter'])) {
-            $params['where'] = !empty($configuration['searchFilter']['where']) ? $configuration['searchFilter']['where'] : [];
-        }
+        $params['where'] = $this->getWhere($configuration);
 
         $params['disableCount'] = true;
 
@@ -185,6 +150,46 @@ class LinkMultipleType extends LinkType
             }
             $result[$column] = implode($configuration['delimiter'], $preparedLinks);
         }
+    }
+
+    protected function getWhere(array $configuration): array
+    {
+        $foreignEntity = $this->getForeignEntityName($configuration['entity'], $configuration['field']);
+
+        if (!empty($configuration['filterField']) && !empty($configuration['filterFieldValue'])) {
+            switch ($this->convertor->getMetadata()->get(['entityDefs', $foreignEntity, 'fields', $configuration['filterField'], 'type'])) {
+                case 'bool':
+                    switch ($configuration['filterFieldValue']) {
+                        case ['+']:
+                            return [['type' => 'isTrue', 'attribute' => $configuration['filterField']]];
+                        case ['-']:
+                            return [['type' => 'isFalse', 'attribute' => $configuration['filterField']]];
+                    }
+                    break;
+                case 'enum':
+                    return [
+                        [
+                            'type'      => 'in',
+                            'attribute' => $configuration['filterField'],
+                            'value'     => $configuration['filterFieldValue'],
+                        ]
+                    ];
+                case 'multiEnum':
+                    return [
+                        [
+                            'type'      => 'arrayAnyOf',
+                            'attribute' => $configuration['filterField'],
+                            'value'     => $configuration['filterFieldValue'],
+                        ]
+                    ];
+            }
+        }
+
+        if (!empty($configuration['searchFilter'])) {
+            return !empty($configuration['searchFilter']['where']) ? $configuration['searchFilter']['where'] : [];
+        }
+
+        return [];
     }
 
     protected function getLinkedEntitiesKeyForConfiguration(array $configuration): array
@@ -282,7 +287,7 @@ class LinkMultipleType extends LinkType
         $selectManager = $container->get('selectManagerFactory')->create($linkDefs['entity']);
 
         $sp = $selectManager->getSelectParams([
-            'where'   => $configuration['searchFilter']['where'] ?? null,
+            'where'   => $this->getWhere($configuration),
             'sortBy'  => $configuration['sortFieldRelation'] ?? 'id',
             'asc'     => $configuration['sortOrderRelation'] === 'ASC',
             'offset'  => $configuration['offsetRelation'] ?? 0,
