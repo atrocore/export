@@ -304,7 +304,7 @@ class LinkType extends AbstractType
             if (array_key_exists('prepareUnitValueFnc', $configuration)) {
                 list($valueFrom, $valueTo, $val) = $configuration['prepareUnitValueFnc']((string)$v[$field]);
             } else {
-                $val = $v[$fieldName];
+                $val = $v[$fieldName] ?? null;
             }
             if (!empty($val)) {
                 if (is_array($val)) {
