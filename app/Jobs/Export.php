@@ -27,7 +27,7 @@ class Export extends AbstractJob implements JobInterface
         $this->runNow($job->getPayload(), $job);
     }
 
-    public function runNow(array $data, ?Job $job = null):void
+    public function runNow(array $data, ?Job $job = null): void
     {
         $exportJob = $this->getEntityManager()->getEntity('ExportJob', $data['exportJobId']);
         if (empty($exportJob)) {
@@ -52,7 +52,9 @@ class Export extends AbstractJob implements JobInterface
             $exportJob->set('end', (new \DateTime())->format('Y-m-d H:i:s'));
             $this->getEntityManager()->saveEntity($exportJob);
 
-            $this->createNotification($job, sprintf($this->translate('exportDownloadNotification', 'labels', 'ExportJob'), $exportJob->get('fileId')));
+            if (!empty($job)) {
+                $this->createNotification($job, sprintf($this->translate('exportDownloadNotification', 'labels', 'ExportJob'), $exportJob->get('fileId')));
+            }
         } catch (\Throwable $e) {
             $exportJob->set('end', (new \DateTime())->format('Y-m-d H:i:s'));
             $exportJob->set('state', 'Failed');
