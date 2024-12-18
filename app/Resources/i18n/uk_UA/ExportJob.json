@@ -18,7 +18,7 @@
     "Running": "Виконується",
     "Failed": "Не виконано",
     "Canceled": "Скасовано",
-    "exportDownloadNotification": "Ви можете <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">скачати</a> файл."
+    "exportDownloadNotification": "Експорт завершено. Ви можете <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">скачати</a> файл."
   },
   "exceptions": {
     "wrongJobState": "Неможливо встановити статус.",

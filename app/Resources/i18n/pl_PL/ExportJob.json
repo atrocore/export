@@ -18,7 +18,7 @@
 		"Running": "Trwa",
 		"Failed": "Niepowodzenie",
 		"Canceled": "Anulowane",
-		"exportDownloadNotification": "Możesz <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">pobrać</a> plik."
+		"exportDownloadNotification": "Eksport został zakończony. Możesz <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">pobrać</a> plik."
 	},
 	"exceptions": {
 		"wrongJobState": "Nie można ustawić takiego stanu zadania.",

@@ -18,7 +18,7 @@
     "Running": "In Arbeit",
     "Failed": "Fehlgeschlagen",
     "Canceled": "Abgebrochen",
-    "exportDownloadNotification": "Sie können die Datei <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">herunterladen</a>."
+    "exportDownloadNotification": "Der Export ist abgeschlossen. Sie können die Datei <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">herunterladen</a>."
   },
   "exceptions": {
     "wrongJobState": "Dieser Auftragsstatus kann nicht gesetzt werden.",

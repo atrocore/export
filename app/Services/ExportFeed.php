@@ -518,14 +518,17 @@ class ExportFeed extends Base
         $this->getRepository()->updateLastTime($data['feed']['id'], new \DateTime());
 
         if (!empty($data['executeNow'])) {
+            $data['ownerUserId'] = $this->getUser()->get('id');
+            $data['priority'] = AbstractExportType::PRIORITIES[$priority];
             $this->getInjection('container')->get(ExportJobCreator::class)->runNow($data);
         } else {
             $jobEntity = $this->getEntityManager()->getEntity('Job');
             $jobEntity->set([
-                'name'     => $name,
-                'type'     => 'ExportJobCreator',
-                'payload'  => $data,
-                'priority' => AbstractExportType::PRIORITIES[$priority]
+                'name'        => $name,
+                'type'        => 'ExportJobCreator',
+                'payload'     => $data,
+                'priority'    => AbstractExportType::PRIORITIES[$priority],
+                'ownerUserId' => $this->getUser()->get('id')
             ]);
             $this->getEntityManager()->saveEntity($jobEntity);
         }

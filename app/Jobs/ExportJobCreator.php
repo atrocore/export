@@ -23,7 +23,11 @@ class ExportJobCreator extends AbstractJob implements JobInterface
 {
     public function run(Job $job): void
     {
-        $this->runNow($job->getPayload());
+        $data = $job->getPayload();
+        $data['ownerUserId'] = $job->get('ownerUserId');
+        $data['priority'] = $job->get('priority');
+
+        $this->runNow($data);
     }
 
     public function runNow(array $data): void
@@ -110,9 +114,11 @@ class ExportJobCreator extends AbstractJob implements JobInterface
         } else {
             $jobEntity = $this->getEntityManager()->getEntity('Job');
             $jobEntity->set([
-                'name' => $qmJobName,
-                'type' => 'Export',
-                'payload' => $data
+                'name'        => $qmJobName,
+                'type'        => 'Export',
+                'payload'     => $data,
+                'ownerUserId' => $data['ownerUserId'],
+                'priority'    => $data['priority'],
             ]);
             $this->getEntityManager()->saveEntity($jobEntity);
             $exportJob->set('queueItemId', $jobEntity->get('id'));

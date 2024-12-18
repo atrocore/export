@@ -18,7 +18,7 @@
     "Running": "Running",
     "Failed": "Failed",
     "Canceled": "Canceled",
-    "exportDownloadNotification": "You can <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">download</a> the file."
+    "exportDownloadNotification": "Export has been finished. You can <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">download</a> the file."
   },
   "exceptions": {
     "wrongJobState": "Such job state cannot be set.",
