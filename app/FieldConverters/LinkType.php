@@ -242,6 +242,26 @@ class LinkType extends AbstractType
                     }
                 }
             }
+        } elseif ($foreignType == 'extensibleEnum') {
+            $fieldResult[$field] = $foreignConfiguration['nullValue'];
+            $fieldName = $field . 'Name';
+            if (isset($foreignData[$fieldName])) {
+                if (empty($foreignData[$fieldName])) {
+                    $fieldResult[$field] = $foreignData[$fieldName] === null ? $foreignConfiguration['nullValue'] : $foreignConfiguration['emptyValue'];
+                } else {
+                    $fieldResult[$field] = $foreignData[$fieldName];
+                }
+            }
+        } elseif ($foreignType == 'extensibleMultiEnum') {
+            $fieldResult[$field] = $foreignConfiguration['nullValue'];
+            $fieldName = $field . 'Names';
+            if (isset($foreignData[$fieldName])) {
+                if (empty($foreignData[$fieldName])) {
+                    $fieldResult[$field] = $foreignData[$fieldName] === null ? $foreignConfiguration['nullValue'] : $foreignConfiguration['emptyValue'];
+                } else {
+                    $fieldResult[$field] = implode($foreignConfiguration['delimiter'], $foreignData[$fieldName]);
+                }
+            }
         } else {
             $fieldResult[$field] = $this->convertor->convertType($foreignType, $foreignData, $foreignConfiguration)[$column];
         }
