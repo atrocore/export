@@ -242,7 +242,7 @@ class LinkType extends AbstractType
                     }
                 }
             }
-        } elseif ($foreignType == 'extensibleEnum') {
+        } elseif ($foreignType == 'extensibleEnum' || $foreignType == 'measure') {
             $fieldResult[$field] = $foreignConfiguration['nullValue'];
             $fieldName = $field . 'Name';
             if (isset($foreignData[$fieldName])) {
