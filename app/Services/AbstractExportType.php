@@ -254,7 +254,7 @@ abstract class AbstractExportType extends Base
         }
     }
 
-    protected function prepareSelectParams():array
+    protected function prepareSelectParams(): array
     {
         $params = $this->getSelectParams();
         $params['withDeleted'] = !empty($this->data['feed']['data']['withDeleted']);
@@ -344,8 +344,8 @@ abstract class AbstractExportType extends Base
             return null;
         }
 
-        if(!empty($this->data['entityIds'])) {
-           return $this->getCollectionFromIds($this->data['entityIds']);
+        if (!empty($this->data['entityIds'])) {
+            return $this->getCollectionFromIds($this->data['entityIds']);
         }
 
         if ($offset === null) {
@@ -474,7 +474,8 @@ abstract class AbstractExportType extends Base
         $offset = $this->data['offset'];
 
         $priority = empty($this->data['feed']['priority']) ? 'Normal' : (string)$this->data['feed']['priority'];
-        $jobs = [];
+        $jobs = new EntityCollection();
+        $jobIds = [];
         $i = 1;
         while ($offset < $total) {
             $jobName = $this->data['feed']['name'] . " Chunk #$i";
@@ -492,21 +493,23 @@ abstract class AbstractExportType extends Base
             ]);
             $this->getEntityManager()->saveEntity($jobEntity);
 
-            $jobs[] = $jobEntity;
+            $jobs->append($jobEntity);
+            $jobIds[] = $jobEntity->get('id');
             $offset = $offset + $limit;
             $i++;
         }
 
-        if (empty($jobs)) {
+        if ($jobs->count() == 0) {
             throw new Error("Something wrong. System can't create any export chunk job.");
         }
 
         while (true) {
-            if (empty($jobs[0])) {
+            if ($jobs->count() == 0) {
                 break;
             }
 
             $success = true;
+            $jobs = $this->getEntityManager()->getRepository('Job')->findByIds($jobIds);
             foreach ($jobs as $job) {
                 if ($job->get('status') === 'Failed') {
                     throw new BadRequest($job->get('message'));
@@ -729,6 +732,7 @@ abstract class AbstractExportType extends Base
 
                 fwrite($file, Json::encode($rowData) . PHP_EOL);
                 $res['count']++;
+
             }
         }
 
@@ -864,12 +868,12 @@ abstract class AbstractExportType extends Base
 
     protected function getCollectionFromIds(mixed $entityIds): EntityCollection
     {
-        $result =  $this->getEntityService()->findEntities([
-            "where" => [
+        $result = $this->getEntityService()->findEntities([
+            "where"       => [
                 [
                     "attribute" => "id",
-                    "type" => "in",
-                    "value" => $this->data['entityIds']
+                    "type"      => "in",
+                    "value"     => $this->data['entityIds']
                 ]
             ],
             "withDeleted" => true
