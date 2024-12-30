@@ -21,10 +21,19 @@ Espo.define('export:views/export-feed/record/panels/export-jobs', 'views/record/
                 }
                 timeout = setTimeout(() => {
                     if (this.hasPanel()) {
-                        this.collection.fetch();
+                        const hash = this.collectionToString()
+                        this.collection.fetch({
+                            noRebuild: () => {
+                                return hash === this.collectionToString()
+                            }
+                        });
                     }
                 }, 5000);
             });
+        },
+
+        collectionToString() {
+            return JSON.stringify(this.collection.toArray().map(model => model.attributes))
         },
 
         afterRender() {
