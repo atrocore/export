@@ -8,7 +8,21 @@
       "filterDisabled": true,
       "massUpdateDisabled": true,
       "importDisabled": true,
-      "useDisabledTextareaInViewMode": true
+      "useDisabledTextareaInViewMode": true,
+      "twigVariables": [
+        {
+          "name": "sourceEntities",
+          "description": "Collection of entities to export"
+        },
+        {
+          "name": "sourceEntitiesIds",
+          "description": "Array of entity ids to export"
+        },
+        {
+          "name": "entity",
+          "description": "First Entity of the collection to export"
+        }
+      ]
     },
     "exportFeed": {
       "type": "link",

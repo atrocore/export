@@ -1,0 +1,14 @@
+{
+  "getPreviousCategoryId": {
+    "description": "Retrieves the ID of the previous category in a hierarchical category structure",
+    "tag": "export"
+  },
+  "getExtensibleEnumOption": {
+    "description": "Fetches an option value from an extensible enum",
+    "tag": "export"
+  },
+  "getEntity": {
+    "description": "Retrieves an entity object by its identifier",
+    "tag": "export"
+  }
+}

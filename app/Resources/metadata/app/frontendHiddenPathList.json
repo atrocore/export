@@ -1,0 +1,11 @@
+[
+  "__APPEND__",
+  [
+    "app",
+    "twigFilters"
+  ],
+  [
+    "app",
+    "twigFunctions"
+  ]
+]
