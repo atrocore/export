@@ -42,10 +42,6 @@
     "fieldList": "Lista pól",
     "useExistingExportFeed": "Proszę użyć istniejącego kanału eksportu"
   },
-  "links": {
-    "configuratorItems": "Konfigurator",
-    "exportJobs": "Zadania eksportu"
-  },
   "options": {
     "fileType": {
       "xlsx": "XLSX (Excel)",

@@ -8,9 +8,6 @@
     "end": "End",
     "count": "Count"
   },
-  "links": {
-    "exportFeed": "Export Feed"
-  },
   "labels": {
     "Create ExportJob": "Create Export Job",
     "Pending": "Pending",

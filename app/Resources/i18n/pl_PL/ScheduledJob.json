@@ -4,9 +4,6 @@
 		"maximumHoursToLookBack": "Maksymalna liczba godzin do przeglądania wstecz",
 		"maximumDaysForJobExist": "Maksymalny okres retencji w dniach"
 	},
-	"links": {
-		"exportFeed": "Eksportuj kanał"
-	},
 	"options": {
 		"type": {
 			"ExportFeed": "Eksportuj kanał"

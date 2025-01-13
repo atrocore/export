@@ -42,10 +42,6 @@
     "fieldList": "Список полів",
     "useExistingExportFeed": "Використовуйте наявний канал експорту"
   },
-  "links": {
-    "exportJobs": "Завдання експорту",
-    "configuratorItems": "Конфігуратор"
-  },
   "labels": {
     "generateTemplate": "Згенерувати шаблон",
     "typeToSearch": "Введіть для пошуку...",

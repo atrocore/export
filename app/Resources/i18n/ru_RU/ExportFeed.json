@@ -31,10 +31,6 @@
     "convertRelationsToString": "Конвертировать поля связи в строку",
     "replaceAttributeValues": "Заменять значения атрибутов"
   },
-  "links": {
-    "exportJobs": "Задания экспорта",
-    "configuratorItems": "Конфигуратор"
-  },
   "labels": {
     "typeToSearch": "Введите для поиска...",
     "addMissingFieldsConfirmation": " Вы уверены, что хотите довавить все недостающие поля?",

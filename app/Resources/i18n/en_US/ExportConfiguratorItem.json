@@ -26,10 +26,6 @@
     "exportByForListAttribute": "Related Entity Fields for Lists",
     "fallbackLanguage": "Fallback Language"
   },
-  "links": {
-    "exportFeed": "Export Feed",
-    "channel": "Channel"
-  },
   "columnType": {
     "name": "Name",
     "internal": "Name (untranslated) / Locale",

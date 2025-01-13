@@ -8,9 +8,6 @@
     "end": "Завершение",
     "count": "Количество"
   },
-  "links": {
-    "exportFeed": "Экспорт. фид"
-  },
   "labels": {
     "Create ExportJob": "Создать задание экспорта",
     "Pending": "В ожидании",

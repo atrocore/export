@@ -22,10 +22,6 @@
     "previousItem": "Предыдущий элемент",
     "fileNameTemplate": "Шаблон имени файла"
   },
-  "links": {
-    "exportFeed": "Экспорт. фид",
-    "channel": "Канал"
-  },
   "options": {
     "boolFilterFieldValue": {
       "+": "истина",

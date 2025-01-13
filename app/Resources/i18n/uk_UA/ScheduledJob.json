@@ -4,9 +4,6 @@
     "maximumHoursToLookBack": "Максимальна кількість годин для ретроспективи",
     "maximumDaysForJobExist": "Максимальний термін зберігання в днях"
   },
-  "links": {
-    "exportFeed": "Експортний фід"
-  },
   "options": {
     "type": {
       "ExportFeed": "Експортний фід"

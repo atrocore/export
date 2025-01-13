@@ -42,10 +42,6 @@
     "fieldList": "Field List",
     "useExistingExportFeed": "Use existing export feed"
   },
-  "links": {
-    "configuratorItems": "Configurator",
-    "exportJobs": "Export Jobs"
-  },
   "options": {
     "fileType": {
       "xlsx": "XLSX (Excel)",

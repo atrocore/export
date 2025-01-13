@@ -42,10 +42,6 @@
     "useExistingExportFeed": "Utiliser le flux d'exportation existant",
     "fileNameMask": "Masque de nom de fichier"
   },
-  "links": {
-    "configuratorItems": "Configurateur",
-    "exportJobs": "Emplois à l'exportation"
-  },
   "options": {
     "fileType": {
       "xlsx": "XLSX (Excel)",

@@ -26,10 +26,6 @@
     "exportByForListAttribute": "Verwandte Entitätsfelder für Listen",
     "fallbackLanguage": "Fallback-Sprache"
   },
-  "links": {
-    "exportFeed": "Exportfeed",
-    "channel": "Kanal"
-  },
   "columnType": {
     "name": "Name",
     "internal": "Name (unübersetzt) / Gebietsschema",

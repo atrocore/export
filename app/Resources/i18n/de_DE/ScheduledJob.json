@@ -4,9 +4,6 @@
     "maximumHoursToLookBack": "Maximale Stundenzahl für die Rückschau",
     "maximumDaysForJobExist": "Maximale Aufbewahrungsfrist in Tagen"
   },
-  "links": {
-    "exportFeed": "Exportfeed"
-  },
   "options": {
     "type": {
       "ExportFeed": "Exportfeed"

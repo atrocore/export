@@ -26,10 +26,6 @@
     "exportByForListAttribute": "Champs d'entité connexes pour les listes",
     "fallbackLanguage": "Langue de secours"
   },
-  "links": {
-    "exportFeed": "Flux d'export",
-    "channel": "Canal"
-  },
   "columnType": {
     "name": "Nom",
     "internal": "Nom (non traduit) / Locale",

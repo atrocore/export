@@ -8,9 +8,6 @@
     "end": "End",
     "count": "Anzahl"
   },
-  "links": {
-    "exportFeed": "Exportfeed"
-  },
   "labels": {
     "Create ExportJob": "Exportauftrag erstellen",
     "Pending": "Steht aus",

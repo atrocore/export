@@ -26,10 +26,6 @@
     "exportByForListAttribute": "Powiązane pola encji dla list",
     "fallbackLanguage": "Język zapasowy"
   },
-  "links": {
-    "exportFeed": "Eksportuj kanał",
-    "channel": "Kanał"
-  },
   "columnType": {
     "name": "Nazwa",
     "internal": "Nazwa (nieprzetłumaczona) / Lokalizacja",

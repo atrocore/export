@@ -2,9 +2,5 @@
   "fields": {
     "exportFeeds": "Экспортные фиды",
     "exportJobs": "Задания экспорта"
-  },
-  "links": {
-    "exportFeeds": "Экспортные фиды",
-    "exportJobs": "Задания экспорта"
   }
 }

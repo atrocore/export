@@ -8,9 +8,6 @@
     "end": "Fin",
     "count": "Compter"
   },
-  "links": {
-    "exportFeed": "Flux d'export"
-  },
   "labels": {
     "Create ExportJob": "Créer une tâche d'export",
     "Pending": "En attente",

@@ -8,9 +8,6 @@
 		"end": "Koniec",
 		"count": "Liczba"
 	},
-	"links": {
-		"exportFeed": "Eksportuj kanał"
-	},
 	"labels": {
 		"Create ExportJob": "Utwórz zadanie eksportu",
 		"Pending": "Oczekujący",

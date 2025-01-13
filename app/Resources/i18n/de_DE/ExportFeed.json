@@ -42,10 +42,6 @@
     "fieldList": "Liste der Felder",
     "useExistingExportFeed": "UBestehendes Exportfutter verwenden"
   },
-  "links": {
-    "configuratorItems": "Konfigurator",
-    "exportJobs": "Exportaufträge"
-  },
   "labels": {
     "generateTemplate": "Vorlage generieren",
     "typeToSearch": "Tippe um zu suchen...",

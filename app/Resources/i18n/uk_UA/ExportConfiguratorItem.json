@@ -26,10 +26,6 @@
     "exportByForListAttribute": "Пов’язані поля сутності для списків",
     "fallbackLanguage": "Резервна мова"
   },
-  "links": {
-    "exportFeed": "Експорт. фід",
-    "channel": "Канал"
-  },
   "columnType": {
     "name": "Назва",
     "internal": "Назва (неперекладена) / Локаль",
