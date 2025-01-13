@@ -1,6 +1,14 @@
 {
-  "prepareEntity": "\\Export\\TwigFilter\\PrepareEntity",
-  "isImage": "\\Export\\TwigFilter\\IsImage",
-  "escapeDoubleQuote": "\\Export\\TwigFilter\\EscapeDoubleQuote",
-  "backslashNToBr": "\\Export\\TwigFilter\\BackslashNToBr"
+  "prepareEntity": {
+    "handler": "\\Export\\TwigFilter\\PrepareEntity"
+  },
+  "isImage": {
+    "handler": "\\Export\\TwigFilter\\IsImage"
+  },
+  "escapeDoubleQuote": {
+    "handler": "\\Export\\TwigFilter\\EscapeDoubleQuote"
+  },
+  "backslashNToBr": {
+    "handler": "\\Export\\TwigFilter\\BackslashNToBr"
+  }
 }

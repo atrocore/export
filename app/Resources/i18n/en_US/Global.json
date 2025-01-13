@@ -25,5 +25,18 @@
   },
   "dashlets": {
     "DataSyncErrorsExport": "Data sync errors for export"
+  },
+  "twig": {
+    "functions": {
+      "getPreviousCategoryId": "Retrieves the ID of the previous category in a hierarchical category structure",
+      "getExtensibleEnumOption": "Fetches an option value from an extensible enum",
+      "getEntity": "Retrieves an entity object by its identifier"
+    },
+    "filters": {
+      "prepareEntity": "Prepares an entity for export",
+      "isImage": "Checks if the provided value represents an image, by validating file extensions or MIME types",
+      "escapeDoubleQuote": "Escapes double quotes in a string by adding backslashes (\" becomes \\\")",
+      "backslashNToBr": "Converts newline characters (\\n) to HTML line break tags (<br>)"
+    }
   }
 }

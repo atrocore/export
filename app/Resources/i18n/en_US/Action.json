@@ -7,5 +7,12 @@
     "type": {
       "export": "Export Feed"
     }
+  },
+  "twigVariables": {
+    "payload": {
+      "sourceEntities": "Collection of entities to export",
+      "sourceEntitiesIds": "Array of entity ids to export",
+      "entity": "First Entity of the collection to export"
+    }
   }
 }
