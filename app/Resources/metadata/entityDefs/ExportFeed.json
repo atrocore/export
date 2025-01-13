@@ -279,7 +279,10 @@
       "rowsMax": 20,
       "required": false,
       "tooltip": true,
-      "view": "export:views/export-feed/fields/template"
+      "view": "export:views/export-feed/fields/template",
+      "twigVariables": [
+        "entities"
+      ]
     },
     "lastStatus": {
       "type": "enum",
@@ -325,7 +328,12 @@
     },
     "fileNameMask": {
       "type": "wysiwyg",
-      "view": "views/fields/script"
+      "view": "views/fields/script",
+      "twigVariables": [
+        "feed",
+        "filename",
+        "interation"
+      ]
     }
   },
   "links": {

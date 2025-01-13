@@ -15,11 +15,26 @@ Espo.define('export:views/export-feed/fields/template', 'views/fields/script', D
         setup() {
             Dep.prototype.setup.call(this);
 
+            this.setupParams()
+
+            this.listenTo(this.model, 'change:fileType', () => {
+                this.setupParams()
+                this.reRender()
+            })
+
+
             this.listenTo(this.model, 'change:entity change:fileType', () => {
                 if (this.mode === 'edit' && this.model.isNew()) {
                     this.prepareJsonTemplate();
                 }
             });
+        },
+
+        setupParams() {
+            this.params.isExport = true;
+            if (['json', 'xml', 'sql'].includes(this.model.get('fileType'))) {
+                this.params.language = this.model.get('fileType')
+            }
         },
 
         initInlineActions() {

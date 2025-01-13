@@ -8,7 +8,12 @@
       "filterDisabled": true,
       "massUpdateDisabled": true,
       "importDisabled": true,
-      "useDisabledTextareaInViewMode": true
+      "useDisabledTextareaInViewMode": true,
+      "twigVariables": [
+        "sourceEntities",
+        "sourceEntitiesIds",
+        "entity"
+      ]
     },
     "exportFeed": {
       "type": "link",
