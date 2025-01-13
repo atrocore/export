@@ -138,7 +138,7 @@ class Convertor
         if (!empty($configuration['attributeId'])) {
             $type = $this->prepareConvertorTypeForAttribute($this->getTypeForAttribute($configuration['attributeId']), $configuration['attributeValue']);
         } else {
-            $type = $this->getTypeForField($configuration['entity'], $configuration['field']);
+            $type = $this->getTypeForField($configuration['entity'], $configuration['field'] ?? null);
         }
 
         return $type;
