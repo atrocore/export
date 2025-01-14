@@ -32,7 +32,7 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
                         this.ajaxGetRequest(`Attribute/${this.model.get('attributeId')}`).then(attribute => {
                             let name = 'name';
                             if (this.model.get('columnType') === 'name') {
-                                let language = this.model.get('exportFeedLanguage') || this.model.get('language');
+                                let language = this.model.get('language');
                                 if (language === 'main') {
                                     language = '';
                                 }
@@ -85,10 +85,21 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
             }
         },
 
+        getLocaleLanguageCode() {
+            let languageCode = 'en_US';
+
+            $.each(this.getConfig().get('referenceData')?.Locale || {}, (code, row) => {
+                if (row.id === this.model.get('exportFeedData')?.localeId) {
+                    languageCode = row.languageCode;
+                }
+            });
+
+            return languageCode;
+        },
+
         prepareFieldValue() {
             if (this.model.get('columnType') === 'name' || this.model.isNew()) {
-                // let locale = this.model.get('exportFeedLanguage') || this.model.get('language');
-                let locale = 'de_DE';
+                let locale = this.getLocaleLanguageCode();
                 if (locale !== 'main') {
                     const originField = this.model.get('name')
                     this.getTranslates(locale, translates => {
@@ -107,12 +118,6 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
         },
 
         prepareAttributeValue() {
-            let language = this.model.get('exportFeedLanguage') || this.model.get('language');
-
-            if (language === 'main') {
-                language = '';
-            }
-
             if (this.model.get('columnType') === 'name') {
                 this.model.set('column', this.model.get('attributeNameValue'));
             }

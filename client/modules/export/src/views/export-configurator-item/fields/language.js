@@ -44,11 +44,7 @@ Espo.define('export:views/export-configurator-item/fields/language', 'views/fiel
             },
 
             prepareMultiLangParam() {
-                if (
-                    this.model.get('exportFeedLanguage')
-                    || this.model.get('type') !== 'Attribute'
-                    || !this.model.get('attributeId')
-                ) {
+                if (this.model.get('type') !== 'Attribute' || !this.model.get('attributeId')) {
                     this.isMultiLang = false;
                     this.model.set('_isMultilang', false)
                     this.reRender();

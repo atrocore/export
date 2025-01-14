@@ -18,7 +18,7 @@ Espo.define('export:views/export-feed/detail', 'views/detail',
 
                 this.relatedAttributeFunctions['configuratorItems'] = () => {
                     return {
-                        "exportFeedLanguage": this.model.get('language') && this.model.get('language') !== '' ? this.model.get('language') : null,
+                        "exportFeedData": this.model.attributes,
                         "entity": this.model.get('entity'),
                         "type": "Field",
                         "channelId": this.model.get('channelId'),

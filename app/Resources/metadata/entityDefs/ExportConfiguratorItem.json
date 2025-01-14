@@ -113,8 +113,8 @@
       "type": "bool",
       "notStorable": true
     },
-    "exportFeedLanguage": {
-      "type": "varchar",
+    "exportFeedData": {
+      "type": "jsonObject",
       "notStorable": true,
       "layoutListDisabled": true,
       "layoutListSmallDisabled": true,
