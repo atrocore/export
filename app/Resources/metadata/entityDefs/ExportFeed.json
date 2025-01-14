@@ -53,15 +53,6 @@
       "default": "simple",
       "prohibitedEmptyValue": true
     },
-    "language": {
-      "type": "varchar",
-      "view": "export:views/export-feed/fields/language",
-      "tooltip": true
-    },
-    "fallbackLanguage": {
-      "type": "varchar",
-      "view": "export:views/export-feed/fields/fallback-language"
-    },
     "isActive": {
       "notNull": true,
       "type": "bool"
@@ -204,21 +195,6 @@
       "filterDisabled": true,
       "tooltip": true
     },
-    "decimalMark": {
-      "type": "varchar",
-      "notStorable": true,
-      "dataField": true,
-      "required": false,
-      "default": ",",
-      "filterDisabled": true
-    },
-    "thousandSeparator": {
-      "type": "varchar",
-      "notStorable": true,
-      "dataField": true,
-      "required": false,
-      "filterDisabled": true
-    },
     "data": {
       "type": "jsonObject",
       "layoutDetailDisabled": true,
@@ -326,6 +302,9 @@
     "folder": {
       "type": "link"
     },
+    "locale": {
+      "type": "link"
+    },
     "fileNameMask": {
       "type": "wysiwyg",
       "view": "views/fields/script",
@@ -359,6 +338,10 @@
     "folder": {
       "type": "belongsTo",
       "entity": "Folder"
+    },
+    "locale": {
+      "type": "belongsTo",
+      "entity": "Locale"
     }
   },
   "collection": {
