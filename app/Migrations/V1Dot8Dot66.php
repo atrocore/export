@@ -26,5 +26,11 @@ class V1Dot8Dot66 extends Base
         // ALTER TABLE export_feed DROP language;
         // ALTER TABLE export_feed DROP fallback_language;
         // CREATE INDEX IDX_EXPORT_FEED_LOCALE_ID ON export_feed (locale_id, deleted)
+
+        // create new locale according to feeds configurations
+        // thousandSeparator
+        // decimalMark
+        // language
+        // fallbackLanguage
     }
 }

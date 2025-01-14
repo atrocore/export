@@ -334,6 +334,13 @@ class ExportFeed extends Base
             $entity->set('convertRelationsToString', true);
         }
 
+        if (!empty($entity->get('localeId'))) {
+            $locale = $this->getEntityManager()->getEntity('Locale', $entity->get('localeId'));
+            if (!empty($locale)) {
+                $entity->set('localeName', $locale->get('name'));
+            }
+        }
+
         $entity->set('replaceAttributeValues', !empty($entity->getFeedField('replaceAttributeValues')));
     }
 

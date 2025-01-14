@@ -303,7 +303,9 @@
       "type": "link"
     },
     "locale": {
-      "type": "link"
+      "type": "link",
+      "entity": "Locale",
+      "required": true
     },
     "fileNameMask": {
       "type": "wysiwyg",
@@ -338,10 +340,6 @@
     "folder": {
       "type": "belongsTo",
       "entity": "Folder"
-    },
-    "locale": {
-      "type": "belongsTo",
-      "entity": "Locale"
     }
   },
   "collection": {
