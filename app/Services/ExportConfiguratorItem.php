@@ -108,22 +108,11 @@ class ExportConfiguratorItem extends Base
 
     protected function prepareFieldColumnName(Entity $entity): string
     {
-        $columnType = $entity->get('columnType') ?? 'name';
-
-        $language = !empty($entity->get('language')) && $entity->get('language') !== 'main' ? $entity->get('language') : 'main';
-        $mainLanguage = $this->getConfig()->get('mainLanguage');
-
-        switch ($columnType) {
+        switch ($entity->get('columnType') ?? 'name') {
             case 'name':
-                if ($language === 'main') {
-                    $lang = $mainLanguage;
-                    if (!empty($exportFeed = $entity->get('exportFeed')) && !empty($exportFeed->get('language')) && $exportFeed->get('language') !== 'main') {
-                        $lang = $exportFeed->get('language');
-                    }
-                    $column = $this->getLanguage($lang)->translate($entity->get('name'), 'fields', $entity->get('entity'));
-                } else {
-                    $column = $this->getLanguage($language)->translate($entity->get('name'), 'fields', $entity->get('entity'));
-                }
+                $column = $this
+                    ->getLanguage($entity->get('exportFeed')->getLocale()->get('code'))
+                    ->translate($entity->get('name'), 'fields', $entity->get('entity'));
                 break;
             case 'custom':
                 $column = (string)$entity->get('column');

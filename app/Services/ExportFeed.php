@@ -378,14 +378,14 @@ class ExportFeed extends Base
         }
 
         if ($sheet->getEntityType() === 'ExportFeed') {
+            /** @var ExportFeedEntity $feed */
             $feed = $sheet;
             $entityName = $sheet->getFeedField('entity');
         } else {
+            /** @var ExportFeedEntity $feed */
             $feed = $sheet->get('exportFeed');
             $entityName = $sheet->get('entity');
         }
-
-        $locale = $feed->get('locale');
 
         $configuration = [];
 
@@ -403,8 +403,8 @@ class ExportFeed extends Base
                 'emptyValue'                => $feed->getFeedField('emptyValue'),
                 'nullValue'                 => $feed->getFeedField('nullValue'),
                 'markForNoRelation'         => $feed->getFeedField('markForNoRelation'),
-                'thousandSeparator'         => $locale->get('thousandSeparator') ?? ',',
-                'decimalMark'               => $locale->get('decimalMark') ?? '.',
+                'thousandSeparator'         => $feed->getThousandSeparator(),
+                'decimalMark'               => $feed->getDecimalMark(),
                 'fieldDelimiterForRelation' => $feed->getFeedField('fieldDelimiterForRelation'),
                 'convertCollectionToString' => !empty($feed->getFeedField('convertCollectionToString')),
                 'convertRelationsToString'  => !empty($feed->getFeedField('convertRelationsToString')),
