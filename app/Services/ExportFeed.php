@@ -16,12 +16,13 @@ namespace Export\Services;
 use Atro\Core\Exceptions;
 use Atro\Core\Templates\Services\Base;
 use Espo\Core\Utils\Json;
-use Espo\Core\Utils\Util;
+use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
-use Espo\Core\EventManager\Event;
+use Atro\Core\EventManager\Event;
 use Export\Jobs\ExportJobCreator;
 use Export\TemplateLoaders\AbstractTemplate;
+use Export\Entities\ExportFeed as ExportFeedEntity;
 
 class ExportFeed extends Base
 {
@@ -474,7 +475,7 @@ class ExportFeed extends Base
         return $configuration;
     }
 
-    public function prepareFeedData(Entity $feed): array
+    public function prepareFeedData(ExportFeedEntity $feed): array
     {
         $result = $feed->toArray();
 
@@ -482,6 +483,9 @@ class ExportFeed extends Base
             $result[$name] = $value;
             $result['data']->$name = $value;
         }
+
+        $result['decimalMark'] = $feed->getDecimalMark();
+        $result['thousandSeparator'] = $feed->getThousandSeparator();
 
         $result['fileType'] = $feed->get('fileType');
 
@@ -589,8 +593,6 @@ class ExportFeed extends Base
 
         $baseConfiguration  =  [
             'columnType' => 'name',
-            'language' => 'main',
-            'fallbackLanguage' => '',
             'column' => '',
             'template' => NULL,
             'emptyValue' => '',
@@ -647,8 +649,6 @@ class ExportFeed extends Base
             'feed' => [
                 'id' =>'no-such-id',
                 'name' => $scope . ' on '.date('Y-m-d H:i:s'),
-                'language' => 'main',
-                'fallbackLanguage' => '',
                 'limit' => 2000,
                 'separateJob' => false,
                 'type' => 'simple',
@@ -710,24 +710,6 @@ class ExportFeed extends Base
         return $this->getEntityManager()->getEntity('Channel', $channelId);
     }
 
-    /**
-     * @param Entity $channel
-     *
-     * @return array
-     */
-    protected function getChannelFeeds(Entity $channel): ?EntityCollection
-    {
-        if (!empty($feeds = $channel->get('exportFeeds'))) {
-            foreach ($feeds as $feed) {
-                if (!empty($feed->get('isActive')) && empty($feed->get('deleted'))) {
-                    $result[] = $feed;
-                }
-            }
-        }
-
-        return (empty($result)) ? null : new EntityCollection($result);
-    }
-
     protected function isEntityUpdated(Entity $entity, \stdClass $data): bool
     {
         return true;
@@ -758,7 +740,6 @@ class ExportFeed extends Base
             $this->getServiceFactory()->create('Sheet')->createEntity((object)$data);
         }
     }
-
 
     public function verifyCodeEasyCatalog(string $code)
     {

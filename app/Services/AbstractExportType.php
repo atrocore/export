@@ -20,11 +20,11 @@ use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\Core\Services\Base;
 use Atro\Core\Twig\Twig;
-use Espo\Core\Utils\Config;
+use Atro\Core\Utils\Config;
 use Espo\Core\Utils\Json;
-use Espo\Core\Utils\Language;
+use Atro\Core\Utils\Language;
 use Espo\Core\Utils\Metadata;
-use Espo\Core\Utils\Util;
+use Atro\Core\Utils\Util;
 use Atro\Entities\File;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
@@ -173,35 +173,8 @@ abstract class AbstractExportType extends Base
         $row['markForNoRelation'] = !empty($feedData['markForNoRelation']) ? $feedData['markForNoRelation'] : 'Null';
         $row['fieldDelimiterForRelation'] = !empty($feedData['fieldDelimiterForRelation']) ? $feedData['fieldDelimiterForRelation'] : '|';
         $row['entity'] = $feedData['entity'];
-
-//        $locale = $this->getEntityManager()->getEntity('Locale', )
-
-        $row['decimalMark'] = !empty($feedData['decimalMark']) ? $feedData['decimalMark'] : ',';
-        $row['thousandSeparator'] = !empty($feedData['thousandSeparator']) ? $feedData['thousandSeparator'] : '';
-
-        $feedLanguage = $this->data['feed']['language'];
-        $feedFallbackLanguage = $this->data['feed']['fallbackLanguage'];
-
-        if (
-            $row['type'] === 'Field'
-            && !empty($feedLanguage)
-            && $this->getMetadata()->get(['entityDefs', $row['entity'], 'fields', $row['field'], 'isMultilang'], false)
-        ) {
-            $row['language'] = $feedLanguage;
-            $row['fallbackLanguage'] = $feedFallbackLanguage;
-        }
-
-        if (
-            $row['type'] === 'Attribute'
-            && !empty($feedLanguage)
-            && $this->getEntityManager()
-                ->getRepository('Attribute')
-                ->get($row['attributeId'])
-                ->get('isMultilang')
-        ) {
-            $row['language'] = $feedLanguage;
-            $row['fallbackLanguage'] = $feedFallbackLanguage;
-        }
+        $row['decimalMark'] = $feedData['decimalMark'];
+        $row['thousandSeparator'] = $feedData['thousandSeparator'];
 
         if ($row['type'] === 'Field' && !empty($row['fallbackLanguage'])) {
             if ($row['fallbackLanguage'] === 'main') {

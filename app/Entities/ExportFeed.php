@@ -28,11 +28,6 @@ class ExportFeed extends Base
         return $this->getEntityManager()->getEntity('Locale', $this->get('localeId'));
     }
 
-    public function getLanguageCode(): string
-    {
-        return $this->getLocale()->get('languageCode') ?? 'en_US';
-    }
-
     public function getDecimalMark(): string
     {
         return $this->getLocale()->get('decimalMark') ?? '.';
