@@ -85,35 +85,19 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
             }
         },
 
-        getLocaleLanguageCode() {
-            let languageCode = 'en_US';
-
-            $.each(this.getConfig().get('referenceData')?.Locale || {}, (code, row) => {
-                if (row.id === this.model.get('exportFeedData')?.localeId) {
-                    languageCode = row.languageCode;
-                }
-            });
-
-            return languageCode;
-        },
-
         prepareFieldValue() {
             if (this.model.get('columnType') === 'name' || this.model.isNew()) {
-                let locale = this.getLocaleLanguageCode();
-                if (locale !== 'main') {
-                    const originField = this.model.get('name')
-                    this.getTranslates(locale, translates => {
-                        let columnName = originField;
-                        if (translates[this.model.get('entity')] && translates[this.model.get('entity')]['fields'][originField]) {
-                            columnName = translates[this.model.get('entity')]['fields'][originField];
-                        } else if (translates['Global'] && translates['Global']['fields'][originField]) {
-                            columnName = translates['Global']['fields'][originField];
-                        }
-                        this.model.set('column', columnName);
-                    });
-                } else {
-                    this.model.set('column', this.translate(this.model.get('name'), 'fields', this.model.get('entity')));
-                }
+                let originField = this.model.get('name');
+                let localeId = this.model.get('exportFeedData').localeId;
+                this.getTranslates(localeId, translates => {
+                    let columnName = originField;
+                    if (translates[this.model.get('entity')] && translates[this.model.get('entity')]['fields'][originField]) {
+                        columnName = translates[this.model.get('entity')]['fields'][originField];
+                    } else if (translates['Global'] && translates['Global']['fields'][originField]) {
+                        columnName = translates['Global']['fields'][originField];
+                    }
+                    this.model.set('column', columnName);
+                });
             }
         },
 
