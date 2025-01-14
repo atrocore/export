@@ -23,10 +23,8 @@ Espo.define('export:views/export-configurator-item/fields/column-type', 'views/f
                 });
 
                 this.listenTo(this.model, 'change:type', () => {
-                    if (this.model.get('type') === 'Fixed value' || this.model.get('type') === 'script') {
+                    if (this.model.get(this.name) !== 'custom' && (this.model.get('type') === 'Fixed value' || this.model.get('type') === 'script')) {
                         this.model.set(this.name, 'custom');
-                    } else {
-                        this.model.set(this.name, 'name');
                     }
                     this.reRender();
                 })
