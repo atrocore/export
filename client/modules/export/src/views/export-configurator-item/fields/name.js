@@ -181,7 +181,7 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
                 let fields = this.getMetadata().get(['entityDefs', entity, 'fields']) || [];
                 Object.keys(fields).forEach(name => {
                     let field = fields[name];
-                    if (!notExportedType.includes(field.type) && !field.disabled && !field.exportDisabled && !field.multilangField && (!field.language || field.language === 'main')) {
+                    if (!notExportedType.includes(field.type) && !field.disabled && !field.exportDisabled) {
                         result[name] = fields[name];
                     }
                 });
