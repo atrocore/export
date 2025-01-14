@@ -254,12 +254,12 @@ class ExportFeed extends Base
         $entity->set('data', Json::decode(Json::encode($data)));
     }
 
-    protected function isDelimiterValid(Entity $entity): void
+    protected function isDelimiterValid(ExportFeedEntity $entity): void
     {
         $delimiters = [
             (string)$entity->getFeedField('delimiter'),
-            (string)$entity->getFeedField('decimalMark'),
-            (string)$entity->getFeedField('thousandSeparator'),
+            $entity->getDecimalMark(),
+            $entity->getThousandSeparator(),
             (string)$entity->getFeedField('fieldDelimiterForRelation'),
         ];
 

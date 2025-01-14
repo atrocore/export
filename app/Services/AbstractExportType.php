@@ -171,10 +171,13 @@ abstract class AbstractExportType extends Base
         $row['emptyValue'] = !empty($feedData['emptyValue']) ? $feedData['emptyValue'] : '';
         $row['nullValue'] = array_key_exists('nullValue', $feedData) ? $feedData['nullValue'] : 'Null';
         $row['markForNoRelation'] = !empty($feedData['markForNoRelation']) ? $feedData['markForNoRelation'] : 'Null';
-        $row['decimalMark'] = !empty($feedData['decimalMark']) ? $feedData['decimalMark'] : ',';
-        $row['thousandSeparator'] = !empty($feedData['thousandSeparator']) ? $feedData['thousandSeparator'] : '';
         $row['fieldDelimiterForRelation'] = !empty($feedData['fieldDelimiterForRelation']) ? $feedData['fieldDelimiterForRelation'] : '|';
         $row['entity'] = $feedData['entity'];
+
+//        $locale = $this->getEntityManager()->getEntity('Locale', )
+
+        $row['decimalMark'] = !empty($feedData['decimalMark']) ? $feedData['decimalMark'] : ',';
+        $row['thousandSeparator'] = !empty($feedData['thousandSeparator']) ? $feedData['thousandSeparator'] : '';
 
         $feedLanguage = $this->data['feed']['language'];
         $feedFallbackLanguage = $this->data['feed']['fallbackLanguage'];
