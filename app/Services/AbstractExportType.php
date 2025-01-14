@@ -297,29 +297,6 @@ abstract class AbstractExportType extends Base
         $params['maxSize'] = $limit;
         $params['queryCallbacks'][] = [$this, 'queryCallback'];
 
-        /**
-         * Set language prism via prism filter
-         */
-        if (empty($GLOBALS['languagePrism']) && !empty($params['where'])) {
-            foreach ($params['where'] as $where) {
-                if (!empty($where['value'][0]) && is_string($where['value'][0]) && strpos((string)$where['value'][0], 'prismVia') !== false) {
-                    $language = str_replace('prismVia', '', $where['value'][0]);
-                    if ($language === 'Main') {
-                        $languagePrism = 'main';
-                    } else {
-                        $parts = explode("_", Util::toUnderScore($language));
-                        $languagePrism = $parts[0] . '_' . strtoupper($parts[1]);
-                    }
-                    $GLOBALS['languagePrism'] = $languagePrism;
-                }
-            }
-        }
-
-        if (isset($GLOBALS['languagePrism'])) {
-            $languagePrism = $GLOBALS['languagePrism'];
-            unset($GLOBALS['languagePrism']);
-        }
-
         $result = $this->getEntityService()->findEntities($params);
 
         if (isset($result['collection'])) {
@@ -329,10 +306,6 @@ abstract class AbstractExportType extends Base
             }
         } else {
             $list = $result['list'];
-        }
-
-        if (isset($languagePrism)) {
-            $GLOBALS['languagePrism'] = $languagePrism;
         }
 
         return $list;
@@ -392,13 +365,6 @@ abstract class AbstractExportType extends Base
         $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash();
         Util::createDir($tmpDir);
         $fileName = Util::generateUniqueHash() . ".txt";
-
-        /**
-         * Set language prism
-         */
-        if (!empty($this->data['feed']['language'])) {
-            $GLOBALS['languagePrism'] = $this->data['feed']['language'];
-        }
 
         $configuration = [];
         $attributesConfiguratorItems = [];
@@ -650,13 +616,6 @@ abstract class AbstractExportType extends Base
         $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash();
         Util::createDir($tmpDir);
         $fileName = Util::generateUniqueHash() . ".txt";
-
-        /**
-         * Set language prism
-         */
-        if (!empty($this->data['feed']['language'])) {
-            $GLOBALS['languagePrism'] = $this->data['feed']['language'];
-        }
 
         $res = [
             'configuration' => [],

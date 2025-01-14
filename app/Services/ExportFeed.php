@@ -307,13 +307,6 @@ class ExportFeed extends Base
     {
         if ($link === 'configuratorItems' && !empty($exportFeed = $this->getEntity($id))) {
             $this->getRepository()->removeInvalidConfiguratorItems($exportFeed->get('id'));
-            if (!empty($exportFeed->get('language'))) {
-                $params['where'][] = [
-                    'type'      => 'equals',
-                    'attribute' => 'language',
-                    'value'     => 'main'
-                ];
-            }
         }
 
         return parent::findLinkedEntities($id, $link, $params);
@@ -391,6 +384,8 @@ class ExportFeed extends Base
             $entityName = $sheet->get('entity');
         }
 
+        $locale = $feed->get('locale');
+
         $configuration = [];
 
         /** @var \Export\Services\ExportConfiguratorItem $eciService */
@@ -407,8 +402,8 @@ class ExportFeed extends Base
                 'emptyValue'                => $feed->getFeedField('emptyValue'),
                 'nullValue'                 => $feed->getFeedField('nullValue'),
                 'markForNoRelation'         => $feed->getFeedField('markForNoRelation'),
-                'thousandSeparator'         => $feed->getFeedField('thousandSeparator'),
-                'decimalMark'               => $feed->getFeedField('decimalMark'),
+                'thousandSeparator'         => $locale->get('thousandSeparator') ?? ',',
+                'decimalMark'               => $locale->get('decimalMark') ?? '.',
                 'fieldDelimiterForRelation' => $feed->getFeedField('fieldDelimiterForRelation'),
                 'convertCollectionToString' => !empty($feed->getFeedField('convertCollectionToString')),
                 'convertRelationsToString'  => !empty($feed->getFeedField('convertRelationsToString')),
