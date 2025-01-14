@@ -26,11 +26,6 @@
     "exportByForListAttribute": "Пов’язані поля сутності для списків",
     "fallbackLanguage": "Резервна мова"
   },
-  "columnType": {
-    "name": "Назва",
-    "internal": "Назва (неперекладена) / Локаль",
-    "custom": "Користувацька назва"
-  },
   "options": {
     "attributeValue": {
       "value": "Значення",
@@ -40,6 +35,10 @@
       "id": "ID (значення атрибута продукту)",
       "valueNumeric": "Значення (чисельне)",
       "valueString": "Значення (рядок)"
+    },
+    "columnType": {
+      "name": "Назва",
+      "custom": "Користувацька назва"
     }
   },
   "tooltips": {

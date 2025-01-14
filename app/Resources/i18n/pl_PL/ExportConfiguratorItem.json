@@ -26,11 +26,6 @@
     "exportByForListAttribute": "Powiązane pola encji dla list",
     "fallbackLanguage": "Język zapasowy"
   },
-  "columnType": {
-    "name": "Nazwa",
-    "internal": "Nazwa (nieprzetłumaczona) / Lokalizacja",
-    "custom": "Nazwa niestandardowa"
-  },
   "options": {
     "boolFilterFieldValue": {
       "+": "prawda",
@@ -44,6 +39,10 @@
       "id": "ID (Wartość atrybutu produktu)",
       "valueNumeric": "Wartość (liczbowa)",
       "valueString": "Wartość (Tekst)"
+    },
+    "columnType": {
+      "name": "Nazwa",
+      "custom": "Nazwa niestandardowa"
     }
   },
   "tooltips": {

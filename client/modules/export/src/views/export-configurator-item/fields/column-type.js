@@ -32,19 +32,6 @@ Espo.define('export:views/export-configurator-item/fields/column-type', 'views/f
                 })
             },
 
-            setupOptions() {
-                this.params.options = ['name'];
-                this.translatedOptions = {name: this.translate('name', 'columnType', 'ExportConfiguratorItem')};
-
-                if (!this.model.get('exportFeedLanguage')) {
-                    this.params.options.push('internal');
-                    this.translatedOptions['internal'] = this.translate('internal', 'columnType', 'ExportConfiguratorItem');
-                }
-
-                this.params.options.push('custom');
-                this.translatedOptions['custom'] = this.translate('custom', 'columnType', 'ExportConfiguratorItem');
-            },
-
             afterRender() {
                 Dep.prototype.afterRender.call(this);
 

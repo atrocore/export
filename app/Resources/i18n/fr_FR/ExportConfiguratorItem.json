@@ -26,11 +26,6 @@
     "exportByForListAttribute": "Champs d'entité connexes pour les listes",
     "fallbackLanguage": "Langue de secours"
   },
-  "columnType": {
-    "name": "Nom",
-    "internal": "Nom (non traduit) / Locale",
-    "custom": "Nom personnalisé"
-  },
   "options": {
     "boolFilterFieldValue": {
       "+": "vrai",
@@ -44,6 +39,10 @@
       "id": "ID (valeur de l'attribut du produit)",
       "valueNumeric": "Valeur (numérique)",
       "valueString": "Valeur (Chaîne)"
+    },
+    "columnType": {
+      "name": "Nom",
+      "custom": "Nom personnalisé"
     }
   },
   "tooltips": {

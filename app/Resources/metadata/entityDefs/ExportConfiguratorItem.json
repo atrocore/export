@@ -43,11 +43,10 @@
       "prohibitedEmptyValue": true,
       "view": "export:views/export-configurator-item/fields/column-type",
       "options": [
-        "name",
-        "internal",
-        "custom"
+        "custom",
+        "name"
       ],
-      "default": "name"
+      "default": "custom"
     },
     "exportIntoSeparateColumns": {
       "type": "bool",

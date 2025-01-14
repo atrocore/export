@@ -125,13 +125,6 @@ class ExportConfiguratorItem extends Base
                     $column = $this->getLanguage($language)->translate($entity->get('name'), 'fields', $entity->get('entity'));
                 }
                 break;
-            case 'internal':
-                $column = $this->getLanguage($mainLanguage)->translate($entity->get('name'), 'fields', $entity->get('entity'));
-                $language = !empty($entity->get('language')) && $entity->get('language') !== 'main' ? $entity->get('language') : '';
-                if (!empty($language)) {
-                    $column .= ' / ' . $language;
-                }
-                break;
             case 'custom':
                 $column = (string)$entity->get('column');
                 break;
@@ -163,11 +156,6 @@ class ExportConfiguratorItem extends Base
 
         if ($columnType === 'name') {
             $column = $attribute->get('name' . ucfirst(Util::toCamelCase(strtolower($language))));
-        } elseif ($columnType === 'internal') {
-            $column = $attribute->get('name');
-            if (!empty($language)) {
-                $column .= ' / ' . $language;
-            }
         }
 
         return (string)$column;

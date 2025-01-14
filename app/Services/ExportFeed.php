@@ -156,7 +156,7 @@ class ExportFeed extends Base
             $item->set('type', 'Field');
             $item->set('name', $row['field']);
             $item->set('language', $row['language']);
-            $item->set('columnType', 'internal');
+            $item->set('columnType', 'name');
             $item->set(lcfirst($entityType) . 'Id', $id);
             if (isset($row['exportBy'])) {
                 $item->set('exportBy', $row['exportBy']);
