@@ -111,7 +111,7 @@ class ExportConfiguratorItem extends Base
         switch ($entity->get('columnType') ?? 'name') {
             case 'name':
                 $column = $this
-                    ->getLanguage($entity->get('exportFeed')->getLocale()->get('code'))
+                    ->getLanguage($entity->get('exportFeed')->get('localeId'))
                     ->translate($entity->get('name'), 'fields', $entity->get('entity'));
                 break;
             case 'custom':
