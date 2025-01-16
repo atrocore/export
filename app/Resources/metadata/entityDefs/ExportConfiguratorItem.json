@@ -79,10 +79,6 @@
       ],
       "default": "Field"
     },
-    "attributeNameValue": {
-      "type": "varchar",
-      "notStorable": true
-    },
     "attributeType": {
       "type": "varchar",
       "notStorable": true,
@@ -112,6 +108,20 @@
     "isAttributeMultiLang": {
       "type": "bool",
       "notStorable": true
+    },
+    "attributeData": {
+      "type": "jsonObject",
+      "notStorable": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "massUpdateDisabled": true,
+      "filterDisabled": true,
+      "textFilterDisabled": true,
+      "exportDisabled": true,
+      "importDisabled": true,
+      "emHidden": true
     },
     "exportFeedData": {
       "type": "jsonObject",

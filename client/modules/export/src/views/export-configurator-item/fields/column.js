@@ -20,33 +20,9 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
             Dep.prototype.init.call(this);
 
             this.prepareValue();
-            this.listenTo(this.model, 'change:name change:language change:attributeNameValue change:columnType change:exportIntoSeparateColumns', () => {
+            this.listenTo(this.model, 'change:name change:attributeId change:columnType change:exportIntoSeparateColumns', () => {
                 this.prepareValue();
                 this.reRender();
-            });
-
-
-            this.listenTo(this.model, 'change:attributeId change:language change:columnType', () => {
-                if (this.model.get('columnType') !== 'custom') {
-                    if (this.model.get('attributeId')) {
-                        this.ajaxGetRequest(`Attribute/${this.model.get('attributeId')}`).then(attribute => {
-                            let name = 'name';
-                            if (this.model.get('columnType') === 'name') {
-                                let language = this.model.get('language');
-                                if (language === 'main') {
-                                    language = '';
-                                }
-
-                                if (language && attribute.isMultilang) {
-                                    name = name + language.charAt(0).toUpperCase() + language.charAt(1) + language.charAt(3) + language.charAt(4).toLowerCase();
-                                }
-                            }
-                            this.model.set('attributeNameValue', attribute[name]);
-                        });
-                    } else {
-                        this.model.set('attributeNameValue', null);
-                    }
-                }
             });
         },
 
@@ -76,12 +52,14 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
         },
 
         prepareValue() {
-            if (this.model.get('type') === 'Field') {
-                this.prepareFieldValue();
-            }
+            if (this.mode !== 'list') {
+                if (this.model.get('type') === 'Field') {
+                    this.prepareFieldValue();
+                }
 
-            if (this.model.get('type') === 'Attribute') {
-                this.prepareAttributeValue();
+                if (this.model.get('type') === 'Attribute') {
+                    this.prepareAttributeValue();
+                }
             }
         },
 
@@ -103,7 +81,19 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
 
         prepareAttributeValue() {
             if (this.model.get('columnType') === 'name') {
-                this.model.set('column', this.model.get('attributeNameValue'));
+                this.model.set('column', this.model.get('attributeData').name);
+
+                let localeId = this.model.get('exportFeedData').localeId;
+                if (this.getConfig().get('locales')[localeId]) {
+                    let language = this.getConfig().get('locales')[localeId].language;
+                    let fieldName = 'name' + language.charAt(0).toUpperCase() + language.charAt(1) + language.charAt(3) + language.charAt(4).toLowerCase();
+                    if (this.getMetadata().get(`entityDefs.Attribute.fields.${fieldName}`)) {
+                        let val = this.model.get('attributeData')[fieldName];
+                        if (val) {
+                            this.model.set('column', val);
+                        }
+                    }
+                }
             }
         },
 
