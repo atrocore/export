@@ -44,29 +44,18 @@ Espo.define('export:views/export-configurator-item/fields/language', 'views/fiel
             },
 
             prepareMultiLangParam() {
-                if (this.model.get('exportFeedLanguage')) {
+                if (this.model.get('type') !== 'Attribute' || !this.model.get('attributeId')) {
                     this.isMultiLang = false;
                     this.model.set('_isMultilang', false)
                     this.reRender();
                     return;
                 }
 
-                if (this.model.get('type') === 'Field') {
-                    this.isMultiLang = this.getMetadata().get(`entityDefs.${this.model.get('entity')}.fields.${this.model.get('name')}.isMultilang`);
+                this.ajaxGetRequest(`Attribute/${this.model.get('attributeId')}`).then(attribute => {
+                    this.isMultiLang = attribute.isMultilang;
+                    this.model.set('_isMultilang', this.isMultiLang)
                     this.reRender();
-                } else if (this.model.get('type') === 'Attribute') {
-                    if (this.model.get('attributeId')) {
-                        this.ajaxGetRequest(`Attribute/${this.model.get('attributeId')}`).then(attribute => {
-                            this.isMultiLang = attribute.isMultilang;
-                            this.model.set('_isMultilang', this.isMultiLang)
-                            this.reRender();
-                        });
-                    } else {
-                        this.isMultiLang = false;
-                        this.model.set('_isMultilang', false)
-                        this.reRender();
-                    }
-                }
+                });
             },
 
             checkFieldVisibility() {

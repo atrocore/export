@@ -115,25 +115,9 @@
       ],
       [
         {
-          "name": "language"
-        },
-        {
-          "name": "channel"
-        }
-      ],
-      [
-        {
-          "name": "fallbackLanguage"
+          "name": "locale"
         },
         false
-      ],
-      [
-        {
-          "name": "thousandSeparator"
-        },
-        {
-          "name": "decimalMark"
-        }
       ],
       [
         {

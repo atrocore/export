@@ -20,11 +20,11 @@ use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\Core\Services\Base;
 use Atro\Core\Twig\Twig;
-use Espo\Core\Utils\Config;
+use Atro\Core\Utils\Config;
 use Espo\Core\Utils\Json;
-use Espo\Core\Utils\Language;
+use Atro\Core\Utils\Language;
 use Espo\Core\Utils\Metadata;
-use Espo\Core\Utils\Util;
+use Atro\Core\Utils\Util;
 use Atro\Entities\File;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
@@ -171,34 +171,10 @@ abstract class AbstractExportType extends Base
         $row['emptyValue'] = !empty($feedData['emptyValue']) ? $feedData['emptyValue'] : '';
         $row['nullValue'] = array_key_exists('nullValue', $feedData) ? $feedData['nullValue'] : 'Null';
         $row['markForNoRelation'] = !empty($feedData['markForNoRelation']) ? $feedData['markForNoRelation'] : 'Null';
-        $row['decimalMark'] = !empty($feedData['decimalMark']) ? $feedData['decimalMark'] : ',';
-        $row['thousandSeparator'] = !empty($feedData['thousandSeparator']) ? $feedData['thousandSeparator'] : '';
         $row['fieldDelimiterForRelation'] = !empty($feedData['fieldDelimiterForRelation']) ? $feedData['fieldDelimiterForRelation'] : '|';
         $row['entity'] = $feedData['entity'];
-
-        $feedLanguage = $this->data['feed']['language'];
-        $feedFallbackLanguage = $this->data['feed']['fallbackLanguage'];
-
-        if (
-            $row['type'] === 'Field'
-            && !empty($feedLanguage)
-            && $this->getMetadata()->get(['entityDefs', $row['entity'], 'fields', $row['field'], 'isMultilang'], false)
-        ) {
-            $row['language'] = $feedLanguage;
-            $row['fallbackLanguage'] = $feedFallbackLanguage;
-        }
-
-        if (
-            $row['type'] === 'Attribute'
-            && !empty($feedLanguage)
-            && $this->getEntityManager()
-                ->getRepository('Attribute')
-                ->get($row['attributeId'])
-                ->get('isMultilang')
-        ) {
-            $row['language'] = $feedLanguage;
-            $row['fallbackLanguage'] = $feedFallbackLanguage;
-        }
+        $row['decimalMark'] = $feedData['decimalMark'];
+        $row['thousandSeparator'] = $feedData['thousandSeparator'];
 
         if ($row['type'] === 'Field' && !empty($row['fallbackLanguage'])) {
             if ($row['fallbackLanguage'] === 'main') {
@@ -297,29 +273,6 @@ abstract class AbstractExportType extends Base
         $params['maxSize'] = $limit;
         $params['queryCallbacks'][] = [$this, 'queryCallback'];
 
-        /**
-         * Set language prism via prism filter
-         */
-        if (empty($GLOBALS['languagePrism']) && !empty($params['where'])) {
-            foreach ($params['where'] as $where) {
-                if (!empty($where['value'][0]) && is_string($where['value'][0]) && strpos((string)$where['value'][0], 'prismVia') !== false) {
-                    $language = str_replace('prismVia', '', $where['value'][0]);
-                    if ($language === 'Main') {
-                        $languagePrism = 'main';
-                    } else {
-                        $parts = explode("_", Util::toUnderScore($language));
-                        $languagePrism = $parts[0] . '_' . strtoupper($parts[1]);
-                    }
-                    $GLOBALS['languagePrism'] = $languagePrism;
-                }
-            }
-        }
-
-        if (isset($GLOBALS['languagePrism'])) {
-            $languagePrism = $GLOBALS['languagePrism'];
-            unset($GLOBALS['languagePrism']);
-        }
-
         $result = $this->getEntityService()->findEntities($params);
 
         if (isset($result['collection'])) {
@@ -329,10 +282,6 @@ abstract class AbstractExportType extends Base
             }
         } else {
             $list = $result['list'];
-        }
-
-        if (isset($languagePrism)) {
-            $GLOBALS['languagePrism'] = $languagePrism;
         }
 
         return $list;
@@ -392,13 +341,6 @@ abstract class AbstractExportType extends Base
         $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash();
         Util::createDir($tmpDir);
         $fileName = Util::generateUniqueHash() . ".txt";
-
-        /**
-         * Set language prism
-         */
-        if (!empty($this->data['feed']['language'])) {
-            $GLOBALS['languagePrism'] = $this->data['feed']['language'];
-        }
 
         $configuration = [];
         $attributesConfiguratorItems = [];
@@ -650,13 +592,6 @@ abstract class AbstractExportType extends Base
         $tmpDir = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash();
         Util::createDir($tmpDir);
         $fileName = Util::generateUniqueHash() . ".txt";
-
-        /**
-         * Set language prism
-         */
-        if (!empty($this->data['feed']['language'])) {
-            $GLOBALS['languagePrism'] = $this->data['feed']['language'];
-        }
 
         $res = [
             'configuration' => [],

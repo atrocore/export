@@ -26,11 +26,6 @@
     "exportByForListAttribute": "Verwandte Entitätsfelder für Listen",
     "fallbackLanguage": "Fallback-Sprache"
   },
-  "columnType": {
-    "name": "Name",
-    "internal": "Name (unübersetzt) / Gebietsschema",
-    "custom": "Benutzerdefinierter Name"
-  },
   "options": {
     "boolFilterFieldValue": {
       "+": "wahr",
@@ -44,6 +39,10 @@
       "id": "ID (Produktattributwert)",
       "valueNumeric": "Wert (numerisch)",
       "valueString": "Wert (String)"
+    },
+    "columnType": {
+      "name": "Name",
+      "custom": "Benutzerdefinierter Name"
     }
   },
   "tooltips": {

@@ -193,22 +193,6 @@ class ExportFeed extends Base
 
         parent::beforeSave($entity, $options);
 
-        if (!$entity->isNew() && $entity->isAttributeChanged('language') && !empty($entity->get('language'))) {
-            // Fix column type when global language is set on export Feed
-            $qb = $this->getConnection()->createQueryBuilder();
-            $qb->update('export_configurator_item')
-                ->set('column_type', ':newColumnType')
-                ->where('column_type = :columnType and export_feed_id= :exportFeedId')
-                ->andWhere('deleted=:false')
-                ->setParameters([
-                    'newColumnType' => 'name',
-                    'columnType'    => 'internal',
-                    'exportFeedId'  => $entity->get('id')
-                ])
-                ->setParameter('false', false, ParameterType::BOOLEAN)
-                ->executeQuery();
-        }
-
         if ($entity->get('type') === 'simple') {
             $entity->set('convertCollectionToString', true);
             $entity->set('convertRelationsToString', true);
@@ -270,12 +254,12 @@ class ExportFeed extends Base
         $entity->set('data', Json::decode(Json::encode($data)));
     }
 
-    protected function isDelimiterValid(Entity $entity): void
+    protected function isDelimiterValid(ExportFeedEntity $entity): void
     {
         $delimiters = [
             (string)$entity->getFeedField('delimiter'),
-            (string)$entity->getFeedField('decimalMark'),
-            (string)$entity->getFeedField('thousandSeparator'),
+            $entity->getDecimalMark(),
+            $entity->getThousandSeparator(),
             (string)$entity->getFeedField('fieldDelimiterForRelation'),
         ];
 

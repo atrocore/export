@@ -19,34 +19,8 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
         init: function () {
             Dep.prototype.init.call(this);
 
-            if (!this.model.get('id')) {
-                this.prepareValue();
-            }
-
-            this.listenTo(this.model, 'change:attributeId change:language change:columnType', () => {
-                if (this.model.get('columnType') !== 'custom') {
-                    if (this.model.get('attributeId')) {
-                        this.ajaxGetRequest(`Attribute/${this.model.get('attributeId')}`).then(attribute => {
-                            let name = 'name';
-                            if (this.model.get('columnType') === 'name') {
-                                let language = this.model.get('exportFeedLanguage') || this.model.get('language');
-                                if (language === 'main') {
-                                    language = '';
-                                }
-
-                                if (language && attribute.isMultilang) {
-                                    name = name + language.charAt(0).toUpperCase() + language.charAt(1) + language.charAt(3) + language.charAt(4).toLowerCase();
-                                }
-                            }
-                            this.model.set('attributeNameValue', attribute[name]);
-                        });
-                    } else {
-                        this.model.set('attributeNameValue', null);
-                    }
-                }
-            });
-
-            this.listenTo(this.model, 'change:name change:language change:attributeNameValue change:columnType change:exportIntoSeparateColumns', () => {
+            this.prepareValue();
+            this.listenTo(this.model, 'change:name change:attributeId change:columnType change:exportIntoSeparateColumns', () => {
                 this.prepareValue();
                 this.reRender();
             });
@@ -78,68 +52,48 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
         },
 
         prepareValue() {
-            if (this.model.get('type') === 'Field') {
-                this.prepareFieldValue();
-            }
+            if (this.mode !== 'list') {
+                if (this.model.get('type') === 'Field') {
+                    this.prepareFieldValue();
+                }
 
-            if (this.model.get('type') === 'Attribute') {
-                this.prepareAttributeValue();
+                if (this.model.get('type') === 'Attribute') {
+                    this.prepareAttributeValue();
+                }
             }
         },
 
         prepareFieldValue() {
-            if (this.model.get('columnType') === 'name') {
-                let locale = this.model.get('exportFeedLanguage') || this.model.get('language');
-                if (locale !== 'main') {
-                    const originField = this.model.get('name')
-                    this.getTranslates(locale, translates => {
-                        let columnName = originField;
-                        if (translates[this.model.get('entity')] && translates[this.model.get('entity')]['fields'][originField]) {
-                            columnName = translates[this.model.get('entity')]['fields'][originField];
-                        } else if (translates['Global'] && translates['Global']['fields'][originField]) {
-                            columnName = translates['Global']['fields'][originField];
-                        }
-                        this.model.set('column', columnName);
-                    });
-                } else {
-                    this.model.set('column', this.translate(this.model.get('name'), 'fields', this.model.get('entity')));
-                }
-            }
-
-            if (this.model.get('columnType') === 'internal') {
-                let columnName = this.translate(this.model.get('name'), 'fields', this.model.get('entity'));
-
-                let language = this.model.get('language');
-                if (language === 'main') {
-                    language = '';
-                }
-
-                if (language) {
-                    columnName += ' / ' + language;
-                }
-
-                this.model.set('column', columnName);
+            if (this.model.get('columnType') === 'name' || this.model.isNew()) {
+                let originField = this.model.get('name');
+                let localeId = this.model.get('exportFeedData').localeId;
+                this.getTranslates(localeId, translates => {
+                    let columnName = originField;
+                    if (translates[this.model.get('entity')] && translates[this.model.get('entity')]['fields'][originField]) {
+                        columnName = translates[this.model.get('entity')]['fields'][originField];
+                    } else if (translates['Global'] && translates['Global']['fields'][originField]) {
+                        columnName = translates['Global']['fields'][originField];
+                    }
+                    this.model.set('column', columnName);
+                });
             }
         },
 
         prepareAttributeValue() {
-            let language = this.model.get('exportFeedLanguage') || this.model.get('language');
-
-            if (language === 'main') {
-                language = '';
-            }
-
             if (this.model.get('columnType') === 'name') {
-                this.model.set('column', this.model.get('attributeNameValue'));
-            }
+                this.model.set('column', this.model.get('attributeData').name);
 
-            if (this.model.get('columnType') === 'internal') {
-                let name = this.model.get('attributeNameValue');
-                if (language) {
-                    name = name + ' / ' + language;
+                let localeId = this.model.get('exportFeedData').localeId;
+                if (this.getConfig().get('locales')[localeId]) {
+                    let language = this.getConfig().get('locales')[localeId].language;
+                    let fieldName = 'name' + language.charAt(0).toUpperCase() + language.charAt(1) + language.charAt(3) + language.charAt(4).toLowerCase();
+                    if (this.getMetadata().get(`entityDefs.Attribute.fields.${fieldName}`)) {
+                        let val = this.model.get('attributeData')[fieldName];
+                        if (val) {
+                            this.model.set('column', val);
+                        }
+                    }
                 }
-
-                this.model.set('column', name);
             }
         },
 

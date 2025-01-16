@@ -16,12 +16,13 @@ namespace Export\Services;
 use Atro\Core\Exceptions;
 use Atro\Core\Templates\Services\Base;
 use Espo\Core\Utils\Json;
-use Espo\Core\Utils\Util;
+use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
-use Espo\Core\EventManager\Event;
+use Atro\Core\EventManager\Event;
 use Export\Jobs\ExportJobCreator;
 use Export\TemplateLoaders\AbstractTemplate;
+use Export\Entities\ExportFeed as ExportFeedEntity;
 
 class ExportFeed extends Base
 {
@@ -156,7 +157,7 @@ class ExportFeed extends Base
             $item->set('type', 'Field');
             $item->set('name', $row['field']);
             $item->set('language', $row['language']);
-            $item->set('columnType', 'internal');
+            $item->set('columnType', 'name');
             $item->set(lcfirst($entityType) . 'Id', $id);
             if (isset($row['exportBy'])) {
                 $item->set('exportBy', $row['exportBy']);
@@ -307,13 +308,6 @@ class ExportFeed extends Base
     {
         if ($link === 'configuratorItems' && !empty($exportFeed = $this->getEntity($id))) {
             $this->getRepository()->removeInvalidConfiguratorItems($exportFeed->get('id'));
-            if (!empty($exportFeed->get('language'))) {
-                $params['where'][] = [
-                    'type'      => 'equals',
-                    'attribute' => 'language',
-                    'value'     => 'main'
-                ];
-            }
         }
 
         return parent::findLinkedEntities($id, $link, $params);
@@ -332,6 +326,13 @@ class ExportFeed extends Base
         if ($entity->get('type') === 'simple') {
             $entity->set('convertCollectionToString', true);
             $entity->set('convertRelationsToString', true);
+        }
+
+        if (!empty($entity->get('localeId'))) {
+            $locale = $this->getEntityManager()->getEntity('Locale', $entity->get('localeId'));
+            if (!empty($locale)) {
+                $entity->set('localeName', $locale->get('name'));
+            }
         }
 
         $entity->set('replaceAttributeValues', !empty($entity->getFeedField('replaceAttributeValues')));
@@ -377,9 +378,11 @@ class ExportFeed extends Base
         }
 
         if ($sheet->getEntityType() === 'ExportFeed') {
+            /** @var ExportFeedEntity $feed */
             $feed = $sheet;
             $entityName = $sheet->getFeedField('entity');
         } else {
+            /** @var ExportFeedEntity $feed */
             $feed = $sheet->get('exportFeed');
             $entityName = $sheet->get('entity');
         }
@@ -400,8 +403,8 @@ class ExportFeed extends Base
                 'emptyValue'                => $feed->getFeedField('emptyValue'),
                 'nullValue'                 => $feed->getFeedField('nullValue'),
                 'markForNoRelation'         => $feed->getFeedField('markForNoRelation'),
-                'thousandSeparator'         => $feed->getFeedField('thousandSeparator'),
-                'decimalMark'               => $feed->getFeedField('decimalMark'),
+                'thousandSeparator'         => $feed->getThousandSeparator(),
+                'decimalMark'               => $feed->getDecimalMark(),
                 'fieldDelimiterForRelation' => $feed->getFeedField('fieldDelimiterForRelation'),
                 'convertCollectionToString' => !empty($feed->getFeedField('convertCollectionToString')),
                 'convertRelationsToString'  => !empty($feed->getFeedField('convertRelationsToString')),
@@ -472,7 +475,7 @@ class ExportFeed extends Base
         return $configuration;
     }
 
-    public function prepareFeedData(Entity $feed): array
+    public function prepareFeedData(ExportFeedEntity $feed): array
     {
         $result = $feed->toArray();
 
@@ -480,6 +483,9 @@ class ExportFeed extends Base
             $result[$name] = $value;
             $result['data']->$name = $value;
         }
+
+        $result['decimalMark'] = $feed->getDecimalMark();
+        $result['thousandSeparator'] = $feed->getThousandSeparator();
 
         $result['fileType'] = $feed->get('fileType');
 
@@ -587,8 +593,6 @@ class ExportFeed extends Base
 
         $baseConfiguration  =  [
             'columnType' => 'name',
-            'language' => 'main',
-            'fallbackLanguage' => '',
             'column' => '',
             'template' => NULL,
             'emptyValue' => '',
@@ -645,8 +649,6 @@ class ExportFeed extends Base
             'feed' => [
                 'id' =>'no-such-id',
                 'name' => $scope . ' on '.date('Y-m-d H:i:s'),
-                'language' => 'main',
-                'fallbackLanguage' => '',
                 'limit' => 2000,
                 'separateJob' => false,
                 'type' => 'simple',
@@ -708,24 +710,6 @@ class ExportFeed extends Base
         return $this->getEntityManager()->getEntity('Channel', $channelId);
     }
 
-    /**
-     * @param Entity $channel
-     *
-     * @return array
-     */
-    protected function getChannelFeeds(Entity $channel): ?EntityCollection
-    {
-        if (!empty($feeds = $channel->get('exportFeeds'))) {
-            foreach ($feeds as $feed) {
-                if (!empty($feed->get('isActive')) && empty($feed->get('deleted'))) {
-                    $result[] = $feed;
-                }
-            }
-        }
-
-        return (empty($result)) ? null : new EntityCollection($result);
-    }
-
     protected function isEntityUpdated(Entity $entity, \stdClass $data): bool
     {
         return true;
@@ -756,7 +740,6 @@ class ExportFeed extends Base
             $this->getServiceFactory()->create('Sheet')->createEntity((object)$data);
         }
     }
-
 
     public function verifyCodeEasyCatalog(string $code)
     {

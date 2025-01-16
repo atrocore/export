@@ -63,14 +63,14 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
 
             if (this.model.get('type') === 'Field') {
                 name = this.translate(name, 'fields', this.model.get('entity'));
-                if (!this.model.get('exportFeedLanguage') && this.getMetadata().get(`entityDefs.${this.model.get('entity')}.fields.${this.model.get('name')}.isMultilang`) && this.model.get('language') !== 'main') {
+                if (this.getMetadata().get(`entityDefs.${this.model.get('entity')}.fields.${this.model.get('name')}.isMultilang`) && this.model.get('language') !== 'main') {
                     name += ' / ' + this.model.get('language');
                 }
             }
 
             if (this.model.get('type') === 'Attribute') {
-                name = this.model.get('attributeNameValue');
-                if (!this.model.get('exportFeedLanguage') && this.model.get('isAttributeMultiLang') && this.model.get('language') !== 'main') {
+                name = this.model.get('attributeData').name;
+                if (this.model.get('isAttributeMultiLang') && this.model.get('language') !== 'main') {
                     name += ' / ' + this.model.get('language');
                 }
             }
@@ -181,7 +181,7 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
                 let fields = this.getMetadata().get(['entityDefs', entity, 'fields']) || [];
                 Object.keys(fields).forEach(name => {
                     let field = fields[name];
-                    if (!notExportedType.includes(field.type) && !field.disabled && !field.exportDisabled && !field.multilangField && (!field.language || field.language === 'main')) {
+                    if (!notExportedType.includes(field.type) && !field.disabled && !field.exportDisabled) {
                         result[name] = fields[name];
                     }
                 });

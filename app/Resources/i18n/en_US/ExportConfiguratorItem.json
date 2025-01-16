@@ -26,11 +26,6 @@
     "exportByForListAttribute": "Related Entity Fields for Lists",
     "fallbackLanguage": "Fallback Language"
   },
-  "columnType": {
-    "name": "Name",
-    "internal": "Name (untranslated) / Locale",
-    "custom": "Custom Name"
-  },
   "options": {
     "boolFilterFieldValue": {
       "+": "true",
@@ -44,6 +39,10 @@
       "id": "ID (Product Attribute Value)",
       "valueNumeric": "Value (numerical)",
       "valueString": "Value (String)"
+    },
+    "columnType": {
+      "name": "Name",
+      "custom": "Custom Name"
     }
   },
   "tooltips": {

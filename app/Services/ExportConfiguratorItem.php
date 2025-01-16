@@ -59,9 +59,8 @@ class ExportConfiguratorItem extends Base
         }
 
         $entity->set('column', $this->prepareColumnName($entity));
-        $entity->set('exportFeedLanguage', !empty($feed->get('language')) ? $feed->get('language') : null);
+        $entity->set('exportFeedData', $feed->toArray());
         $entity->set('isAttributeMultiLang', false);
-        $entity->set('attributeNameValue', $entity->get('name'));
         $entity->set('editable', $this->getAcl()->check($feed, 'edit'));
 
         $entity->set('fileNameTemplate', $entity->getVirtualField('fileNameTemplate'));
@@ -69,7 +68,7 @@ class ExportConfiguratorItem extends Base
         if ($entity->get('type') === 'Attribute' && !empty($entity->get('attributeId'))) {
             $attribute = $this->getEntityManager()->getRepository('Attribute')->get($entity->get('attributeId'));
             if (!empty($attribute)) {
-                $entity->set('attributeNameValue', $attribute->get('name'));
+                $entity->set('attributeData', $attribute->toArray());
                 $entity->set('isAttributeMultiLang', !empty($attribute->get('isMultilang')));
                 $entity->set('attributeType', $attribute->get('type'));
                 $entity->set('attributeCode', $attribute->get('code'));
@@ -108,29 +107,11 @@ class ExportConfiguratorItem extends Base
 
     protected function prepareFieldColumnName(Entity $entity): string
     {
-        $columnType = $entity->get('columnType') ?? 'name';
-
-        $language = !empty($entity->get('language')) && $entity->get('language') !== 'main' ? $entity->get('language') : 'main';
-        $mainLanguage = $this->getConfig()->get('mainLanguage');
-
-        switch ($columnType) {
+        switch ($entity->get('columnType') ?? 'name') {
             case 'name':
-                if ($language === 'main') {
-                    $lang = $mainLanguage;
-                    if (!empty($exportFeed = $entity->get('exportFeed')) && !empty($exportFeed->get('language')) && $exportFeed->get('language') !== 'main') {
-                        $lang = $exportFeed->get('language');
-                    }
-                    $column = $this->getLanguage($lang)->translate($entity->get('name'), 'fields', $entity->get('entity'));
-                } else {
-                    $column = $this->getLanguage($language)->translate($entity->get('name'), 'fields', $entity->get('entity'));
-                }
-                break;
-            case 'internal':
-                $column = $this->getLanguage($mainLanguage)->translate($entity->get('name'), 'fields', $entity->get('entity'));
-                $language = !empty($entity->get('language')) && $entity->get('language') !== 'main' ? $entity->get('language') : '';
-                if (!empty($language)) {
-                    $column .= ' / ' . $language;
-                }
+                $column = $this
+                    ->getLanguage($entity->get('exportFeed')->get('localeId'))
+                    ->translate($entity->get('name'), 'fields', $entity->get('entity'));
                 break;
             case 'custom':
                 $column = (string)$entity->get('column');
@@ -150,23 +131,19 @@ class ExportConfiguratorItem extends Base
 
         $columnType = $entity->get('columnType') ?? 'name';
 
-        $language = $entity->get('language');
-
-        if ($language === 'main') {
-            $language = '';
-            if (!empty($exportFeed = $entity->get('exportFeed')) && !empty($exportFeed->get('language')) && $exportFeed->get('language') !== 'main') {
-                $language = $exportFeed->get('language');
-            }
-        }
-
         $column = (string)$entity->get('column');
 
         if ($columnType === 'name') {
-            $column = $attribute->get('name' . ucfirst(Util::toCamelCase(strtolower($language))));
-        } elseif ($columnType === 'internal') {
             $column = $attribute->get('name');
-            if (!empty($language)) {
-                $column .= ' / ' . $language;
+            if (!empty($exportFeed = $entity->get('exportFeed'))) {
+                if (!empty($locale = $this->getEntityManager()->getEntity('Locale', $exportFeed->get('localeId')))) {
+                    $fieldName = 'name' . ucfirst(Util::toCamelCase(strtolower($locale->get('languageCode'))));
+                    if ($this->getMetadata()->get("entityDefs.Attribute.fields.$fieldName")) {
+                        if ($attribute->get($fieldName)) {
+                            $column = $attribute->get($fieldName);
+                        }
+                    }
+                }
             }
         }
 

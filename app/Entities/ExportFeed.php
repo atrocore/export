@@ -15,12 +15,28 @@ namespace Export\Entities;
 
 use Atro\Core\Templates\Entities\Base;
 use Espo\Core\Utils\Json;
+use Espo\ORM\Entity;
 
 class ExportFeed extends Base
 {
     public const DATA_FIELD = 'feedFields';
 
     protected $entityType = "ExportFeed";
+
+    public function getLocale(): ?Entity
+    {
+        return $this->getEntityManager()->getEntity('Locale', $this->get('localeId'));
+    }
+
+    public function getDecimalMark(): string
+    {
+        return $this->getLocale()->get('decimalMark') ?? '.';
+    }
+
+    public function getThousandSeparator(): string
+    {
+        return $this->getLocale()->get('thousandSeparator') ?? '';
+    }
 
     public function setFeedField(string $name, $value): void
     {

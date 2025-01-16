@@ -43,11 +43,10 @@
       "prohibitedEmptyValue": true,
       "view": "export:views/export-configurator-item/fields/column-type",
       "options": [
-        "name",
-        "internal",
-        "custom"
+        "custom",
+        "name"
       ],
-      "default": "name"
+      "default": "custom"
     },
     "exportIntoSeparateColumns": {
       "type": "bool",
@@ -80,10 +79,6 @@
       ],
       "default": "Field"
     },
-    "attributeNameValue": {
-      "type": "varchar",
-      "notStorable": true
-    },
     "attributeType": {
       "type": "varchar",
       "notStorable": true,
@@ -114,8 +109,22 @@
       "type": "bool",
       "notStorable": true
     },
-    "exportFeedLanguage": {
-      "type": "varchar",
+    "attributeData": {
+      "type": "jsonObject",
+      "notStorable": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "massUpdateDisabled": true,
+      "filterDisabled": true,
+      "textFilterDisabled": true,
+      "exportDisabled": true,
+      "importDisabled": true,
+      "emHidden": true
+    },
+    "exportFeedData": {
+      "type": "jsonObject",
       "notStorable": true,
       "layoutListDisabled": true,
       "layoutListSmallDisabled": true,
