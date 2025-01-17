@@ -24,7 +24,6 @@ class V1Dot8Dot66 extends Base
     public function up(): void
     {
         $this->execute("ALTER TABLE export_feed ADD locale_id VARCHAR(36) DEFAULT NULL");
-        $this->execute("CREATE INDEX IDX_EXPORT_FEED_LOCALE_ID ON export_feed (locale_id, deleted)");
 
         $this->getConnection()->createQueryBuilder()
             ->update('export_configurator_item')
