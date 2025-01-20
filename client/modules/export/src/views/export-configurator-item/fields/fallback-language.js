@@ -8,7 +8,7 @@
  * @license    GPLv3 (https://www.gnu.org/licenses/)
  */
 
-Espo.define('export:views/export-configurator-item/fields/fallback-language', 'export:views/export-feed/fields/language',
+Espo.define('export:views/export-configurator-item/fields/fallback-language', 'views/fields/enum',
     Dep => {
         return Dep.extend({
 
