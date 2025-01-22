@@ -29,10 +29,10 @@ Espo.define('export:views/export-configurator-item/fields/language', 'views/fiel
                 this.params.options = ['main'];
                 this.translatedOptions = {"main": this.getLanguage().translateOption('main', 'languageFilter', 'Global')};
 
-                (this.getConfig().get('inputLanguageList') || []).forEach(locale => {
-                    this.params.options.push(locale);
-                    this.translatedOptions[locale] = locale;
-                });
+                $.each(this.getConfig().get('referenceData')?.Language || {}, (code, language) => {
+                    this.params.options.push(code);
+                    this.translatedOptions[code] = language.name;
+                })
             },
 
             afterRender() {
