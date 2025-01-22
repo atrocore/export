@@ -478,12 +478,10 @@ class ExportFeed extends Base
     public function prepareFeedData(ExportFeedEntity $feed): array
     {
         $result = $feed->toArray();
-
         foreach ($feed->getFeedFields() as $name => $value) {
             $result[$name] = $value;
             $result['data']->$name = $value;
         }
-
         $result['decimalMark'] = $result['data']->decimalMark = $feed->getDecimalMark();
         $result['thousandSeparator'] = $result['data']->thousandSeparator = $feed->getThousandSeparator();
 
