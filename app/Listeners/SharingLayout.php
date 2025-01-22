@@ -18,7 +18,7 @@ use Atro\Core\EventManager\Event;
 
 class SharingLayout extends AbstractLayoutListener
 {
-    protected function detail(Event $event): void
+    public function detail(Event $event): void
     {
         $result = $event->getArgument('result');
 
