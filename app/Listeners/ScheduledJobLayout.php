@@ -16,37 +16,9 @@ namespace Export\Listeners;
 use Atro\Listeners\AbstractLayoutListener;
 use Atro\Core\EventManager\Event;
 
-class Layout extends AbstractLayoutListener
+class ScheduledJobLayout extends AbstractLayoutListener
 {
-    protected function modifySharingDetail(Event $event): void
-    {
-        $result = $event->getArgument('result');
-
-        if (strpos(json_encode($result[0]['rows']), '"name":"exportFeed"') === false) {
-            $result[0]['rows'][] = [['name' => 'exportFeed'], false];
-        }
-
-        $event->setArgument('result', $result);
-    }
-
-    protected function modifyActionDetail(Event $event): void
-    {
-        $result = $event->getArgument('result');
-
-        if (strpos(json_encode($result[0]['rows']), '"name":"exportFeed"') === false) {
-            $result[0]['rows'][] = [['name' => 'exportFeed'], false];
-        }
-
-        if (strpos(json_encode($result[0]['rows']), '"name":"payload"') !== false) {
-            $result[0]['rows'] = json_decode(str_replace(',[{"name":"payload","fullWidth":true}]', '', json_encode($result[0]['rows'])), true);
-        }
-
-        $result[0]['rows'][] = [['name' => 'payload', 'fullWidth' => true]];
-
-        $event->setArgument('result', $result);
-    }
-
-    protected function modifyScheduledJobDetail(Event $event): void
+    protected function detail(Event $event): void
     {
         $result = $event->getArgument('result');
 
