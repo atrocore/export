@@ -20,9 +20,19 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
             Dep.prototype.init.call(this);
 
             this.prepareValue();
-            this.listenTo(this.model, 'change:name change:attributeId change:columnType change:exportIntoSeparateColumns', () => {
+            this.listenTo(this.model, 'change:name change:columnType change:exportIntoSeparateColumns', () => {
                 this.prepareValue();
                 this.reRender();
+            });
+
+            this.listenTo(this.model, 'change:attributeId', () => {
+                if (this.model.get('attributeId')) {
+                    this.ajaxGetRequest(`Attribute/${this.model.get('attributeId')}`).success(attribute => {
+                        this.model.set('attributeData', attribute);
+                        this.prepareValue();
+                        this.reRender();
+                    })
+                }
             });
         },
 
@@ -80,7 +90,7 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
         },
 
         prepareAttributeValue() {
-            if (this.model.get('columnType') === 'name') {
+            if (this.model.get('columnType') === 'name' || this.model.isNew()) {
                 this.model.set('column', this.model.get('attributeData').name);
 
                 let localeId = this.model.get('exportFeedData').localeId;
