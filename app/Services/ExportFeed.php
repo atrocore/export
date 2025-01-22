@@ -484,7 +484,7 @@ class ExportFeed extends Base
             $result['data']->$name = $value;
         }
 
-        $result['decimalMark'] =  $result['data']->decimalMark = $feed->getDecimalMark();
+        $result['decimalMark'] = $result['data']->decimalMark = $feed->getDecimalMark();
         $result['thousandSeparator'] = $result['data']->thousandSeparator = $feed->getThousandSeparator();
 
         $result['fileType'] = $feed->get('fileType');
