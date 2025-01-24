@@ -48,6 +48,15 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
 
             Dep.prototype.setup.call(this);
 
+            let iconHtml = this.getHelper().getScopeColorIconHtml(this.scope);
+            if (iconHtml) {
+                if (this.defs.label) {
+                    this.titleHtml = iconHtml + this.translate(this.defs.label, 'labels', 'ExportFeed');
+                } else {
+                    this.titleHtml = iconHtml + this.title;
+                }
+            }
+
             this.actionList.push({
                 label: 'showFullList',
                 action: 'showFullList'
