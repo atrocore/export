@@ -52,8 +52,8 @@ class Export extends AbstractJob implements JobInterface
             $exportJob->set('end', (new \DateTime())->format('Y-m-d H:i:s'));
             $this->getEntityManager()->saveEntity($exportJob);
 
-            if (!empty($job)) {
-                $this->createNotification($job, sprintf($this->translate('exportDownloadNotification', 'labels', 'ExportJob'), $exportJob->get('fileId')));
+            if (!empty($file)) {
+                $this->createNotification($job, sprintf($this->translate('exportDownloadNotification', 'labels', 'ExportJob'), $file->get('id')));
             }
         } catch (\Throwable $e) {
             $exportJob->set('end', (new \DateTime())->format('Y-m-d H:i:s'));

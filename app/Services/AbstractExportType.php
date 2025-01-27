@@ -39,9 +39,10 @@ abstract class AbstractExportType extends Base
     public const TMP_DIR = 'data' . DIRECTORY_SEPARATOR . '.tmp-export';
 
     public const PRIORITIES = [
-        'Low'    => 50,
-        'Normal' => 100,
-        'High'   => 150
+        'Low'     => 50,
+        'Normal'  => 100,
+        'Crucial' => 140,
+        'High'    => 150
     ];
 
     protected array $data;
@@ -185,7 +186,7 @@ abstract class AbstractExportType extends Base
         }
 
         // change field name for multilingual field
-        if ($row['type'] === 'Field' && $row['language'] !== 'main') {
+        if ($row['type'] === 'Field' && !empty($row['language']) && $row['language'] !== 'main') {
             $row['field'] .= ucfirst(Util::toCamelCase(strtolower($row['language'])));
         }
 
