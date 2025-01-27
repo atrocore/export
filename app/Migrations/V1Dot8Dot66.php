@@ -49,7 +49,10 @@ class V1Dot8Dot66 extends Base
         foreach ($exportFeeds as $exportFeed) {
             $data = @json_decode($exportFeed['data'], true);
 
-            $language = $exportFeed['language'] ?? $this->getConfig()->get('mainLanguage', 'en_US');
+            $language = $this->getConfig()->get('mainLanguage', 'en_US');
+            if (!empty($exportFeed['language']) && $exportFeed['language'] !== $language) {
+                $language = $exportFeed['language'];
+            }
             $decimalMark = $data['feedFields']['decimalMark'] ?? '.';
             $thousandSeparator = $data['feedFields']['thousandSeparator'] ?? '';
 
@@ -90,9 +93,9 @@ class V1Dot8Dot66 extends Base
                     continue;
                 }
                 $locales[$newLocale['id']] = [
-                    'id'                => $id,
+                    'id'                => $newLocale['id'],
                     'name'              => "Locale $number",
-                    'code'              => $id,
+                    'code'              => $newLocale['id'],
                     'timeFormat'        => 'HH:mm',
                     'weekStart'         => 'sunday',
                     'dateFormat'        => 'MM\/DD\/YYYY',
@@ -100,9 +103,9 @@ class V1Dot8Dot66 extends Base
                     'createdAt'         => date('Y-m-d H:i:s'),
                     'modifiedAt'        => date('Y-m-d H:i:s'),
                     'createdById'       => 'system',
-                    'languageCode'      => $language,
-                    'decimalMark'       => $decimalMark,
-                    'thousandSeparator' => $thousandSeparator
+                    'languageCode'      => $newLocale['languageCode'],
+                    'decimalMark'       => $newLocale['decimalMark'],
+                    'thousandSeparator' => $newLocale['thousandSeparator']
                 ];
                 $number++;
             }
