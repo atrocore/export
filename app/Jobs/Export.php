@@ -17,7 +17,6 @@ use Atro\Entities\Job;
 use Atro\Jobs\AbstractJob;
 use Atro\Jobs\JobInterface;
 use Atro\Core\Exceptions\BadRequest;
-use Espo\ORM\Entity;
 use Export\Core\Exceptions\NothingToExport;
 use Export\Services\AbstractExportType;
 
