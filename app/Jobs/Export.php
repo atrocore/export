@@ -17,6 +17,7 @@ use Atro\Entities\Job;
 use Atro\Jobs\AbstractJob;
 use Atro\Jobs\JobInterface;
 use Atro\Core\Exceptions\BadRequest;
+use Espo\ORM\Entity;
 use Export\Core\Exceptions\NothingToExport;
 use Export\Services\AbstractExportType;
 
@@ -53,7 +54,7 @@ class Export extends AbstractJob implements JobInterface
             $this->getEntityManager()->saveEntity($exportJob);
 
             if (!empty($file)) {
-                $this->createNotification($job, sprintf($this->translate('exportDownloadNotification', 'labels', 'ExportJob'), $file->get('id')));
+                $this->createExportNotification(sprintf($this->translate('exportDownloadNotification', 'labels', 'ExportJob'), $file->get('id')), $job);
             }
         } catch (\Throwable $e) {
             $exportJob->set('end', (new \DateTime())->format('Y-m-d H:i:s'));
@@ -64,6 +65,27 @@ class Export extends AbstractJob implements JobInterface
             if (!empty($data['executeNow'])) {
                 throw new BadRequest($e->getMessage());
             }
+        }
+    }
+
+    protected function createExportNotification(string $message, ?Job $job = null): void
+    {
+        $ownerUserId = $this->getUser()->get('id');
+
+        $notification = $this->getEntityManager()->getEntity('Notification');
+        $notification->set('type', 'Message');
+        $notification->set('message', $message);
+
+        if (!empty($job)) {
+            $notification->set('relatedType', 'Job');
+            $notification->set('relatedId', $job->get('id'));
+            $ownerUserId = $job->get('ownerUserId');
+        }
+
+        $notification->set('userId', $ownerUserId);
+
+        if ($ownerUserId !== 'system') {
+            $this->getEntityManager()->saveEntity($notification);
         }
     }
 }
