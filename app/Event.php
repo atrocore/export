@@ -22,11 +22,11 @@ class Event extends AfterInstallAfterDelete
         $config = $this->getContainer()->get('config');
         $config->set('exportJobsMaxDays', 21);
 
-        $this->addMenuItems(['ExportFeed']);
+        $this->addNavigationItems(['ExportFeed']);
     }
 
     public function afterDelete(): void
     {
-        $this->removeMenuItems(['ExportFeed']);
+        $this->removeNavigationItems(['ExportFeed']);
     }
 }
