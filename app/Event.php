@@ -22,28 +22,11 @@ class Event extends AfterInstallAfterDelete
         $config = $this->getContainer()->get('config');
         $config->set('exportJobsMaxDays', 21);
 
-        $tabList = $config->get("tabList", []);
-        if (!in_array('ExportFeed', $tabList)) {
-            $tabList[] = 'ExportFeed';
-        }
-
-        $config->set('tabList', $tabList);
-        $config->save();
+        $this->addNavigationItems(['ExportFeed']);
     }
 
     public function afterDelete(): void
     {
-        /** @var Config $config */
-        $config = $this->getContainer()->get('config');
-
-        $tabList = [];
-        foreach ($config->get("tabList", []) as $tab) {
-            if ($tab != 'ExportFeed') {
-                $tabList[] = $tab;
-            }
-        }
-
-        $config->set('tabList', $tabList);
-        $config->save();
+        $this->removeNavigationItems(['ExportFeed']);
     }
 }
