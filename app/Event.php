@@ -18,11 +18,6 @@ class Event extends AfterInstallAfterDelete
 {
     public function afterInstall(): void
     {
-        /** @var Config $config */
-        $config = $this->getContainer()->get('config');
-        $config->set('exportJobsMaxDays', 21);
-        $config->save();
-
         $this->addNavigationItems(['ExportFeed']);
     }
 
