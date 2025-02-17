@@ -651,7 +651,13 @@ class ExportTypeSimple extends AbstractExportType
 
         // prepare header
         if ($this->data['feed']['isFileHeaderRow']) {
-            fputcsv($fp, array_column($columns, 'name'), $delimiter, $enclosure);
+            $headerRow = array_column($columns, 'name');
+            if($useQuoteForAllValue) {
+                $enclosedRow = array_map(fn($value) => $enclosure . $value. $enclosure, $headerRow);
+                fwrite($fp, implode($delimiter, $enclosedRow) . "\n");
+            }else{
+                fputcsv($fp, $headerRow, $delimiter, $enclosure);
+            }
         }
 
         $cacheFile = fopen($data['fullFileName'], "r");
