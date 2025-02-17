@@ -36,7 +36,8 @@
     "fileNameMask": "File Name Mask",
     "exportAllField": "Export All fields",
     "fieldList": "Field List",
-    "useExistingExportFeed": "Use existing export feed"
+    "useExistingExportFeed": "Use existing export feed",
+    "useQuoteForAll": "Use quotes for all values"
   },
   "options": {
     "fileType": {
@@ -109,7 +110,8 @@
     "markForNoRelation": "Specify how a not linked relation should be labeled.",
     "nullValue": "Value will be interpreted as \"NULL\" value.",
     "emptyValue": "Value will be interpreted as \"empty\" value additionally to the empty cell.",
-    "exportByMaxDepth": "Specifies maximum depth of relations in the configurator field \"Related Entity Fields\""
+    "exportByMaxDepth": "Specifies maximum depth of relations in the configurator field \"Related Entity Fields\"",
+    "useQuoteForAll": "All values in the exported file will be enclosed in quotation marks"
   },
   "boolFilters": {
     "onlyExportFailed24Hours": "Only Export Feeds that failed during last 24 hours",

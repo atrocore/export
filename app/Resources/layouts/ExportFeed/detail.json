@@ -65,6 +65,12 @@
       ],
       [
         {
+          "name": "useQuoteForAll"
+        },
+        false
+      ],
+      [
+        {
           "name": "originTemplateName"
         },
         {

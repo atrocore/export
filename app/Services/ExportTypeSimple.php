@@ -645,6 +645,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $delimiter = $this->getDelimiter();
         $enclosure = $this->getEnclosure();
+        $useQuoteForAllValue = !empty($this->data['feed']['useQuoteForAll']);
 
         $fp = fopen($fileName, "w");
 
@@ -669,7 +670,12 @@ class ExportTypeSimple extends AbstractExportType
                 $resultRow[$pos] = isset($rowData[$columnData['number']][$columnData['name']]) ? $rowData[$columnData['number']][$columnData['name']] : null;
             }
 
-            fputcsv($fp, $resultRow, $delimiter, $enclosure);
+            if($useQuoteForAllValue) {
+                $enclosedRow = array_map(fn($value) => $enclosure . $value. $enclosure, $resultRow);
+                fwrite($fp, implode($delimiter, $enclosedRow) . (feof($cacheFile) ? PHP_EOL : "\n"));
+            }else{
+                fputcsv($fp, $resultRow, $delimiter, $enclosure);
+            }
         }
         fclose($cacheFile);
 

@@ -63,6 +63,19 @@
   },
   "dynamicLogic": {
     "fields": {
+      "useQuoteForAll": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "csv"
+              ]
+            }
+          ]
+        }
+      },
       "type": {
         "readOnly": {
           "conditionGroup": [

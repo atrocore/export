@@ -315,6 +315,10 @@
         "filename",
         "interation"
       ]
+    },
+    "useQuoteForAll": {
+      "type": "bool",
+      "tooltip": true
     }
   },
   "links": {

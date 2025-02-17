@@ -35,7 +35,8 @@
     "fileNameMask": "Dateinamenmaske",
     "exportAllField": "Alle Felder exportieren",
     "fieldList": "Liste der Felder",
-    "useExistingExportFeed": "UBestehendes Exportfutter verwenden"
+    "useExistingExportFeed": "UBestehendes Exportfutter verwenden",
+    "useQuoteForAll": "Anführungszeichen für alle Werte verwenden"
   },
   "labels": {
     "generateTemplate": "Vorlage generieren",
@@ -98,7 +99,8 @@
     "markForNoRelation": "Gibt an, wie eine nicht verknüpfte Beziehung beschriftet werden soll.",
     "nullValue": "Der Wert wird als \"NULL\"-Wert interpretiert.",
     "emptyValue": "Der Wert wird als \"leerer\" Wert zusätzlich zur leeren Zelle interpretiert.",
-    "exportByMaxDepth": "Gibt die maximale Tiefe der Beziehungen im Konfiguratorfeld \"Verwandte Entitätsfelder\" an"
+    "exportByMaxDepth": "Gibt die maximale Tiefe der Beziehungen im Konfiguratorfeld \"Verwandte Entitätsfelder\" an",
+    "useQuoteForAll": "Alle Werte in der exportierten Datei werden in Anführungszeichen gesetzt"
   },
   "boolFilters": {
     "onlyExportFailed24Hours": "Nur Export Feeds, die in den letzten 24 Stunden fehlgeschlagen sind",
