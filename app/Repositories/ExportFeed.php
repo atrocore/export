@@ -202,6 +202,10 @@ class ExportFeed extends Base
                 $this->removeConfiguratorItems('ExportFeed', $entity->get('id'));
             }
         }
+
+        if ($entity->get('code') === '') {
+            $entity->set('code', null);
+        }
     }
 
     protected function afterSave(Entity $entity, array $options = [])
