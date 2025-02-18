@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Export\Services;
 
-use Espo\Core\Templates\Services\Base;
-use Espo\Core\Utils\Language;
-use Espo\Core\Utils\Util;
+use Espo\Core\ORM\EntityManager;
+use Atro\Core\Templates\Services\Base;
+use Atro\Core\Utils\Language;
+use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
 
 class ExportConfiguratorItem extends Base
@@ -105,12 +106,26 @@ class ExportConfiguratorItem extends Base
         return $this->prepareFieldColumnName($entity);
     }
 
+
+    protected function getExportFeed(\Export\Entities\ExportConfiguratorItem $entity): ?\Export\Entities\ExportFeed
+    {
+        $exportFeed = $entity->get('exportFeed');
+        if (!empty($exportFeed)) {
+            return $exportFeed;
+        }
+        if (!empty($entity->get('exportFeedId'))) {
+            return $this->getEntityManager()->getEntity('ExportFeed', $entity->get('exportFeedId'));
+        }
+        return null;
+    }
+
     protected function prepareFieldColumnName(Entity $entity): string
     {
         switch ($entity->get('columnType') ?? 'name') {
             case 'name':
+                $exportFeed = $this->getExportFeed($entity);
                 $column = $this
-                    ->getLanguage($entity->get('exportFeed')->get('localeId'))
+                    ->getLanguage(empty($exportFeed) ? '' : $exportFeed->get('localeId'))
                     ->translate($entity->get('name'), 'fields', $entity->get('entity'));
                 break;
             case 'custom':
@@ -135,7 +150,7 @@ class ExportConfiguratorItem extends Base
 
         if ($columnType === 'name') {
             $column = $attribute->get('name');
-            if (!empty($exportFeed = $entity->get('exportFeed'))) {
+            if (!empty($exportFeed = $this->getExportFeed($entity))) {
                 if (!empty($locale = $this->getEntityManager()->getEntity('Locale', $exportFeed->get('localeId')))) {
                     $fieldName = 'name' . ucfirst(Util::toCamelCase(strtolower($locale->get('languageCode'))));
                     if ($this->getMetadata()->get("entityDefs.Attribute.fields.$fieldName")) {
