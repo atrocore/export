@@ -96,7 +96,7 @@ class ExportFeed extends Base
             }
 
         }
-        
+
         $languages = ['', 'main'];
         if ($this->getConfig()->get('isMultilangActive', false)) {
             $languages = array_merge($languages, $this->getConfig()->get('inputLanguageList', []));
