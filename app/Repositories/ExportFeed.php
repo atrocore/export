@@ -67,6 +67,39 @@ class ExportFeed extends Base
             return;
         }
 
+        if(empty($exportFeed->get('localeId')) || empty($this->getEntityManager()->getRepository('Locale')->get($exportFeed->get('localeId')))) {
+            $mainLocaleId = null;
+            $locales = array_values($this->getConfig()->get('referenceData.Locale'));
+            if(empty($locales)) {
+                return;
+            }
+            foreach ($locales as $locale) {
+                if($locale['id'] === 'main') {
+                    $mainLocaleId = $locale['id'];
+                    break;
+                }
+            }
+
+            if(empty($mainLocaleId)) {
+                $mainLocaleId = $locales[0]['id'];
+            }
+
+            try {
+                $this->getConnection()->createQueryBuilder()
+                    ->update('export_feed', 't')
+                    ->set($this->getConnection()->quoteIdentifier('locale_id'), ':mainLocaleId')
+                    ->where('t.id = :id')
+                    ->setParameter('mainLocaleId', $mainLocaleId)
+                    ->setParameter('id', $exportFeed->get('id'))
+                    ->executeQuery();
+            } catch (\Throwable $e) {
+            }
+
+        }
+
+
+
+
         $languages = ['', 'main'];
         if ($this->getConfig()->get('isMultilangActive', false)) {
             $languages = array_merge($languages, $this->getConfig()->get('inputLanguageList', []));
