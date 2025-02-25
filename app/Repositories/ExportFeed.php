@@ -94,7 +94,6 @@ class ExportFeed extends Base
                     ->executeQuery();
             } catch (\Throwable $e) {
             }
-
         }
 
         $languages = ['', 'main'];
