@@ -74,19 +74,6 @@ class ExportFeed extends Base
 
         try {
             $this->getConnection()->createQueryBuilder()
-                ->update('export_feed', 't')
-                ->set($this->getConnection()->quoteIdentifier('language'), ':language')
-                ->where('t.id = :id')
-                ->andWhere('t.language NOT IN (:languages)')
-                ->setParameter('language', '')
-                ->setParameter('id', $exportFeed->get('id'))
-                ->setParameter('languages', $languages, Connection::PARAM_STR_ARRAY)
-                ->executeQuery();
-        } catch (\Throwable $e) {
-        }
-
-        try {
-            $this->getConnection()->createQueryBuilder()
                 ->update('export_configurator_item', 't')
                 ->set($this->getConnection()->quoteIdentifier('deleted'), ':true')
                 ->where('t.language NOT IN (:languages)')
