@@ -67,6 +67,37 @@ class ExportFeed extends Base
             return;
         }
 
+        if (empty($exportFeed->get('localeId'))
+            || empty($this->getEntityManager()->getEntity('Locale')->get($exportFeed->get('localeId')))
+        ) {
+            $mainLocaleId = null;
+            $locales = array_values($this->getConfig()->get('referenceData.Locale'));
+            if (!empty($locales)) {
+                foreach ($locales as $locale) {
+                    if ($locale['id'] === 'main') {
+                        $mainLocaleId = $locale['id'];
+                        break;
+                    }
+                }
+                if (empty($mainLocaleId)) {
+                    $mainLocaleId = $locales[0]['id'];
+                }
+            }
+
+            if (!empty($mainLocaleId)) {
+                try {
+                    $this->getConnection()->createQueryBuilder()
+                        ->update('export_feed')
+                        ->set('locale_id', ':mainLocaleId')
+                        ->where('id = :id')
+                        ->setParameter('mainLocaleId', $mainLocaleId)
+                        ->setParameter('id', $exportFeed->get('id'))
+                        ->executeQuery();
+                } catch (\Throwable $e) {
+                }
+            }
+        }
+
         $languages = ['', 'main'];
         if ($this->getConfig()->get('isMultilangActive', false)) {
             $languages = array_merge($languages, $this->getConfig()->get('inputLanguageList', []));
@@ -74,22 +105,9 @@ class ExportFeed extends Base
 
         try {
             $this->getConnection()->createQueryBuilder()
-                ->update('export_feed', 't')
-                ->set($this->getConnection()->quoteIdentifier('language'), ':language')
-                ->where('t.id = :id')
-                ->andWhere('t.language NOT IN (:languages)')
-                ->setParameter('language', '')
-                ->setParameter('id', $exportFeed->get('id'))
-                ->setParameter('languages', $languages, Connection::PARAM_STR_ARRAY)
-                ->executeQuery();
-        } catch (\Throwable $e) {
-        }
-
-        try {
-            $this->getConnection()->createQueryBuilder()
-                ->update('export_configurator_item', 't')
+                ->update('export_configurator_item')
                 ->set($this->getConnection()->quoteIdentifier('deleted'), ':true')
-                ->where('t.language NOT IN (:languages)')
+                ->where('language NOT IN (:languages)')
                 ->setParameter('true', true, ParameterType::BOOLEAN)
                 ->setParameter('languages', $languages, Connection::PARAM_STR_ARRAY)
                 ->executeQuery();
