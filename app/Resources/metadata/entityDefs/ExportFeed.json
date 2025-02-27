@@ -356,18 +356,6 @@
         "name",
         "deleted"
       ]
-    },
-    "ownerUser": {
-      "columns": [
-        "ownerUserId",
-        "deleted"
-      ]
-    },
-    "assignedUser": {
-      "columns": [
-        "assignedUserId",
-        "deleted"
-      ]
     }
   }
 }
