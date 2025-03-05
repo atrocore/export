@@ -13,7 +13,7 @@
   "quickCreateOptions": {
     "fullFormDisabled": true
   },
-  "iconClass": "fas fa-cloud-upload-alt",
+  "iconClass": "output",
   "views": {
     "detail": "export:views/export-feed/detail"
   },
