@@ -22,10 +22,10 @@
         <div class="pull-right">
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-default btn-icon action {{#unless previousButtonEnabled}} disabled{{/unless}}" data-action="previous" title="{{translate 'Previous Entry'}}">
-                    <span class="fas fa-chevron-left"></span>
+                    <svg class="icon"><use href="client/img/icons/icons.svg#angle-left"></use></svg>
                 </button>
                 <button type="button" class="btn btn-default btn-icon action {{#unless nextButtonEnabled}} disabled{{/unless}}" data-action="next" title="{{translate 'Next Entry'}}">
-                    <span class="fas fa-chevron-right"></span>
+                    <svg class="icon"><use href="client/img/icons/icons.svg#angle-right"></use></svg>
                 </button>
             </div>
         </div>
