@@ -68,7 +68,7 @@ class ExportFeed extends Base
         }
 
         if (empty($exportFeed->get('localeId'))
-            || empty($this->getEntityManager()->getEntity('Locale')->get($exportFeed->get('localeId')))
+            || empty($this->getEntityManager()->getRepository('Locale')->get($exportFeed->get('localeId')))
         ) {
             $mainLocaleId = null;
             $locales = array_values($this->getConfig()->get('referenceData.Locale'));
