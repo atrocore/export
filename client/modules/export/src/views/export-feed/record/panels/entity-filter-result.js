@@ -73,6 +73,10 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
             });
         },
 
+        getLayoutRelatedScope() {
+            return null;
+        },
+
         getWhere(searchView) {
             const where = Espo.Utils.cloneDeep(searchView.searchManager.getWhere());
             where.forEach((item, k) => {

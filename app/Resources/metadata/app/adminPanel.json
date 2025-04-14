@@ -1,12 +1,12 @@
 {
-    "export": {
-        "label": "Export",
-        "itemList": [
-            {
-                "url": "#ExportFeed",
-                "label": "exportFeed",
-                "description": "exportFeed"
-            }
-        ]
-    }
+  "tools": {
+    "itemList": [
+      "__APPEND__",
+      {
+        "url": "#ExportFeed",
+        "label": "exportFeed",
+        "description": "exportFeed"
+      }
+    ]
+  }
 }
