@@ -128,6 +128,11 @@ class ExportFeed extends Base
 
     public function addFields(string $exportFeedId, array $fields): bool
     {
+        $exportFeed = $this->getRepository()->get($exportFeedId);
+        if (empty($exportFeed)) {
+            return false;
+        }
+
         foreach ($fields as $field) {
             $item = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
             $item->set([
@@ -137,6 +142,21 @@ class ExportFeed extends Base
                 'columnType'   => 'name'
             ]);
             $this->getEntityManager()->saveEntity($item);
+
+            $isMultilang = $this->getMetadata()->get("entityDefs.{$exportFeed->getFeedField('entity')}.fields.{$field}.isMultilang");
+            if (!empty($this->getConfig()->get('isMultilangActive')) && $isMultilang) {
+                $lingualFields = $this->getMetadata()->get("entityDefs.{$exportFeed->getFeedField('entity')}.fields.{$field}.lingualFields");
+                foreach ($lingualFields ?? [] as $languageField) {
+                    $item = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
+                    $item->set([
+                        'name'         => $languageField,
+                        'type'         => 'Field',
+                        'exportFeedId' => $exportFeedId,
+                        'columnType'   => 'name'
+                    ]);
+                    $this->getEntityManager()->saveEntity($item);
+                }
+            }
         }
 
         return true;
