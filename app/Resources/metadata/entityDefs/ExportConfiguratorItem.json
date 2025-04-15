@@ -55,9 +55,6 @@
     },
     "exportBy": {
       "type": "array",
-      "default": [
-        "id"
-      ],
       "view": "export:views/export-configurator-item/fields/export-by"
     },
     "filterField": {
@@ -72,7 +69,8 @@
     },
     "type": {
       "type": "enum",
-      "required": false,
+      "required": true,
+      "readOnly": true,
       "prohibitedEmptyValue": true,
       "view": "export:views/export-configurator-item/fields/type",
       "options": [
@@ -238,6 +236,13 @@
   "collection": {
     "sortBy": "sortOrder",
     "asc": true
+  },
+  "uniqueIndexes": {
+    "unique_field": [
+      "deleted",
+      "name",
+      "export_feed_id"
+    ]
   },
   "indexes": {
     "name": {

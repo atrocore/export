@@ -134,6 +134,15 @@ class ExportFeed extends Base
         }
 
         foreach ($fields as $field) {
+            $defs = $this->getMetadata()->get("entityDefs.{$exportFeed->getFeedField('entity')}.fields.{$field}");
+            if (empty($defs['type'])){
+                continue;
+            }
+
+            if (!empty($defs['measureId'])) {
+                $field = 'unit' . ucfirst($field);
+            }
+
             $item = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
             $item->set([
                 'name'         => $field,
@@ -141,12 +150,18 @@ class ExportFeed extends Base
                 'exportFeedId' => $exportFeedId,
                 'columnType'   => 'name'
             ]);
-            $this->getEntityManager()->saveEntity($item);
 
-            $isMultilang = $this->getMetadata()->get("entityDefs.{$exportFeed->getFeedField('entity')}.fields.{$field}.isMultilang");
-            if (!empty($this->getConfig()->get('isMultilangActive')) && $isMultilang) {
-                $lingualFields = $this->getMetadata()->get("entityDefs.{$exportFeed->getFeedField('entity')}.fields.{$field}.lingualFields");
-                foreach ($lingualFields ?? [] as $languageField) {
+            if ($defs['type'] === 'link') {
+                $item->set('exportBy', ['id']);
+            }
+
+            try {
+                $this->getEntityManager()->saveEntity($item);
+            } catch (Exceptions\NotUnique $e) {
+            }
+
+            if (!empty($this->getConfig()->get('isMultilangActive')) && !empty($defs['isMultilang']) && empty($defs['measureId'])) {
+                foreach ($defs['lingualFields'] ?? [] as $languageField) {
                     $item = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
                     $item->set([
                         'name'         => $languageField,
@@ -154,7 +169,10 @@ class ExportFeed extends Base
                         'exportFeedId' => $exportFeedId,
                         'columnType'   => 'name'
                     ]);
-                    $this->getEntityManager()->saveEntity($item);
+                    try {
+                        $this->getEntityManager()->saveEntity($item);
+                    } catch (Exceptions\NotUnique $e) {
+                    }
                 }
             }
         }
