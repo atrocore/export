@@ -55,6 +55,9 @@
     },
     "exportBy": {
       "type": "array",
+      "default": [
+        "id"
+      ],
       "view": "export:views/export-configurator-item/fields/export-by"
     },
     "filterField": {
