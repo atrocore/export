@@ -134,7 +134,9 @@ class ExportFeed extends Base
 
         foreach ($fields as $field) {
             $defs = $this->getMetadata()->get("entityDefs.{$exportFeed->getFeedField('entity')}.fields.{$field}");
-            if (empty($defs['type'])){
+
+            $type = $field === 'id' ? 'varchar' : $defs['type'] ?? null;
+            if (empty($type)) {
                 continue;
             }
 
@@ -150,7 +152,7 @@ class ExportFeed extends Base
                 'columnType'   => 'name'
             ]);
 
-            if ($defs['type'] === 'link') {
+            if ($type === 'link') {
                 $item->set('exportBy', ['id']);
             }
 
