@@ -126,62 +126,16 @@ class ExportFeed extends Base
         return $this->pushExport($data);
     }
 
-    public function addMissingFields(string $entityType, string $id): bool
+    public function addFields(string $exportFeedId, array $fields): bool
     {
-        switch ($entityType) {
-            case 'Sheet':
-                $sheet = $this->getEntityManager()->getEntity('Sheet', $id);
-                $entity = $sheet->get('entity');
-                $feed = $this->readEntity($sheet->get('exportFeedId'));
-                break;
-            default:
-                $feed = $this->readEntity($id);
-                $entity = $feed->get('entity');
-        }
-
-        $addedFields = [];
-        foreach ($feed->get('configuratorItems') as $item) {
-            $addedFields[] = $item->get('name') . '_' . $item->get('language');
-        }
-
-        /** @var \Export\Services\ExportConfiguratorItem $eciService */
-        $eciService = $this->getInjection('serviceFactory')->create('ExportConfiguratorItem');
-        $allFields = AbstractExportType::getAllFieldsConfiguration($entity, $this->getMetadata(), $this->getInjection('language'));
-
-        foreach ($allFields as $row) {
-            if (in_array($row['field'] . '_' . $row['language'], $addedFields)) {
-                continue;
-            }
-
-            $item = $this->getEntityManager()->getEntity('ExportConfiguratorItem');
-            $item->set('type', 'Field');
-            $item->set('name', $row['field']);
-            $item->set('language', $row['language']);
-            $item->set('columnType', 'name');
-            $item->set(lcfirst($entityType) . 'Id', $id);
-            if (isset($row['exportBy'])) {
-                $item->set('exportBy', $row['exportBy']);
-            }
-            if (isset($row['exportIntoSeparateColumns'])) {
-                $item->set('exportIntoSeparateColumns', !empty($row['exportIntoSeparateColumns']));
-            }
-            if (isset($row['offsetRelation'])) {
-                $item->set('offsetRelation', $row['offsetRelation']);
-            }
-            if (isset($row['limitRelation'])) {
-                $item->set('limitRelation', $row['limitRelation']);
-            }
-            if (isset($row['sortFieldRelation'])) {
-                $item->set('sortFieldRelation', $row['sortFieldRelation']);
-            }
-            if (isset($row['sortOrderRelation'])) {
-                $item->set('sortOrderRelation', $row['sortOrderRelation']);
-            }
-            if (isset($row['mask'])) {
-                $item->set('mask', $row['mask']);
-            }
-            $item->set('column', $eciService->prepareColumnName($item));
-
+        foreach ($fields as $field) {
+            $item = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
+            $item->set([
+                'name'         => $field,
+                'type'         => 'Field',
+                'exportFeedId' => $exportFeedId,
+                'columnType'   => 'name'
+            ]);
             $this->getEntityManager()->saveEntity($item);
         }
 

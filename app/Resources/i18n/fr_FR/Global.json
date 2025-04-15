@@ -13,7 +13,6 @@
     "Generate": "Générer",
     "filter": "Filtre",
     "tryAgain": "Exporter à nouveau",
-    "addMissingFields": "Ajoutez tous les champs manquants",
     "selectAttributes": "Sélectionnez le(s) attribut(s)",
     "removeAllItems": "Supprimer tout",
     "exportErrorDuring24Hours": "Erreur d'exportation de flux/travaux pendant 24 heures",

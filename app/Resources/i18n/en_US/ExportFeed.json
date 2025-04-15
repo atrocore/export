@@ -52,7 +52,6 @@
     "generateTemplate": "Generate Template",
     "simple": "File",
     "typeToSearch": "Type to search...",
-    "addMissingFieldsConfirmation": "Are you sure you want to add all missing fields?",
     "removeAllItemsConfirmation": "Are you sure you want to remove all configurator rules?",
     "attributeName": "Attribute Name",
     "attributeCode": "Attribute Code",

@@ -41,7 +41,6 @@
   "labels": {
     "generateTemplate": "Vorlage generieren",
     "typeToSearch": "Tippe um zu suchen...",
-    "addMissingFieldsConfirmation": " Möchten Sie wirklich alle fehlenden Felder hinzufügen?",
     "removeAllItemsConfirmation": "Möchten Sie wirklich alle Konfigurator-Regel entfernen?",
     "attributeName": "Attributname",
     "attributeCode": "Attributcode",

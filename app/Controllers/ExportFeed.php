@@ -19,14 +19,11 @@ use Atro\Core\Exceptions;
 use Espo\Core\Utils\Json;
 use Slim\Http\Request;
 
-/**
- * ExportFeed controller
- */
 class ExportFeed extends Base
 {
-    public function actionAddMissingFields($params, $data, Request $request): bool
+    public function actionAddFields($params, $data, Request $request): bool
     {
-        if (!$request->isPost() || !property_exists($data, 'entityType') || !property_exists($data, 'id')) {
+        if (!$request->isPost() || !property_exists($data, 'id') || !property_exists($data, 'fields')) {
             throw new Exceptions\BadRequest();
         }
 
@@ -34,7 +31,7 @@ class ExportFeed extends Base
             throw new Exceptions\Forbidden();
         }
 
-        return $this->getRecordService()->addMissingFields((string)$data->entityType, (string)$data->id);
+        return $this->getRecordService()->addFields($data->id, $data->fields);
     }
 
     public function actionAddAttributes($params, $data, Request $request): bool

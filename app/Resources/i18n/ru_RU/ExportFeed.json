@@ -29,7 +29,6 @@
   },
   "labels": {
     "typeToSearch": "Введите для поиска...",
-    "addMissingFieldsConfirmation": " Вы уверены, что хотите довавить все недостающие поля?",
     "removeAllItemsConfirmation": "Вы уверены, что хотите удалить все правила конфигуратора?",
     "attributeName": "Название атрибута",
     "attributeCode": "Код атрибута",

@@ -41,7 +41,6 @@
   "labels": {
     "generateTemplate": "Згенерувати шаблон",
     "typeToSearch": "Введіть для пошуку...",
-    "addMissingFieldsConfirmation": "Ви впевнені, що хочете додати всі відсутні поля?",
     "removeAllItemsConfirmation": "Ви впевнені, що хочете видалити всі правила конфігуратора?",
     "attributeName": "Назва атрибута",
     "attributeCode": "Код атрибута",

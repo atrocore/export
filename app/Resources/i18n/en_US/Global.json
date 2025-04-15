@@ -13,7 +13,7 @@
     "Generate": "Generate",
     "tryAgain": "Export again",
     "filter": "Filter",
-    "addMissingFields": "Add all missing fields",
+    "selectFields": "Select field(s)",
     "selectAttributes": "Select attribute(s)",
     "removeAllItems": "Remove all",
     "exportErrorDuring24Hours": "Export Feeds/Jobs Error during 24 Hours",

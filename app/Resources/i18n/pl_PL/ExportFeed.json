@@ -50,7 +50,6 @@
     "generateTemplate": "Generuj szablon",
     "simple": "Plik",
     "typeToSearch": "Wpisz, aby wyszukać...",
-    "addMissingFieldsConfirmation": "Czy na pewno chcesz dodać wszystkie brakujące pola?",
     "removeAllItemsConfirmation": "Czy na pewno chcesz usunąć wszystkie reguły konfiguratora?",
     "attributeName": "Nazwa atrybutu",
     "attributeCode": "Kod atrybutu",
