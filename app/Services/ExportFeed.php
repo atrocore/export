@@ -18,7 +18,6 @@ use Atro\Core\Templates\Services\Base;
 use Espo\Core\Utils\Json;
 use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
-use Espo\ORM\EntityCollection;
 use Atro\Core\EventManager\Event;
 use Export\Jobs\ExportJobCreator;
 use Export\TemplateLoaders\AbstractTemplate;
@@ -176,6 +175,45 @@ class ExportFeed extends Base
                 }
             }
         }
+
+        return true;
+    }
+
+    public function addFixed(string $exportFeedId): bool
+    {
+        $exportFeed = $this->getRepository()->get($exportFeedId);
+        if (empty($exportFeed)) {
+            return false;
+        }
+
+        $item = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
+        $item->set([
+            'type'         => 'Fixed value',
+            'exportFeedId' => $exportFeedId,
+            'columnType'   => 'custom',
+            'column'       => 'Fixed value'
+        ]);
+        $this->getEntityManager()->saveEntity($item);
+
+        return true;
+    }
+
+    public function addScript(string $exportFeedId): bool
+    {
+        $exportFeed = $this->getRepository()->get($exportFeedId);
+        if (empty($exportFeed)) {
+            return false;
+        }
+
+        $item = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
+        $item->set([
+            'type'         => 'script',
+            'exportFeedId' => $exportFeedId,
+            'columnType'   => 'custom',
+            'column'       => 'Script',
+            'script'       => '{{ configuration.type }} {{ record.id }} {{ record.name }}'
+        ]);
+        $this->getEntityManager()->saveEntity($item);
 
         return true;
     }

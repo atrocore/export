@@ -25,6 +25,14 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                         action: 'selectAttributes'
                     },
                     {
+                        label: 'addFixed',
+                        action: 'addFixed'
+                    },
+                    {
+                        label: 'addScript',
+                        action: 'addScript'
+                    },
+                    {
                         label: 'removeAllItems',
                         action: 'removeAllItems'
                     }
@@ -79,7 +87,7 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
 
                 this.ajaxPostRequest(`ExportFeed/action/removeAllItems`, postData).then(response => {
                     this.notify('Removed', 'success');
-                    $('.action[data-action=refresh][data-panel=configuratorItems]').click();
+                    this.refreshPanel();
                 });
             });
         },
@@ -120,11 +128,27 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                     };
 
                     this.notify('Saving...');
-                    this.ajaxPostRequest(`ExportFeed/action/addFields`, postData).then(response => {
+                    this.ajaxPostRequest(`ExportFeed/action/addFields`, postData).then(() => {
                         this.notify('Saved', 'success');
-                        $('.action[data-action=refresh][data-panel=configuratorItems]').click();
+                        this.refreshPanel();
                     });
                 });
+            });
+        },
+
+        actionAddFixed() {
+            this.notify('Saving...');
+            this.ajaxPostRequest(`ExportFeed/action/addFixed`, {id: this.model.get('id')}).then(() => {
+                this.notify('Saved', 'success');
+                this.refreshPanel();
+            });
+        },
+
+        actionAddScript() {
+            this.notify('Saving...');
+            this.ajaxPostRequest(`ExportFeed/action/addScript`, {id: this.model.get('id')}).then(() => {
+                this.notify('Saved', 'success');
+                this.refreshPanel();
             });
         },
 
@@ -157,12 +181,16 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                         postData.where = selectObj.where;
                     }
 
-                    this.ajaxPostRequest(`ExportFeed/action/addAttributes`, postData).then(response => {
+                    this.ajaxPostRequest(`ExportFeed/action/addAttributes`, postData).then(() => {
                         this.notify('Saved', 'success');
-                        $('.action[data-action=refresh][data-panel=configuratorItems]').click();
+                        this.refreshPanel();
                     });
                 });
             });
+        },
+
+        refreshPanel() {
+            $('.action[data-action=refresh][data-panel=configuratorItems]').click();
         },
 
     })

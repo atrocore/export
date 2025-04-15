@@ -47,6 +47,32 @@ class ExportFeed extends Base
         return $this->getRecordService()->addAttributes($data);
     }
 
+    public function actionAddFixed($params, $data, Request $request): bool
+    {
+        if (!$request->isPost() || !property_exists($data, 'id')) {
+            throw new Exceptions\BadRequest();
+        }
+
+        if (!$this->getAcl()->check($this->name, 'read')) {
+            throw new Exceptions\Forbidden();
+        }
+
+        return $this->getRecordService()->addFixed($data->id);
+    }
+
+    public function actionAddScript($params, $data, Request $request): bool
+    {
+        if (!$request->isPost() || !property_exists($data, 'id')) {
+            throw new Exceptions\BadRequest();
+        }
+
+        if (!$this->getAcl()->check($this->name, 'read')) {
+            throw new Exceptions\Forbidden();
+        }
+
+        return $this->getRecordService()->addScript($data->id);
+    }
+
     public function actionRemoveAllItems($params, $data, Request $request): bool
     {
         if (!$request->isPost() || !property_exists($data, 'entityType') || !property_exists($data, 'id')) {

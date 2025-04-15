@@ -15,6 +15,8 @@
     "filter": "Filter",
     "selectFields": "Select field(s)",
     "selectAttributes": "Select attribute(s)",
+    "addFixed": "Add fixed value",
+    "addScript": "Add script",
     "removeAllItems": "Remove all",
     "exportErrorDuring24Hours": "Export Feeds/Jobs Error during 24 Hours",
     "exportErrorDuring7Days": "Export Feeds/Jobs Error during 7 days",
