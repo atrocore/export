@@ -18,7 +18,7 @@ class V1Dot8Dot79 extends Base
 {
     public function getMigrationDateTime(): ?\DateTime
     {
-        return new \DateTime('2025-03-15 15:00:00');
+        return new \DateTime('2024-04-16 15:00:00');
     }
 
     public function up(): void
@@ -45,6 +45,10 @@ class V1Dot8Dot79 extends Base
             ->fetchAllAssociative();
 
         foreach ($res as $row) {
+            if (empty($row['export_feed_id'])) {
+                continue;
+            }
+
             $this->getConnection()->createQueryBuilder()
                 ->delete('export_configurator_item')
                 ->where('export_feed_id=:exportFeedId')

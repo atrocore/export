@@ -69,7 +69,7 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
         prepareActionsVisibility() {
             const $selectAttributes = $('.action[data-action=selectAttributes][data-panel=configuratorItems]');
 
-            if (this.model.get('entity') === 'Product') {
+            if (this.model.get('entity') === 'Product' || this.getMetadata().get(`scopes.${this.model.get('entity')}.hasAttribute`)) {
                 $selectAttributes.show();
             } else {
                 $selectAttributes.hide();
@@ -124,7 +124,8 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
 
                     let postData = {
                         id: this.model.get('id'),
-                        fields: fields
+                        fields: fields,
+                        entityName: this.model.name,
                     };
 
                     this.notify('Saving...');
@@ -161,25 +162,28 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                 scope: scope,
                 multiple: true,
                 createButton: false,
-                massRelateEnabled: true
+                massRelateEnabled: true,
+                allowSelectAllResult: false,
             }, dialog => {
                 dialog.render();
                 this.notify(false);
-                dialog.once('select', selectObj => {
+                dialog.once('select', models => {
                     this.notify('Saving...');
 
-                    let postData = {
-                        entityType: this.model.urlRoot,
-                        id: this.model.get('id')
-                    };
-                    if (!selectObj.massRelate) {
-                        postData.ids = [];
-                        selectObj.forEach(model => {
-                            postData.ids.push(model.id);
-                        });
-                    } else {
-                        postData.where = selectObj.where;
+                    if (models.massRelate) {
+                        models = dialog.collection.models;
                     }
+
+                    let attributesIds = [];
+                    models.forEach(model => {
+                        attributesIds.push(model.get('id'))
+                    });
+
+                    let postData = {
+                        id: this.model.get('id'),
+                        attributesIds: attributesIds,
+                        entityName: this.model.name
+                    };
 
                     this.ajaxPostRequest(`ExportFeed/action/addAttributes`, postData).then(() => {
                         this.notify('Saved', 'success');

@@ -125,15 +125,17 @@ class ExportFeed extends Base
         return $this->pushExport($data);
     }
 
-    public function addFields(string $exportFeedId, array $fields): bool
+    public function addFields(string $entityName, string $id, array $fields): bool
     {
-        $exportFeed = $this->getRepository()->get($exportFeedId);
-        if (empty($exportFeed)) {
+        $feed = $this->getEntityManager()->getRepository($entityName)->get($id);
+        if (empty($feed)) {
             return false;
         }
 
+        $feedEntity = $feed->get('entity') ?? $feed->getFeedField('entity');
+
         foreach ($fields as $field) {
-            $defs = $this->getMetadata()->get("entityDefs.{$exportFeed->getFeedField('entity')}.fields.{$field}");
+            $defs = $this->getMetadata()->get("entityDefs.{$feedEntity}.fields.{$field}");
 
             $type = $field === 'id' ? 'varchar' : $defs['type'] ?? null;
             if (empty($type)) {
@@ -144,17 +146,24 @@ class ExportFeed extends Base
                 $field = 'unit' . ucfirst($field);
             }
 
-            $item = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
-            $item->set([
-                'name'         => $field,
-                'type'         => 'Field',
-                'exportFeedId' => $exportFeedId,
-                'columnType'   => 'name'
-            ]);
+            $data = [
+                'name'       => $field,
+                'type'       => 'Field',
+                'columnType' => 'name'
+            ];
 
             if ($type === 'link') {
-                $item->set('exportBy', ['id']);
+                $data['exportBy'] = ['id'];
             }
+
+            if ($entityName === 'Sheet') {
+                $data['sheetId'] = $feed->get('id');
+            } else {
+                $data['exportFeedId'] = $feed->get('id');
+            }
+
+            $item = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
+            $item->set($data);
 
             try {
                 $this->getEntityManager()->saveEntity($item);
@@ -164,12 +173,7 @@ class ExportFeed extends Base
             if (!empty($this->getConfig()->get('isMultilangActive')) && !empty($defs['isMultilang']) && empty($defs['measureId'])) {
                 foreach ($defs['lingualFields'] ?? [] as $languageField) {
                     $item = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
-                    $item->set([
-                        'name'         => $languageField,
-                        'type'         => 'Field',
-                        'exportFeedId' => $exportFeedId,
-                        'columnType'   => 'name'
-                    ]);
+                    $item->set(array_merge($data, ['name' => $languageField]));
                     try {
                         $this->getEntityManager()->saveEntity($item);
                     } catch (Exceptions\NotUnique $e) {

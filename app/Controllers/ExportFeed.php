@@ -23,28 +23,32 @@ class ExportFeed extends Base
 {
     public function actionAddFields($params, $data, Request $request): bool
     {
-        if (!$request->isPost() || !property_exists($data, 'id') || !property_exists($data, 'fields')) {
+        if (!$request->isPost() || !property_exists($data, 'id') || !property_exists($data, 'fields') || !property_exists($data, 'entityName')) {
             throw new Exceptions\BadRequest();
         }
 
-        if (!$this->getAcl()->check($this->name, 'read')) {
+        if (!$this->getAcl()->check($this->name, 'edit')) {
             throw new Exceptions\Forbidden();
         }
 
-        return $this->getRecordService()->addFields($data->id, $data->fields);
+        return $this->getRecordService()->addFields($data->entityName, $data->id, $data->fields);
     }
 
     public function actionAddAttributes($params, $data, Request $request): bool
     {
-        if (!$request->isPost() || !property_exists($data, 'entityType') || !property_exists($data, 'id')) {
+        if (!$request->isPost() || !property_exists($data, 'id') || !property_exists($data, 'attributesIds') || !property_exists($data, 'entityName')) {
             throw new Exceptions\BadRequest();
         }
 
-        if (!$this->getAcl()->check($this->name, 'read')) {
+        if (!$this->getAcl()->check($this->name, 'edit')) {
             throw new Exceptions\Forbidden();
         }
 
-        return $this->getRecordService()->addAttributes($data);
+        echo '<pre>';
+        print_r('123');
+        die();
+
+        return $this->getRecordService()->addAttributes($data->entityName, $data->id, $data->attributesIds);
     }
 
     public function actionAddFixed($params, $data, Request $request): bool
@@ -53,7 +57,7 @@ class ExportFeed extends Base
             throw new Exceptions\BadRequest();
         }
 
-        if (!$this->getAcl()->check($this->name, 'read')) {
+        if (!$this->getAcl()->check($this->name, 'edit')) {
             throw new Exceptions\Forbidden();
         }
 
@@ -66,7 +70,7 @@ class ExportFeed extends Base
             throw new Exceptions\BadRequest();
         }
 
-        if (!$this->getAcl()->check($this->name, 'read')) {
+        if (!$this->getAcl()->check($this->name, 'edit')) {
             throw new Exceptions\Forbidden();
         }
 
@@ -79,7 +83,7 @@ class ExportFeed extends Base
             throw new Exceptions\BadRequest();
         }
 
-        if (!$this->getAcl()->check($this->name, 'read')) {
+        if (!$this->getAcl()->check($this->name, 'edit')) {
             throw new Exceptions\Forbidden();
         }
 
