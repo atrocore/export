@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Export\Services;
 
-use Espo\Core\ORM\EntityManager;
 use Atro\Core\Templates\Services\Base;
 use Atro\Core\Utils\Language;
 use Atro\Core\Utils\Util;
