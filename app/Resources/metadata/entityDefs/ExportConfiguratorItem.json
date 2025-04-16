@@ -81,6 +81,9 @@
       ],
       "default": "Field"
     },
+    "entityAttribute": {
+      "type": "link"
+    },
     "attributeType": {
       "type": "varchar",
       "notStorable": true,
@@ -232,6 +235,10 @@
       "foreign": "configuratorItems",
       "entity": "ExportFeed",
       "audited": false
+    },
+    "entityAttribute": {
+      "type": "belongsTo",
+      "entity": "Attribute"
     }
   },
   "collection": {

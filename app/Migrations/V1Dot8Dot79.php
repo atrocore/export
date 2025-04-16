@@ -61,6 +61,9 @@ class V1Dot8Dot79 extends Base
         }
 
         $this->exec("CREATE UNIQUE INDEX IDX_EXPORT_CONFIGURATOR_ITEM_UNIQUE_FIELD ON export_configurator_item (deleted, name, export_feed_id)");
+
+        $this->exec("ALTER TABLE export_configurator_item ADD entity_attribute_id VARCHAR(36) DEFAULT NULL");
+        $this->exec("CREATE INDEX IDX_EXPORT_CONFIGURATOR_ITEM_ENTITY_ATTRIBUTE_ID ON export_configurator_item (entity_attribute_id, deleted)");
     }
 
     protected function exec(string $query): void

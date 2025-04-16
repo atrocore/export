@@ -174,6 +174,11 @@ class ExportFeed extends Base
                     $this->createExportConfiguratorItem(array_merge($data, ['name' => 'unit' . ucfirst($field)]));
                 }
             }
+
+            if (in_array($type, ['rangeInt', 'rangeFloat'])) {
+                $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'From']));
+                $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'To']));
+            }
         }
 
         return true;
@@ -209,112 +214,16 @@ class ExportFeed extends Base
             $attributesDefs = [];
             $converter->getFieldType($attribute['type'])->convert($feedEntity, $attribute, $attributesDefs);
 
-            echo '<pre>';
-            print_r($attributesDefs);
-            die();
-        }
-
-
-
-        echo '<pre>';
-        print_r('123');
-        die();
-
-        switch ($data->entityType) {
-            case 'Sheet':
-                $sheet = $this->getEntityManager()->getEntity('Sheet', $data->id);
-                $items = $sheet->get('configuratorItems');
-                $relName = 'sheetId';
-                $feed = $this->readEntity($sheet->get('exportFeedId'));
-                break;
-            default:
-                $feed = $this->readEntity($data->id);
-                $items = $feed->get('configuratorItems');
-                $relName = 'exportFeedId';
-        }
-
-        $addedAttributes = [];
-        if (!empty($items) && count($items) > 0) {
-            foreach ($items as $item) {
-                if (!empty($item->get('attributeId')) && $item->get('language') === 'main') {
-                    $addedAttributes[] = $item->get('attributeId');
-                }
+            foreach ($attributesDefs as $field => $fieldDefs) {
+                $data = [
+                    'name'                      => $field,
+                    'type'                      => 'Field',
+                    'columnType'                => 'name',
+                    'entityAttributeId'         => $attribute['id'],
+                    lcfirst($entityName) . 'Id' => $feed->get('id')
+                ];
+                $this->createExportConfiguratorItem($data);
             }
-        }
-
-        if (property_exists($data, 'ids')) {
-            $params['where'] = [
-                [
-                    'type'      => 'equals',
-                    'attribute' => 'id',
-                    'value'     => $data->ids,
-                ]
-            ];
-        }
-
-        if (property_exists($data, 'where')) {
-            $params['where'] = Json::decode(Json::encode($data->where), true);
-        }
-
-        if (!isset($params['where'])) {
-            return false;
-        }
-
-        $exportConfiguratorItemService = $this->getInjection('serviceFactory')->create('ExportConfiguratorItem');
-
-        /** @var \Pim\Repositories\Attribute $attributeRepository */
-        $attributeRepository = $this->getEntityManager()->getRepository('Attribute');
-
-        /** @var array $selectParams */
-        $selectParams = $this->getSelectManager('Attribute')->getSelectParams($params, true, true);
-
-        if ($attributeRepository->count($selectParams) > 2000) {
-            throw new Exceptions\BadRequest($this->getInjection('language')->translate('toManyAttributesSelected', 'exceptions', 'ExportFeed'));
-        }
-
-        foreach ($attributeRepository->find($selectParams) as $attribute) {
-            if (in_array($attribute->get('id'), $addedAttributes)) {
-                continue;
-            }
-
-            $post = new \stdClass();
-            $post->type = 'Attribute';
-            $post->name = $attribute->get('name');
-            if (empty($feed->get('language'))) {
-                $post->language = 'main';
-            }
-            $post->$relName = $data->id;
-            $post->attributeId = $attribute->get('id');
-
-            if (!empty($feed->get('channelId'))) {
-                $post->channelId = $feed->get('channelId');
-                $post->channelName = $feed->get('channelName');
-            }
-
-            $post->attributeValue = 'value';
-
-            switch ($attribute->get('type')) {
-                case 'currency':
-                    $post->mask = "{{value}} {{currency}}";
-                    break;
-                case 'float':
-                case 'int':
-                    if (!$attribute->get('measureId')) {
-                        $post->attributeValue = 'valueNumeric';
-                    }
-                    break;
-                case 'varchar':
-                    if (!$attribute->get('measureId')) {
-                        $post->attributeValue = 'valueString';
-                    }
-                    break;
-                case 'extensibleEnum':
-                case 'extensibleMultiEnum':
-                    $post->exportBy = ["name"];
-                    break;
-            }
-
-            $exportConfiguratorItemService->createEntity($post);
         }
 
         return true;
