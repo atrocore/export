@@ -127,6 +127,10 @@ class ExportFeed extends Base
 
     public function addFields(string $entityName, string $id, array $fields): bool
     {
+        if (!in_array($entityName, ['ExportFeed', 'Sheet'])) {
+            throw new Exceptions\BadRequest('Wrong entity name');
+        }
+
         $feed = $this->getEntityManager()->getRepository($entityName)->get($id);
         if (empty($feed)) {
             return false;
@@ -147,19 +151,14 @@ class ExportFeed extends Base
             }
 
             $data = [
-                'name'       => $field,
-                'type'       => 'Field',
-                'columnType' => 'name'
+                'name'                      => $field,
+                'type'                      => 'Field',
+                'columnType'                => 'name',
+                lcfirst($entityName) . 'Id' => $feed->get('id')
             ];
 
             if ($type === 'link') {
                 $data['exportBy'] = ['id'];
-            }
-
-            if ($entityName === 'Sheet') {
-                $data['sheetId'] = $feed->get('id');
-            } else {
-                $data['exportFeedId'] = $feed->get('id');
             }
 
             $item = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
@@ -185,39 +184,48 @@ class ExportFeed extends Base
         return true;
     }
 
-    public function addFixed(string $exportFeedId): bool
+    public function addFixed(string $entityName, string $id): bool
     {
-        $exportFeed = $this->getRepository()->get($exportFeedId);
-        if (empty($exportFeed)) {
+        if (!in_array($entityName, ['ExportFeed', 'Sheet'])) {
+            throw new Exceptions\BadRequest('Wrong entity name');
+        }
+
+        $feed = $this->getEntityManager()->getRepository($entityName)->get($id);
+        if (empty($feed)) {
             return false;
         }
 
         $item = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
         $item->set([
-            'type'         => 'Fixed value',
-            'exportFeedId' => $exportFeedId,
-            'columnType'   => 'custom',
-            'column'       => 'Fixed value'
+            'type'                      => 'Fixed value',
+            'columnType'                => 'custom',
+            'column'                    => 'Fixed value',
+            lcfirst($entityName) . 'Id' => $feed->get('id')
         ]);
+
         $this->getEntityManager()->saveEntity($item);
 
         return true;
     }
 
-    public function addScript(string $exportFeedId): bool
+    public function addScript(string $entityName, string $id): bool
     {
-        $exportFeed = $this->getRepository()->get($exportFeedId);
-        if (empty($exportFeed)) {
+        if (!in_array($entityName, ['ExportFeed', 'Sheet'])) {
+            throw new Exceptions\BadRequest('Wrong entity name');
+        }
+
+        $feed = $this->getEntityManager()->getRepository($entityName)->get($id);
+        if (empty($feed)) {
             return false;
         }
 
         $item = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
         $item->set([
-            'type'         => 'script',
-            'exportFeedId' => $exportFeedId,
-            'columnType'   => 'custom',
-            'column'       => 'Script',
-            'script'       => '{{ configuration.type }} {{ record.id }} {{ record.name }}'
+            'type'                      => 'script',
+            'columnType'                => 'custom',
+            'column'                    => 'Script',
+            'script'                    => '{{ configuration.type }} {{ record.id }} {{ record.name }}',
+            lcfirst($entityName) . 'Id' => $feed->get('id')
         ]);
         $this->getEntityManager()->saveEntity($item);
 

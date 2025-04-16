@@ -53,7 +53,7 @@ class ExportFeed extends Base
 
     public function actionAddFixed($params, $data, Request $request): bool
     {
-        if (!$request->isPost() || !property_exists($data, 'id')) {
+        if (!$request->isPost() || !property_exists($data, 'id') || !property_exists($data, 'entityName')) {
             throw new Exceptions\BadRequest();
         }
 
@@ -61,12 +61,12 @@ class ExportFeed extends Base
             throw new Exceptions\Forbidden();
         }
 
-        return $this->getRecordService()->addFixed($data->id);
+        return $this->getRecordService()->addFixed($data->entityName, $data->id);
     }
 
     public function actionAddScript($params, $data, Request $request): bool
     {
-        if (!$request->isPost() || !property_exists($data, 'id')) {
+        if (!$request->isPost() || !property_exists($data, 'id') || !property_exists($data, 'entityName')) {
             throw new Exceptions\BadRequest();
         }
 
@@ -74,7 +74,7 @@ class ExportFeed extends Base
             throw new Exceptions\Forbidden();
         }
 
-        return $this->getRecordService()->addScript($data->id);
+        return $this->getRecordService()->addScript($data->entityName, $data->id);
     }
 
     public function actionRemoveAllItems($params, $data, Request $request): bool

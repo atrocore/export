@@ -139,7 +139,11 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
 
         actionAddFixed() {
             this.notify('Saving...');
-            this.ajaxPostRequest(`ExportFeed/action/addFixed`, {id: this.model.get('id')}).then(() => {
+            let postData = {
+                id: this.model.get('id'),
+                entityName: this.model.name,
+            };
+            this.ajaxPostRequest(`ExportFeed/action/addFixed`, postData).then(() => {
                 this.notify('Saved', 'success');
                 this.refreshPanel();
             });
@@ -147,7 +151,11 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
 
         actionAddScript() {
             this.notify('Saving...');
-            this.ajaxPostRequest(`ExportFeed/action/addScript`, {id: this.model.get('id')}).then(() => {
+            let postData = {
+                id: this.model.get('id'),
+                entityName: this.model.name,
+            };
+            this.ajaxPostRequest(`ExportFeed/action/addScript`, postData).then(() => {
                 this.notify('Saved', 'success');
                 this.refreshPanel();
             });
