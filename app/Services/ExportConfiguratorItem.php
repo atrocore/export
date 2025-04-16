@@ -122,10 +122,12 @@ class ExportConfiguratorItem extends Base
     {
         switch ($entity->get('columnType') ?? 'name') {
             case 'name':
-                $exportFeed = $this->getExportFeed($entity);
-                $column = $this
-                    ->getLanguage(empty($exportFeed) ? '' : $exportFeed->get('localeId'))
-                    ->translate($entity->get('name'), 'fields', $entity->get('entity'));
+                $column = $this->getMetadata()
+                    ->get("entityDefs.{$entity->get('entity')}.fields.{$entity->get('name')}.label");
+                if (empty($column)) {
+                    $column = $this->getInjection('language')
+                        ->translate($entity->get('name'), 'fields', $entity->get('entity'));
+                }
                 break;
             case 'custom':
                 $column = (string)$entity->get('column');
