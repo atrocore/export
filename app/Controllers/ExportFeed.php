@@ -44,10 +44,6 @@ class ExportFeed extends Base
             throw new Exceptions\Forbidden();
         }
 
-        echo '<pre>';
-        print_r('123');
-        die();
-
         return $this->getRecordService()->addAttributes($data->entityName, $data->id, $data->attributesIds);
     }
 
