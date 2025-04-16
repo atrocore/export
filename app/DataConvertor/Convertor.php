@@ -154,6 +154,11 @@ class Convertor
         if (!empty($fieldDefs['unitField'])) {
             $type = 'valueWithUnit';
         }
+
+        if ($type === 'link' && !empty($fieldDefs['entity']) && $fieldDefs['entity'] === 'Unit') {
+            $type = 'unit';
+        }
+
         return $type;
     }
 

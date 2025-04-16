@@ -262,6 +262,24 @@ abstract class AbstractExportType extends Base
         return $this->getEntityService()->findEntities($params)['total'] ?? 0;
     }
 
+    protected function addAttributesToSelectParams(array &$params): void
+    {
+        $entityName = $this->data['feed']['entity'] ?? null;
+        if (empty($entityName)) {
+            return;
+        }
+
+        if ($this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
+            $attributesIds = [];
+            foreach ($this->data['feed']['data']['configuration'] ?? [] as $item) {
+                if (!empty($item['entityAttributeId'])) {
+                    $attributesIds[$item['entityAttributeId']] = true;
+                }
+            }
+            $params['attributesIds'] = array_keys($attributesIds);
+        }
+    }
+
     protected function getRecords(int $offset, int $limit): array
     {
         if (!$this->getAcl()->check($this->data['feed']['entity'], 'read')) {
@@ -273,6 +291,8 @@ abstract class AbstractExportType extends Base
         $params['offset'] = $offset;
         $params['maxSize'] = $limit;
         $params['queryCallbacks'][] = [$this, 'queryCallback'];
+
+        $this->addAttributesToSelectParams($params);
 
         $result = $this->getEntityService()->findEntities($params);
 
@@ -308,6 +328,8 @@ abstract class AbstractExportType extends Base
         $params['withDeleted'] = !empty($this->data['feed']['data']['withDeleted']);
         $params['disableCount'] = true;
         $params['queryCallbacks'][] = [$this, 'queryCallback'];
+
+        $this->addAttributesToSelectParams($params);
 
         if (!empty($this->data['feed']['sortOrderField'])) {
             $params['sortBy'] = $this->data['feed']['sortOrderField'];

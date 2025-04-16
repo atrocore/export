@@ -16,8 +16,6 @@ namespace Export\Services;
 use Atro\Core\AttributeFieldConverter;
 use Atro\Core\Exceptions;
 use Atro\Core\Templates\Services\Base;
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\ParameterType;
 use Espo\Core\Utils\Json;
 use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
@@ -160,7 +158,12 @@ class ExportFeed extends Base
                 $data['exportBy'] = ['id'];
             }
 
-            $this->createExportConfiguratorItem($data);
+            if (in_array($type, ['rangeInt', 'rangeFloat'])) {
+                $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'From']));
+                $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'To']));
+            } else {
+                $this->createExportConfiguratorItem($data);
+            }
 
             if (!empty($this->getConfig()->get('isMultilangActive')) && !empty($defs['isMultilang']) && empty($defs['measureId'])) {
                 foreach ($defs['lingualFields'] ?? [] as $languageField) {
@@ -173,11 +176,6 @@ class ExportFeed extends Base
                 if (in_array($type, ['int', 'float', 'varchar'])) {
                     $this->createExportConfiguratorItem(array_merge($data, ['name' => 'unit' . ucfirst($field)]));
                 }
-            }
-
-            if (in_array($type, ['rangeInt', 'rangeFloat'])) {
-                $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'From']));
-                $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'To']));
             }
         }
 
@@ -195,26 +193,15 @@ class ExportFeed extends Base
             return false;
         }
 
-        $conn = $this->getEntityManager()->getConnection();
-        $attributes = $conn->createQueryBuilder()
-            ->select('*')
-            ->from($conn->quoteIdentifier('attribute'))
-            ->where('id IN (:ids)')
-            ->andWhere('deleted=:false')
-            ->setParameter('ids', $attributesIds, Connection::PARAM_STR_ARRAY)
-            ->setParameter('false', false, ParameterType::BOOLEAN)
-            ->fetchAllAssociative();
-
         $feedEntity = $this->getEntityManager()->getRepository($feed->get('entity') ?? $feed->getFeedField('entity'))->get();
 
-        /** @var AttributeFieldConverter $converter */
-        $converter = $this->getInjection('container')->get(AttributeFieldConverter::class);
-
-        foreach ($attributes as $attribute) {
+        foreach ($this->getAttributeFieldConverter()->getAttributesRowsByIds($attributesIds) as $attribute) {
             $attributesDefs = [];
-            $converter->getFieldType($attribute['type'])->convert($feedEntity, $attribute, $attributesDefs);
-
+            $this->getAttributeFieldConverter()->convert($feedEntity, $attribute, $attributesDefs);
             foreach ($attributesDefs as $field => $fieldDefs) {
+                if (in_array($fieldDefs['type'], ['rangeInt', 'rangeFloat'])) {
+                    continue;
+                }
                 $data = [
                     'name'                      => $field,
                     'type'                      => 'Field',
@@ -384,6 +371,17 @@ class ExportFeed extends Base
         /** @var \Export\Services\ExportConfiguratorItem $eciService */
         $eciService = $this->getInjection('serviceFactory')->create('ExportConfiguratorItem');
 
+        // put attributes to metadata as fields
+        if ($this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
+            $attributesIds = [];
+            foreach ($items['collection'] as $item) {
+                if (!empty($item->get('entityAttributeId'))) {
+                    $attributesIds[$item->get('entityAttributeId')] = true;
+                }
+            }
+            $this->putAttributesToMetadata(array_keys($attributesIds), $entityName);
+        }
+
         foreach ($items['collection'] as $item) {
             $row = [
                 'id'                        => $item->get('id'),
@@ -419,6 +417,7 @@ class ExportFeed extends Base
                 'sortOrderField'            => $sheet->get('sortOrderField'),
                 'sortOrderDirection'        => $sheet->get('sortOrderDirection'),
                 'script'                    => $item->get('script') ?? null,
+                'entityAttributeId'         => $item->get('entityAttributeId') ?? null,
             ];
             if ($feed->get('type') === 'simple') {
                 $row['convertCollectionToString'] = true;
@@ -774,5 +773,28 @@ class ExportFeed extends Base
             "urlColumns" => $exportService->getUrlColumns(),
             "records"    => $exportService->exportEasyCatalogJson(),
         ];
+    }
+
+    public function putAttributesToMetadata(array $attributesIds, string $entityName): void
+    {
+        if (empty($attributesIds)){
+            return;
+        }
+
+        $exportEntity = $this->getEntityManager()->getEntity($entityName);
+
+        $attributesDefs = [];
+        foreach ($this->getAttributeFieldConverter()->getAttributesRowsByIds($attributesIds) as $row) {
+            $this->getAttributeFieldConverter()->convert($exportEntity, $row, $attributesDefs);
+        }
+
+        foreach ($attributesDefs as $name => $attributeDefs) {
+            $this->getMetadata()->set('entityDefs', $entityName, ['fields' => [$name => $attributeDefs]]);
+        }
+    }
+
+    protected function getAttributeFieldConverter(): AttributeFieldConverter
+    {
+        return $this->getInjection('container')->get(AttributeFieldConverter::class);
     }
 }

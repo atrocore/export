@@ -36,9 +36,24 @@ class Export extends AbstractJob implements JobInterface
         $exportJob->set('state', 'Running');
         $this->getEntityManager()->saveEntity($exportJob);
 
+        $entityName = $data['feed']['entity'] ?? null;
+
         try {
-            /** @var AbstractExportType $typeService */
-            $typeService = $this->getServiceFactory()->create('ExportFeed')->getExportTypeService($data['feed']['type']);
+            /** @var \Export\Services\ExportFeed $exportFeedService */
+            $exportFeedService = $this->getServiceFactory()->create('ExportFeed');
+
+            // put attributes to metadata as fields
+            if (!empty($entityName) && $this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
+                $attributesIds = [];
+                foreach ($data['feed']['data']['configuration'] ?? [] as $item) {
+                    if (!empty($item['entityAttributeId'])) {
+                        $attributesIds[$item['entityAttributeId']] = true;
+                    }
+                }
+                $exportFeedService->putAttributesToMetadata(array_keys($attributesIds), $entityName);
+            }
+
+            $typeService = $exportFeedService->getExportTypeService($data['feed']['type']);
             try {
                 $file = $typeService->export($data, $exportJob);
             } catch (NothingToExport $e) {
