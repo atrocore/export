@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Export\Services;
 
 use Atro\Core\AttributeFieldConverter;
+use Atro\Core\Container;
 use Atro\Core\Exceptions;
 use Atro\Core\Templates\Services\Base;
 use Atro\Core\Utils\Language;
@@ -29,6 +30,8 @@ use Export\Entities\ExportFeed as ExportFeedEntity;
 
 class ExportFeed extends Base
 {
+    protected static array $languages = [];
+
     public function runExport(string $feedId, string $payload = null, ?string $priority = null): bool
     {
         $exportFeed = $this->getEntity($feedId);
@@ -779,6 +782,11 @@ class ExportFeed extends Base
             return;
         }
 
+        $languageObj = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
+
+        $currentLocaleId = $this->getUser()->get('localeId');
+        $this->getUser()->set('localeId', $exportFeed->get('localeId'));
+
         $conn = $this->getEntityManager()->getConnection();
 
         if (!empty($exportFeed->get('hasMultipleSheets'))) {
@@ -844,12 +852,12 @@ class ExportFeed extends Base
                     $this
                         ->getMetadata()
                         ->set('entityDefs', $entityName, ['fields' => [$name => $attributeDefs]]);
-                    $this
-                        ->getLanguage()
-                        ->set($entityName, 'fields', $name, $attributeDefs['label']);
+
+                    $languageObj->set($entityName, 'fields', $name, $attributeDefs['label']);
                 }
             }
         }
+        $this->getUser()->set('localeId', $currentLocaleId);
     }
 
     protected function getAttributeFieldConverter(): AttributeFieldConverter
@@ -860,5 +868,14 @@ class ExportFeed extends Base
     protected function getLanguage(): Language
     {
         return $this->getInjection('language');
+    }
+
+    public static function getLocalizedLanguage(Container $container, $locale)
+    {
+        if (!isset(self::$languages[$locale])) {
+            self::$languages[$locale] = new Language($container, $locale);
+        }
+
+        return self::$languages[$locale];
     }
 }

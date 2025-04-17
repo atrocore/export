@@ -42,8 +42,6 @@ class ExportConfiguratorItem extends Base
             'virtualFields'
         ];
 
-    protected array $languages = [];
-
     public function prepareEntityForOutput(Entity $entity)
     {
         parent::prepareEntityForOutput($entity);
@@ -114,24 +112,14 @@ class ExportConfiguratorItem extends Base
         return $this->prepareFieldColumnName($entity);
     }
 
-
-    protected function getExportFeed(\Export\Entities\ExportConfiguratorItem $entity): ?\Export\Entities\ExportFeed
-    {
-        $exportFeed = $entity->get('exportFeed');
-        if (!empty($exportFeed)) {
-            return $exportFeed;
-        }
-        if (!empty($entity->get('exportFeedId'))) {
-            return $this->getEntityManager()->getEntity('ExportFeed', $entity->get('exportFeedId'));
-        }
-        return null;
-    }
-
     protected function prepareFieldColumnName(Entity $entity): string
     {
         switch ($entity->get('columnType') ?? 'name') {
             case 'name':
-                $column = $this->getInjection('language')->translate($entity->get('name'), 'fields', $entity->get('entity'));
+                $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $entity->get('exportFeedId'));
+                $column = $this
+                    ->getLocalizedLanguage($exportFeed->get('localeId'))
+                    ->translate($entity->get('name'), 'fields', $entity->get('entity'));
                 break;
             case 'custom':
                 $column = (string)$entity->get('column');
@@ -155,7 +143,7 @@ class ExportConfiguratorItem extends Base
 
         if ($columnType === 'name') {
             $column = $attribute->get('name');
-            if (!empty($exportFeed = $this->getExportFeed($entity))) {
+            if (!empty($exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $entity->get('exportFeedId')))) {
                 if (!empty($locale = $this->getEntityManager()->getEntity('Locale', $exportFeed->get('localeId')))) {
                     $fieldName = 'name' . ucfirst(Util::toCamelCase(strtolower($locale->get('languageCode'))));
                     if ($this->getMetadata()->get("entityDefs.Attribute.fields.$fieldName")) {
@@ -170,21 +158,17 @@ class ExportConfiguratorItem extends Base
         return (string)$column;
     }
 
+    protected function getLocalizedLanguage(string $locale): Language
+    {
+        return ExportFeed::getLocalizedLanguage($this->getInjection('container'), $locale);
+    }
+
     protected function init()
     {
         parent::init();
 
         $this->addDependency('language');
         $this->addDependency('container');
-    }
-
-    protected function getLanguage(string $locale): Language
-    {
-        if (!isset($this->languages[$locale])) {
-            $this->languages[$locale] = new Language($this->getInjection('container'), $locale);
-        }
-
-        return $this->languages[$locale];
     }
 
     protected function getFieldsThatConflict(Entity $entity, \stdClass $data): array
