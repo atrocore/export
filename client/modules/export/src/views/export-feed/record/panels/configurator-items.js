@@ -46,6 +46,15 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
             this.listenTo(this.model, 'change:fileType', () => {
                 this.reRender();
             });
+
+            this.listenTo(this.collection, 'sync', () => {
+                this.collection.forEach(model => {
+                    if (model.get('entityAttributeId') && model.get('fieldDefs')) {
+                        this.getMetadata().data.entityDefs[model.get('entity')].fields[model.get('name')] = model.get('fieldDefs');
+                        this.getLanguage().data[model.get('entity')].fields[model.get('name')] = model.get('fieldDefs').label;
+                    }
+                })
+            });
         },
 
         afterRender() {
