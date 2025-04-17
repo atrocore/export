@@ -31,6 +31,7 @@ class ExportConfiguratorItem extends Base
             'exportIntoSeparateColumns',
             'sortOrder',
             'attributeId',
+            'entityAttributeId',
             'language',
             'fallbackLanguage',
             'channelId',
@@ -58,6 +59,7 @@ class ExportConfiguratorItem extends Base
             $entity->set('entity', $feed->getFeedField('entity'));
         }
 
+        $entity->set('fieldDefs', $this->getMetadata()->get("entityDefs.{$entity->get('entity')}.fields.{$entity->get('name')}"));
         $entity->set('column', $this->prepareColumnName($entity));
         $entity->set('exportFeedData', $feed->toArray());
         $entity->set('isAttributeMultiLang', false);
