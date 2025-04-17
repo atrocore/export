@@ -39,7 +39,6 @@
   },
   "relationshipPanels": {
     "configuratorItems": {
-      "create": false,
       "select": false,
       "canClose": false,
       "hideShowFullList": true,

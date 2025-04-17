@@ -6,6 +6,16 @@
   },
   "dynamicLogic": {
     "fields": {
+      "type": {
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "id"
+            }
+          ]
+        }
+      },
       "name": {
         "visible": {
           "conditionGroup": [
@@ -22,6 +32,14 @@
               "type": "equals",
               "attribute": "type",
               "value": "Field"
+            }
+          ]
+        },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "id"
             }
           ]
         }

@@ -78,7 +78,7 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
         prepareActionsVisibility() {
             const $selectAttributes = $('.action[data-action=selectAttributes][data-panel=configuratorItems]');
 
-            if (this.model.get('entity') === 'Product' || this.getMetadata().get(`scopes.${this.model.get('entity')}.hasAttribute`)) {
+            if (this.getMetadata().get(`scopes.${this.model.get('entity')}.hasAttribute`)) {
                 $selectAttributes.show();
             } else {
                 $selectAttributes.hide();

@@ -27,7 +27,6 @@
     },
     "name": {
       "type": "varchar",
-      "readOnly": true,
       "view": "export:views/export-configurator-item/fields/name"
     },
     "column": {
@@ -71,7 +70,6 @@
     "type": {
       "type": "enum",
       "required": true,
-      "readOnly": true,
       "prohibitedEmptyValue": true,
       "view": "export:views/export-configurator-item/fields/type",
       "options": [
