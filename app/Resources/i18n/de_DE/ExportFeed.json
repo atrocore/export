@@ -78,7 +78,6 @@
   },
   "exceptions": {
     "toManyAttributesSelected": "Die maximale Anzahl ausgewählter Attribute sollte unter 2000 Datensätzen liegen.",
-    "noSuchField": "Feld '%s' existiert nicht.",
     "noSuchAttribute": "Attribut '%s' existiert nicht.",
     "noDataFound": "Feed hat nichts zu exportieren.",
     "exportValidationFailed": "Diese Datei kann nicht exportiert werden. Prüfen Sie bitte die HTML-Form und versuchen es erneut.",

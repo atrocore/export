@@ -87,7 +87,6 @@
   },
   "exceptions": {
     "toManyAttributesSelected": "Le nombre maximum d'attributs sélectionnés doit être inférieur à 2000 enregistrements.",
-    "noSuchField": "Le champ '%s' n'existe pas.",
     "noSuchAttribute": "L'attribut \"%s\" n'existe pas.",
     "noDataFound": "Les aliments pour animaux n'ont rien à exporter.",
     "exportValidationFailed": "Vous ne pouvez pas exporter un tel fichier. Veuillez vérifier le formulaire et réessayer.",

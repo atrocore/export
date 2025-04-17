@@ -16,10 +16,13 @@ namespace Export\Services;
 use Atro\Core\AttributeFieldConverter;
 use Atro\Core\Exceptions;
 use Atro\Core\Templates\Services\Base;
+use Atro\Core\Utils\Language;
+use Doctrine\DBAL\ParameterType;
 use Espo\Core\Utils\Json;
 use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Atro\Core\EventManager\Event;
+use Espo\ORM\EntityCollection;
 use Export\Jobs\ExportJobCreator;
 use Export\TemplateLoaders\AbstractTemplate;
 use Export\Entities\ExportFeed as ExportFeedEntity;
@@ -287,6 +290,7 @@ class ExportFeed extends Base
     {
         if ($link === 'configuratorItems' && !empty($exportFeed = $this->getEntity($id))) {
             $this->getRepository()->removeInvalidConfiguratorItems($exportFeed->get('id'));
+            $this->putAttributesToMetadata($id);
         }
 
         return parent::findLinkedEntities($id, $link, $params);
@@ -371,17 +375,6 @@ class ExportFeed extends Base
         /** @var \Export\Services\ExportConfiguratorItem $eciService */
         $eciService = $this->getInjection('serviceFactory')->create('ExportConfiguratorItem');
 
-        // put attributes to metadata as fields
-        if ($this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
-            $attributesIds = [];
-            foreach ($items['collection'] as $item) {
-                if (!empty($item->get('entityAttributeId'))) {
-                    $attributesIds[$item->get('entityAttributeId')] = true;
-                }
-            }
-            $this->putAttributesToMetadata(array_keys($attributesIds), $entityName);
-        }
-
         foreach ($items['collection'] as $item) {
             $row = [
                 'id'                        => $item->get('id'),
@@ -425,9 +418,6 @@ class ExportFeed extends Base
             }
 
             if ($item->get('type') === 'Field') {
-                if ($item->get('name') !== 'id' && empty($this->getMetadata()->get(['entityDefs', $row['entity'], 'fields', $item->get('name')]))) {
-                    throw new Exceptions\BadRequest(sprintf($this->getInjection('language')->translate('noSuchField', 'exceptions', 'ExportFeed'), $item->get('name')));
-                }
                 $row['field'] = $item->get('name');
             }
 
@@ -775,26 +765,100 @@ class ExportFeed extends Base
         ];
     }
 
-    public function putAttributesToMetadata(array $attributesIds, string $entityName): void
+    /**
+     * Put attributes to metadata as fields
+     *
+     * @param string $exportFeedId
+     * @return void
+     * @throws Exceptions\Error
+     */
+    public function putAttributesToMetadata(string $exportFeedId): void
     {
-        if (empty($attributesIds)){
+        $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
+        if (empty($exportFeed)) {
             return;
         }
 
-        $exportEntity = $this->getEntityManager()->getEntity($entityName);
+        $conn = $this->getEntityManager()->getConnection();
 
-        $attributesDefs = [];
-        foreach ($this->getAttributeFieldConverter()->getAttributesRowsByIds($attributesIds) as $row) {
-            $this->getAttributeFieldConverter()->convert($exportEntity, $row, $attributesDefs);
-        }
+        if (!empty($exportFeed->get('hasMultipleSheets'))) {
+            $res = $conn->createQueryBuilder()
+                ->select('a.*, s.entity as sheet_entity')
+                ->from($conn->quoteIdentifier('attribute'), 'a')
+                ->innerJoin('a', 'export_configurator_item', 'i', 'i.entity_attribute_id=a.id AND i.deleted=:false')
+                ->innerJoin('i', $conn->quoteIdentifier('sheet'), 's', 'i.sheet_id=s.id AND s.deleted=:false')
+                ->innerJoin('s', 'export_feed', 'e', 's.export_feed_id=e.id AND e.deleted=:false')
+                ->where('a.deleted=:false')
+                ->andWhere('e.id=:exportFeedId')
+                ->setParameter('false', false, ParameterType::BOOLEAN)
+                ->setParameter('exportFeedId', $exportFeedId)
+                ->fetchAllAssociative();
 
-        foreach ($attributesDefs as $name => $attributeDefs) {
-            $this->getMetadata()->set('entityDefs', $entityName, ['fields' => [$name => $attributeDefs]]);
+            $result = [];
+            foreach ($res as $v) {
+                $result[$v['sheet_entity']][$v['id']] = $v;
+            }
+
+            foreach ($result as $entityName => $attributes) {
+                if ($this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
+                    $exportEntity = $this->getEntityManager()->getEntity($entityName);
+
+                    $attributesDefs = [];
+                    foreach ($attributes as $row) {
+                        $this->getAttributeFieldConverter()->convert($exportEntity, $row, $attributesDefs);
+                    }
+
+                    foreach ($attributesDefs as $name => $attributeDefs) {
+                        $this
+                            ->getMetadata()
+                            ->set('entityDefs', $entityName, ['fields' => [$name => $attributeDefs]]);
+                        $this
+                            ->getLanguage()
+                            ->set($entityName, 'fields', $name, $attributeDefs['label']);
+                    }
+                }
+            }
+        } else {
+            $entityName = $exportFeed->getFeedField('entity');
+            if ($this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
+                $attributes = $conn->createQueryBuilder()
+                    ->select('a.*')
+                    ->distinct()
+                    ->from($conn->quoteIdentifier('attribute'), 'a')
+                    ->innerJoin('a', 'export_configurator_item', 'i', 'i.entity_attribute_id=a.id AND i.deleted=:false')
+                    ->innerJoin('i', 'export_feed', 'e', 'i.export_feed_id=e.id AND e.deleted=:false')
+                    ->where('a.deleted=:false')
+                    ->andWhere('e.id=:exportFeedId')
+                    ->setParameter('false', false, ParameterType::BOOLEAN)
+                    ->setParameter('exportFeedId', $exportFeedId)
+                    ->fetchAllAssociative();
+
+                $exportEntity = $this->getEntityManager()->getEntity($entityName);
+
+                $attributesDefs = [];
+                foreach ($attributes as $row) {
+                    $this->getAttributeFieldConverter()->convert($exportEntity, $row, $attributesDefs);
+                }
+
+                foreach ($attributesDefs as $name => $attributeDefs) {
+                    $this
+                        ->getMetadata()
+                        ->set('entityDefs', $entityName, ['fields' => [$name => $attributeDefs]]);
+                    $this
+                        ->getLanguage()
+                        ->set($entityName, 'fields', $name, $attributeDefs['label']);
+                }
+            }
         }
     }
 
     protected function getAttributeFieldConverter(): AttributeFieldConverter
     {
         return $this->getInjection('container')->get(AttributeFieldConverter::class);
+    }
+
+    protected function getLanguage(): Language
+    {
+        return $this->getInjection('language');
     }
 }
