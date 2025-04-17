@@ -50,7 +50,6 @@
     "generateTemplate": "Générer un modèle",
     "simple": "Fichier",
     "typeToSearch": "Tapez pour rechercher...",
-    "addMissingFieldsConfirmation": "Êtes-vous sûr de vouloir ajouter tous les champs manquants ?",
     "removeAllItemsConfirmation": "Êtes-vous sûr de vouloir supprimer toutes les règles du configurateur ?",
     "attributeName": "Nom de l'attribut",
     "attributeCode": "Code d'attribut",
@@ -88,7 +87,6 @@
   },
   "exceptions": {
     "toManyAttributesSelected": "Le nombre maximum d'attributs sélectionnés doit être inférieur à 2000 enregistrements.",
-    "noSuchField": "Le champ '%s' n'existe pas.",
     "noSuchAttribute": "L'attribut \"%s\" n'existe pas.",
     "noDataFound": "Les aliments pour animaux n'ont rien à exporter.",
     "exportValidationFailed": "Vous ne pouvez pas exporter un tel fichier. Veuillez vérifier le formulaire et réessayer.",

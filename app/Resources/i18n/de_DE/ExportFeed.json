@@ -41,7 +41,6 @@
   "labels": {
     "generateTemplate": "Vorlage generieren",
     "typeToSearch": "Tippe um zu suchen...",
-    "addMissingFieldsConfirmation": " Möchten Sie wirklich alle fehlenden Felder hinzufügen?",
     "removeAllItemsConfirmation": "Möchten Sie wirklich alle Konfigurator-Regel entfernen?",
     "attributeName": "Attributname",
     "attributeCode": "Attributcode",
@@ -79,7 +78,6 @@
   },
   "exceptions": {
     "toManyAttributesSelected": "Die maximale Anzahl ausgewählter Attribute sollte unter 2000 Datensätzen liegen.",
-    "noSuchField": "Feld '%s' existiert nicht.",
     "noSuchAttribute": "Attribut '%s' existiert nicht.",
     "noDataFound": "Feed hat nichts zu exportieren.",
     "exportValidationFailed": "Diese Datei kann nicht exportiert werden. Prüfen Sie bitte die HTML-Form und versuchen es erneut.",

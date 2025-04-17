@@ -17,12 +17,20 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
             if (this.getAcl().check('ExportFeed', 'edit')) {
                 this.actionList = [
                     {
-                        label: 'addMissingFields',
-                        action: 'addMissingFields'
+                        label: 'selectFields',
+                        action: 'selectFields'
                     },
                     {
                         label: 'selectAttributes',
                         action: 'selectAttributes'
+                    },
+                    {
+                        label: 'addFixed',
+                        action: 'addFixed'
+                    },
+                    {
+                        label: 'addScript',
+                        action: 'addScript'
                     },
                     {
                         label: 'removeAllItems',
@@ -37,6 +45,15 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
 
             this.listenTo(this.model, 'change:fileType', () => {
                 this.reRender();
+            });
+
+            this.listenTo(this.collection, 'sync', () => {
+                this.collection.forEach(model => {
+                    if (model.get('entityAttributeId') && model.get('fieldDefs')) {
+                        this.getMetadata().data.entityDefs[model.get('entity')].fields[model.get('name')] = model.get('fieldDefs');
+                        this.getLanguage().data[model.get('entity')].fields[model.get('name')] = model.get('fieldDefs').label;
+                    }
+                })
             });
         },
 
@@ -61,27 +78,11 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
         prepareActionsVisibility() {
             const $selectAttributes = $('.action[data-action=selectAttributes][data-panel=configuratorItems]');
 
-            if (this.model.get('entity') === 'Product') {
+            if (this.getMetadata().get(`scopes.${this.model.get('entity')}.hasAttribute`)) {
                 $selectAttributes.show();
             } else {
                 $selectAttributes.hide();
             }
-        },
-
-        actionAddMissingFields() {
-            this.confirm(this.translate('addMissingFieldsConfirmation', 'labels', 'ExportFeed'), () => {
-                this.notify('Saving...');
-
-                let postData = {
-                    entityType: this.model.urlRoot,
-                    id: this.model.get('id')
-                };
-
-                this.ajaxPostRequest(`ExportFeed/action/addMissingFields`, postData).then(response => {
-                    this.notify('Saved', 'success');
-                    $('.action[data-action=refresh][data-panel=configuratorItems]').click();
-                });
-            });
         },
 
         actionRemoveAllItems() {
@@ -95,8 +96,77 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
 
                 this.ajaxPostRequest(`ExportFeed/action/removeAllItems`, postData).then(response => {
                     this.notify('Removed', 'success');
-                    $('.action[data-action=refresh][data-panel=configuratorItems]').click();
+                    this.refreshPanel();
                 });
+            });
+        },
+
+        actionSelectFields() {
+            this.notify('Loading...');
+            this.createView('dialog', 'views/modals/select-records', {
+                scope: 'EntityField',
+                multiple: true,
+                createButton: false,
+                massRelateEnabled: false,
+                allowSelectAllResult: false,
+                boolFilterList: [
+                    "fieldsFilter",
+                    "notLingual"
+                ],
+                boolFilterData: {
+                    fieldsFilter: {
+                        entityId: this.model.get('entity')
+                    }
+                }
+            }, dialog => {
+                dialog.render();
+                this.notify(false);
+                dialog.once('select', models => {
+                    if (models.massRelate) {
+                        models = dialog.collection.models;
+                    }
+
+                    let fields = [];
+                    models.forEach(model => {
+                        fields.push(model.get('code'))
+                    });
+
+                    let postData = {
+                        id: this.model.get('id'),
+                        fields: fields,
+                        entityName: this.model.name,
+                    };
+
+                    this.notify('Saving...');
+                    this.ajaxPostRequest(`ExportFeed/action/addFields`, postData).then(() => {
+                        this.notify('Saved', 'success');
+                        this.refreshPanel();
+                    });
+                });
+            });
+        },
+
+        actionAddFixed() {
+            this.notify('Saving...');
+            let postData = {
+                id: this.model.get('id'),
+                entityName: this.model.name,
+            };
+            this.ajaxPostRequest(`ExportFeed/action/addFixed`, postData).then(() => {
+                this.notify('Saved', 'success');
+                this.refreshPanel();
+            });
+        },
+
+        actionAddScript() {
+            this.notify('Saving...');
+            let postData = {
+                id: this.model.get('id'),
+                entityName: this.model.name,
+            };
+            this.ajaxPostRequest(`ExportFeed/action/addScript`, postData).then(() => {
+                this.notify('Saved', 'success');
+                this.refreshPanel();
             });
         },
 
@@ -109,32 +179,39 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                 scope: scope,
                 multiple: true,
                 createButton: false,
-                massRelateEnabled: true
+                massRelateEnabled: true,
+                allowSelectAllResult: false,
             }, dialog => {
                 dialog.render();
                 this.notify(false);
-                dialog.once('select', selectObj => {
+                dialog.once('select', models => {
                     this.notify('Saving...');
 
-                    let postData = {
-                        entityType: this.model.urlRoot,
-                        id: this.model.get('id')
-                    };
-                    if (!selectObj.massRelate) {
-                        postData.ids = [];
-                        selectObj.forEach(model => {
-                            postData.ids.push(model.id);
-                        });
-                    } else {
-                        postData.where = selectObj.where;
+                    if (models.massRelate) {
+                        models = dialog.collection.models;
                     }
 
-                    this.ajaxPostRequest(`ExportFeed/action/addAttributes`, postData).then(response => {
+                    let attributesIds = [];
+                    models.forEach(model => {
+                        attributesIds.push(model.get('id'))
+                    });
+
+                    let postData = {
+                        id: this.model.get('id'),
+                        attributesIds: attributesIds,
+                        entityName: this.model.name
+                    };
+
+                    this.ajaxPostRequest(`ExportFeed/action/addAttributes`, postData).then(() => {
                         this.notify('Saved', 'success');
-                        $('.action[data-action=refresh][data-panel=configuratorItems]').click();
+                        this.refreshPanel();
                     });
                 });
             });
+        },
+
+        refreshPanel() {
+            $('.action[data-action=refresh][data-panel=configuratorItems]').click();
         },
 
     })

@@ -50,7 +50,6 @@
     "generateTemplate": "Generuj szablon",
     "simple": "Plik",
     "typeToSearch": "Wpisz, aby wyszukać...",
-    "addMissingFieldsConfirmation": "Czy na pewno chcesz dodać wszystkie brakujące pola?",
     "removeAllItemsConfirmation": "Czy na pewno chcesz usunąć wszystkie reguły konfiguratora?",
     "attributeName": "Nazwa atrybutu",
     "attributeCode": "Kod atrybutu",
@@ -88,7 +87,6 @@
   },
   "exceptions": {
     "toManyAttributesSelected": "Maksymalna liczba wybranych atrybutów powinna być poniżej 2000 rekordów.",
-    "noSuchField": "Pole '%s' nie istnieje.",
     "noSuchAttribute": "Atrybut '%s' nie istnieje.",
     "noDataFound": "Przesyłka nie ma nic do wyeksportowania.",
     "exportValidationFailed": "Nie można wyeksportować takiego pliku. Sprawdź formularz i spróbuj ponownie.",

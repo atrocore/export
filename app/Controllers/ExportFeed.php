@@ -19,35 +19,58 @@ use Atro\Core\Exceptions;
 use Espo\Core\Utils\Json;
 use Slim\Http\Request;
 
-/**
- * ExportFeed controller
- */
 class ExportFeed extends Base
 {
-    public function actionAddMissingFields($params, $data, Request $request): bool
+    public function actionAddFields($params, $data, Request $request): bool
     {
-        if (!$request->isPost() || !property_exists($data, 'entityType') || !property_exists($data, 'id')) {
+        if (!$request->isPost() || !property_exists($data, 'id') || !property_exists($data, 'fields') || !property_exists($data, 'entityName')) {
             throw new Exceptions\BadRequest();
         }
 
-        if (!$this->getAcl()->check($this->name, 'read')) {
+        if (!$this->getAcl()->check($this->name, 'edit')) {
             throw new Exceptions\Forbidden();
         }
 
-        return $this->getRecordService()->addMissingFields((string)$data->entityType, (string)$data->id);
+        return $this->getRecordService()->addFields($data->entityName, $data->id, $data->fields);
     }
 
     public function actionAddAttributes($params, $data, Request $request): bool
     {
-        if (!$request->isPost() || !property_exists($data, 'entityType') || !property_exists($data, 'id')) {
+        if (!$request->isPost() || !property_exists($data, 'id') || !property_exists($data, 'attributesIds') || !property_exists($data, 'entityName')) {
             throw new Exceptions\BadRequest();
         }
 
-        if (!$this->getAcl()->check($this->name, 'read')) {
+        if (!$this->getAcl()->check($this->name, 'edit')) {
             throw new Exceptions\Forbidden();
         }
 
-        return $this->getRecordService()->addAttributes($data);
+        return $this->getRecordService()->addAttributes($data->entityName, $data->id, $data->attributesIds);
+    }
+
+    public function actionAddFixed($params, $data, Request $request): bool
+    {
+        if (!$request->isPost() || !property_exists($data, 'id') || !property_exists($data, 'entityName')) {
+            throw new Exceptions\BadRequest();
+        }
+
+        if (!$this->getAcl()->check($this->name, 'edit')) {
+            throw new Exceptions\Forbidden();
+        }
+
+        return $this->getRecordService()->addFixed($data->entityName, $data->id);
+    }
+
+    public function actionAddScript($params, $data, Request $request): bool
+    {
+        if (!$request->isPost() || !property_exists($data, 'id') || !property_exists($data, 'entityName')) {
+            throw new Exceptions\BadRequest();
+        }
+
+        if (!$this->getAcl()->check($this->name, 'edit')) {
+            throw new Exceptions\Forbidden();
+        }
+
+        return $this->getRecordService()->addScript($data->entityName, $data->id);
     }
 
     public function actionRemoveAllItems($params, $data, Request $request): bool
@@ -56,7 +79,7 @@ class ExportFeed extends Base
             throw new Exceptions\BadRequest();
         }
 
-        if (!$this->getAcl()->check($this->name, 'read')) {
+        if (!$this->getAcl()->check($this->name, 'edit')) {
             throw new Exceptions\Forbidden();
         }
 

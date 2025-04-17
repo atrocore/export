@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Export\Services;
 
-use Espo\Core\ORM\EntityManager;
 use Atro\Core\Templates\Services\Base;
 use Atro\Core\Utils\Language;
 use Atro\Core\Utils\Util;
@@ -32,6 +31,7 @@ class ExportConfiguratorItem extends Base
             'exportIntoSeparateColumns',
             'sortOrder',
             'attributeId',
+            'entityAttributeId',
             'language',
             'fallbackLanguage',
             'channelId',
@@ -41,8 +41,6 @@ class ExportConfiguratorItem extends Base
             'attributeValue',
             'virtualFields'
         ];
-
-    protected array $languages = [];
 
     public function prepareEntityForOutput(Entity $entity)
     {
@@ -59,6 +57,14 @@ class ExportConfiguratorItem extends Base
             $entity->set('entity', $feed->getFeedField('entity'));
         }
 
+        // prepare field defs
+        $fieldDefs = $this->getMetadata()->get("entityDefs.{$entity->get('entity')}.fields.{$entity->get('name')}");
+        if (empty($fieldDefs)) {
+            $this->getServiceFactory()->create('ExportFeed')->putAttributesToMetadata($feed->get('id'));
+            $fieldDefs = $this->getMetadata()->get("entityDefs.{$entity->get('entity')}.fields.{$entity->get('name')}");
+        }
+
+        $entity->set('fieldDefs', $fieldDefs);
         $entity->set('column', $this->prepareColumnName($entity));
         $entity->set('exportFeedData', $feed->toArray());
         $entity->set('isAttributeMultiLang', false);
@@ -106,26 +112,13 @@ class ExportConfiguratorItem extends Base
         return $this->prepareFieldColumnName($entity);
     }
 
-
-    protected function getExportFeed(\Export\Entities\ExportConfiguratorItem $entity): ?\Export\Entities\ExportFeed
-    {
-        $exportFeed = $entity->get('exportFeed');
-        if (!empty($exportFeed)) {
-            return $exportFeed;
-        }
-        if (!empty($entity->get('exportFeedId'))) {
-            return $this->getEntityManager()->getEntity('ExportFeed', $entity->get('exportFeedId'));
-        }
-        return null;
-    }
-
     protected function prepareFieldColumnName(Entity $entity): string
     {
         switch ($entity->get('columnType') ?? 'name') {
             case 'name':
-                $exportFeed = $this->getExportFeed($entity);
+                $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $entity->get('exportFeedId'));
                 $column = $this
-                    ->getLanguage(empty($exportFeed) ? '' : $exportFeed->get('localeId'))
+                    ->getLocalizedLanguage($exportFeed->get('localeId'))
                     ->translate($entity->get('name'), 'fields', $entity->get('entity'));
                 break;
             case 'custom':
@@ -150,7 +143,7 @@ class ExportConfiguratorItem extends Base
 
         if ($columnType === 'name') {
             $column = $attribute->get('name');
-            if (!empty($exportFeed = $this->getExportFeed($entity))) {
+            if (!empty($exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $entity->get('exportFeedId')))) {
                 if (!empty($locale = $this->getEntityManager()->getEntity('Locale', $exportFeed->get('localeId')))) {
                     $fieldName = 'name' . ucfirst(Util::toCamelCase(strtolower($locale->get('languageCode'))));
                     if ($this->getMetadata()->get("entityDefs.Attribute.fields.$fieldName")) {
@@ -165,21 +158,17 @@ class ExportConfiguratorItem extends Base
         return (string)$column;
     }
 
+    protected function getLocalizedLanguage(string $locale): Language
+    {
+        return ExportFeed::getLocalizedLanguage($this->getInjection('container'), $locale);
+    }
+
     protected function init()
     {
         parent::init();
 
         $this->addDependency('language');
         $this->addDependency('container');
-    }
-
-    protected function getLanguage(string $locale): Language
-    {
-        if (!isset($this->languages[$locale])) {
-            $this->languages[$locale] = new Language($this->getInjection('container'), $locale);
-        }
-
-        return $this->languages[$locale];
     }
 
     protected function getFieldsThatConflict(Entity $entity, \stdClass $data): array

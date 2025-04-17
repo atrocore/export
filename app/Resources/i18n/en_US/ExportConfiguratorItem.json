@@ -4,6 +4,7 @@
     "column": "Column Name",
     "columnType": "Column Label",
     "exportFeed": "Export Feed",
+    "entityAttribute": "Attribute",
     "attribute": "Attribute",
     "exportBy": "Related Entity Fields",
     "remove": "Remove",

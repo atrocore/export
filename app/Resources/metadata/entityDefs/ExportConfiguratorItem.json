@@ -69,7 +69,7 @@
     },
     "type": {
       "type": "enum",
-      "required": false,
+      "required": true,
       "prohibitedEmptyValue": true,
       "view": "export:views/export-configurator-item/fields/type",
       "options": [
@@ -78,6 +78,9 @@
         "Fixed value"
       ],
       "default": "Field"
+    },
+    "entityAttribute": {
+      "type": "link"
     },
     "attributeType": {
       "type": "varchar",
@@ -124,6 +127,20 @@
       "emHidden": true
     },
     "exportFeedData": {
+      "type": "jsonObject",
+      "notStorable": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "massUpdateDisabled": true,
+      "filterDisabled": true,
+      "textFilterDisabled": true,
+      "exportDisabled": true,
+      "importDisabled": true,
+      "emHidden": true
+    },
+    "fieldDefs": {
       "type": "jsonObject",
       "notStorable": true,
       "layoutListDisabled": true,
@@ -230,6 +247,10 @@
       "foreign": "configuratorItems",
       "entity": "ExportFeed",
       "audited": false
+    },
+    "entityAttribute": {
+      "type": "belongsTo",
+      "entity": "Attribute"
     }
   },
   "collection": {

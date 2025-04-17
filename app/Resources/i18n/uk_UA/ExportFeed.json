@@ -41,7 +41,6 @@
   "labels": {
     "generateTemplate": "Згенерувати шаблон",
     "typeToSearch": "Введіть для пошуку...",
-    "addMissingFieldsConfirmation": "Ви впевнені, що хочете додати всі відсутні поля?",
     "removeAllItemsConfirmation": "Ви впевнені, що хочете видалити всі правила конфігуратора?",
     "attributeName": "Назва атрибута",
     "attributeCode": "Код атрибута",
@@ -79,7 +78,6 @@
   },
   "exceptions": {
     "toManyAttributesSelected": "Максимальна кількість обраних атрибутів не може бути більшою за 2000.",
-    "noSuchField": "Поле '%s' не існує.",
     "noSuchAttribute": "Атрибут '%s' не існує.",
     "noDataFound": "Не знайдено даних для фіда.",
     "exportValidationFailed": "Ви не можете експортувати такий файл. Будь ласка, перевірте форму введення даних і спробуйте ще раз.",
