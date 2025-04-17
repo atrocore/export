@@ -178,9 +178,6 @@ class ExportFeed extends Base
 
             if (!empty($defs['measureId'])) {
                 $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'Unit']));
-                if (in_array($type, ['int', 'float', 'varchar'])) {
-                    $this->createExportConfiguratorItem(array_merge($data, ['name' => 'unit' . ucfirst($field)]));
-                }
             }
         }
 
