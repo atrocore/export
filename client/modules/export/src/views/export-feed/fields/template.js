@@ -46,13 +46,13 @@ Espo.define('export:views/export-feed/fields/template', 'views/fields/script', D
         initMagicIcon() {
             const $cell = this.getCellElement();
 
-            $cell.find('.fa-magic').parent().remove();
+            $cell.find('.magic').parent().remove();
 
             if (this.model.get('fileType') !== 'json') {
                 return;
             }
 
-            const $link = $('<a href="javascript:" class="pull-right hidden" title="' + this.translate('generateTemplate', 'labels', 'ExportFeed') + '"><span class="fas fa-magic fa-sm"></span></a>');
+            const $link = $('<a href="javascript:" class="pull-right inline-actions hidden" title="' + this.translate('generateTemplate', 'labels', 'ExportFeed') + '"><svg class="icon magic"><use href="client/img/icons/icons.svg#magic"></use></svg></a>');
 
             $cell.prepend($link);
 
