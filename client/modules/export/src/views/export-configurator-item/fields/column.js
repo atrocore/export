@@ -75,17 +75,21 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
 
         prepareFieldValue() {
             if (this.model.get('columnType') === 'name' || this.model.isNew()) {
-                let originField = this.model.get('name');
-                let localeId = this.model.get('exportFeedData').localeId;
-                this.getTranslates(localeId, translates => {
-                    let columnName = originField;
-                    if (translates[this.model.get('entity')] && translates[this.model.get('entity')]['fields'][originField]) {
-                        columnName = translates[this.model.get('entity')]['fields'][originField];
-                    } else if (translates['Global'] && translates['Global']['fields'][originField]) {
-                        columnName = translates['Global']['fields'][originField];
-                    }
-                    this.model.set('column', columnName);
-                });
+                if (this.model.get('entityAttributeId') && this.model.get('fieldDefs')) {
+                    this.model.set('column', this.model.get('fieldDefs').label);
+                } else {
+                    let originField = this.model.get('name');
+                    let localeId = this.model.get('exportFeedData').localeId;
+                    this.getTranslates(localeId, translates => {
+                        let columnName = originField;
+                        if (translates[this.model.get('entity')] && translates[this.model.get('entity')]['fields'][originField]) {
+                            columnName = translates[this.model.get('entity')]['fields'][originField];
+                        } else if (translates['Global'] && translates['Global']['fields'][originField]) {
+                            columnName = translates['Global']['fields'][originField];
+                        }
+                        this.model.set('column', columnName);
+                    });
+                }
             }
         },
 
