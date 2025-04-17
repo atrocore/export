@@ -257,13 +257,6 @@
     "sortBy": "sortOrder",
     "asc": true
   },
-  "uniqueIndexes": {
-    "unique_field": [
-      "deleted",
-      "name",
-      "export_feed_id"
-    ]
-  },
   "indexes": {
     "name": {
       "columns": [
