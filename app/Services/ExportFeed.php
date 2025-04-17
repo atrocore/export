@@ -23,7 +23,6 @@ use Espo\Core\Utils\Json;
 use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Atro\Core\EventManager\Event;
-use Espo\ORM\EntityCollection;
 use Export\Jobs\ExportJobCreator;
 use Export\TemplateLoaders\AbstractTemplate;
 use Export\Entities\ExportFeed as ExportFeedEntity;
