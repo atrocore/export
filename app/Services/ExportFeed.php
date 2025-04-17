@@ -159,7 +159,7 @@ class ExportFeed extends Base
                 lcfirst($entityName) . 'Id' => $feed->get('id')
             ];
 
-            if ($type === 'link') {
+            if (in_array($type, ['link', 'file'])) {
                 $data['exportBy'] = ['id'];
             }
 
@@ -214,6 +214,11 @@ class ExportFeed extends Base
                     'entityAttributeId'         => $attribute['id'],
                     lcfirst($entityName) . 'Id' => $feed->get('id')
                 ];
+
+                if (in_array($fieldDefs['type'], ['link', 'file'])) {
+                    $data['exportBy'] = ['id'];
+                }
+
                 $this->createExportConfiguratorItem($data);
             }
         }
