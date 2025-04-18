@@ -54,7 +54,7 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
 
             let entity;
             if (this.model.get('type') === 'Field') {
-                entity = this.getMetadata().get(['entityDefs', this.model.get('entity'), 'links', this.model.get('name'), 'entity']);
+                entity = this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'entity']) || this.getMetadata().get(['entityDefs', this.model.get('entity'), 'links', this.model.get('name'), 'entity']);
                 if (this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'extensibleEnumId'])) {
                     entity = 'ExtensibleEnumOption';
                 }
