@@ -13,23 +13,10 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
-use Espo\Entities\ExtensibleEnumOption;
-use Espo\ORM\Entity;
-
 class MeasureType extends LinkType
 {
-    protected function getFieldName(string $field): string
-    {
-        return $field;
-    }
-
     protected function getForeignEntityName(string $entity, string $field): string
     {
         return 'Unit';
-    }
-
-    protected function needToCallForeignEntity(array $exportBy): bool
-    {
-        return true;
     }
 }
