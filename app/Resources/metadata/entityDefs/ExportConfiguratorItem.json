@@ -75,9 +75,15 @@
       "options": [
         "Field",
         "Attribute",
-        "Fixed value"
+        "Fixed value",
+        "script"
       ],
       "default": "Field"
+    },
+    "script": {
+      "type": "text",
+      "view": "views/fields/script",
+      "default": "{{ configuration.type }}\n{{ record.id }} {{ record.name }}"
     },
     "entityAttribute": {
       "type": "link"

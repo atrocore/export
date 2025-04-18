@@ -24,7 +24,8 @@
     "attributeValue": "Valeur de l'attribut",
     "fileNameTemplate": "Modèle de nom de fichier",
     "exportByForListAttribute": "Champs d'entité connexes pour les listes",
-    "fallbackLanguage": "Langue de secours"
+    "fallbackLanguage": "Langue de secours",
+    "script": "Script"
   },
   "options": {
     "boolFilterFieldValue": {

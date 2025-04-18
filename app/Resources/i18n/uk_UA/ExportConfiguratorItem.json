@@ -24,7 +24,8 @@
     "attributeValue": "Значення атрибута",
     "fileNameTemplate": "Шаблон імені файлу",
     "exportByForListAttribute": "Пов’язані поля сутності для списків",
-    "fallbackLanguage": "Резервна мова"
+    "fallbackLanguage": "Резервна мова",
+    "script": "Скрипт"
   },
   "options": {
     "attributeValue": {

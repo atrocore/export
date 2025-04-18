@@ -24,7 +24,8 @@
     "attributeValue": "Attributwert",
     "fileNameTemplate": "Dateinamenvorlage",
     "exportByForListAttribute": "Verwandte Entitätsfelder für Listen",
-    "fallbackLanguage": "Fallback-Sprache"
+    "fallbackLanguage": "Fallback-Sprache",
+    "script": "Skript"
   },
   "options": {
     "boolFilterFieldValue": {
