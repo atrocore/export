@@ -25,7 +25,8 @@
     "attributeValue": "Attribute Value",
     "fileNameTemplate": "File Name Template",
     "exportByForListAttribute": "Related Entity Fields for Lists",
-    "fallbackLanguage": "Fallback Language"
+    "fallbackLanguage": "Fallback Language",
+    "script": "Script"
   },
   "options": {
     "boolFilterFieldValue": {

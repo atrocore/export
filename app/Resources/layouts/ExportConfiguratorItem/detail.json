@@ -90,6 +90,12 @@
         {
           "name": "fileNameTemplate"
         }
+      ],
+      [
+        {
+          "name": "script",
+          "fullWidth": true
+        }
       ]
     ]
   },

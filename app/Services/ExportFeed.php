@@ -15,6 +15,7 @@ namespace Export\Services;
 
 use Atro\Core\AttributeFieldConverter;
 use Atro\Core\Container;
+use Atro\Core\EventManager\Manager;
 use Atro\Core\Exceptions;
 use Atro\Core\Templates\Services\Base;
 use Atro\Core\Utils\Language;
@@ -142,6 +143,10 @@ class ExportFeed extends Base
             return false;
         }
 
+        $exportFeed = $entityName === 'ExportFeed' ? $feed : $feed->get('exportFeed');
+
+        $languageObj = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
+
         $feedEntity = $feed->get('entity') ?? $feed->getFeedField('entity');
 
         foreach ($fields as $field) {
@@ -164,6 +169,13 @@ class ExportFeed extends Base
             }
 
             if (in_array($type, ['rangeInt', 'rangeFloat'])) {
+                $this->createExportConfiguratorItem(array_merge($data, [
+                    'name'       => null,
+                    'type'       => 'script',
+                    'columnType' => 'custom',
+                    'column'     => $languageObj->translate($field, 'fields', $feedEntity),
+                    'script'     => "{{ record.{$field}From }} - {{ record.{$field}To }} {{ record.{$field}UnitName }}"
+                ]));
                 $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'From']));
                 $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'To']));
             } else {
@@ -178,6 +190,13 @@ class ExportFeed extends Base
 
             if (!empty($defs['measureId'])) {
                 $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'Unit']));
+                $this->createExportConfiguratorItem(array_merge($data, [
+                    'name'       => null,
+                    'type'       => 'script',
+                    'columnType' => 'custom',
+                    'column'     => $languageObj->translate('unit' . ucfirst($field), 'fields', $feedEntity),
+                    'script'     => "{{ record.{$field} }} {{ record.{$field}UnitName }}"
+                ]));
             }
         }
 
@@ -201,9 +220,6 @@ class ExportFeed extends Base
             $attributesDefs = [];
             $this->getAttributeFieldConverter()->convert($feedEntity, $attribute, $attributesDefs);
             foreach ($attributesDefs as $field => $fieldDefs) {
-                if (in_array($fieldDefs['type'], ['rangeInt', 'rangeFloat'])) {
-                    continue;
-                }
                 $data = [
                     'name'                      => $field,
                     'type'                      => 'Field',
@@ -214,6 +230,28 @@ class ExportFeed extends Base
 
                 if (in_array($fieldDefs['type'], ['link', 'file'])) {
                     $data['exportBy'] = ['id'];
+                }
+
+                if (in_array($fieldDefs['type'], ['rangeInt', 'rangeFloat'])) {
+                    $this->createExportConfiguratorItem(array_merge($data, [
+                        'name'       => null,
+                        'type'       => 'script',
+                        'columnType' => 'custom',
+                        'column'     => $fieldDefs['label'],
+                        'script'     => "{{ record.{$field}From }} - {{ record.{$field}To }} {{ record.{$field}UnitName }}"
+                    ]));
+
+                    continue;
+                }
+
+                if (in_array($fieldDefs['type'], ['int', 'float', 'varchar']) && !empty($fieldDefs['measureId'])) {
+                    $this->createExportConfiguratorItem(array_merge($data, [
+                        'name'       => null,
+                        'type'       => 'script',
+                        'columnType' => 'custom',
+                        'column'     => $fieldDefs['detailViewLabel'],
+                        'script'     => "{{ record.{$field} }} {{ record.{$field}UnitName }}"
+                    ]));
                 }
 
                 $this->createExportConfiguratorItem($data);
@@ -492,7 +530,7 @@ class ExportFeed extends Base
         }
 
         return $this
-            ->getInjection('eventManager')
+            ->getEventManager()
             ->dispatch('ExportFeedService', 'prepareFeedData', new Event(['feed' => $feed, 'result' => $result]))
             ->getArgument('result');
     }
@@ -864,6 +902,11 @@ class ExportFeed extends Base
     protected function getAttributeFieldConverter(): AttributeFieldConverter
     {
         return $this->getInjection('container')->get(AttributeFieldConverter::class);
+    }
+
+    protected function getEventManager(): Manager
+    {
+        return $this->getInjection('eventManager');
     }
 
     protected function getLanguage(): Language
