@@ -18,7 +18,7 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
         setup() {
             let entity = this.model.get('entity');
             let fields = this.getFieldsList(entity);
-            let sortedFields = Object.keys(fields).sort((v1, v2) => this.translate(v1, 'fields', entity).localeCompare(this.translate(v2, 'fields', entity)));
+            let sortedFields = Object.keys(fields).sort((v1, v2) => (this.translate(v1, 'fields', entity) || '').localeCompare(this.translate(v2, 'fields', entity)));
 
             this.params.options = [];
             this.translatedOptions = {};
