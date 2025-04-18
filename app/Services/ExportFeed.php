@@ -143,6 +143,10 @@ class ExportFeed extends Base
             return false;
         }
 
+        $exportFeed = $entityName === 'ExportFeed' ? $feed : $feed->get('exportFeed');
+
+        $languageObj = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
+
         $feedEntity = $feed->get('entity') ?? $feed->getFeedField('entity');
 
         foreach ($fields as $field) {
@@ -165,6 +169,13 @@ class ExportFeed extends Base
             }
 
             if (in_array($type, ['rangeInt', 'rangeFloat'])) {
+                $this->createExportConfiguratorItem(array_merge($data, [
+                    'name'       => null,
+                    'type'       => 'script',
+                    'columnType' => 'custom',
+                    'column'     => $languageObj->translate($field, 'fields', $feedEntity),
+                    'script'     => "{{ record.{$field}From }} - {{ record.{$field}To }} {{ record.{$field}UnitName }}"
+                ]));
                 $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'From']));
                 $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'To']));
             } else {
@@ -179,6 +190,13 @@ class ExportFeed extends Base
 
             if (!empty($defs['measureId'])) {
                 $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'Unit']));
+                $this->createExportConfiguratorItem(array_merge($data, [
+                    'name'       => null,
+                    'type'       => 'script',
+                    'columnType' => 'custom',
+                    'column'     => $languageObj->translate('unit' . ucfirst($field), 'fields', $feedEntity),
+                    'script'     => "{{ record.{$field} }} {{ record.{$field}UnitName }}"
+                ]));
             }
         }
 
