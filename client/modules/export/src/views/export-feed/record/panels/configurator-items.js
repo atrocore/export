@@ -47,7 +47,7 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                 this.reRender();
             });
 
-            this.listenTo(this.collection, 'sync', () => {
+            this.listenTo(this.collection, 'update', () => {
                 this.collection.forEach(model => {
                     if (model.get('entityAttributeId') && model.get('fieldDefs')) {
                         this.getMetadata().data.entityDefs[model.get('entity')].fields[model.get('name')] = model.get('fieldDefs');
