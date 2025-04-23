@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\Services;
 
+use Atro\Core\Exceptions\NotFound;
 use Atro\Core\Templates\Services\Base;
 use Atro\Core\Utils\Language;
 use Atro\Core\Utils\Util;
@@ -114,9 +115,19 @@ class ExportConfiguratorItem extends Base
 
     protected function prepareFieldColumnName(Entity $entity): string
     {
+        if (!empty($entity->get('sheetId'))) {
+            $sheet = $this->getEntityManager()->getEntity('Sheet', $entity->get('sheetId'));
+            if (empty($sheet)) {
+                throw new NotFound();
+            }
+            $exportFeedId = $sheet->get('exportFeedId');
+        } else {
+            $exportFeedId = $entity->get('exportFeedId');
+        }
+
         switch ($entity->get('columnType') ?? 'name') {
             case 'name':
-                $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $entity->get('exportFeedId'));
+                $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
                 $column = $this
                     ->getLocalizedLanguage($exportFeed->get('localeId'))
                     ->translate($entity->get('name'), 'fields', $entity->get('entity'));
