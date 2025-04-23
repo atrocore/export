@@ -859,9 +859,8 @@ class ExportFeed extends Base
                         $this
                             ->getMetadata()
                             ->set('entityDefs', $entityName, ['fields' => [$name => $attributeDefs]]);
-                        $this
-                            ->getLanguage()
-                            ->set($entityName, 'fields', $name, $attributeDefs['label']);
+
+                        $languageObj->set($entityName, 'fields', $name, $attributeDefs['label']);
                     }
                 }
             }

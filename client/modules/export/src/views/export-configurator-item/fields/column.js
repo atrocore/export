@@ -78,8 +78,17 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
                 if (this.model.get('entityAttributeId') && this.model.get('fieldDefs')) {
                     this.model.set('column', this.model.get('fieldDefs').label);
                 } else {
+                    let localeId = null;
                     let originField = this.model.get('name');
-                    let localeId = this.model.get('exportFeedData').localeId;
+                    if (!this.model.get('exportFeedData')) {
+                        const exportFeedId = this.model.get('_entityFrom').exportFeedId;
+                        this.ajaxGetRequest(`ExportFeed/${exportFeedId}`, {}, {async: false}).success(res => {
+                            localeId = res.localeId;
+                        })
+                    } else {
+                        localeId = this.model.get('exportFeedData').localeId;
+                    }
+
                     this.getTranslates(localeId, translates => {
                         let columnName = originField;
                         if (translates[this.model.get('entity')] && translates[this.model.get('entity')]['fields'][originField]) {
