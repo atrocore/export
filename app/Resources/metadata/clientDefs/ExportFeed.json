@@ -13,7 +13,7 @@
   "quickCreateOptions": {
     "fullFormDisabled": true
   },
-  "iconClass": "output",
+  "iconClass": "export",
   "views": {
     "detail": "export:views/export-feed/detail"
   },
