@@ -58,14 +58,16 @@ class ExportConfiguratorItem extends Base
             $entity->set('entity', $feed->getFeedField('entity'));
         }
 
-        // prepare field defs
-        $fieldDefs = $this->getMetadata()->get("entityDefs.{$entity->get('entity')}.fields.{$entity->get('name')}");
-        if (empty($fieldDefs) && $entity->get('type') === 'Field') {
-            $this->getServiceFactory()->create('ExportFeed')->putAttributesToMetadata($feed->get('id'));
+        if ($entity->get('type') === 'Field') {
+            // prepare field defs
             $fieldDefs = $this->getMetadata()->get("entityDefs.{$entity->get('entity')}.fields.{$entity->get('name')}");
+            if (empty($fieldDefs)) {
+                $this->getServiceFactory()->create('ExportFeed')->putAttributesToMetadata($feed->get('id'));
+                $fieldDefs = $this->getMetadata()->get("entityDefs.{$entity->get('entity')}.fields.{$entity->get('name')}");
+            }
+            $entity->set('fieldDefs', $fieldDefs);
         }
 
-        $entity->set('fieldDefs', $fieldDefs);
         $entity->set('column', $this->prepareColumnName($entity));
         $entity->set('exportFeedData', $feed->toArray());
         $entity->set('isAttributeMultiLang', false);
