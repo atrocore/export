@@ -60,7 +60,7 @@ class ExportConfiguratorItem extends Base
 
         // prepare field defs
         $fieldDefs = $this->getMetadata()->get("entityDefs.{$entity->get('entity')}.fields.{$entity->get('name')}");
-        if (empty($fieldDefs)) {
+        if (empty($fieldDefs) && $entity->get('type') === 'Field') {
             $this->getServiceFactory()->create('ExportFeed')->putAttributesToMetadata($feed->get('id'));
             $fieldDefs = $this->getMetadata()->get("entityDefs.{$entity->get('entity')}.fields.{$entity->get('name')}");
         }
