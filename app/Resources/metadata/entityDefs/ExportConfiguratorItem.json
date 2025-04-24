@@ -85,9 +85,6 @@
       "view": "views/fields/script",
       "default": "{{ configuration.type }}\n{{ record.id }} {{ record.name }}"
     },
-    "entityAttribute": {
-      "type": "link"
-    },
     "attributeType": {
       "type": "varchar",
       "notStorable": true,
@@ -253,10 +250,6 @@
       "foreign": "configuratorItems",
       "entity": "ExportFeed",
       "audited": false
-    },
-    "entityAttribute": {
-      "type": "belongsTo",
-      "entity": "Attribute"
     }
   },
   "collection": {
