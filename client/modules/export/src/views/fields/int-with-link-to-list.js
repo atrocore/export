@@ -33,11 +33,6 @@ Espo.define('export:views/fields/int-with-link-to-list', 'views/fields/int',
 
         getSearchFilter() {
             return {};
-        },
-
-        createQueryBuilderFilter(type) {
-            Filter.prototype.call(this, type);
         }
-
     })
 );
