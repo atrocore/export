@@ -34,7 +34,8 @@ Espo.define('export:views/dashlets/fields/link-jobs', 'export:views/fields/int-w
             return {
                 textFilter: '',
                 primary: null,
-                bool: bool
+                bool: bool,
+                queryBuilderApplied: false
             };
         }
 

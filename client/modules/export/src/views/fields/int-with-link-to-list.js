@@ -27,13 +27,12 @@ Espo.define('export:views/fields/int-with-link-to-list', 'views/fields/int',
 
         actionShowList() {
             const searchFilter = this.getSearchFilter();
-            this.getStorage().set('listSearch', this.listScope, searchFilter);
+            this.getStorage().set('listQueryBuilder', this.listScope, searchFilter);
             window.open(`#${this.listScope}`, '_blank');
         },
 
         getSearchFilter() {
             return {};
         }
-
     })
 );
