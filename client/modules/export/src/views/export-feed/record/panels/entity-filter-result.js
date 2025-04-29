@@ -103,15 +103,14 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
                 return;
             }
 
-            SearchFilterOpener.prototype.open.call(this, this.model.get('entity'), this.model.get('data')?.where,  (query) => {
-                if(query) {
+            SearchFilterOpener.prototype.open.call(this, this.model.get('entity'), this.model.get('data')?.where,  ({where, whereData}) => {
                     this.model.set('data', _.extend({}, this.model.get('data'), {
-                        where: query,
+                        where,
+                        whereData,
                         whereScope: this.model.get('entity')
                     }));
                     this.notify(this.translate('saving', 'messages'));
                     this.model.save().then(() =>  this.notify(this.translate('Done'), 'success'));
-                }
             });
         }
     })
