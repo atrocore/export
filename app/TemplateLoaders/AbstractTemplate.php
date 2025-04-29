@@ -114,7 +114,10 @@ abstract class AbstractTemplate extends Injectable
      */
     public function isTemplateCompatible(array $feedData): bool
     {
-        if (!empty($this->entityType)  && $this->entityType != $feedData['entity']) {
+        if(empty($feedData['entity']) || empty($feedData['fileType']) || empty($feedData['type'])) {
+            return false;
+        }
+        if (!empty($this->entityType) && $this->entityType != $feedData['entity']) {
             return false;
         }
 

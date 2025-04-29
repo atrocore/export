@@ -23,13 +23,6 @@
   "bottomPanels": {
     "detail": [
       {
-        "name": "simpleTypeEntityFilter",
-        "label": "entityFilter",
-        "view": "export:views/export-feed/simple-type-components/record/panels/simple-type-entity-filter",
-        "notRefreshable": true,
-        "canClose": false
-      },
-      {
         "name": "entityFilterResult",
         "label": "entityFilterResult",
         "view": "export:views/export-feed/record/panels/entity-filter-result",

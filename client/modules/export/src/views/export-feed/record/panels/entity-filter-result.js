@@ -26,8 +26,8 @@
  * these Appropriate Legal Notices must retain the display of the "AtroPIM" word.
  */
 
-Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'views/record/panels/relationship',
-    Dep => Dep.extend({
+Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['views/record/panels/relationship', 'views/search/search-filter-opener'],
+    (Dep, SearchFilterOpener) => Dep.extend({
 
         rowActionsView: 'views/record/row-actions/relationship-view-only',
 
@@ -62,40 +62,15 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
                 action: 'showFullList'
             });
 
-            this.listenTo(Backbone.Events, 'search', searchView => {
-                if (searchView.searchManager.type === 'exportSimpleType') {
-                    this.model.set('data', _.extend({}, this.model.get('data'), {
-                        where: this.getWhere(searchView),
-                        whereData: this.getWhereData(searchView),
-                        whereScope: this.model.get('entity'),
-                    }));
-                }
+            this.buttonList.unshift({
+                title: this.translate('openSearchFilter'),
+                action: 'openSearchFilter',
+                html: '<i class="ph-fill ph-funnel" style="color:#06c"></i>'
             });
         },
 
         getLayoutRelatedScope() {
             return null;
-        },
-
-        getWhere(searchView) {
-            const where = Espo.Utils.cloneDeep(searchView.searchManager.getWhere());
-            where.forEach((item, k) => {
-                if (item.type === 'bool') {
-                    if (!where[k].data) {
-                        where[k].data = {}
-                    }
-
-                    if ((item.value || []).includes('unexported')) {
-                        where[k].data.unexported = this.model.get('lastTime');
-                    }
-                }
-            });
-
-            return where;
-        },
-
-        getWhereData(searchView) {
-            return Espo.Utils.cloneDeep(searchView.searchManager.get());
         },
 
         actionShowFullList(data) {
@@ -120,7 +95,24 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
 
         panelVisible() {
             return !(this.model.get('hasMultipleSheets'));
-        }
+        },
 
+        actionOpenSearchFilter() {
+            if(!this.model.get('entity') || !this.getMetadata().get(['scopes', this.model.get('entity')])) {
+                this.notify(this.translate('The entity for the export is not valid'), 'error');
+                return;
+            }
+
+            SearchFilterOpener.prototype.open.call(this, this.model.get('data')?.where,  (query) => {
+                if(query) {
+                    this.model.set('data', _.extend({}, this.model.get('data'), {
+                        where: query,
+                        whereScope: this.model.get('entity')
+                    }));
+                    this.notify(this.translate('saving', 'messages'));
+                    this.model.save().then(() =>  this.notify(this.translate('Done'), 'success'));
+                }
+            });
+        }
     })
 );
