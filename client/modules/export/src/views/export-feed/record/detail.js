@@ -33,10 +33,12 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
                 })
             }
 
-            this.additionalButtons.push({
-                action: 'openSearchFilter',
-                html: `<i title="${this.translate('openSearchFilter')}" class="ph-fill ph-funnel" style="color:#06c"></i>`
-            });
+            if(this.model.get('entity')) {
+                this.additionalButtons.push({
+                    action: 'openSearchFilter',
+                    html: `<i title="${this.translate('openSearchFilter')}" class="ph-fill ph-funnel" style="color:#06c"></i>`
+                });
+            }
 
             this.listenTo(this.model, 'after:save', () => {
                 this.handleExportButtonDisability();
