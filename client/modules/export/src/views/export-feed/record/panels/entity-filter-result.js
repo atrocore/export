@@ -103,7 +103,7 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
                 return;
             }
 
-            SearchFilterOpener.prototype.open.call(this, this.model.get('data')?.where,  (query) => {
+            SearchFilterOpener.prototype.open.call(this, this.model.get('entity'), this.model.get('data')?.where,  (query) => {
                 if(query) {
                     this.model.set('data', _.extend({}, this.model.get('data'), {
                         where: query,
