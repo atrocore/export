@@ -8,8 +8,8 @@
  * @license    GPLv3 (https://www.gnu.org/licenses/)
  */
 
-Espo.define('export:views/export-feed/record/detail', 'views/record/detail',
-    Dep => Dep.extend({
+Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'export:views/export-feed/record/panels/entity-filter-result'],
+(Dep, EntityFilter) => Dep.extend({
 
         bottomView: 'export:views/export-feed/record/detail-bottom',
 
@@ -33,6 +33,13 @@ Espo.define('export:views/export-feed/record/detail', 'views/record/detail',
                 })
             }
 
+            if(this.model.get('entity')) {
+                this.additionalButtons.push({
+                    action: 'openSearchFilter',
+                    html: `<i title="${this.translate('openSearchFilter')}" class="ph-fill ph-funnel" style="color:#06c"></i>`
+                });
+            }
+
             this.listenTo(this.model, 'after:save', () => {
                 this.handleExportButtonDisability();
             });
@@ -46,6 +53,10 @@ Espo.define('export:views/export-feed/record/detail', 'views/record/detail',
             Dep.prototype.afterRender.call(this);
 
             this.handleExportButtonDisability();
+        },
+
+        actionOpenSearchFilter() {
+            EntityFilter.prototype.actionOpenSearchFilter.call(this);
         },
 
         handleExportButtonDisability() {
