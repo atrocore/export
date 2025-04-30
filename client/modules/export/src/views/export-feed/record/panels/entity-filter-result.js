@@ -65,7 +65,7 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
             this.buttonList.unshift({
                 title: this.translate('openSearchFilter'),
                 action: 'openSearchFilter',
-                html: '<i class="ph-fill ph-funnel" style="color:#06c"></i>'
+                html: this.getFilterButtonHtml()
             });
         },
 
@@ -74,7 +74,7 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
         },
 
         actionShowFullList(data) {
-            this.getStorage().set('listSearch', this.scope, this.model.get('data').whereData || {});
+            this.getStorage().set('listQueryBuilder', this.scope, this.model.get('data').whereData || {});
             window.open(`#${this.scope}`, '_blank');
         },
 
@@ -91,10 +91,20 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
             } else {
                 this.$el.parent().hide();
             }
+
+            $('.panel-entityFilterResult button[data-action="openSearchFilter"]').html(this.getFilterButtonHtml());
         },
 
         panelVisible() {
             return !(this.model.get('hasMultipleSheets'));
+        },
+
+        getFilterButtonHtml(){
+            if(this.model.get('data')?.where && Array.isArray(this.model.get('data').where) && this.model.get('data').where.length > 0) {
+                return `<i title="${this.translate('openSearchFilter')}" class="ph-fill ph-funnel" style="color:#06c"></i>`
+            }else{
+                return `<i title="${this.translate('openSearchFilter')}" class="ph ph-funnel" ></i>`
+            }
         },
 
         actionOpenSearchFilter() {

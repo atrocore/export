@@ -33,12 +33,24 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
                 })
             }
 
-            if(this.model.get('entity')) {
-                this.additionalButtons.push({
-                    action: 'openSearchFilter',
-                    html: `<i title="${this.translate('openSearchFilter')}" class="ph-fill ph-funnel" style="color:#06c"></i>`
-                });
+            let filterButton = {
+                action: 'openSearchFilter',
+                name: 'filterButton',
+                html: EntityFilter.prototype.getFilterButtonHtml.call(this)
             }
+
+            if(this.model.get('entity')) {
+                this.additionalButtons.push(filterButton);
+            }
+
+            this.listenTo(this.model, 'sync', () => {
+                filterButton.html = EntityFilter.prototype.getFilterButtonHtml.call(this);
+                this.additionalButtons = this.additionalButtons.filter(b => b.name !== filterButton.name);
+                if(this.model.get('entity')) {
+                    this.additionalButtons.push(filterButton);
+                }
+                this.reRender();
+            });
 
             this.listenTo(this.model, 'after:save', () => {
                 this.handleExportButtonDisability();
