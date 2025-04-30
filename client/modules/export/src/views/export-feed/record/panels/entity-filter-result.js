@@ -101,9 +101,9 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
 
         getFilterButtonHtml(){
             if(this.model.get('data')?.where && Array.isArray(this.model.get('data').where) && this.model.get('data').where.length > 0) {
-                return `<i title="${this.translate('openSearchFilter')}" class="ph-fill ph-funnel" style="color:#06c"></i>`
+                return `<i class="ph-fill ph-funnel" style="color:#06c"></i>`
             }else{
-                return `<i title="${this.translate('openSearchFilter')}" class="ph ph-funnel" ></i>`
+                return `<i class="ph ph-funnel" ></i>`
             }
         },
 

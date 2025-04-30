@@ -34,6 +34,7 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
             }
 
             let filterButton = {
+                tooltip: this.translate('openSearchFilter'),
                 action: 'openSearchFilter',
                 name: 'filterButton',
                 html: EntityFilter.prototype.getFilterButtonHtml.call(this)
