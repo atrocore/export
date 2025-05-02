@@ -60,6 +60,23 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
             this.getStorage().set('mode', 'ExportFeed', null);
 
             this.initialModel = this.model.getClonedAttributes();
+
+            this.listenTo(this.model, 'change:entity', () => {
+                let scope = this.model.get('entity');
+
+                let data = {};
+                if (this.model.get('data')) {
+                    data = this.model.get('data');
+                }
+                if (typeof data.whereScope === 'undefined' || data.whereScope !== scope) {
+                    data = _.extend(data, {
+                        where: null,
+                        whereData: null,
+                        whereScope: scope,
+                    });
+                    this.model.set('data', data);
+                }
+            });
         },
 
         afterRender() {

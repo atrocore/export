@@ -119,7 +119,7 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
                         whereScope: this.model.get('entity')
                     }));
                     this.notify(this.translate('saving', 'messages'));
-                    this.model.save().then(() =>  this.notify(this.translate('Done'), 'success'));
+                    this.model.save({_prev: null}).then(() =>  this.notify(this.translate('Done'), 'success'));
             });
         }
     })
