@@ -47,6 +47,8 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
             }
 
             this.defs.create = false;
+            this.defs.select = false;
+            this.defs.unlinkAll = false;
 
             Dep.prototype.setup.call(this);
 
