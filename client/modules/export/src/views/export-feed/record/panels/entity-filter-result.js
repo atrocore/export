@@ -57,10 +57,13 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
                 }
             }
 
-            this.actionList.push({
-                label: 'showFullList',
-                action: 'showFullList'
-            });
+            if(!this.defs.hideShowFullList) {
+                this.actionList.push({
+                    label: 'showFullList',
+                    action: 'showFullList'
+                });
+            }
+
 
             this.buttonList.unshift({
                 title: this.translate('openSearchFilter'),
@@ -100,11 +103,7 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
         },
 
         getFilterButtonHtml(){
-            if(this.model.get('data')?.where && Array.isArray(this.model.get('data').where) && this.model.get('data').where.length > 0) {
-                return `<i class="ph-fill ph-funnel" style="color:#06c"></i>`
-            }else{
-                return `<i class="ph ph-funnel" ></i>`
-            }
+            return SearchFilterOpener.prototype.getFilterButtonHtml.call(this, 'data');
         },
 
         actionOpenSearchFilter() {
@@ -120,7 +119,7 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
                         whereScope: this.model.get('entity')
                     }));
                     this.notify(this.translate('saving', 'messages'));
-                    this.model.save().then(() =>  this.notify(this.translate('Done'), 'success'));
+                    this.model.save({_prev: null}).then(() =>  this.notify(this.translate('Done'), 'success'));
             });
         }
     })
