@@ -46,7 +46,16 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
                 type: "hasMany"
             }
 
+            this.defs.create = false;
+
             Dep.prototype.setup.call(this);
+
+            if(!this.defs.hideShowFullList && !this.getPreferences().get('hideShowFullList')) {
+                this.actionList.push({
+                    label: 'showFullList',
+                    action: 'showFullList'
+                });
+            }
 
             let iconHtml = this.getHelper().getScopeColorIconHtml(this.scope);
             if (iconHtml) {
@@ -56,14 +65,6 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
                     this.titleHtml = iconHtml + this.title;
                 }
             }
-
-            if(!this.defs.hideShowFullList) {
-                this.actionList.push({
-                    label: 'showFullList',
-                    action: 'showFullList'
-                });
-            }
-
 
             this.buttonList.unshift({
                 title: this.translate('openSearchFilter'),
