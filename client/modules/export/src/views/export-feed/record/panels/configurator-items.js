@@ -180,6 +180,10 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                 multiple: true,
                 createButton: false,
                 massRelateEnabled: true,
+                boolFilterList: ['onlyForEntity'],
+                boolFilterData: {
+                    onlyForEntity: this.model.get('entity')
+                },
                 allowSelectAllResult: false,
             }, dialog => {
                 dialog.render();
