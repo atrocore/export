@@ -9,7 +9,6 @@
 		"count": "Liczba"
 	},
 	"labels": {
-		"Create ExportJob": "Utwórz zadanie eksportu",
 		"Pending": "Oczekujący",
 		"Success": "Sukces",
 		"Running": "Trwa",

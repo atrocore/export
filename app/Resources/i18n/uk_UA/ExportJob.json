@@ -9,7 +9,6 @@
     "count": "Кількість"
   },
   "labels": {
-    "Create ExportJob": "Створити задачу експорту",
     "Pending": "В очікуванні",
     "Success": "Успішно",
     "Running": "Виконується",
