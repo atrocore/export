@@ -9,7 +9,6 @@
     "count": "Count"
   },
   "labels": {
-    "Create ExportJob": "Create Export Job",
     "Pending": "Pending",
     "Success": "Success",
     "Running": "Running",
