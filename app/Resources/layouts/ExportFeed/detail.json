@@ -107,9 +107,8 @@
         {
           "name": "entity"
         },
-        {
-          "name": "replaceAttributeValues"
-        }
+
+        false
       ],
       [
         {

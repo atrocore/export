@@ -17,13 +17,4 @@ use Doctrine\DBAL\Query\QueryBuilder;
 
 class DatetimeType extends VarcharType
 {
-    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
-    {
-        $selectColumn = 'id';
-        if (!empty($conf['attributeValue']) && $conf['attributeValue'] === 'value') {
-            $selectColumn = 'datetime_value';
-        }
-
-        $qb->select("$alias.$selectColumn");
-    }
 }

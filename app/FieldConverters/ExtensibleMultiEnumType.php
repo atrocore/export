@@ -85,37 +85,11 @@ class ExtensibleMultiEnumType extends LinkMultipleType
         parent::queryCallback($container, $qb, $mapper, $configuration);
     }
 
-    public function queryCallbackForAttribute(Container $container, QueryBuilder $qb, Mapper $mapper, array $conf): void
-    {
-        AbstractType::queryCallbackForAttribute($container, $qb, $mapper, $conf);
-    }
-
-    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
-    {
-        $qb->select("$alias.text_value");
-    }
-
     protected function findEntities(string $foreignEntity, array $params): array
     {
         $configuration = $this->getMemoryStorage()->get('configurationItemData');
         if (empty($configuration['id'])) {
             throw new \Error('No configuration id found.');
-        }
-
-        if (!empty($configuration['attributeId'])) {
-            $key = $this->convertor->getEntityManager()->getRepository('Attribute')->getCacheKey($configuration['attributeId']);
-
-            if (!$this->getMemoryStorage()->has($key)) {
-                $attribute = $this->convertor->getEntity('Attribute', $configuration['attributeId']);
-                $this->getMemoryStorage()->set($key, $attribute);
-            } else {
-                $attribute = $this->getMemoryStorage()->get($key);
-            }
-
-            $params['sortBy'] = 'extensible_enum_extensible_enum_option_mm.sorting';
-            $params['asc'] = true;
-
-            return $this->convertor->getService('ExtensibleEnum')->findLinkedEntities($attribute->get('extensibleEnumId'), 'extensibleEnumOptions', $params);
         }
 
         return parent::findEntities($foreignEntity, $params);

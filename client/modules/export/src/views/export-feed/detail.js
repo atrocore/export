@@ -20,9 +20,7 @@ Espo.define('export:views/export-feed/detail', 'views/detail',
                     return {
                         "exportFeedData": this.model.attributes,
                         "entity": this.model.get('entity'),
-                        "type": "Field",
-                        "channelId": this.model.get('channelId'),
-                        "channelName": this.model.get('channelName')
+                        "type": "Field"
                     }
                 };
 

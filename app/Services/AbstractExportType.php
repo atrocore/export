@@ -160,14 +160,6 @@ abstract class AbstractExportType extends Base
     {
         $feedData = $this->data['feed']['data'];
 
-        if (!isset($row['channelId'])) {
-            $row['channelId'] = null;
-        }
-
-        if (!empty($row['attributeId'])) {
-            $row['field'] = $row['id'];
-        }
-
         $row['delimiter'] = !empty($feedData['delimiter']) ? $feedData['delimiter'] : ',';
         $row['emptyValue'] = !empty($feedData['emptyValue']) ? $feedData['emptyValue'] : '';
         $row['nullValue'] = array_key_exists('nullValue', $feedData) ? $feedData['nullValue'] : 'Null';
@@ -177,18 +169,6 @@ abstract class AbstractExportType extends Base
         $row['decimalMark'] = $feedData['decimalMark'];
         $row['thousandSeparator'] = $feedData['thousandSeparator'];
 
-        if ($row['type'] === 'Field' && !empty($row['fallbackLanguage'])) {
-            if ($row['fallbackLanguage'] === 'main') {
-                $row['fallbackField'] = $row['field'];
-            } else {
-                $row['fallbackField'] = $row['field'] . ucfirst(Util::toCamelCase(strtolower($row['fallbackLanguage'])));
-            }
-        }
-
-        // change field name for multilingual field
-        if ($row['type'] === 'Field' && !empty($row['language']) && $row['language'] !== 'main') {
-            $row['field'] .= ucfirst(Util::toCamelCase(strtolower($row['language'])));
-        }
 
         return $row;
     }
@@ -388,7 +368,6 @@ abstract class AbstractExportType extends Base
         $files = [];
 
         if (!empty($records)) {
-            $this->prepareRecordsForProductAttributes($attributesConfiguratorItems, $records);
             $this->getMemoryStorage()->set('exportRecordsPartOffset', $this->data['offset']);
             $this->getMemoryStorage()->set('exportRecordsPart', $records);
             foreach ($records as $record) {
@@ -638,7 +617,6 @@ abstract class AbstractExportType extends Base
         $file = fopen($res['fullFileName'], 'a');
 
         if (!empty($total) && !empty($records = $this->getRecords($offset, $limit))) {
-            $this->prepareRecordsForProductAttributes($attributesConfiguratorItems, $records);
             $this->getMemoryStorage()->set('exportRecordsPartOffset', $offset);
             $this->getMemoryStorage()->set('exportRecordsPart', $records);
             foreach ($records as $record) {
@@ -699,46 +677,6 @@ abstract class AbstractExportType extends Base
         return $res;
     }
 
-    protected function prepareRecordsForProductAttributes(array $attributesConfiguratorItems, array &$records): void
-    {
-        // prepare records for attribute types
-        foreach ($attributesConfiguratorItems as $conf) {
-            foreach ($records as &$record) {
-                if (!empty($conf['attributeId'])) {
-                    $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}_{$conf['channelId']}_" . strtolower($conf['language'])] ?? null;
-                    if ($record[$conf['field']] === null && !empty($conf['fallbackLanguage'])) {
-                        $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}_{$conf['channelId']}_" . strtolower($conf['fallbackLanguage'])] ?? null;
-                    }
-                    if (!empty($conf['replaceAttributeValues']) && $record[$conf['field']] === null && !empty($conf['channelId'])) {
-                        $record[$conf['field']] = $record['_entity']->rowData["{$conf['id']}__" . strtolower($conf['language'])] ?? null;
-                    }
-
-                    // @todo move it into the field convertors
-                    switch ($this->getAttribute($conf['attributeId'])->get('type')) {
-                        case 'extensibleEnum':
-                        case 'file':
-                        case 'measure':
-                        case 'unit':
-                        case 'link':
-                        case 'int':
-                        case 'rangeInt':
-                        case 'float':
-                        case 'varchar':
-                        case 'rangeFloat':
-                            $record[$conf['field'] . 'Id'] = $record[$conf['field']];
-                            break;
-                        case 'array':
-                        case 'extensibleMultiEnum':
-                            if (!empty($record[$conf['field']]) && is_string($record[$conf['field']])) {
-                                $record[$conf['field']] = @json_decode($record[$conf['field']], true);
-                            }
-                            break;
-                    }
-                }
-            }
-            unset($record);
-        }
-    }
 
     public function getZipTmpDir(): string
     {

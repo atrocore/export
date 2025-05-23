@@ -14,7 +14,7 @@ Espo.define('export:views/export-configurator-item/fields/mask', 'views/fields/v
         setup() {
             Dep.prototype.setup.call(this);
 
-            this.listenTo(this.model, 'change:name change:attributeId change:type', () => {
+            this.listenTo(this.model, 'change:name change:type', () => {
                 this.reRender();
             });
         },
@@ -40,14 +40,6 @@ Espo.define('export:views/export-configurator-item/fields/mask', 'views/fields/v
                         this.model.set('mask', '{{value}} {{currency}}');
                     }
                 }
-            } else if (this.model.get('type') === 'Attribute' && this.model.get('attributeId')) {
-                this.ajaxGetRequest(`Attribute/${this.model.get('attributeId')}`).then(attribute => {
-                    if (attribute.type === 'currency') {
-                        this.setRequired();
-                        this.show();
-                        this.model.set('mask', '{{value}} {{currency}}');
-                    }
-                });
             }
         },
 

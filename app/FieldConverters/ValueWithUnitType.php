@@ -27,67 +27,26 @@ class ValueWithUnitType extends AbstractType
         $this->emptyValue = $configuration['emptyValue'];
         $this->nullValue = $configuration['nullValue'];
 
-        $attributeId = null;
-        if (!empty($configuration['attributeId'])) {
-            $attributeId = $configuration['attributeId'];
-        }
 
-        if (empty($attributeId)) {
-            $fieldDefs = $this
-                ->getMetadata()
-                ->get(['entityDefs', $configuration['entity'], 'fields', $configuration['field']]);
-            // use main field instead
-            $field = $fieldDefs['mainField'];
-            $type = $this->getMetadata()->get(['entityDefs', $configuration['entity'], 'fields', $field, 'type']);
-            $valueResult = $this
-                ->convertor
-                ->convertType($type, $record, array_merge($configuration, ['field' => $field]))[$column];
-            $unitResult = $record[$field . 'UnitName'] ?? '';
-        } else {
-            $attribute = $this->convertor->getAttributeById($attributeId);
-            $field = $configuration['field'];
-            $type = $attribute->get('type');
-
-            $valueFrom = null;
-            $valueTo = null;
-            $unitResult = '';
-
-            if ($configuration['entity'] === 'ProductAttributeValue') {
-                $valueFrom = $record['valueFrom'] ?? $record['value'];
-                $valueTo = $record['valueTo'] ?? null;
-                $unitResult = $record['valueUnitData']['name'] ?? '';
-            } elseif ($configuration['entity'] === 'Product') {
-                if (!empty($record[$field])) {
-                    list($valueFrom, $valueTo, $unitId) = $this->prepareUnitValue((string)$record[$field], $type);
-                    $unitResult = $this->convertor
-                        ->convertType(
-                            'unit',
-                            ["{$field}Id" => $unitId],
-                            array_merge($configuration, [
-                                    'field'               => $field,
-                                    'exportBy'            => ['name'],
-                                    'markForNoRelation'   => '',
-                                    'prepareUnitValueFnc' => [$this, 'prepareUnitValue']
-                                ]
-                            ))[$column];
-                }
-            }
-
-            $valueResult = $this->convertor
-                ->convertType($type, [$field => $valueFrom], array_merge($configuration, ['field' => $field]))[$column];
-        }
+        $fieldDefs = $this
+            ->getMetadata()
+            ->get(['entityDefs', $configuration['entity'], 'fields', $configuration['field']]);
+        // use main field instead
+        $field = $fieldDefs['mainField'];
+        $type = $this->getMetadata()->get(['entityDefs', $configuration['entity'], 'fields', $field, 'type']);
+        $valueResult = $this
+            ->convertor
+            ->convertType($type, $record, array_merge($configuration, ['field' => $field]))[$column];
+        $unitResult = $record[$field . 'UnitName'] ?? '';
 
         if (in_array($type, ['rangeFloat', 'rangeInt'])) {
             $type = $type === 'rangeFloat' ? 'float' : 'int';
-            if (empty($attributeId)) {
-                $valueFromResult = $this->convertor
-                    ->convertType($type, $record, array_merge($configuration, ['field' => $field . 'From']))[$column];
-                $valueToResult = $this->convertor
-                    ->convertType($type, $record, array_merge($configuration, ['field' => $field . 'To']))[$column];
-            } else {
-                $valueFromResult = $this->convertor->convertType($type, [$field => $valueFrom], array_merge($configuration, ['field' => $field]))[$column];
-                $valueToResult = $this->convertor->convertType($type, [$field => $valueTo], array_merge($configuration, ['field' => $field]))[$column];
-            }
+
+            $valueFromResult = $this->convertor
+                ->convertType($type, $record, array_merge($configuration, ['field' => $field . 'From']))[$column];
+            $valueToResult = $this->convertor
+                ->convertType($type, $record, array_merge($configuration, ['field' => $field . 'To']))[$column];
+
 
             $result[$column] = "";
 
@@ -149,30 +108,5 @@ class ValueWithUnitType extends AbstractType
             $valueTo,
             !isset($valueParts[2]) || $valueParts[2] === 'N/A' ? null : $valueParts[2]
         ];
-    }
-
-    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
-    {
-        $attribute = $this->convertor->getAttributeById($conf['attributeId']);
-
-        $column = 'float_value';
-        $column1 = 'float_value1';
-
-        switch ($attribute->get('type')) {
-            case 'int':
-            case 'rangeInt':
-                $column = 'int_value';
-                $column1 = 'int_value1';
-                break;
-            case 'varchar':
-                $column = 'varchar_value';
-                break;
-        }
-
-        if (Converter::isPgSQL($qb->getConnection())) {
-            $qb->select("STRING_AGG(COALESCE($alias.$column::text, 'N/A') || '::atro::' || COALESCE($alias.$column1::text, 'N/A') || '::atro::' || COALESCE($alias.reference_value, 'N/A'), ', ')");
-        } else {
-            $qb->select("GROUP_CONCAT(CONCAT(IFNULL($alias.$column, 'N/A'), '::atro::', IFNULL($alias.$column1, 'N/A'), '::atro::', IFNULL($alias.reference_value, 'N/A')) SEPARATOR ', ')");
-        }
     }
 }

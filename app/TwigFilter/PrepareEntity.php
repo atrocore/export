@@ -28,12 +28,9 @@ class PrepareEntity extends AbstractTwigFilter
             return null;
         }
 
-        $service = $this->getInjection('serviceFactory')->create($value->getEntityType());
-        if ($value->getEntityType() === 'ProductAttributeValue' && method_exists($service, 'prepareEntity')) {
-            $service->prepareEntity($value, false);
-        } else {
-            $service->prepareEntityForOutput($value);
-        }
+       $this->getInjection('serviceFactory')
+            ->create($value->getEntityType())
+            ->prepareEntityForOutput($value);
 
         return $value;
     }

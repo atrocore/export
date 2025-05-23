@@ -11,9 +11,6 @@
     "csvFieldDelimiter": "Разделитель полей",
     "csvTextQualifier": "Классификатор текста",
     "field": "Поле",
-    "isAttribute": "Является атрибутом",
-    "attribute": "Атрибут",
-    "fieldOrAttribute": "Поле/Атрибут",
     "delimiter": "Разделитель значений списка",
     "exportJobs": "Задания экспорта",
     "emptyValue": "Пустое значение",
@@ -24,14 +21,11 @@
     "separateJob": "Отдельное задание для итерации",
     "configuratorItems": "Конфигуратор",
     "convertCollectionToString": "Конвертировать список в строку",
-    "convertRelationsToString": "Конвертировать поля связи в строку",
-    "replaceAttributeValues": "Заменять значения атрибутов"
+    "convertRelationsToString": "Конвертировать поля связи в строку"
   },
   "labels": {
     "typeToSearch": "Введите для поиска...",
     "removeAllItemsConfirmation": "Вы уверены, что хотите удалить все правила конфигуратора?",
-    "attributeName": "Название атрибута",
-    "attributeCode": "Код атрибута",
     "fields": "Поля",
     "ignoreFilter": "Игнорировать фильтр в фиде",
     "Export Data Settings": "Настройки экспорта данных",
@@ -40,7 +34,6 @@
     "entityFilterResult": "Результат фильтрации",
     "Configurator": "Конфигуратор",
     "addEntityField": "Создать сущность поле",
-    "addProductAttribute": "Добавить атрибут продукта",
     "simple": "Файл",
     "doubleQuote": "Двойные кавычки",
     "singleQuote": "Одинарная кавычка",
@@ -71,10 +64,7 @@
   },
   "tooltips": {
     "template": "Вы можете использовать синтаксис шаблонизатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
-    "language": "Выберите язык для получения локализованных данных.",
-    "channel": "Это значение наследуется путем создания правила для определенного атрибута канала и не влияет на сам экспорт.",
     "convertCollectionToString": "Поля и атрибуты типов: multi-enum, array, one-to-many relation.",
-    "convertRelationsToString": "Поля связи будут разделены \"Разделителем полей для связи\".",
-    "replaceAttributeValues": "Заменять несуществующие значения для атрибутов канала глобальными значениями."
+    "convertRelationsToString": "Поля связи будут разделены \"Разделителем полей для связи\"."
   }
 }

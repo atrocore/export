@@ -32,8 +32,8 @@ class LinkType extends AbstractType
 
         $linkId = $record[$this->getFieldName($field)];
         $metadata = $this->getMetadata()->get(['entityDefs', $entity, 'fields', $field]);
-        $type = $record['attributeType'] ?? $metadata['type'] ?? null;
-        $isUnit = ($configuration['attributeValue'] ?? null) == 'valueUnit' || ($type == 'link' && !empty($metadata['unitIdField']));
+        $type = $metadata['type'] ?? null;
+        $isUnit = $type == 'link' && !empty($metadata['unitIdField']);
 
         if ($type == 'extensibleEnum' || $isUnit) {
             $result[$column] = $configuration['nullValue'];
@@ -85,7 +85,7 @@ class LinkType extends AbstractType
 
                         $this->prepareExportByField($foreignEntity, $v, $foreignType, $foreignData);
 
-                        $foreignConfiguration = array_merge($configuration, ['field' => $v, 'attributeId' => null]);
+                        $foreignConfiguration = array_merge($configuration, ['field' => $v]);
                         $this->convertForeignType($fieldResult, $foreignType, $foreignConfiguration, $foreignData, $v, $record);
 
                         if ($configuration['zip']) {
@@ -274,24 +274,11 @@ class LinkType extends AbstractType
 
     protected function getForeignEntityName(string $entity, string $field): string
     {
-        $configuration = $this->getMemoryStorage()->get('configurationItemData');
-        if (!empty($configuration['attributeId'])) {
-            $attribute = $this->convertor->getAttributeById($configuration['attributeId']);
-            if (in_array($attribute->get('type'), ['link', 'linkMultiple'])) {
-                return $attribute->getVirtualField('entityType');
-            }
-        }
-
-        return $this->convertor->getMetadata()->get(['entityDefs', $entity, 'links', $field, 'entity']);
+        return $this->convertor->getMetadata()->get(['entityDefs', $entity, 'links', $field, 'entity']) ??  $this->convertor->getMetadata()->get(['entityDefs', $entity, 'fields', $field, 'entity']);
     }
 
     protected function needToCallForeignEntity(array $exportBy): bool
     {
-        $configuration = $this->getMemoryStorage()->get('configurationItemData');
-        if (!empty($configuration['attributeId'])) {
-            return true;
-        }
-
         foreach ($exportBy as $v) {
             if (!in_array($v, ['id', 'name'])) {
                 return true;
@@ -365,10 +352,5 @@ class LinkType extends AbstractType
 
     protected function prepareEntity(Entity $entity, array $config): void
     {
-    }
-
-    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
-    {
-        $qb->select("$alias.reference_value");
     }
 }

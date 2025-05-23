@@ -4,13 +4,10 @@
     "column": "Назва колонки",
     "columnType": "Мітка колонки",
     "exportFeed": "Експорт. фід",
-    "attribute": "Атрибут",
     "remove": "Видалити",
     "exportBy": "Поля пов'язаних сутностей",
     "exportIntoSeparateColumns": "Розділяти",
     "type": "Тип",
-    "language": "Мова",
-    "channel": "Канал",
     "mask": "Маска",
     "filterField": "Поле фільтра",
     "filterFieldValue": "Значення поля фільтра",
@@ -21,22 +18,11 @@
     "fixedValue": "Фіксоване значення",
     "previousItem": "Попередній елемент",
     "zip": "Експорт ассетів у ZIP-архів",
-    "attributeValue": "Значення атрибута",
     "fileNameTemplate": "Шаблон імені файлу",
     "exportByForListAttribute": "Пов’язані поля сутності для списків",
-    "fallbackLanguage": "Резервна мова",
     "script": "Скрипт"
   },
   "options": {
-    "attributeValue": {
-      "value": "Значення",
-      "valueFrom": "Значення від",
-      "valueTo": "Значення до",
-      "valueUnit": "Значення міри",
-      "id": "ID (значення атрибута продукту)",
-      "valueNumeric": "Значення (чисельне)",
-      "valueString": "Значення (рядок)"
-    },
     "columnType": {
       "name": "Назва",
       "custom": "Користувацька назва"

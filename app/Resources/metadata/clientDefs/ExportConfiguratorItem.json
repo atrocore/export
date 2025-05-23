@@ -44,37 +44,6 @@
           ]
         }
       },
-      "attribute": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "equals",
-              "attribute": "type",
-              "value": "Attribute"
-            }
-          ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "equals",
-              "attribute": "type",
-              "value": "Attribute"
-            }
-          ]
-        }
-      },
-      "channel": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "equals",
-              "attribute": "type",
-              "value": "Attribute"
-            }
-          ]
-        }
-      },
       "fixedValue": {
         "visible": {
           "conditionGroup": [

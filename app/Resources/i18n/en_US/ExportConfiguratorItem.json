@@ -5,13 +5,10 @@
     "columnType": "Column Label",
     "exportFeed": "Export Feed",
     "entityAttribute": "Attribute",
-    "attribute": "Attribute",
     "exportBy": "Related Entity Fields",
     "remove": "Remove",
     "exportIntoSeparateColumns": "Separate",
     "type": "Type",
-    "language": "Language",
-    "channel": "Channel",
     "mask": "Mask",
     "filterField": "Filter Field",
     "filterFieldValue": "Filter Field Value",
@@ -22,25 +19,14 @@
     "fixedValue": "Fixed value",
     "previousItem": "Previous Item",
     "zip": "Export Files to a ZIP archive",
-    "attributeValue": "Attribute Value",
     "fileNameTemplate": "File Name Template",
     "exportByForListAttribute": "Related Entity Fields for Lists",
-    "fallbackLanguage": "Fallback Language",
     "script": "Script"
   },
   "options": {
     "boolFilterFieldValue": {
       "+": "true",
       "-": "false"
-    },
-    "attributeValue": {
-      "value": "Value",
-      "valueFrom": "Value From",
-      "valueTo": "Value To",
-      "valueUnit": "Value Unit",
-      "id": "ID (Product Attribute Value)",
-      "valueNumeric": "Value (numerical)",
-      "valueString": "Value (String)"
     },
     "columnType": {
       "name": "Name",

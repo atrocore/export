@@ -12,6 +12,8 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
     Dep => Dep.extend({
 
         setup() {
+            this.defs.create = false;
+
             Dep.prototype.setup.call(this);
 
             if (this.getAcl().check('ExportFeed', 'edit')) {

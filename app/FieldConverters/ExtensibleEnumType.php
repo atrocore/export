@@ -40,26 +40,13 @@ class ExtensibleEnumType extends LinkType
         return $this->getMemoryStorage()->get($itemKey);
     }
 
-    /**
-     * @param Entity $entity
-     *
-     * @return void
-     */
     protected function prepareEntity(Entity $entity, array $config): void
     {
         if (!$entity instanceof ExtensibleEnumOption) {
             return;
         }
 
-        $extensibleEnumId = null;
-        if (!empty($config['attributeId'])) {
-            $attribute = $this->convertor->getEntityManager()->getRepository('Attribute')->get($config['attributeId']);
-            if (!empty($attribute)){
-                $extensibleEnumId = $attribute->get('extensibleEnumId');
-            }
-        } else {
-            $extensibleEnumId = $this->getMetadata()->get(['entityDefs', $config['entity'], 'fields', $config['field'], 'extensibleEnumId']);
-        }
+        $extensibleEnumId = $this->getMetadata()->get(['entityDefs', $config['entity'], 'fields', $config['field'], 'extensibleEnumId']);
 
         if (empty($extensibleEnumId)) {
             return;

@@ -24,29 +24,12 @@ class Metadata extends AbstractListener
         $data = $event->getArgument('data');
 
         if (isset($data['entityDefs']['Attribute'])) {
-            $data['entityDefs']['ExportConfiguratorItem']['fields']['attribute'] = [
-                'type' => 'link'
-            ];
-            $data['entityDefs']['ExportConfiguratorItem']['links']['attribute'] = [
-                'type'   => 'belongsTo',
-                'entity' => 'Attribute'
-            ];
             $data['entityDefs']['ExportConfiguratorItem']['fields']['entityAttribute'] = [
                 'type' => 'link'
             ];
             $data['entityDefs']['ExportConfiguratorItem']['links']['entityAttribute'] = [
                 'type'   => 'belongsTo',
                 'entity' => 'Attribute'
-            ];
-        }
-
-        if (isset($data['entityDefs']['Channel'])) {
-            $data['entityDefs']['ExportConfiguratorItem']['fields']['channel'] = [
-                'type'    => 'link'
-            ];
-            $data['entityDefs']['ExportConfiguratorItem']['links']['channel'] = [
-                'type'   => 'belongsTo',
-                'entity' => 'Channel'
             ];
         }
 

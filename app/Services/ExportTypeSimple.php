@@ -500,19 +500,6 @@ class ExportTypeSimple extends AbstractExportType
                                 }
                             }
                             break;
-                        case 'Attribute':
-                            if (in_array($sheetCol['attributeValue'], ['valueString', 'value'])) {
-                                foreach ($column->getCellIterator($startRow) as $cell) {
-                                    $cell->setValueExplicit($cell->getValue(), DataType::TYPE_STRING2);
-                                }
-                            } else {
-                                if (in_array($sheetCol['attributeValue'], ['valueNumeric', 'valueFrom', 'valueTo'])) {
-                                    foreach ($column->getCellIterator($startRow) as $cell) {
-                                        $this->processXlsxNumericCell($cell, $decimalMark, $thousandSeparator);
-                                    }
-                                }
-                            }
-                            break;
                         default:
                             break;
                     }

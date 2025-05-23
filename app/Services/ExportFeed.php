@@ -359,8 +359,6 @@ class ExportFeed extends Base
                 $entity->set('localeName', $locale->get('name'));
             }
         }
-
-        $entity->set('replaceAttributeValues', !empty($entity->getFeedField('replaceAttributeValues')));
     }
 
     public function getExportTypeService(string $type, array $data = null): AbstractExportType
@@ -421,8 +419,6 @@ class ExportFeed extends Base
             $row = [
                 'id'                        => $item->get('id'),
                 'columnType'                => $item->get('columnType'),
-                'language'                  => $item->get('language'),
-                'fallbackLanguage'          => $item->get('fallbackLanguage'),
                 'column'                    => $eciService->prepareColumnName($item),
                 'template'                  => $feed->get('template'),
                 'emptyValue'                => $feed->getFeedField('emptyValue'),
@@ -461,35 +457,6 @@ class ExportFeed extends Base
 
             if ($item->get('type') === 'Field') {
                 $row['field'] = $item->get('name');
-            }
-
-            if ($item->get('type') === 'Attribute') {
-                $attribute = $this->getEntityManager()->getEntity('Attribute', $item->get('attributeId'));
-                if (empty($attribute)) {
-                    throw new Exceptions\BadRequest(sprintf($this->getInjection('language')->translate('noSuchAttribute', 'exceptions', 'ExportFeed'), $item->get('name')));
-                }
-
-                $row['replaceAttributeValues'] = !empty($feed->getFeedField('replaceAttributeValues'));
-                $row['attributeId'] = $attribute->get('id');
-                $row['attributeName'] = $attribute->get('name');
-
-                $row['channelLocales'] = [];
-                $row['channelId'] = $item->get('channelId');
-
-                if (!empty($channel = $item->get('channel'))) {
-                    $row['channelLocales'] = $channel->get('locales');
-                }
-
-                if (empty($row['attributeValue'])) {
-                    switch ($attribute->get('type')) {
-                        case 'rangeInt':
-                        case 'rangeFloat':
-                            $row['attributeValue'] = "valueFrom";
-                            break;
-                        default:
-                            $row['attributeValue'] = 'value';
-                    }
-                }
             }
 
             $configuration[] = $row;
@@ -696,7 +663,6 @@ class ExportFeed extends Base
                     'entity' => $scope,
                     'convertCollectionToString' => true,
                     'delimiter' => '~',
-                    'replaceAttributeValues' => true,
                     'convertRelationsToString' => true,
                     'fieldDelimiterForRelation' => '|',
                     'emptyValue' => '',
@@ -726,10 +692,6 @@ class ExportFeed extends Base
         return $this->pushExport($data);
     }
 
-    protected function getChannel(string $channelId): ?Entity
-    {
-        return $this->getEntityManager()->getEntity('Channel', $channelId);
-    }
 
     protected function isEntityUpdated(Entity $entity, \stdClass $data): bool
     {

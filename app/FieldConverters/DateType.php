@@ -17,13 +17,5 @@ use Doctrine\DBAL\Query\QueryBuilder;
 
 class DateType extends VarcharType
 {
-    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
-    {
-        $selectColumn = 'id';
-        if (!empty($conf['attributeValue']) && $conf['attributeValue'] === 'value') {
-            $selectColumn = 'date_value';
-        }
 
-        $qb->select("$alias.$selectColumn");
-    }
 }

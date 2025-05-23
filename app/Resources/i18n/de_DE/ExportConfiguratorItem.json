@@ -4,13 +4,10 @@
     "column": "Spaltenname",
     "columnType": "Spaltenbezeichnung",
     "exportFeed": "Exportfeed",
-    "attribute": "Attribut",
     "remove": "Löschen",
     "exportBy": "Verwandte Entitätsfelder",
     "exportIntoSeparateColumns": "Trennen",
     "type": "Typ",
-    "language": "Sprache",
-    "channel": "Kanal",
     "mask": "Maske",
     "filterField": "Filterfeld",
     "filterFieldValue": "Filterfeldwert",
@@ -21,25 +18,14 @@
     "fixedValue": "Fester Wert",
     "previousItem": "Vorheriges Item",
     "zip": "Assets in ein ZIP-Archiv exportieren",
-    "attributeValue": "Attributwert",
     "fileNameTemplate": "Dateinamenvorlage",
     "exportByForListAttribute": "Verwandte Entitätsfelder für Listen",
-    "fallbackLanguage": "Fallback-Sprache",
     "script": "Skript"
   },
   "options": {
     "boolFilterFieldValue": {
       "+": "wahr",
       "-": "falsch"
-    },
-    "attributeValue": {
-      "value": "Wert",
-      "valueFrom": "Wert von",
-      "valueTo": "Wert auf",
-      "valueUnit": "Werteihheit",
-      "id": "ID (Produktattributwert)",
-      "valueNumeric": "Wert (numerisch)",
-      "valueString": "Wert (String)"
     },
     "columnType": {
       "name": "Name",

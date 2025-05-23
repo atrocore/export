@@ -32,15 +32,6 @@ class ExportConfiguratorItem extends Base
             $entity->set('sortOrder', empty($last) ? 0 : $last->get('sortOrder') + 10);
         }
 
-        if ($entity->isAttributeChanged('attributeId')) {
-            if (!empty($attribute = $entity->get('attribute'))) {
-                $entity->set('name', $attribute->get('name'));
-            }
-        }
-
-        if (empty($entity->get('language'))) {
-            $entity->set('language', 'main');
-        }
 
         parent::beforeSave($entity, $options);
     }

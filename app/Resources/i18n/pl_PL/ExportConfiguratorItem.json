@@ -4,13 +4,10 @@
     "column": "Nazwa kolumny",
     "columnType": "Etykieta kolumny",
     "exportFeed": "Eksportuj kanał",
-    "attribute": "Atrybut",
     "exportBy": "Powiązane pola encji",
     "remove": "Usuń",
     "exportIntoSeparateColumns": "Oddzielne",
     "type": "Typ",
-    "language": "Język",
-    "channel": "Kanał",
     "mask": "Maska",
     "filterField": "Pole filtru",
     "filterFieldValue": "Wartość pola filtru",
@@ -21,24 +18,13 @@
     "fixedValue": "Wartość stała",
     "previousItem": "Poprzedni element",
     "zip": "Eksportuj zasoby do archiwum ZIP",
-    "attributeValue": "Wartość atrybutu",
     "fileNameTemplate": "Szablon nazwy pliku",
-    "exportByForListAttribute": "Powiązane pola encji dla list",
-    "fallbackLanguage": "Język zapasowy"
+    "exportByForListAttribute": "Powiązane pola encji dla list"
   },
   "options": {
     "boolFilterFieldValue": {
       "+": "prawda",
       "-": "fałsz"
-    },
-    "attributeValue": {
-      "value": "Wartość",
-      "valueFrom": "Wartość od",
-      "valueTo": "Wartość do",
-      "valueUnit": "Jednostka wartości",
-      "id": "ID (Wartość atrybutu produktu)",
-      "valueNumeric": "Wartość (liczbowa)",
-      "valueString": "Wartość (Tekst)"
     },
     "columnType": {
       "name": "Nazwa",
