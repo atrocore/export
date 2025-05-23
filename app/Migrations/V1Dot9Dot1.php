@@ -27,8 +27,10 @@ class V1Dot9Dot1 extends Base
         $this->getConnection()->createQueryBuilder()
             ->update('export_configurator_item')
             ->set('entity_attribute_id', 'attribute_id')
+            ->set('type', ':field')
             ->where('entity_attribute_id IS NULL AND attribute_id IS NOT NULL')
             ->andWhere('type = :type')
+            ->setParameter('field', 'Field')
             ->setParameter('type', 'Attribute')
             ->executeStatement();
 
