@@ -37,7 +37,7 @@ class V1Dot9Dot1 extends Base
         $this->exec("ALTER TABLE export_configurator_item DROP attribute_value");
         $this->exec("ALTER TABLE export_configurator_item DROP \"language\"");
         $this->exec("ALTER TABLE export_configurator_item DROP fallback_language");
-//        $this->exec("ALTER TABLE export_configurator_item DROP attribute_id");
+//       $this->exec("ALTER TABLE export_configurator_item DROP attribute_id");
         $this->exec("DROP INDEX idx_import_configurator_item_attribute_id;");
     }
 
