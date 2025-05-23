@@ -98,22 +98,18 @@ class ExportFeed extends Base
             }
         }
 
-        $languages = ['', 'main'];
-        if ($this->getConfig()->get('isMultilangActive', false)) {
-            $languages = array_merge($languages, $this->getConfig()->get('inputLanguageList', []));
-        }
-
         try {
             $this->getConnection()->createQueryBuilder()
-                ->update('export_configurator_item')
-                ->set($this->getConnection()->quoteIdentifier('deleted'), ':true')
-                ->where('language NOT IN (:languages)')
+                ->update('export_configurator_item', 't')
+                ->set('deleted', ':true')
+                ->where('t.export_feed_id = :id')
+                ->andWhere("t.entity_attribute_id NOT IN (SELECT a.id FROM {$this->getConnection()->quoteIdentifier('attribute')} a WHERE a.deleted=:false)")
                 ->setParameter('true', true, ParameterType::BOOLEAN)
-                ->setParameter('languages', $languages, Connection::PARAM_STR_ARRAY)
+                ->setParameter('id', $exportFeed->get('id'))
+                ->setParameter('false', false, ParameterType::BOOLEAN)
                 ->executeQuery();
         } catch (\Throwable $e) {
         }
-
     }
 
     public function getIdsByExportEntity(string $exportEntity): array
