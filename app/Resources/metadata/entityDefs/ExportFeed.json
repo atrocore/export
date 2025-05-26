@@ -187,6 +187,15 @@
       "filterDisabled": true,
       "tooltip": true
     },
+    "markForUnlinkedAttribute": {
+      "type": "varchar",
+      "notStorable": true,
+      "dataField": true,
+      "required": false,
+      "default": "N/A",
+      "filterDisabled": true,
+      "tooltip": true
+    },
     "data": {
       "type": "jsonObject",
       "layoutDetailDisabled": true,
