@@ -38,17 +38,7 @@ class CurrencyType extends FloatType
             }
         }
 
-        $attributeField = $configuration['attributeValue'];
-        switch ($attributeField) {
-            case 'value':
-                $result[$column] = $value;
-                break;
-            case 'currency':
-                $result[$column] = $currency;
-                break;
-            default:
-                $result[$column] = $finalValue;
-        }
+        $result[$column] = $finalValue;
     }
 
     public function convertToString(array &$result, array $record, array $configuration): void
@@ -74,16 +64,7 @@ class CurrencyType extends FloatType
                 $finalValue = str_replace(['{{value}}', '{{Value}}', '{{currency}}', '{{Currency}}'], [$value, $value, $currency, $currency], $mask);
             }
         }
-        $attributeField = $configuration['attributeValue'];
-        switch ($attributeField) {
-            case 'value':
-                $result[$column] = $value;
-                break;
-            case 'currency':
-                $result[$column] = $currency;
-                break;
-            default:
-                $result[$column] = $finalValue;
-        }
+
+        $result[$column] = $finalValue;
     }
 }

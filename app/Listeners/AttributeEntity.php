@@ -21,6 +21,6 @@ class AttributeEntity extends AbstractListener
     public function afterRemove(Event $event): void
     {
         $attribute = $event->getArgument('entity');
-        $this->getEntityManager()->getRepository('ExportConfiguratorItem')->where(['attributeId' => $attribute->id])->removeCollection();
+        $this->getEntityManager()->getRepository('ExportConfiguratorItem')->where(['entityAttributeId' => $attribute->id])->removeCollection();
     }
 }

@@ -57,14 +57,6 @@ Espo.define('export:views/export-configurator-item/fields/previous-item', 'views
                 name = this.translate(name, 'fields', object.entity);
             }
 
-            if (object.type === 'Attribute') {
-                name = object.attributeData.name;
-
-                if (object.isAttributeMultiLang && object.language !== 'main') {
-                    name += ' / ' + object.language;
-                }
-            }
-
             if (object.type === 'Fixed value') {
                 name = this.getLanguage().translate('fixedValue', 'fields', 'ExportConfiguratorItem');
             }

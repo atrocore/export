@@ -36,14 +36,4 @@ class ArrayType extends AbstractType
             }
         }
     }
-
-    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
-    {
-        $selectColumn = 'id';
-        if (!empty($conf['attributeValue']) && $conf['attributeValue'] === 'value') {
-            $selectColumn = 'text_value';
-        }
-
-        $qb->select("$alias.$selectColumn");
-    }
 }

@@ -359,8 +359,6 @@ class ExportFeed extends Base
                 $entity->set('localeName', $locale->get('name'));
             }
         }
-
-        $entity->set('replaceAttributeValues', !empty($entity->getFeedField('replaceAttributeValues')));
     }
 
     public function getExportTypeService(string $type, array $data = null): AbstractExportType
@@ -421,8 +419,6 @@ class ExportFeed extends Base
             $row = [
                 'id'                        => $item->get('id'),
                 'columnType'                => $item->get('columnType'),
-                'language'                  => $item->get('language'),
-                'fallbackLanguage'          => $item->get('fallbackLanguage'),
                 'column'                    => $eciService->prepareColumnName($item),
                 'template'                  => $feed->get('template'),
                 'emptyValue'                => $feed->getFeedField('emptyValue'),
@@ -461,35 +457,6 @@ class ExportFeed extends Base
 
             if ($item->get('type') === 'Field') {
                 $row['field'] = $item->get('name');
-            }
-
-            if ($item->get('type') === 'Attribute') {
-                $attribute = $this->getEntityManager()->getEntity('Attribute', $item->get('attributeId'));
-                if (empty($attribute)) {
-                    throw new Exceptions\BadRequest(sprintf($this->getInjection('language')->translate('noSuchAttribute', 'exceptions', 'ExportFeed'), $item->get('name')));
-                }
-
-                $row['replaceAttributeValues'] = !empty($feed->getFeedField('replaceAttributeValues'));
-                $row['attributeId'] = $attribute->get('id');
-                $row['attributeName'] = $attribute->get('name');
-
-                $row['channelLocales'] = [];
-                $row['channelId'] = $item->get('channelId');
-
-                if (!empty($channel = $item->get('channel'))) {
-                    $row['channelLocales'] = $channel->get('locales');
-                }
-
-                if (empty($row['attributeValue'])) {
-                    switch ($attribute->get('type')) {
-                        case 'rangeInt':
-                        case 'rangeFloat':
-                            $row['attributeValue'] = "valueFrom";
-                            break;
-                        default:
-                            $row['attributeValue'] = 'value';
-                    }
-                }
             }
 
             $configuration[] = $row;
@@ -696,7 +663,6 @@ class ExportFeed extends Base
                     'entity' => $scope,
                     'convertCollectionToString' => true,
                     'delimiter' => '~',
-                    'replaceAttributeValues' => true,
                     'convertRelationsToString' => true,
                     'fieldDelimiterForRelation' => '|',
                     'emptyValue' => '',
@@ -726,10 +692,6 @@ class ExportFeed extends Base
         return $this->pushExport($data);
     }
 
-    protected function getChannel(string $channelId): ?Entity
-    {
-        return $this->getEntityManager()->getEntity('Channel', $channelId);
-    }
 
     protected function isEntityUpdated(Entity $entity, \stdClass $data): bool
     {
@@ -830,8 +792,9 @@ class ExportFeed extends Base
 
         if (!empty($exportFeed->get('hasMultipleSheets'))) {
             $res = $conn->createQueryBuilder()
-                ->select('a.*, s.entity as sheet_entity')
+                ->select('a.*, s.entity as sheet_entity, c.name as channel_name')
                 ->from($conn->quoteIdentifier('attribute'), 'a')
+                ->leftJoin('a', 'channel', 'c', 'c.id=a.channel_id AND c.deleted=:false')
                 ->innerJoin('a', 'export_configurator_item', 'i', 'i.entity_attribute_id=a.id AND i.deleted=:false')
                 ->innerJoin('i', $conn->quoteIdentifier('sheet'), 's', 'i.sheet_id=s.id AND s.deleted=:false')
                 ->innerJoin('s', 'export_feed', 'e', 's.export_feed_id=e.id AND e.deleted=:false')
@@ -852,6 +815,9 @@ class ExportFeed extends Base
 
                     $attributesDefs = [];
                     foreach ($attributes as $row) {
+                        if (!empty($row['channel_name'])) {
+                            $row['name'] = $row['name'] . ' / ' . $row['channel_name'];
+                        }
                         $this->getAttributeFieldConverter()->convert($exportEntity, $row, $attributesDefs);
                     }
 
@@ -868,9 +834,10 @@ class ExportFeed extends Base
             $entityName = $exportFeed->getFeedField('entity');
             if ($this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
                 $attributes = $conn->createQueryBuilder()
-                    ->select('a.*')
+                    ->select('a.*, c.name as channel_name')
                     ->distinct()
                     ->from($conn->quoteIdentifier('attribute'), 'a')
+                    ->leftJoin('a', 'channel', 'c', 'c.id=a.channel_id AND c.deleted=:false')
                     ->innerJoin('a', 'export_configurator_item', 'i', 'i.entity_attribute_id=a.id AND i.deleted=:false')
                     ->innerJoin('i', 'export_feed', 'e', 'i.export_feed_id=e.id AND e.deleted=:false')
                     ->where('a.deleted=:false')
@@ -883,6 +850,9 @@ class ExportFeed extends Base
 
                 $attributesDefs = [];
                 foreach ($attributes as $row) {
+                    if (!empty($row['channel_name'])) {
+                        $row['name'] = $row['name'] . ' / ' . $row['channel_name'];
+                    }
                     $this->getAttributeFieldConverter()->convert($exportEntity, $row, $attributesDefs);
                 }
 

@@ -63,16 +63,6 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
 
             if (this.model.get('type') === 'Field') {
                 name = this.translate(name, 'fields', this.model.get('entity'));
-                if (this.getMetadata().get(`entityDefs.${this.model.get('entity')}.fields.${this.model.get('name')}.isMultilang`) && this.model.get('language') !== 'main') {
-                    name += ' / ' + this.model.get('language');
-                }
-            }
-
-            if (this.model.get('type') === 'Attribute') {
-                name = this.model.get('attributeData').name;
-                if (this.model.get('isAttributeMultiLang') && this.model.get('language') !== 'main') {
-                    name += ' / ' + this.model.get('language');
-                }
             }
 
             if (this.model.get('type') === 'Fixed value') {
@@ -97,19 +87,6 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
                 if (this.model.get('zip')) {
                     extraInfo += '<br> Zip'
                 }
-                if (this.model.get('attributeId')) {
-                    extraInfo += '<br>';
-                }
-            }
-
-            if (this.model.get('attributeId')) {
-                extraInfo += `${this.translate('code', 'fields', 'Attribute')}: ${this.model.get('attributeCode')}`;
-                if (this.model.get('attributeValue')) {
-                    extraInfo += '<br>' + this.translate('attributeValue', 'fields', 'ExportConfiguratorItem') + ': ' + this.getLanguage().translateOption(this.model.get('attributeValue'), 'attributeValue', 'ExportConfiguratorItem')
-                }
-                if (this.model.get('channelName')) {
-                    extraInfo += `<br>${this.translate('Channel', 'scopeNames', 'Global')}: ${this.model.get('channelName')}`;
-                }
             }
 
             return extraInfo;
@@ -130,17 +107,7 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
                         if (this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'type']) === 'measure') {
                             entity = 'Unit';
                         }
-                        if (this.model.get('entity') === 'ProductAttributeValue' && this.model.get('name') === 'value') {
-                            entity = 'ExtensibleEnumOption'
-                        }
-                    } else {
-                        if (this.model.get('attributeId') && this.model.get('attributeType')) {
-                            if (['extensibleEnum', 'extensibleMultiEnum'].includes(this.model.get('attributeType'))) {
-                                entity = 'ExtensibleEnumOption';
-                            } else if (this.model.get('attributeValue') === 'valueUnit') {
-                                entity = 'Unit'
-                            }
-                        }
+
                     }
 
                     if (entity) {

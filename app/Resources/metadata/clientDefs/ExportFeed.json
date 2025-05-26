@@ -423,25 +423,6 @@
           ]
         }
       },
-      "replaceAttributeValues": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "fileType",
-              "value": [
-                "xlsx",
-                "csv"
-              ]
-            },
-            {
-              "type": "equals",
-              "attribute": "entity",
-              "value": "Product"
-            }
-          ]
-        }
-      },
       "markForNoRelation": {
         "visible": {
           "conditionGroup": [
@@ -452,57 +433,6 @@
                 "xlsx",
                 "csv"
               ]
-            }
-          ]
-        }
-      },
-      "channel": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "fileType",
-              "value": [
-                "xlsx",
-                "csv"
-              ]
-            },
-            {
-              "type": "equals",
-              "attribute": "entity",
-              "value": "Product"
-            }
-          ]
-        }
-      },
-      "language": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "fileType",
-              "value": [
-                "xlsx",
-                "csv"
-              ]
-            }
-          ]
-        }
-      },
-      "fallbackLanguage": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "fileType",
-              "value": [
-                "xlsx",
-                "csv"
-              ]
-            },
-            {
-              "type": "isNotEmpty",
-              "attribute": "language"
             }
           ]
         }

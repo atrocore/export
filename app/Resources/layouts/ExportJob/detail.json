@@ -35,9 +35,7 @@
         {
           "name": "exportFeed"
         },
-        {
-          "name": "channels"
-        }
+        false
       ]
     ],
     "style": "default",

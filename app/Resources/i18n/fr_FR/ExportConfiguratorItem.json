@@ -4,13 +4,10 @@
     "column": "Nom de la colonne",
     "columnType": "Étiquette de la colonne",
     "exportFeed": "Exportation de flux",
-    "attribute": "Attribut",
     "exportBy": "Champs d'entité connexes",
     "remove": "Enlever",
     "exportIntoSeparateColumns": "Séparer",
     "type": "Type",
-    "language": "Langue",
-    "channel": "Canal",
     "mask": "Masque",
     "filterField": "Champ du filtre",
     "filterFieldValue": "Valeur du champ de filtre",
@@ -21,25 +18,14 @@
     "fixedValue": "Valeur fixe",
     "previousItem": "Point précédent",
     "zip": "Exporter des fichiers vers une archive ZIP",
-    "attributeValue": "Valeur de l'attribut",
     "fileNameTemplate": "Modèle de nom de fichier",
     "exportByForListAttribute": "Champs d'entité connexes pour les listes",
-    "fallbackLanguage": "Langue de secours",
     "script": "Script"
   },
   "options": {
     "boolFilterFieldValue": {
       "+": "vrai",
       "-": "faux"
-    },
-    "attributeValue": {
-      "value": "Valeur",
-      "valueFrom": "Valeur de",
-      "valueTo": "Valeur à",
-      "valueUnit": "Unité de valeur",
-      "id": "ID (valeur de l'attribut du produit)",
-      "valueNumeric": "Valeur (numérique)",
-      "valueString": "Valeur (Chaîne)"
     },
     "columnType": {
       "name": "Nom",

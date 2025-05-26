@@ -19,22 +19,6 @@
       ],
       [
         {
-          "name": "attribute"
-        },
-        {
-          "name": "attributeValue"
-        }
-      ],
-      [
-        {
-          "name": "language"
-        },
-        {
-          "name": "fallbackLanguage"
-        }
-      ],
-      [
-        {
           "name": "columnType"
         },
         {
@@ -64,12 +48,6 @@
         {
           "name": "sortOrderRelation"
         }
-      ],
-      [
-        {
-          "name": "channel"
-        },
-        false
       ],
       [
         {

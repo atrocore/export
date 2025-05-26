@@ -14,7 +14,7 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
         setup() {
             Dep.prototype.setup.call(this);
 
-            this.listenTo(this.model, 'change:name change:type change:attributeId change:attributeValue', () => {
+            this.listenTo(this.model, 'change:name change:type', () => {
                 this.model.set('exportBy', null);
                 this.setupOptions();
                 this.reRender();
@@ -63,19 +63,6 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
                 }
                 if (this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'type']) === 'file') {
                     entity = 'File';
-                }
-            } else {
-                if (this.model.get('attributeId')) {
-                    let attribute = this.getAttribute(this.model.get('attributeId'));
-                    if (['extensibleEnum', 'extensibleMultiEnum'].includes(attribute.type)) {
-                        entity = 'ExtensibleEnumOption';
-                    } else if (this.model.get('attributeValue') === 'valueUnit') {
-                        entity = 'Unit'
-                    } else if (attribute.type === 'link' || attribute.type === 'linkMultiple') {
-                        entity = attribute.entityType;
-                    } else if (attribute.type === 'file') {
-                        entity = 'File';
-                    }
                 }
             }
 
@@ -131,34 +118,10 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
             let type = 'varchar';
             if (this.model.get('type') === 'Field') {
                 type = this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'type']);
-            } else {
-                if (this.model.get('attributeId')) {
-                    switch (this.model.get('attributeValue')) {
-                        case 'value':
-                            type = this.getAttribute(this.model.get('attributeId')).type;
-                            break
-                        case 'valueUnit':
-                            type = 'link'
-                            break
-                        default:
-                    }
-                }
             }
 
             return ['link', 'extensibleEnum', 'linkMultiple', 'extensibleMultiEnum', 'file', 'measure'].includes(type) && (this.params.options || []).length;
-        },
-
-        getAttribute(attributeId) {
-            let key = `attribute_${attributeId}`;
-            if (!Espo[key]) {
-                Espo[key] = null;
-                this.ajaxGetRequest(`Attribute/${this.model.get('attributeId')}`, null, {async: false}).success(attr => {
-                    Espo[key] = attr;
-                });
-            }
-
-            return Espo[key];
-        },
+        }
 
     })
 );

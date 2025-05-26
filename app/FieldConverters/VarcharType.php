@@ -25,9 +25,6 @@ class VarcharType extends AbstractType
 
         if (array_key_exists($field, $record)) {
             $value = $record[$field];
-            if (($value === null || $value === '') && !empty($configuration['fallbackField']) && array_key_exists($configuration['fallbackField'], $record)) {
-                $value = $record[$configuration['fallbackField']];
-            }
 
             if ($value === null || $value === '') {
                 $result[$column] = $value === null ? $configuration['nullValue'] : $configuration['emptyValue'];
@@ -43,15 +40,5 @@ class VarcharType extends AbstractType
                 $result[$column] = $this->getSharedViewUrl($this->getMemoryStorage()->get('exportJobId'), $record['id']);
             }
         }
-    }
-
-    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
-    {
-        $selectColumn = 'id';
-        if (!empty($conf['attributeValue']) && $conf['attributeValue'] === 'valueString') {
-            $selectColumn = 'varchar_value';
-        }
-
-        $qb->select("$alias.$selectColumn");
     }
 }

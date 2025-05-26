@@ -31,15 +31,9 @@ class ExportConfiguratorItem extends Base
             'exportBy',
             'exportIntoSeparateColumns',
             'sortOrder',
-            'attributeId',
             'entityAttributeId',
-            'language',
-            'fallbackLanguage',
-            'channelId',
-            'channelName',
             'fixedValue',
             'zip',
-            'attributeValue',
             'virtualFields'
         ];
 
@@ -70,20 +64,9 @@ class ExportConfiguratorItem extends Base
 
         $entity->set('column', $this->prepareColumnName($entity));
         $entity->set('exportFeedData', $feed->toArray());
-        $entity->set('isAttributeMultiLang', false);
         $entity->set('editable', $this->getAcl()->check($feed, 'edit'));
 
         $entity->set('fileNameTemplate', $entity->getVirtualField('fileNameTemplate'));
-
-        if ($entity->get('type') === 'Attribute' && !empty($entity->get('attributeId'))) {
-            $attribute = $this->getEntityManager()->getRepository('Attribute')->get($entity->get('attributeId'));
-            if (!empty($attribute)) {
-                $entity->set('attributeData', $attribute->toArray());
-                $entity->set('isAttributeMultiLang', !empty($attribute->get('isMultilang')));
-                $entity->set('attributeType', $attribute->get('type'));
-                $entity->set('attributeCode', $attribute->get('code'));
-            }
-        }
     }
 
     public function updateEntity($id, $data)
@@ -108,10 +91,6 @@ class ExportConfiguratorItem extends Base
 
     public function prepareColumnName(Entity $entity): string
     {
-        if ($entity->get('type') === 'Attribute') {
-            return $this->prepareAttributeColumnName($entity);
-        }
-
         return $this->prepareFieldColumnName($entity);
     }
 
@@ -142,33 +121,6 @@ class ExportConfiguratorItem extends Base
         }
 
         return $column;
-    }
-
-    protected function prepareAttributeColumnName(Entity $entity): string
-    {
-        if (empty($attribute = $entity->get('attribute'))) {
-            return '-';
-        }
-
-        $columnType = $entity->get('columnType') ?? 'name';
-
-        $column = (string)$entity->get('column');
-
-        if ($columnType === 'name') {
-            $column = $attribute->get('name');
-            if (!empty($exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $entity->get('exportFeedId')))) {
-                if (!empty($locale = $this->getEntityManager()->getEntity('Locale', $exportFeed->get('localeId')))) {
-                    $fieldName = 'name' . ucfirst(Util::toCamelCase(strtolower($locale->get('languageCode'))));
-                    if ($this->getMetadata()->get("entityDefs.Attribute.fields.$fieldName")) {
-                        if ($attribute->get($fieldName)) {
-                            $column = $attribute->get($fieldName);
-                        }
-                    }
-                }
-            }
-        }
-
-        return (string)$column;
     }
 
     protected function getLocalizedLanguage(string $locale): Language

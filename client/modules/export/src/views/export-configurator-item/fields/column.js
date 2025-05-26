@@ -24,16 +24,6 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
                 this.prepareValue();
                 this.reRender();
             });
-
-            this.listenTo(this.model, 'change:attributeId', () => {
-                if (this.model.get('attributeId')) {
-                    this.ajaxGetRequest(`Attribute/${this.model.get('attributeId')}`).success(attribute => {
-                        this.model.set('attributeData', attribute);
-                        this.prepareValue();
-                        this.reRender();
-                    })
-                }
-            });
         },
 
         afterRender() {
@@ -66,10 +56,6 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
                 if (this.model.get('type') === 'Field') {
                     this.prepareFieldValue();
                 }
-
-                if (this.model.get('type') === 'Attribute') {
-                    this.prepareAttributeValue();
-                }
             }
         },
 
@@ -98,24 +84,6 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
                         }
                         this.model.set('column', columnName);
                     });
-                }
-            }
-        },
-
-        prepareAttributeValue() {
-            if (this.model.get('columnType') === 'name' || this.model.isNew()) {
-                this.model.set('column', this.model.get('attributeData').name);
-
-                let localeId = this.model.get('exportFeedData').localeId;
-                if (this.getConfig().get('locales')[localeId]) {
-                    let language = this.getConfig().get('locales')[localeId].language;
-                    let fieldName = 'name' + language.charAt(0).toUpperCase() + language.charAt(1) + language.charAt(3) + language.charAt(4).toLowerCase();
-                    if (this.getMetadata().get(`entityDefs.Attribute.fields.${fieldName}`)) {
-                        let val = this.model.get('attributeData')[fieldName];
-                        if (val) {
-                            this.model.set('column', val);
-                        }
-                    }
                 }
             }
         },

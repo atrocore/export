@@ -144,14 +144,6 @@
       "default": "~",
       "filterDisabled": true
     },
-    "replaceAttributeValues": {
-      "type": "bool",
-      "notStorable": true,
-      "default": true,
-      "dataField": true,
-      "tooltip": true,
-      "filterDisabled": true
-    },
     "convertRelationsToString": {
       "type": "bool",
       "notStorable": true,

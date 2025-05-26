@@ -35,24 +35,4 @@ class IntType extends AbstractType
             }
         }
     }
-
-    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
-    {
-        $selectColumn = 'id';
-
-        if (!empty($conf['attributeValue'])) {
-            switch ($conf['attributeValue']) {
-                case 'value':
-                case 'valueFrom':
-                case 'valueNumeric':
-                    $selectColumn = 'int_value';
-                    break;
-                case 'valueTo':
-                    $selectColumn = 'int_value1';
-                    break;
-            }
-        }
-
-        $qb->select("$alias.$selectColumn");
-    }
 }

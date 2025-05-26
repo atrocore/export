@@ -98,60 +98,14 @@ class ExportFeed extends Base
             }
         }
 
-        $languages = ['', 'main'];
-        if ($this->getConfig()->get('isMultilangActive', false)) {
-            $languages = array_merge($languages, $this->getConfig()->get('inputLanguageList', []));
-        }
-
-        try {
-            $this->getConnection()->createQueryBuilder()
-                ->update('export_configurator_item')
-                ->set($this->getConnection()->quoteIdentifier('deleted'), ':true')
-                ->where('language NOT IN (:languages)')
-                ->setParameter('true', true, ParameterType::BOOLEAN)
-                ->setParameter('languages', $languages, Connection::PARAM_STR_ARRAY)
-                ->executeQuery();
-        } catch (\Throwable $e) {
-        }
-
-        try {
-            $this->getConnection()->createQueryBuilder()
-                ->update('export_configurator_item', 't')
-                ->set('channel_id', ':null')
-                ->where('t.channel_id IS NOT NULL')
-                ->andWhere("t.channel_id NOT IN (SELECT c.id FROM {$this->getConnection()->quoteIdentifier('channel')} c WHERE c.deleted=:false)")
-                ->setParameter('null', null)
-                ->setParameter('false', false, ParameterType::BOOLEAN)
-                ->executeQuery();
-        } catch (\Throwable $e) {
-        }
-
         try {
             $this->getConnection()->createQueryBuilder()
                 ->update('export_configurator_item', 't')
                 ->set('deleted', ':true')
                 ->where('t.export_feed_id = :id')
-                ->andWhere('t.type = :type')
-                ->andWhere('t.channel_id IS NOT NULL')
-                ->andWhere("t.channel_id NOT IN (SELECT c.id FROM {$this->getConnection()->quoteIdentifier('channel')} c WHERE c.deleted=:false)")
+                ->andWhere("t.entity_attribute_id NOT IN (SELECT a.id FROM {$this->getConnection()->quoteIdentifier('attribute')} a WHERE a.deleted=:false)")
                 ->setParameter('true', true, ParameterType::BOOLEAN)
                 ->setParameter('id', $exportFeed->get('id'))
-                ->setParameter('type', 'Attribute')
-                ->setParameter('false', false, ParameterType::BOOLEAN)
-                ->executeQuery();
-        } catch (\Throwable $e) {
-        }
-
-        try {
-            $this->getConnection()->createQueryBuilder()
-                ->update('export_configurator_item', 't')
-                ->set('deleted', ':true')
-                ->where('t.export_feed_id = :id')
-                ->andWhere('t.type = :type')
-                ->andWhere("t.attribute_id NOT IN (SELECT a.id FROM {$this->getConnection()->quoteIdentifier('attribute')} a WHERE a.deleted=:false)")
-                ->setParameter('true', true, ParameterType::BOOLEAN)
-                ->setParameter('id', $exportFeed->get('id'))
-                ->setParameter('type', 'Attribute')
                 ->setParameter('false', false, ParameterType::BOOLEAN)
                 ->executeQuery();
         } catch (\Throwable $e) {

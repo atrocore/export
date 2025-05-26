@@ -40,24 +40,4 @@ class FloatType extends AbstractType
     {
         return rtrim(rtrim(number_format($value, 10, $decimalMark, $thousandSeparator), '0'), $decimalMark);
     }
-
-    protected function prepareQueryCallbackForAttribute(QueryBuilder $qb, array $conf, string $alias): void
-    {
-        $selectColumn = 'id';
-
-        if (!empty($conf['attributeValue'])) {
-            switch ($conf['attributeValue']) {
-                case 'value':
-                case 'valueFrom':
-                case 'valueNumeric':
-                    $selectColumn = 'float_value';
-                    break;
-                case 'valueTo':
-                    $selectColumn = 'float_value1';
-                    break;
-            }
-        }
-
-        $qb->select("$alias.$selectColumn");
-    }
 }

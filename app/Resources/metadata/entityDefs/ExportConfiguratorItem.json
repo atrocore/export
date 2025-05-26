@@ -1,20 +1,5 @@
 {
   "fields": {
-    "attributeValue": {
-      "type": "enum",
-      "required": false,
-      "prohibitedEmptyValue": true,
-      "view": "export:views/export-configurator-item/fields/attribute-value",
-      "options": [
-        "value",
-        "valueFrom",
-        "valueTo",
-        "valueUnit",
-        "id",
-        "valueNumeric",
-        "valueString"
-      ]
-    },
     "zip": {
       "type": "bool",
       "view": "export:views/export-configurator-item/fields/zip"
@@ -71,10 +56,8 @@
       "type": "enum",
       "required": true,
       "prohibitedEmptyValue": true,
-      "view": "export:views/export-configurator-item/fields/type",
       "options": [
         "Field",
-        "Attribute",
         "Fixed value",
         "script"
       ],
@@ -84,50 +67,6 @@
       "type": "text",
       "view": "views/fields/script",
       "default": "{{ configuration.type }}\n{{ record.id }} {{ record.name }}"
-    },
-    "attributeType": {
-      "type": "varchar",
-      "notStorable": true,
-      "layoutListDisabled": true,
-      "layoutListSmallDisabled": true,
-      "layoutDetailDisabled": true,
-      "layoutDetailSmallDisabled": true,
-      "massUpdateDisabled": true,
-      "filterDisabled": true,
-      "exportDisabled": true,
-      "importDisabled": true,
-      "emHidden": true
-    },
-    "attributeCode": {
-      "type": "varchar",
-      "notStorable": true,
-      "layoutListDisabled": true,
-      "layoutListSmallDisabled": true,
-      "layoutDetailDisabled": true,
-      "layoutDetailSmallDisabled": true,
-      "massUpdateDisabled": true,
-      "filterDisabled": true,
-      "exportDisabled": true,
-      "importDisabled": true,
-      "emHidden": true
-    },
-    "isAttributeMultiLang": {
-      "type": "bool",
-      "notStorable": true
-    },
-    "attributeData": {
-      "type": "jsonObject",
-      "notStorable": true,
-      "layoutListDisabled": true,
-      "layoutListSmallDisabled": true,
-      "layoutDetailDisabled": true,
-      "layoutDetailSmallDisabled": true,
-      "massUpdateDisabled": true,
-      "filterDisabled": true,
-      "textFilterDisabled": true,
-      "exportDisabled": true,
-      "importDisabled": true,
-      "emHidden": true
     },
     "exportFeedData": {
       "type": "jsonObject",
@@ -156,14 +95,6 @@
       "exportDisabled": true,
       "importDisabled": true,
       "emHidden": true
-    },
-    "language": {
-      "type": "varchar",
-      "view": "export:views/export-configurator-item/fields/language"
-    },
-    "fallbackLanguage": {
-      "type": "varchar",
-      "view": "export:views/export-configurator-item/fields/fallback-language"
     },
     "entity": {
       "type": "varchar",

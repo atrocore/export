@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Export\DataConvertor;
 
 use Atro\Core\EventManager\Manager;
-use Atro\Core\Exceptions\Error;
 use Atro\Core\KeyValueStorages\StorageInterface;
 use Atro\Core\Container;
 use Atro\Core\Utils\Config;
@@ -127,20 +126,9 @@ class Convertor
         return $language->translate($key, $tab, $scope);
     }
 
-    public function getAttributeById(string $attributeId): ?Entity
-    {
-        return $this->getEntityManager()->getEntity('Attribute', $attributeId);
-    }
-
     public function getConfigurationItemType(array $configuration): string
     {
-        if (!empty($configuration['attributeId'])) {
-            $type = $this->prepareConvertorTypeForAttribute($this->getTypeForAttribute($configuration['attributeId']), $configuration['attributeValue']);
-        } else {
-            $type = $this->getTypeForField($configuration['entity'], $configuration['field'] ?? null);
-        }
-
-        return $type;
+        return $this->getTypeForField($configuration['entity'], $configuration['field'] ?? null);
     }
 
     public function getTypeForField(string $entityName, ?string $field): string
@@ -160,45 +148,5 @@ class Convertor
         }
 
         return $type;
-    }
-
-    public function getTypeForAttribute(string $attributeId): string
-    {
-        $attribute = $this->getEntityManager()->getEntity('Attribute', $attributeId);
-        if (empty($attribute)) {
-            throw new Error("Attribute $attributeId does not exists.");
-        }
-
-        return $attribute->get('type');
-    }
-
-    public function prepareConvertorTypeForAttribute(string $attributeType, ?string $attributeValue): string
-    {
-        if ($attributeValue == null) {
-            $attributeValue = 'value';
-        }
-
-        if ($attributeValue === 'id') {
-            return 'varchar';
-        }
-
-        if ($attributeValue === 'value'
-            && in_array($attributeType, ['int', 'float', 'rangeInt', 'rangeFloat', 'varchar'])) {
-            return 'valueWithUnit';
-        }
-
-        if ($attributeValue === 'valueUnit') {
-            return 'unit';
-        }
-
-        if ($attributeType === 'rangeInt') {
-            return 'int';
-        }
-
-        if ($attributeType === 'rangeFloat') {
-            return 'float';
-        }
-
-        return $attributeType;
     }
 }
