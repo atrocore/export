@@ -79,7 +79,13 @@ class Convertor
         $this->getMemoryStorage()->set('configurationItemData', $configuration);
 
         $fieldConverter = new $fieldConverterClass($this);
-        $fieldConverter->convertToString($result, $record, $configuration);
+
+        if (!empty($configuration['entityAttributeId']) && empty($record['_entity']->hasAttributeValue($configuration['field']))) {
+            $result[$configuration['column']] = $configuration['markForUnlinkedAttribute'];
+        } else {
+            $fieldConverter->convertToString($result, $record, $configuration);
+        }
+
 
         return $result;
     }
