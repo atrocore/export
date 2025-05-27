@@ -80,8 +80,7 @@ class Convertor
 
         $fieldConverter = new $fieldConverterClass($this);
 
-        if (!empty($configuration['entityAttributeId']) && !empty($record['_entity']->rowData)
-            && empty($record['_entity']->rowData[$configuration['field'] . 'AvId'])) {
+        if (!empty($configuration['entityAttributeId']) && empty($record['_entity']->hasAttributeValue($configuration['field']))) {
             $result[$configuration['column']] = $configuration['markForUnlinkedAttribute'];
         } else {
             $fieldConverter->convertToString($result, $record, $configuration);
