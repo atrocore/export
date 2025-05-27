@@ -164,7 +164,7 @@ class ExportFeed extends Base
                 lcfirst($entityName) . 'Id' => $feed->get('id')
             ];
 
-            if (in_array($type, ['link', 'file'])) {
+            if (in_array($type, ['link', 'file', 'linkMultiple'])) {
                 $data['exportBy'] = ['id'];
             }
 
