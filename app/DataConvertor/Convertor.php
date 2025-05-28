@@ -145,9 +145,6 @@ class Convertor
 
         $fieldDefs = $this->getMetadata()->get(['entityDefs', $entityName, 'fields', $field]);
         $type = $fieldDefs['type'] ?? 'varchar';
-        if (!empty($fieldDefs['unitField'])) {
-            $type = 'valueWithUnit';
-        }
 
         if ($type === 'link' && !empty($fieldDefs['entity']) && $fieldDefs['entity'] === 'Unit') {
             $type = 'unit';

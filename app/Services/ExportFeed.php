@@ -249,7 +249,7 @@ class ExportFeed extends Base
                         'name'       => null,
                         'type'       => 'script',
                         'columnType' => 'custom',
-                        'column'     => $fieldDefs['detailViewLabel'],
+                        'column'     =>  $fieldDefs['detailViewLabel'],
                         'script'     => "{{ record.{$field} }} {{ record.{$field}UnitName }}"
                     ]));
                 }
