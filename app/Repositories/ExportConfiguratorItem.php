@@ -14,8 +14,7 @@ declare(strict_types=1);
 namespace Export\Repositories;
 
 use Doctrine\DBAL\ParameterType;
-use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Templates\Repositories\Base;
+use Atro\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
 use Export\Core\ValueModifier;
 
@@ -24,12 +23,23 @@ class ExportConfiguratorItem extends Base
     protected function beforeSave(Entity $entity, array $options = [])
     {
         if ($entity->isNew() && !$entity->has('previousItem')) {
-            $where = ['exportFeedId' => $entity->get('exportFeedId')];
+            $field = 'export_feed_id';
+            $value = $entity->get('exportFeedId');
             if (!empty($entity->get('sheetId'))) {
-                $where = ['sheetId' => $entity->get('sheetId')];
+                $field = 'sheet_id';
+                $value = $entity->get('sheetId');
             }
-            $last = $this->select(['sortOrder'])->where($where)->order('sortOrder', 'DESC')->findOne();
-            $entity->set('sortOrder', empty($last) ? 0 : $last->get('sortOrder') + 10);
+            $result = $this->getEntityManager()->getConnection()->createQueryBuilder()
+                ->select('MAX(sort_order) as max_sort_order')
+                ->from('export_configurator_item')
+                ->where('deleted = :false')
+                ->andWhere("$field = :fieldValue")
+                ->setParameter('fieldValue', $value)
+                ->setParameter('false', false, ParameterType::BOOLEAN)
+                ->fetchAssociative();
+
+            $lastSortOrder = $result['max_sort_order'] ?? 0;
+            $entity->set('sortOrder', $lastSortOrder + 10);
         }
 
 
