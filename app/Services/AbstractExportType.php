@@ -346,12 +346,8 @@ abstract class AbstractExportType extends Base
         $fileName = Util::generateUniqueHash() . ".txt";
 
         $configuration = [];
-        $attributesConfiguratorItems = [];
         foreach ($this->data['feed']['data']['configuration'] as $rowNumber => $row) {
             $configuration[$rowNumber] = $this->prepareRow($row);
-            if (!empty($row['attributeId'])) {
-                $attributesConfiguratorItems[] = $configuration[$rowNumber];
-            }
         }
 
         $this->getMemoryStorage()->set('exportConfiguration', $configuration);
@@ -601,12 +597,8 @@ abstract class AbstractExportType extends Base
             'count'         => 0,
         ];
 
-        $attributesConfiguratorItems = [];
         foreach ($this->data['feed']['data']['configuration'] as $rowNumber => $row) {
             $res['configuration'][$rowNumber] = $this->prepareRow($row);
-            if (!empty($row['attributeId'])) {
-                $attributesConfiguratorItems[] = $res['configuration'][$rowNumber];
-            }
         }
 
         $this->getMemoryStorage()->set('exportConfiguration', $res['configuration']);
