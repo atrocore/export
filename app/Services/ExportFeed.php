@@ -217,6 +217,9 @@ class ExportFeed extends Base
         $feedEntity = $this->getEntityManager()->getRepository($feed->get('entity') ?? $feed->getFeedField('entity'))->get();
 
         foreach ($this->getAttributeFieldConverter()->getAttributesRowsByIds($attributesIds) as $attribute) {
+            if(!empty($attribute['channel_name'])) {
+                $attribute['name'] .= ' / ' .$attribute['channel_name'];
+            }
             $attributesDefs = [];
             $this->getAttributeFieldConverter()->convert($feedEntity, $attribute, $attributesDefs);
             foreach ($attributesDefs as $field => $fieldDefs) {
