@@ -24,15 +24,18 @@ class V1Dot9Dot1 extends Base
 
     public function up(): void
     {
-        $this->getConnection()->createQueryBuilder()
-            ->update('export_configurator_item')
-            ->set('entity_attribute_id', 'attribute_id')
-            ->set('type', ':field')
-            ->where('entity_attribute_id IS NULL AND attribute_id IS NOT NULL')
-            ->andWhere('type = :type')
-            ->setParameter('field', 'Field')
-            ->setParameter('type', 'Attribute')
-            ->executeStatement();
+        try {
+            $this->getConnection()->createQueryBuilder()
+                ->update('export_configurator_item')
+                ->set('entity_attribute_id', 'attribute_id')
+                ->set('type', ':field')
+                ->where('entity_attribute_id IS NULL AND attribute_id IS NOT NULL')
+                ->andWhere('type = :type')
+                ->setParameter('field', 'Field')
+                ->setParameter('type', 'Attribute')
+                ->executeStatement();
+        } catch (\Throwable $e) {
+        }
 
         $this->exec("ALTER TABLE export_configurator_item DROP attribute_value");
         $this->exec("ALTER TABLE export_configurator_item DROP \"language\"");
