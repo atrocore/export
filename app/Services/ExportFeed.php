@@ -609,8 +609,12 @@ class ExportFeed extends Base
             'field'                     => '',
         ];
 
+        $entityDefs = $requestData->fieldDefs
+            ? json_decode(json_encode($requestData->fieldDefs), true)
+            : $this->getMetadata()->get(['entityDefs', $scope, 'fields'], []);
+
         $configuration = [];
-        foreach ($this->getMetadata()->get(['entityDefs', $scope, 'fields'], []) as $field => $fieldDefs) {
+        foreach ($entityDefs as $field => $fieldDefs) {
             if ($fieldDefs['type'] === 'linkMultiple' || !empty($fieldDefs['exportDisabled'])) {
                 continue;
             }
@@ -622,7 +626,7 @@ class ExportFeed extends Base
             $item = $baseConfiguration;
             $item['field'] = $field;
             $item['id'] = Util::generateId();
-            $item['column'] = $this->getInjection('language')->translate($field, 'fields', $scope);
+            $item['column'] = $fieldDefs['label'] ?? $this->getInjection('language')->translate($field, 'fields', $scope);
 
             if (in_array($fieldDefs['type'], ['link', 'extensibleEnum', 'extensibleMultiEnum'])) {
                 $item['exportBy'] = ['name'];
@@ -632,8 +636,11 @@ class ExportFeed extends Base
                 $item['exportBy'] = ['downloadUrl'];
             }
 
-            $configuration[] = (object)$item;
+            if (!empty($fieldDefs['attributeId'])) {
+                $item['entityAttributeId'] = $fieldDefs['attributeId'];
+            }
 
+            $configuration[] = (object)$item;
         }
 
         $data = [
