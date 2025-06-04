@@ -590,6 +590,7 @@ class ExportFeed extends Base
             'emptyValue'                => '',
             'nullValue'                 => 'Null',
             'markForNoRelation'         => 'Null',
+            'markForUnlinkedAttribute'  => 'N/A',
             'decimalMark'               => ',',
             'fieldDelimiterForRelation' => '|',
             'convertCollectionToString' => true,
@@ -626,7 +627,7 @@ class ExportFeed extends Base
             $item = $baseConfiguration;
             $item['field'] = $field;
             $item['id'] = Util::generateId();
-            $item['column'] = $fieldDefs['label'] ?? $this->getInjection('language')->translate($field, 'fields', $scope);
+            $item['column'] = $this->getInjection('language')->translate($field, 'fields', $scope);
 
             if (in_array($fieldDefs['type'], ['link', 'extensibleEnum', 'extensibleMultiEnum'])) {
                 $item['exportBy'] = ['name'];
@@ -638,6 +639,10 @@ class ExportFeed extends Base
 
             if (!empty($fieldDefs['attributeId'])) {
                 $item['entityAttributeId'] = $fieldDefs['attributeId'];
+                $item['column'] = $fieldDefs['label'];
+                if (!empty($fieldDefs['channelName'])) {
+                    $item['column'] = "{$fieldDefs['label']} / {$fieldDefs['channelName']}";
+                }
             }
 
             $configuration[] = (object)$item;
@@ -661,6 +666,7 @@ class ExportFeed extends Base
                 'emptyValue'                => '',
                 'nullValue'                 => 'Null',
                 'markForNoRelation'         => 'Null',
+                'markForUnlinkedAttribute'  => 'N/A',
                 'decimalMark'               => ',',
                 'thousandSeparator'         => null,
                 'priority'                  => 'Crucial',
@@ -679,6 +685,7 @@ class ExportFeed extends Base
                     'emptyValue'                => '',
                     'nullValue'                 => 'Null',
                     'markForNoRelation'         => 'Null',
+                    'markForUnlinkedAttribute'  => 'N/A',
                     'decimalMark'               => ',',
                     'thousandSeparator'         => NULL,
                     'exportByMaxDepth'          => '1',
