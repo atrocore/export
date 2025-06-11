@@ -38,39 +38,24 @@ class Metadata extends AbstractListener
         }
 
         foreach ($this->getMemoryStorage()->get('dynamic_action') ?? [] as $action) {
-            if ($action['type'] === 'export') {
+            if ($action['type'] === 'export' && !empty($action['source_entity']) && !empty($action['usage'])) {
                 $params = [
-                    'id'      => $action['id'],
-                    'name'    => $action['name'],
-                    'display' => $action['display'],
-                    'acl'     => [
+                    'acl' => [
                         'scope'  => 'ExportFeed',
                         'action' => 'read',
                     ]
                 ];
 
-                if ($action['usage'] === 'record' && !empty($action['source_entity'])) {
-                    $data['clientDefs'][$action['source_entity']]['dynamicRecordActions'][] = array_merge($params, [
-                        'massAction' => !empty($action['mass_action']),
-                    ]);
-                }
+                $defsKey = "dynamic" . ucfirst($action['usage']) . "Actions";
 
-                if ($action['usage'] === 'entity' && !empty($action['source_entity'])) {
-                    $data['clientDefs'][$action['source_entity']]['dynamicEntityActions'][] = $params;
-                }
-
-                if ($action['usage'] === 'field' && !empty($action['source_entity']) && !empty($action['display_field'])) {
-                    $data['clientDefs'][$action['source_entity']]['dynamicFieldActions'][] = array_merge($params, [
-                        'displayField' => $action['display_field'],
-                        'massAction'   => !empty($action['mass_action']),
-                    ]);
+                foreach ($data['clientDefs'][$action['source_entity']][$defsKey] ?? [] as &$recordAction) {
+                    if ($recordAction['id'] === $action['id']) {
+                        $recordAction = array_merge($recordAction, $params);
+                        break;
+                    }
                 }
             }
         }
-
-        $data['clientDefs']['Action']['dynamicLogic']['fields']['sourceEntity']['visible']['conditionGroup'][0]['type'] = 'in';
-        $data['clientDefs']['Action']['dynamicLogic']['fields']['sourceEntity']['visible']['conditionGroup'][0]['attribute'] = 'type';
-        $data['clientDefs']['Action']['dynamicLogic']['fields']['sourceEntity']['visible']['conditionGroup'][0]['value'][] = 'export';
 
         $data['clientDefs']['Action']['dynamicLogic']['fields']['payload']['visible']['conditionGroup'][0]['type'] = 'in';
         $data['clientDefs']['Action']['dynamicLogic']['fields']['payload']['visible']['conditionGroup'][0]['attribute'] = 'type';
