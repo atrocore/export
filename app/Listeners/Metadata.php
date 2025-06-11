@@ -48,9 +48,9 @@ class Metadata extends AbstractListener
 
                 $defsKey = "dynamic" . ucfirst($action['usage']) . "Actions";
 
-                foreach ($data['clientDefs'][$action['source_entity']][$defsKey] ?? [] as &$recordAction) {
+                foreach ($data['clientDefs'][$action['source_entity']][$defsKey] ?? [] as $key => $recordAction) {
                     if ($recordAction['id'] === $action['id']) {
-                        $recordAction = array_merge($recordAction, $params);
+                        $data['clientDefs'][$action['source_entity']][$defsKey][$key] = array_merge($recordAction, $params);
                         break;
                     }
                 }
@@ -68,9 +68,9 @@ class Metadata extends AbstractListener
 
         if (empty($data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumHoursToLookBack']['visible']['conditionGroup'][0])) {
             $data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumHoursToLookBack']['visible']['conditionGroup'][0] = [
-                'type' => 'in',
+                'type'      => 'in',
                 'attribute' => 'type',
-                'value' => ['ExportFeed']
+                'value'     => ['ExportFeed']
             ];
         } else {
             $data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumHoursToLookBack']['visible']['conditionGroup'][0]['value'][] = 'ExportFeed';
@@ -78,9 +78,9 @@ class Metadata extends AbstractListener
 
         if (empty($data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumDaysForJobExist']['visible'])) {
             $data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumDaysForJobExist']['visible']['conditionGroup'][0] = [
-                'type' => 'in',
+                'type'      => 'in',
                 'attribute' => 'type',
-                'value' => ['ExportJobRemove']
+                'value'     => ['ExportJobRemove']
             ];
         } else {
             $data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumDaysForJobExist']['visible']['conditionGroup'][0]['value'][] = 'ExportJobRemove';
