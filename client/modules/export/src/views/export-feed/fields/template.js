@@ -105,8 +105,8 @@ Espo.define('export:views/export-feed/fields/template', 'views/fields/script', D
                 } else if (['varchar', 'enum', 'text', 'wysiwyg'].includes(fieldDefs.type)) {
                     templateData.push(`"${fieldName}": {% if entity.${fieldName} %}"{{ entity.${fieldName} | escapeStr | raw }}"{% else %}null{% endif %}`);
                 } else if (['link', 'file'].includes(fieldDefs.type)) {
-                    templateData.push(`"${fieldName}Id": {% if entity.${fieldName} %}"{{ entity.${fieldName}Id }}"{% else %}null{% endif %}`);
-                    templateData.push(`"${fieldName}Name": {% if entity.${fieldName} %}"{{ entity.${fieldName}Name | escapeStr | raw }}"{% else %}null{% endif %}`);
+                    templateData.push(`"${fieldName}Id": {% if entity.${fieldName}Id %}"{{ entity.${fieldName}Id }}"{% else %}null{% endif %}`);
+                    templateData.push(`"${fieldName}Name": {% if entity.${fieldName}Name %}"{{ entity.${fieldName}Name | escapeStr | raw }}"{% else %}null{% endif %}`);
                 } else if (['array', 'multiEnum'].includes(fieldDefs.type)) {
                     templateData.push(`"${fieldName}": {% if entity.${fieldName} %}{{ entity.${fieldName} | json_encode | raw }}{% else %}null{% endif %}`);
                 }
