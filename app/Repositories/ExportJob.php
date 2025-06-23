@@ -108,13 +108,10 @@ class ExportJob extends Base
 
     protected function afterRemove(Entity $entity, array $options = [])
     {
-        if (!empty($file = $entity->get('file'))) {
-            $this->getEntityManager()->removeEntity($file);
-        }
+        $exportFeed = $this->getEntityManager()->getRepository('ExportFeed')->get($entity->get('exportFeedId'));
 
-        $data = $entity->getData();
-        if (isset($data['fullFileName']) && file_exists($data['fullFileName'])) {
-            unlink($data['fullFileName']);
+        if (empty($exportFeed->get('replaceExistingFile')) && !empty($file = $entity->get('file'))) {
+            $this->getEntityManager()->removeEntity($file);
         }
 
         $qmJob = $this->getExportJob($entity);
