@@ -35,6 +35,12 @@
       ],
       [
         {
+          "name": "replaceExistingFile"
+        },
+        false
+      ],
+      [
+        {
           "name": "lastStatus"
         },
         {

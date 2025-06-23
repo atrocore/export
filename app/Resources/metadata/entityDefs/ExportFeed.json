@@ -23,6 +23,9 @@
     "separateJob": {
       "type": "bool"
     },
+    "replaceExistingFile": {
+      "type": "bool"
+    },
     "createdAt": {
       "type": "datetime",
       "readOnly": true
