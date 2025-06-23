@@ -15,6 +15,7 @@ namespace Export\Services;
 
 use Atro\Core\EventManager\Event;
 use Atro\Core\EventManager\Manager;
+use Atro\Core\Exceptions\NotModified;
 use Atro\Entities\Folder;
 use Atro\Core\Exceptions\Error;
 use Atro\Core\Exceptions\Exception;
@@ -163,6 +164,8 @@ class ExportTypeSimple extends AbstractExportType
         $input->hidden = true;
         $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
+        $this->reuploadIfNeeds($input);
+
         $fileData = $this->getService('File')->createFileViaContents($input, $contents);
 
         return $this->getEntityManager()->getRepository('File')->get($fileData['id']);
@@ -191,6 +194,8 @@ class ExportTypeSimple extends AbstractExportType
         $input->hidden = true;
         $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
+        $this->reuploadIfNeeds($input);
+
         $contents = empty($contents) ? " " : $contents;
         $fileData = $this->getService('File')->createFileViaContents($input, $contents);
 
@@ -213,6 +218,8 @@ class ExportTypeSimple extends AbstractExportType
         $input->name = $this->getExportFileName('xml');
         $input->hidden = true;
         $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
+
+        $this->reuploadIfNeeds($input);
 
         $fileData = $this->getService('File')->createFileViaContents($input, $contents);
 
@@ -323,6 +330,8 @@ class ExportTypeSimple extends AbstractExportType
         $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash() . DIRECTORY_SEPARATOR . $input->name;
         $this->createDir($fileName);
         $this->storeCsvFile($exportJob->getData(), $fileName);
+
+        $this->reuploadIfNeeds($input);
 
         $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
 
@@ -520,10 +529,12 @@ class ExportTypeSimple extends AbstractExportType
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save($fileName);
 
+        $this->reuploadIfNeeds($input);
+
         $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
 
         // delete tmp file
-        if(file_exists($fileName)){
+        if (file_exists($fileName)) {
             unlink($fileName);
         }
 
@@ -532,6 +543,24 @@ class ExportTypeSimple extends AbstractExportType
         $file = $this->getEntityManager()->getRepository('File')->get($fileData['id']);
 
         return $this->exportAsZip($file);
+    }
+
+    private function reuploadIfNeeds(\stdClass $input): void
+    {
+        if (!empty($this->data['feed']['replaceExistingFile']) && empty($this->data['feed']['separateJob'])) {
+            $prev = $this->getEntityManager()->getRepository('ExportJob')
+                ->where([
+                        'exportFeedId' => $this->data['feed']['id'],
+                        'state'        => 'Success',
+                    ]
+                )
+                ->order('end', 'DESC')
+                ->findOne();
+            if (!empty($prev)) {
+                $input->reupload = $prev->get('fileId');
+                $input->_skipIsEntityUpdated = true;
+            }
+        }
     }
 
     private function processXlsxNumericCell(Cell $cell, $decimalMark, $thousandSeparator): void

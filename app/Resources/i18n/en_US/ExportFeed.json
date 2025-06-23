@@ -1,5 +1,6 @@
 {
   "fields": {
+    "replaceExistingFile": "Replace existing file",
     "template": "Template",
     "sortOrderField": "Sort Order (field)",
     "sortOrderDirection": "Sort Order (direction)",
