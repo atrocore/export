@@ -15,6 +15,7 @@ namespace Export\Services;
 
 use Atro\Core\EventManager\Event;
 use Atro\Core\EventManager\Manager;
+use Atro\Core\Exceptions\NotModified;
 use Atro\Entities\Folder;
 use Atro\Core\Exceptions\Error;
 use Atro\Core\Exceptions\Exception;
@@ -520,16 +521,35 @@ class ExportTypeSimple extends AbstractExportType
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save($fileName);
 
-        $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
+        if (!empty($this->data['feed']['replaceExistingFile'])) {
+            $prev = $this->getEntityManager()->getRepository('ExportJob')
+                ->where([
+                        'exportFeedId' => $this->data['feed']['id'],
+                        'state'        => 'Success',
+                    ]
+                )
+                ->order('end', 'DESC')
+                ->findOne();
+            if (!empty($prev)) {
+                $input->reupload = $prev->get('fileId');
+            }
+        }
+
+        try {
+            $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
+            $fileId = $fileData['id'];
+        } catch (NotModified $e) {
+            $fileId = $prev->get('fileId');
+        }
 
         // delete tmp file
-        if(file_exists($fileName)){
+        if (file_exists($fileName)) {
             unlink($fileName);
         }
 
         $exportJob->set('count', $count);
 
-        $file = $this->getEntityManager()->getRepository('File')->get($fileData['id']);
+        $file = $this->getEntityManager()->getRepository('File')->get($fileId);
 
         return $this->exportAsZip($file);
     }

@@ -178,6 +178,10 @@ class ExportFeed extends Base
         if ($entity->get('code') === '') {
             $entity->set('code', null);
         }
+
+        if (!empty($entity->get('separateJob'))) {
+            $entity->set('replaceExistingFile', false);
+        }
     }
 
     protected function afterSave(Entity $entity, array $options = [])
