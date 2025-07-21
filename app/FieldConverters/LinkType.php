@@ -215,6 +215,9 @@ class LinkType extends AbstractType
     protected function convertForeignType(array &$fieldResult, string $foreignType, array $foreignConfiguration, array $foreignData, string $field, array $record)
     {
         $column = $foreignConfiguration['column'];
+        if (array_key_exists('entityAttributeId', $foreignConfiguration)) {
+            unset($foreignConfiguration['entityAttributeId']);
+        }
 
         if ($foreignType === 'link') {
             $fieldResult[$field] = $foreignConfiguration['nullValue'];
@@ -274,7 +277,7 @@ class LinkType extends AbstractType
 
     protected function getForeignEntityName(string $entity, string $field): string
     {
-        return $this->convertor->getMetadata()->get(['entityDefs', $entity, 'links', $field, 'entity']) ??  $this->convertor->getMetadata()->get(['entityDefs', $entity, 'fields', $field, 'entity']);
+        return $this->convertor->getMetadata()->get(['entityDefs', $entity, 'links', $field, 'entity']) ?? $this->convertor->getMetadata()->get(['entityDefs', $entity, 'fields', $field, 'entity']);
     }
 
     protected function needToCallForeignEntity(array $exportBy): bool
