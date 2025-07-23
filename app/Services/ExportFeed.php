@@ -851,18 +851,23 @@ class ExportFeed extends Base
         } else {
             $entityName = $exportFeed->getFeedField('entity');
             if ($this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
-                $attributes = $conn->createQueryBuilder()
-                    ->select('a.*, c.name as channel_name')
+                $qb = $conn->createQueryBuilder()
+                    ->select('a.*')
                     ->distinct()
                     ->from($conn->quoteIdentifier('attribute'), 'a')
-                    ->leftJoin('a', 'channel', 'c', 'c.id=a.channel_id AND c.deleted=:false')
                     ->innerJoin('a', 'export_configurator_item', 'i', 'i.entity_attribute_id=a.id AND i.deleted=:false')
                     ->innerJoin('i', 'export_feed', 'e', 'i.export_feed_id=e.id AND e.deleted=:false')
                     ->where('a.deleted=:false')
                     ->andWhere('e.id=:exportFeedId')
                     ->setParameter('false', false, ParameterType::BOOLEAN)
-                    ->setParameter('exportFeedId', $exportFeedId)
-                    ->fetchAllAssociative();
+                    ->setParameter('exportFeedId', $exportFeedId);
+
+                if (class_exists("\\Pim\\Module")){
+                    $qb->addSelect("c.name as channel_name");
+                    $qb->leftJoin('a', 'channel', 'c', 'c.id=a.channel_id AND c.deleted=:false');
+                }
+
+                $attributes = $qb->fetchAllAssociative();
 
                 $exportEntity = $this->getEntityManager()->getEntity($entityName);
 
