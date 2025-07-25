@@ -11,11 +11,18 @@
 Espo.define('export:views/export-feed/fields/origin-template-name', 'views/fields/enum', Dep => {
 
     return Dep.extend({
+
+        initialModel: [],
+
         setup() {
             Dep.prototype.setup.call(this);
 
+            this.initialModel = this.model.getClonedAttributes();
+
             this.listenTo(this.model, 'change:type change:fileType change:entity', () => {
-                this.model.set(this.name, null);
+                if (Object.keys(this.initialModel).length) {
+                    this.model.set(this.name, null);
+                }
                 this.setupOptions();
             });
 
@@ -82,7 +89,11 @@ Espo.define('export:views/export-feed/fields/origin-template-name', 'views/field
         loadAvailableTemplates() {
             this.hide();
 
-            this.ajaxPostRequest('ExportFeed/action/loadAvailableTemplates', this.model.attributes).then(result => {
+            if (!this.model.get('entity') || !this.model.get('type') || !this.model.get('fileType')) {
+                return;
+            }
+
+            this.ajaxPostRequest('ExportFeed/action/loadAvailableTemplates', this.model.attributes, {async: false}).then(result => {
                 if (result) {
                     Object.keys(result).forEach(template => {
                         this.params.options.push(template);
