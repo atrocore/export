@@ -251,7 +251,8 @@
       "useDisabledTextareaInViewMode": true,
       "notStorable": true,
       "readOnly": true,
-      "filterDisabled": true
+      "filterDisabled": true,
+      "view": "views/fields/script"
     },
     "template": {
       "type": "text",
