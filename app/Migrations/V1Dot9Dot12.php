@@ -28,7 +28,6 @@ class V1Dot9Dot12 extends Base
     {
         $this->updateTemplate();
         $this->updateFileNameMask();
-        $this->updateConfiguratorItems();
     }
 
     protected function updateTemplate(): void
@@ -98,40 +97,6 @@ class V1Dot9Dot12 extends Base
 
                 }
             }
-        }
-    }
-
-    protected function updateConfiguratorItems(): void
-    {
-        try {
-            $connection = $this->getConnection();
-
-            $exportFeedIds = $connection
-                ->createQueryBuilder()
-                ->select('id')
-                ->from('export_feed')
-                ->where('data LIKE :data')
-                ->setParameter('data', "%\"entity\":\"Product\"%")
-                ->fetchAllAssociative();
-
-            if (!empty($exportFeedIds)) {
-                $exportFeedIds = array_column($exportFeedIds, 'id');
-
-                $connection
-                    ->createQueryBuilder()
-                    ->update('export_configurator_item')
-                    ->set('name', ':newName')
-                    ->where('name = :oldName')
-                    ->andWhere('export_feed_id IN (:exportFeedIds)')
-                    ->andWhere('deleted = :false')
-                    ->setParameter('newName', 'number')
-                    ->setParameter('oldName', 'sku')
-                    ->setParameter('exportFeedIds', $exportFeedIds, Mapper::getParameterType($exportFeedIds))
-                    ->setParameter('false', false, ParameterType::BOOLEAN)
-                    ->executeStatement();
-            }
-        } catch (\Throwable $e) {
-
         }
     }
 }
