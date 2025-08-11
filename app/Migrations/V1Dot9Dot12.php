@@ -28,6 +28,7 @@ class V1Dot9Dot12 extends Base
     {
         $this->updateTemplate();
         $this->updateFileNameMask();
+        $this->updateData();
     }
 
     protected function updateTemplate(): void
@@ -92,6 +93,41 @@ class V1Dot9Dot12 extends Base
                         ->where('id = :id')
                         ->setParameter('id', $action['id'])
                         ->setParameter('fileNameMask', $action['file_name_mask'])
+                        ->executeStatement();
+                } catch (\Throwable $e) {
+
+                }
+            }
+        }
+    }
+
+    protected function updateData(): void
+    {
+        $actions = $this
+            ->getConnection()
+            ->createQueryBuilder()
+            ->select('id', 'data')
+            ->from('export_feed')
+            ->where('data IS NOT NULL')
+            ->andWhere('deleted = :false')
+            ->setParameter('false', false, ParameterType::BOOLEAN)
+            ->fetchAllAssociative();
+
+        foreach ($actions as $action) {
+            if (strpos($action['data'], 'sku') !== false) {
+                $action['data'] = str_replace('.sku', '.number', $action['data']);
+                $action['data'] = str_replace('"sku"', '"number"', $action['data']);
+                $action['data'] = str_replace("'sku'", "'number'", $action['data']);
+
+                try {
+                    $this
+                        ->getConnection()
+                        ->createQueryBuilder()
+                        ->update('export_feed')
+                        ->set('data', ':data')
+                        ->where('id = :id')
+                        ->setParameter('id', $action['id'])
+                        ->setParameter('data', $action['data'])
                         ->executeStatement();
                 } catch (\Throwable $e) {
 
