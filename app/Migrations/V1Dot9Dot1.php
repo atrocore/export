@@ -41,7 +41,6 @@ class V1Dot9Dot1 extends Base
                 ->select('eci.*, a.code as attribute_code')
                 ->from('export_configurator_item', 'eci')
                 ->leftJoin('eci', 'attribute', 'a', 'eci.entity_attribute_id = a.id')
-                ->where('eci.entity_attribute_id IS NOT NULL')
                 ->andWhere('eci.language IS NOT NULL AND eci.deleted = :false')
                 ->setParameter('false', false, ParameterType::BOOLEAN)
                 ->fetchAllAssociative();
@@ -50,12 +49,18 @@ class V1Dot9Dot1 extends Base
                 if(empty($row['language']) || $row['language'] === 'main') {
                     continue;
                 }
-                $name = $row['entity_attribute_id'];
-                if(!empty($row['attribute_code'])) {
-                    $name = preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/', $row['attribute_code']) === 1 ? $row['attribute_code'] : $name;
+
+                $name = $row['name'];
+
+                if(!empty($row['entity_attribute_id'])) {
+                    $name = $row['entity_attribute_id'];
+                    if(!empty($row['attribute_code'])) {
+                        $name = preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/', $row['attribute_code']) === 1 ? $row['attribute_code'] : $name;
+                    }
                 }
 
                 $name = $name.Util::toCamelCase(strtolower($row['language']), '_', true);
+
                 $this->getConnection()->createQueryBuilder()
                     ->update('export_configurator_item')
                     ->set('name', ':name')
