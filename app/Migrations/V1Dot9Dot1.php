@@ -67,9 +67,6 @@ class V1Dot9Dot1 extends Base
         } catch (\Throwable $e) {
         }
 
-
-
-
         $this->exec("ALTER TABLE export_configurator_item DROP attribute_value");
 //       $this->exec("ALTER TABLE export_configurator_item DROP \"language\"");
         $this->exec("ALTER TABLE export_configurator_item DROP fallback_language");
