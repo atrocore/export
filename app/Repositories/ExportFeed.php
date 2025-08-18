@@ -163,6 +163,12 @@ class ExportFeed extends Base
             $entity->set('lastTime', null);
         }
 
+        $fileTypes = $this->getMetadata()->get("app.exportTypes.{$entity->get('type')}.fileTypes") ?? [];
+
+        if ($entity->isAttributeChanged('fileType') && !in_array($entity->get('fileType'), $fileTypes)) {
+            throw new BadRequest("Wrong file Format has been chosen.");
+        }
+
         parent::beforeSave($entity, $options);
 
         if ($entity->get('type') === 'simple') {
