@@ -62,6 +62,10 @@
             {
               "type": "isFalse",
               "attribute": "separateJob"
+            },
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
             }
           ]
         }
@@ -85,6 +89,84 @@
             {
               "type": "isNotEmpty",
               "attribute": "id"
+            }
+          ]
+        }
+      },
+      "markForUnlinkedAttribute": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      },
+      "entity": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      },
+      "sortOrderField": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      },
+      "sortOrderDirection": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      },
+      "limit": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      },
+      "separateJob": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      },
+      "locale": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
             }
           ]
         }

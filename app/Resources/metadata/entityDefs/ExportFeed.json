@@ -286,7 +286,7 @@
     "locale": {
       "type": "link",
       "entity": "Locale",
-      "required": true
+      "required": false
     },
     "fileNameMask": {
       "type": "wysiwyg",
