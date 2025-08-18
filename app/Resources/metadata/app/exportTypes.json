@@ -1,0 +1,11 @@
+{
+  "simple": {
+    "fileTypes": [
+      "csv",
+      "xlsx",
+      "json",
+      "xml",
+      "sql"
+    ]
+  }
+}

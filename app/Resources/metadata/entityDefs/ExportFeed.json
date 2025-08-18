@@ -61,24 +61,9 @@
       "type": "bool"
     },
     "fileType": {
-      "type": "enum",
-      "required": true,
-      "optionsIds": [
-        "csv",
-        "xlsx",
-        "json",
-        "xml",
-        "sql"
-      ],
-      "options": [
-        "csv",
-        "xlsx",
-        "json",
-        "xml",
-        "sql"
-      ],
-      "prohibitedEmptyValue": false,
-      "default": "csv"
+      "type": "varchar",
+      "view": "export:views/export-feed/fields/file-type",
+      "required": true
     },
     "isFileHeaderRow": {
       "type": "bool",
