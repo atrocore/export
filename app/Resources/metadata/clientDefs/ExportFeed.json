@@ -93,6 +93,16 @@
           ]
         }
       },
+      "fileType": {
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "id"
+            }
+          ]
+        }
+      },
       "markForUnlinkedAttribute": {
         "visible": {
           "conditionGroup": [

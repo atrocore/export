@@ -173,6 +173,11 @@ class ExportFeed extends Base
             throw new BadRequest("Wrong file Format has been chosen.");
         }
 
+        if (empty($entity->get('fileType'))) {
+            $entity->set('separateJob', false);
+            $entity->set('limit', 1);
+        }
+
         parent::beforeSave($entity, $options);
 
         if ($entity->get('type') === 'simple') {
