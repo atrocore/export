@@ -83,6 +83,18 @@ class Metadata extends AbstractListener
             $data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumDaysForJobExist']['visible']['conditionGroup'][0]['value'][] = 'ExportJobRemove';
         }
 
+        foreach ($data['app']['exportTypes'] ?? [] as $type => $typeData) {
+            $data['entityDefs']['ExportFeed']['fields']['type']['options'][] = $type;
+            if (!empty($typeData['default'])) {
+                $data['entityDefs']['ExportFeed']['fields']['type']['default'] = $type;
+            }
+            if (!empty($typeData['fileTypeRequired'])) {
+                $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['fileType']['required']['conditionGroup'][0]['type'] = 'in';
+                $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['fileType']['required']['conditionGroup'][0]['attribute'] = 'type';
+                $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['fileType']['required']['conditionGroup'][0]['value'][] = $type;
+            }
+        }
+
         $event->setArgument('data', $data);
     }
 

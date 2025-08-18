@@ -165,7 +165,11 @@ class ExportFeed extends Base
 
         $fileTypes = $this->getMetadata()->get("app.exportTypes.{$entity->get('type')}.fileTypes") ?? [];
 
-        if ($entity->isAttributeChanged('fileType') && !in_array($entity->get('fileType'), $fileTypes)) {
+        if (
+            $entity->isAttributeChanged('fileType')
+            && !empty($entity->get('fileType'))
+            && !in_array($entity->get('fileType'), $fileTypes)
+        ) {
             throw new BadRequest("Wrong file Format has been chosen.");
         }
 

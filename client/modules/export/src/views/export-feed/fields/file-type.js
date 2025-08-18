@@ -23,12 +23,10 @@ Espo.define('export:views/export-feed/fields/file-type', 'views/fields/enum', De
         },
 
         prepareListOptions() {
-            this.params.options = [''];
-            this.translatedOptions = {'': ''};
+            this.params.options = [];
+            this.translatedOptions = {};
 
-            const fileTypes = this.getMetadata().get(`app.exportTypes.${this.model.get('type')}.fileTypes`) || [];
-
-            fileTypes.forEach(fileType => {
+            (this.getMetadata().get(`app.exportTypes.${this.model.get('type')}.fileTypes`) || []).forEach(fileType => {
                 this.params.options.push(fileType);
                 this.translatedOptions[fileType] = this.getLanguage().translateOption(fileType, 'fileType', 'ExportFeed');
             });

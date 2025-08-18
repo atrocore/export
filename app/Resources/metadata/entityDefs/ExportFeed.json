@@ -46,15 +46,7 @@
     },
     "type": {
       "type": "enum",
-      "required": true,
-      "optionsIds": [
-        "simple"
-      ],
-      "options": [
-        "simple"
-      ],
-      "default": "simple",
-      "prohibitedEmptyValue": true
+      "required": true
     },
     "isActive": {
       "notNull": true,
@@ -62,8 +54,7 @@
     },
     "fileType": {
       "type": "varchar",
-      "view": "export:views/export-feed/fields/file-type",
-      "required": true
+      "view": "export:views/export-feed/fields/file-type"
     },
     "isFileHeaderRow": {
       "type": "bool",

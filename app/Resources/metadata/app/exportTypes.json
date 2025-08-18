@@ -1,5 +1,7 @@
 {
   "simple": {
+    "default": true,
+    "fileTypeRequired": true,
     "fileTypes": [
       "csv",
       "xlsx",
