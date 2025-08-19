@@ -24,21 +24,6 @@ class Export extends AbstractAction
         return false;
     }
 
-    public function executeViaWorkflow(array $workflowData, Event $event): bool
-    {
-        $action = $this->getActionById($workflowData['id']);
-        $action->set('sourceEntity', $event->getArgument('entity')->getEntityType());
-
-        $input = new \stdClass();
-        $input->entityId = $event->getArgument('entity')->get('id');
-
-        if (!empty($workflow['_relationData'])) {
-            $input->_relationData = $workflow['_relationData'];
-        }
-
-        return $this->getActionManager()->executeNow($action, $input);
-    }
-
     public function executeNow(Entity $action, \stdClass $input): bool
     {
         $payload = empty($action->get('payload')) ? '' : (string)$action->get('payload');

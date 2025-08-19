@@ -163,6 +163,21 @@ class ExportFeed extends Base
             $entity->set('lastTime', null);
         }
 
+        $fileTypes = $this->getMetadata()->get("app.exportTypes.{$entity->get('type')}.fileTypes") ?? [];
+
+        if (
+            $entity->isAttributeChanged('fileType')
+            && !empty($entity->get('fileType'))
+            && !in_array($entity->get('fileType'), $fileTypes)
+        ) {
+            throw new BadRequest("Wrong file Format has been chosen.");
+        }
+
+        if (empty($entity->get('fileType'))) {
+            $entity->set('separateJob', false);
+            $entity->set('limit', 1);
+        }
+
         parent::beforeSave($entity, $options);
 
         if ($entity->get('type') === 'simple') {

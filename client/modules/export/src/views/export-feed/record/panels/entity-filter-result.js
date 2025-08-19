@@ -32,10 +32,6 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
         readOnly: true,
 
         setup() {
-            if (!this.panelVisible()) {
-                return;
-            }
-
             this.scope = this.model.get('entity');
             this.url = this.model.get('entity');
 
@@ -45,6 +41,17 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
             }
 
             Dep.prototype.setup.call(this);
+
+            this.listenTo(this.model, 'change:fileType', () => {
+                this.reRender();
+            });
+
+            if(!this.defs.hideShowFullList && !this.getPreferences().get('hideShowFullList')) {
+                this.actionList.push({
+                    label: 'showFullList',
+                    action: 'showFullList'
+                });
+            }
 
             let iconHtml = this.getHelper().getScopeColorIconHtml(this.scope);
             if (iconHtml) {
@@ -87,10 +94,12 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
             } else {
                 this.$el.parent().hide();
             }
+
+            $('.panel-entityFilterResult button[data-action="openSearchFilter"]').html(this.getFilterButtonHtml());
         },
 
         panelVisible() {
-            return !(this.model.get('hasMultipleSheets'));
+            return !(this.model.get('hasMultipleSheets')) && this.model.get('fileType') !== '' && this.model.get('fileType') !== null;
         },
 
         actionOpenSearchFilter(data) {
