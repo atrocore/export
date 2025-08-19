@@ -100,7 +100,7 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
             }
 
             let self  = this;
-            debugger
+
             if(self.defs?.name !== 'entityFilterResult') {
                 self = this.getView('bottom').getView('entityFilterResult');
             }
