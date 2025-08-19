@@ -647,7 +647,8 @@ class ExportFeed extends Base
 
             if (!empty($fieldDefs['unitField'])) {
                 $item['type'] = 'script';
-                $item['script'] = '{{ record.price }} {{ record.priceUnitName }}';
+                $mainField = $fieldDefs['mainField'];
+                $item['script'] = "{{ record.{$mainField} }} {{ record.{$mainField}UnitName }}";
             }
 
             $configuration[] = (object)$item;
