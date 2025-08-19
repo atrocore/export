@@ -26,10 +26,8 @@
  * these Appropriate Legal Notices must retain the display of the "AtroPIM" word.
  */
 
-Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['views/record/panels/relationship', 'views/search/search-filter-opener'],
-    (Dep, SearchFilterOpener) => Dep.extend({
-
-        rowActionsView: 'views/record/row-actions/relationship-view-only',
+Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'views/search/panels/entity-filter-result',
+    Dep => Dep.extend({
 
         readOnly: true,
 
@@ -46,18 +44,7 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
                 type: "hasMany"
             }
 
-            this.defs.create = false;
-            this.defs.select = false;
-            this.defs.unlinkAll = false;
-
             Dep.prototype.setup.call(this);
-
-            if(!this.defs.hideShowFullList && !this.getPreferences().get('hideShowFullList')) {
-                this.actionList.push({
-                    label: 'showFullList',
-                    action: 'showFullList'
-                });
-            }
 
             let iconHtml = this.getHelper().getScopeColorIconHtml(this.scope);
             if (iconHtml) {
@@ -68,11 +55,14 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
                 }
             }
 
-            this.buttonList.unshift({
-                title: this.translate('openSearchFilter'),
-                action: 'openSearchFilter',
-                html: this.getFilterButtonHtml()
-            });
+            this.additionalBoolFilterList = this.options.additionalBoolFilterList ?? this.additionalBoolFilterList ?? [];
+            this.boolFilterData = this.options.boolFilterData ?? this.boolFilterData ?? {};
+
+            if(!this.additionalBoolFilterList.includes('unexported')) {
+                this.additionalBoolFilterList.push('unexported');
+                this.boolFilterData['unexported'] = this.model.get('lastTime')
+            }
+
         },
 
         getLayoutRelatedScope() {
@@ -97,25 +87,26 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
             } else {
                 this.$el.parent().hide();
             }
-
-            $('.panel-entityFilterResult button[data-action="openSearchFilter"]').html(this.getFilterButtonHtml());
         },
 
         panelVisible() {
             return !(this.model.get('hasMultipleSheets'));
         },
 
-        getFilterButtonHtml(){
-            return SearchFilterOpener.prototype.getFilterButtonHtml.call(this, 'data');
-        },
-
-        actionOpenSearchFilter() {
+        actionOpenSearchFilter(data) {
             if(!this.model.get('entity') || !this.getMetadata().get(['scopes', this.model.get('entity')])) {
                 this.notify(this.translate('The entity for the export is not valid'), 'error');
                 return;
             }
 
-            SearchFilterOpener.prototype.open.call(this, this.model.get('entity'), this.model.get('data')?.where,  ({where, whereData}) => {
+            let self  = this;
+            debugger
+            if(self.defs?.name !== 'entityFilterResult') {
+                self = this.getView('bottom').getView('entityFilterResult');
+            }
+
+           self.openSearchFilter(this.model.get('entity'), this.model.get('data')?.where,
+                ({where, whereData}) => {
                     this.model.set('data', _.extend({}, this.model.get('data'), {
                         where,
                         whereData,
@@ -123,7 +114,8 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
                     }));
                     this.notify(this.translate('saving', 'messages'));
                     this.model.save({_prev: null}).then(() =>  this.notify(this.translate('Done'), 'success'));
-            });
+                }
+            );
         }
     })
 );
