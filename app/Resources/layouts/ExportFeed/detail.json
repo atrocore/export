@@ -55,7 +55,8 @@
     "rows": [
       [
         {
-          "name": "fileType"
+          "name": "fileType",
+          "inlineEditDisabled": true
         },
         {
           "name": "isFileHeaderRow"

@@ -37,9 +37,14 @@ class ExportTypeSimple extends AbstractExportType
     {
         $this->getMemoryStorage()->set('exportJobId', $exportJob->get('id'));
 
-        $attachmentCreatorName = 'export' . ucfirst($this->data['feed']['fileType']);
-        if (!method_exists($this, $attachmentCreatorName)) {
-            throw new Error('Unsupported file type.');
+        $fileType = $this->data['feed']['fileType'] ?? '';
+        if (empty($fileType)) {
+            $attachmentCreatorName = 'exportEmpty';
+        } else {
+            $attachmentCreatorName = 'export' . ucfirst($fileType);
+            if (!method_exists($this, $attachmentCreatorName)) {
+                throw new Error('Unsupported file type.');
+            }
         }
 
         $attachment = $this->$attachmentCreatorName($exportJob);
@@ -134,6 +139,28 @@ class ExportTypeSimple extends AbstractExportType
         }
 
         return $folder;
+    }
+
+    /**
+     * By design export job always has exported file, but for special cases system does not have what to export, for example system sends DELETE http request without body
+     *
+     * @param ExportJob $exportJob
+     * @return File
+     */
+    protected function exportEmpty(ExportJob $exportJob): File
+    {
+        $exportJob->set('count', 1);
+
+        $input = new \stdClass();
+        $input->name = 'empty.txt';
+        $input->hidden = true;
+        $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
+
+        $this->reuploadIfNeeds($input);
+
+        $fileData = $this->getService('File')->createFileViaContents($input, '');
+
+        return $this->getEntityManager()->getRepository('File')->get($fileData['id']);
     }
 
     protected function exportJson(ExportJob $exportJob): File

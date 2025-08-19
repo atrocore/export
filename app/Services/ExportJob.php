@@ -13,68 +13,21 @@ declare(strict_types=1);
 
 namespace Export\Services;
 
-use Doctrine\DBAL\ParameterType;
-use Espo\Core\Templates\Services\Base;
+use Atro\Core\Templates\Services\Base;
 use Espo\ORM\Entity;
 
 class ExportJob extends Base
 {
     protected $mandatorySelectAttributeList = ['exportFeedId', 'exportFeedName', 'state', 'stateMessage', 'data'];
 
-    public function deleteOld(int $days = 14): bool
+    public function prepareEntityForOutput(Entity $entity)
     {
-        if ($days === 0) {
-            return true;
+        parent::prepareEntityForOutput($entity);
+
+        // by design export job always has exported file, but for special cases system does not have what to export, for example system sends DELETE http request without body
+        if ($entity->get('fileName') === 'empty.txt') {
+            $entity->set('fileId', null);
+            $entity->set('fileName', null);
         }
-
-        // delete
-        while (true) {
-            $toDelete = $this->getEntityManager()->getRepository('ExportJob')
-                ->select(['id'])
-                ->where(['modifiedAt<' => (new \DateTime())->modify("-$days days")->format('Y-m-d H:i:s')])
-                ->limit(0, 2000)
-                ->order('modifiedAt')
-                ->find();
-            if (empty($toDelete[0])) {
-                break;
-            }
-
-            foreach ($toDelete as $entity) {
-                $this->getEntityManager()->removeEntity($entity);
-            }
-        }
-
-        // delete jobs
-        while (true) {
-            $toDeleteItem = $this->getEntityManager()->getRepository('Job')
-                ->where([
-                    'modifiedAt<' => (new \DateTime())->modify("-$days days")->format('Y-m-d H:i:s'),
-                    'type' => ['ExportJobCreator', 'Export'],
-                    'status' => ['Success', 'Failed', 'Canceled']
-                ])
-                ->limit(0, 2000)
-                ->order('modifiedAt')
-                ->find();
-            if (empty($toDeleteItem[0])) {
-                break;
-            }
-
-            foreach ($toDeleteItem as $entity) {
-                $this->getEntityManager()->removeEntity($entity);
-            }
-        }
-
-        // delete forever
-        $daysToDeleteForever = $this->getConfig()->get('exportJobsDeletedMaxDays', 14);
-        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
-        $qb
-            ->delete('export_job')
-            ->where('modified_at <= :maxDate')
-            ->andWhere('deleted = :true')
-            ->setParameter('maxDate', (new \DateTime())->modify("-$daysToDeleteForever days")->format('Y-m-d H:i:s'))
-            ->setParameter('true', true, ParameterType::BOOLEAN)
-            ->executeStatement();
-
-        return true;
     }
 }

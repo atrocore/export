@@ -46,39 +46,15 @@
     },
     "type": {
       "type": "enum",
-      "required": true,
-      "optionsIds": [
-        "simple"
-      ],
-      "options": [
-        "simple"
-      ],
-      "default": "simple",
-      "prohibitedEmptyValue": true
+      "required": true
     },
     "isActive": {
       "notNull": true,
       "type": "bool"
     },
     "fileType": {
-      "type": "enum",
-      "required": true,
-      "optionsIds": [
-        "csv",
-        "xlsx",
-        "json",
-        "xml",
-        "sql"
-      ],
-      "options": [
-        "csv",
-        "xlsx",
-        "json",
-        "xml",
-        "sql"
-      ],
-      "prohibitedEmptyValue": false,
-      "default": "csv"
+      "type": "varchar",
+      "view": "export:views/export-feed/fields/file-type"
     },
     "isFileHeaderRow": {
       "type": "bool",
@@ -310,7 +286,7 @@
     "locale": {
       "type": "link",
       "entity": "Locale",
-      "required": true
+      "required": false
     },
     "fileNameMask": {
       "type": "wysiwyg",

@@ -64,17 +64,15 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
 
             this.prepareActionsVisibility();
 
-            this.$el.parent().show();
-
-            let fileType = this.model.get('fileType');
-            if (fileType) {
-                if (!['csv', 'xlsx'].includes(fileType)) {
-                    this.$el.parent().hide();
-                }
-            }
-            if (this.model.get('hasMultipleSheets')) {
+            if (this.panelVisible()) {
+                this.$el.parent().show();
+            } else {
                 this.$el.parent().hide();
             }
+        },
+
+        panelVisible() {
+            return !(this.model.get('hasMultipleSheets')) && ['csv', 'xlsx'].includes(this.model.get('fileType'));
         },
 
         prepareActionsVisibility() {
