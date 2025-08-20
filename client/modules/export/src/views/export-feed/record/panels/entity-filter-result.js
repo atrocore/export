@@ -1,35 +1,15 @@
-/*
- * This file is part of AtroPIM.
+/**
+ * AtroCore Software
  *
- * AtroPIM - Open Source PIM application.
- * Copyright (C) 2020 AtroCore UG (haftungsbeschränkt).
- * Website: https://atropim.com
+ * This source file is available under GNU General Public License version 3 (GPLv3).
+ * Full copyright and license information is available in LICENSE.txt, located in the root directory.
  *
- * AtroPIM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * AtroPIM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with AtroPIM. If not, see http://www.gnu.org/licenses/.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "AtroPIM" word.
+ * @copyright  Copyright (c) AtroCore GmbH (https://www.atrocore.com)
+ * @license    GPLv3 (https://www.gnu.org/licenses/)
  */
 
-Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['views/record/panels/relationship', 'views/search/search-filter-opener'],
-    (Dep, SearchFilterOpener) => Dep.extend({
-
-        rowActionsView: 'views/record/row-actions/relationship-view-only',
+Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'views/search/panels/entity-filter-result',
+    Dep => Dep.extend({
 
         readOnly: true,
 
@@ -41,10 +21,6 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
                 entity: this.scope,
                 type: "hasMany"
             }
-
-            this.defs.create = false;
-            this.defs.select = false;
-            this.defs.unlinkAll = false;
 
             Dep.prototype.setup.call(this);
 
@@ -68,11 +44,14 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
                 }
             }
 
-            this.buttonList.unshift({
-                title: this.translate('openSearchFilter'),
-                action: 'openSearchFilter',
-                html: this.getFilterButtonHtml()
-            });
+            this.additionalBoolFilterList = this.options.additionalBoolFilterList ?? this.additionalBoolFilterList ?? [];
+            this.boolFilterData = this.options.boolFilterData ?? this.boolFilterData ?? {};
+
+            if(!this.additionalBoolFilterList.includes('unexported')) {
+                this.additionalBoolFilterList.push('unexported');
+                this.boolFilterData['unexported'] = this.model.get('lastTime')
+            }
+
         },
 
         getLayoutRelatedScope() {
@@ -105,17 +84,20 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
             return !(this.model.get('hasMultipleSheets')) && this.model.get('fileType') !== '' && this.model.get('fileType') !== null;
         },
 
-        getFilterButtonHtml(){
-            return SearchFilterOpener.prototype.getFilterButtonHtml.call(this, 'data');
-        },
-
-        actionOpenSearchFilter() {
+        actionOpenSearchFilter(data) {
             if(!this.model.get('entity') || !this.getMetadata().get(['scopes', this.model.get('entity')])) {
                 this.notify(this.translate('The entity for the export is not valid'), 'error');
                 return;
             }
 
-            SearchFilterOpener.prototype.open.call(this, this.model.get('entity'), this.model.get('data')?.where,  ({where, whereData}) => {
+            let self  = this;
+
+            if(self.defs?.name !== 'entityFilterResult') {
+                self = this.getView('bottom').getView('entityFilterResult');
+            }
+
+           self.openSearchFilter(this.model.get('entity'), this.model.get('data')?.where,
+                ({where, whereData}) => {
                     this.model.set('data', _.extend({}, this.model.get('data'), {
                         where,
                         whereData,
@@ -123,7 +105,8 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', ['vie
                     }));
                     this.notify(this.translate('saving', 'messages'));
                     this.model.save({_prev: null}).then(() =>  this.notify(this.translate('Done'), 'success'));
-            });
+                }
+            );
         }
     })
 );

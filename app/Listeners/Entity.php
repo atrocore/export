@@ -25,25 +25,17 @@ class Entity extends AbstractListener
             foreach ($params['where'] as $k => $item) {
                 if (!empty($item['data']['unexported'])) {
                     $condition = [
-                        'type'      => 'between',
+                        'type' => 'between',
                         'attribute' => 'modifiedAt',
-                        'value'     => [
+                        'value' => [
                             $item['data']['unexported'],
                             (new \DateTime())->modify('-5 seconds')->format('Y-m-d H:i:s')
                         ],
-                        'dateTime'  => true,
-                        'timeZone'  => 'UTC'
+                        'dateTime' => true,
+                        'timeZone' => 'UTC'
                     ];
 
-                    if ($entityType === 'Product') {
-                        $params['where'][] = $this
-                            ->getContainer()
-                            ->get('selectManagerFactory')
-                            ->create('Product')
-                            ->prepareWhereForModifiedAtExpanded($condition);
-                    } else {
-                        $params['where'][] = $condition;
-                    }
+                    $params['where'][] = $condition;
 
                     unset($params['where'][$k]['data']['unexported']);
                     if (isset($item['value']) && is_array($item['value'])) {
