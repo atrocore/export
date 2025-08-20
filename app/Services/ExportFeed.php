@@ -217,8 +217,8 @@ class ExportFeed extends Base
         $feedEntity = $this->getEntityManager()->getRepository($feed->get('entity') ?? $feed->getFeedField('entity'))->get();
 
         foreach ($this->getAttributeFieldConverter()->getAttributesRowsByIds($attributesIds) as $attribute) {
-            if(!empty($attribute['channel_name'])) {
-                $attribute['name'] .= ' / ' .$attribute['channel_name'];
+            if (!empty($attribute['channel_name'])) {
+                $attribute['name'] .= ' / ' . $attribute['channel_name'];
             }
             $attributesDefs = [];
             $this->getAttributeFieldConverter()->convert($feedEntity, $attribute, $attributesDefs);
@@ -645,6 +645,12 @@ class ExportFeed extends Base
                 }
             }
 
+            if (!empty($fieldDefs['unitField'])) {
+                $item['type'] = 'script';
+                $mainField = $fieldDefs['mainField'];
+                $item['script'] = "{{ record.{$mainField} }} {{ record.{$mainField}UnitName }}";
+            }
+
             $configuration[] = (object)$item;
         }
 
@@ -862,7 +868,7 @@ class ExportFeed extends Base
                     ->setParameter('false', false, ParameterType::BOOLEAN)
                     ->setParameter('exportFeedId', $exportFeedId);
 
-                if (class_exists("\\Pim\\Module")){
+                if (class_exists("\\Pim\\Module")) {
                     $qb->addSelect("c.name as channel_name");
                     $qb->leftJoin('a', 'channel', 'c', 'c.id=a.channel_id AND c.deleted=:false');
                 }
