@@ -36,6 +36,8 @@ class Export extends AbstractJob implements JobInterface
         $exportJob->set('state', 'Running');
         $this->getEntityManager()->saveEntity($exportJob);
 
+        $this->getMemoryStorage()->set('exportJob', $exportJob);
+
         $entityName = $data['feed']['entity'] ?? null;
 
         try {
@@ -64,11 +66,15 @@ class Export extends AbstractJob implements JobInterface
             if (!empty($file)) {
                 $this->createExportNotification(sprintf($this->translate('exportDownloadNotification', 'labels', 'ExportJob'), $file->get('id')), $job);
             }
+
+            $this->getMemoryStorage()->delete('exportJob');
         } catch (\Throwable $e) {
             $exportJob->set('end', (new \DateTime())->format('Y-m-d H:i:s'));
             $exportJob->set('state', 'Failed');
             $exportJob->set('stateMessage', $e->getMessage());
             $this->getEntityManager()->saveEntity($exportJob);
+
+            $this->getMemoryStorage()->delete('exportJob');
 
             if (!empty($data['executeNow'])) {
                 throw new BadRequest($e->getMessage());

@@ -761,7 +761,7 @@ abstract class AbstractExportType extends Base
                 [
                     "attribute" => "id",
                     "type"      => "in",
-                    "value"     => $this->data['entityIds']
+                    "value"     => $entityIds
                 ]
             ],
             "withDeleted" => true
