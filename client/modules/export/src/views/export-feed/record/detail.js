@@ -53,7 +53,7 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
                 this.reRender();
             });
 
-            this.listenTo(this.model, 'after:save', () => {
+            this.listenTo(this.model, 'after:save after:inlineEditSave', () => {
                 this.handleExportButtonDisability();
             });
 
@@ -90,11 +90,18 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
         },
 
         handleExportButtonDisability() {
-            const $buttons = $('.additional-button[data-action="exportNow"]');
             if (this.hasExportNow()) {
-                $buttons.removeClass('disabled');
+                this.additionalButtons.map(button => {
+                    if (button.action === 'exportNow') {
+                        button.disabled = false;
+                    }
+                });
             } else {
-                $buttons.addClass('disabled');
+                this.additionalButtons.map(button => {
+                    if (button.action === 'exportNow') {
+                        button.disabled = true;
+                    }
+                });
             }
         },
 
