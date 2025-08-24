@@ -616,7 +616,7 @@ class ExportFeed extends Base
 
         $configuration = [];
         foreach ($entityDefs as $field => $fieldDefs) {
-            if ($fieldDefs['type'] === 'linkMultiple' || !empty($fieldDefs['exportDisabled'])) {
+            if (!empty($fieldDefs['exportDisabled'])) {
                 continue;
             }
 
@@ -629,7 +629,7 @@ class ExportFeed extends Base
             $item['id'] = Util::generateId();
             $item['column'] = $this->getInjection('language')->translate($field, 'fields', $scope);
 
-            if (in_array($fieldDefs['type'], ['link', 'extensibleEnum', 'extensibleMultiEnum'])) {
+            if (in_array($fieldDefs['type'], ['link', 'linkMultiple', 'extensibleEnum', 'extensibleMultiEnum'])) {
                 $item['exportBy'] = ['name'];
             }
 
