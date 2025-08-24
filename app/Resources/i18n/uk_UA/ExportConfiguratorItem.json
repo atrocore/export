@@ -26,6 +26,10 @@
     "columnType": {
       "name": "Назва",
       "custom": "Користувацька назва"
+    },
+    "sortOrderRelation": {
+      "1": "ASC",
+      "2": "DESC"
     }
   },
   "tooltips": {
