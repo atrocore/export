@@ -31,10 +31,6 @@
     "columnType": {
       "name": "Name",
       "custom": "Custom Name"
-    },
-    "sortOrderRelation": {
-      "1": "ASC",
-      "2": "DESC"
     }
   },
   "tooltips": {
