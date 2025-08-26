@@ -85,7 +85,6 @@ class Metadata extends AbstractListener
 
         foreach ($data['app']['exportTypes'] ?? [] as $type => $typeData) {
             $data['entityDefs']['ExportFeed']['fields']['type']['options'][] = $type;
-            $data['entityDefs']['ExportFeed']['fields']['type']['optionsIds'][] = $type;
             if (!empty($typeData['default'])) {
                 $data['entityDefs']['ExportFeed']['fields']['type']['default'] = $type;
             }
