@@ -26,7 +26,6 @@ class V1Dot9Dot14 extends Base
 
     public function up(): void
     {
-
             $sortOrderRelation = [
                 "1" => "ASC",
                 "2" => "DESC"
@@ -41,7 +40,5 @@ class V1Dot9Dot14 extends Base
                 ->setParameter('old', $old)
                 ->executeQuery();
         }
-
-
     }
 }
