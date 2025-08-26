@@ -140,10 +140,10 @@
       "required": false,
       "prohibitedEmptyValue": true,
       "options": [
-        "1",
-        "2"
+        "ASC",
+        "DESC"
       ],
-      "default": "1"
+      "default": "ASC"
     },
     "fixedValue": {
       "type": "varchar"
