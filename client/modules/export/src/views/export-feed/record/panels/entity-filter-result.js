@@ -80,10 +80,6 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
             $('.panel-entityFilterResult button[data-action="openSearchFilter"]').html(this.getFilterButtonHtml());
         },
 
-        panelVisible() {
-            return !(this.model.get('hasMultipleSheets')) && this.model.get('fileType') !== '' && this.model.get('fileType') !== null;
-        },
-
         actionOpenSearchFilter(data) {
             if(!this.model.get('entity') || !this.getMetadata().get(['scopes', this.model.get('entity')])) {
                 this.notify(this.translate('The entity for the export is not valid'), 'error');
@@ -96,7 +92,20 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
                 self = this.getView('bottom').getView('entityFilterResult');
             }
 
-           self.openSearchFilter(this.model.get('entity'), this.model.get('data')?.where,
+            let whereData = this.model.get('data')?.where;
+            
+            if(this.model.get('data')?.whereData
+                && (this.model.get('data')?.whereData['queryBuilder']
+                    || this.model.get('data')?.whereData['bool']
+                    || this.model.get('data')?.whereData['textFilter']
+                    || this.model.get('data')?.whereData['savedSearch']
+                )
+            ){
+                whereData = this.model.get('data')?.whereData;
+            }
+
+
+            self.openSearchFilter(this.model.get('entity'), whereData,
                 ({where, whereData}) => {
                     this.model.set('data', _.extend({}, this.model.get('data'), {
                         where,
@@ -107,6 +116,10 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
                     this.model.save({_prev: null}).then(() =>  this.notify(this.translate('Done'), 'success'));
                 }
             );
+        },
+
+        panelVisible() {
+            return !(this.model.get('hasMultipleSheets')) && this.model.get('fileType') !== '' && this.model.get('fileType') !== null;
         }
     })
 );

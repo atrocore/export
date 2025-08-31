@@ -17,6 +17,7 @@ use Atro\Core\Exceptions\BadRequest;
 use Atro\Core\Container;
 use Atro\Core\Exceptions\Error;
 use Atro\ORM\DB\RDB\Mapper;
+use Atro\Repositories\SavedSearch;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\Core\Services\Base;
 use Atro\Core\Twig\Twig;
@@ -190,12 +191,13 @@ abstract class AbstractExportType extends Base
 
     protected function getSelectParams(): array
     {
+
         $params = [
             'sortBy'      => 'id',
             'asc'         => true,
             'offset'      => 0,
             'maxSize'     => 1,
-            'where'       => !empty($this->data['feed']['data']['where']) ? $this->data['feed']['data']['where'] : [],
+            'where'       => $this->getWhere(),
             'withDeleted' => !empty($this->data['feed']['data']['withDeleted']),
         ];
 
@@ -768,5 +770,17 @@ abstract class AbstractExportType extends Base
         ]);
 
         return $result['collection'];
+    }
+
+    protected function getWhere(): array
+    {
+        if(!empty($this->data['feed']['data']['whereData'])){
+          $where  =  SavedSearch::getWhereFromWhereData($this->data['feed']['data']['whereData'], $this->getEntityManager());
+          if(!empty($where)){
+              return $where;
+          }
+        }
+
+        return !empty($this->data['feed']['data']['where']) ? $this->data['feed']['data']['where'] : [];
     }
 }
