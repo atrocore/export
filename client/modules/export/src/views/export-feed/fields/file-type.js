@@ -15,11 +15,15 @@ Espo.define('export:views/export-feed/fields/file-type', 'views/fields/enum', De
         setup() {
             this.prepareListOptions();
             Dep.prototype.setup.call(this);
-            this.listenTo(this.model, 'change:type', () => {
-                this.model.set(this.name, null);
-                this.prepareListOptions();
-                this.reRender();
-            });
+
+            this.onModelReady(()=>{
+                this.listenTo(this.model, 'change:type', () => {
+                    this.model.set(this.name, null);
+                    this.prepareListOptions();
+                    this.reRender();
+                });
+            })
+
         },
 
         prepareListOptions() {
