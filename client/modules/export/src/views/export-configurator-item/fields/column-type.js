@@ -13,8 +13,6 @@ Espo.define('export:views/export-configurator-item/fields/column-type', 'views/f
 
         return Dep.extend({
 
-            prohibitedEmptyValue: true,
-
             init: function () {
                 Dep.prototype.init.call(this);
 

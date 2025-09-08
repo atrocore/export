@@ -12,8 +12,6 @@ Espo.define('export:views/export-configurator-item/fields/filter-field', 'views/
 
     return Dep.extend({
 
-        prohibitedEmptyValue: false,
-
         init: function () {
             Dep.prototype.init.call(this);
 

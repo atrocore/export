@@ -74,8 +74,27 @@
       "notStorable": true,
       "dataField": true,
       "view": "export:views/export-feed/fields/field-delimiter",
-      "prohibitedEmptyValue": true,
-      "filterDisabled": true
+      "filterDisabled": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "fileType",
+              "value": "csv"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "fileType",
+              "value": "csv"
+            }
+          ]
+        }
+      }
     },
     "csvTextQualifier": {
       "type": "enum",
@@ -86,8 +105,27 @@
       "default": "doubleQuote",
       "notStorable": true,
       "dataField": true,
-      "prohibitedEmptyValue": true,
-      "filterDisabled": true
+      "filterDisabled": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "fileType",
+              "value": "csv"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "fileType",
+              "value": "csv"
+            }
+          ]
+        }
+      }
     },
     "entity": {
       "type": "varchar",
@@ -256,12 +294,37 @@
       "default": "1",
       "notStorable": true,
       "dataField": true,
-      "prohibitedEmptyValue": true,
       "tooltip": true,
       "options": [
         "1",
         "2"
-      ]
+      ],
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
+            }
+          ]
+        }
+      }
     },
     "folder": {
       "type": "link"

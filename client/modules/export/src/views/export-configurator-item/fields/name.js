@@ -13,8 +13,6 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
 
         listTemplate: 'export:export-configurator-item/fields/name/list',
 
-        prohibitedEmptyValue: true,
-
         setup() {
             let entity = this.model.get('entity');
             let fields = this.getFieldsList(entity);
