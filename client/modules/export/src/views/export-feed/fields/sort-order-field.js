@@ -13,8 +13,6 @@ Espo.define('export:views/export-feed/fields/sort-order-field', 'views/fields/en
 
         return Dep.extend({
 
-            prohibitedEmptyValue: false,
-
             setup() {
                 Dep.prototype.setup.call(this);
 

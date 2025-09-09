@@ -286,46 +286,7 @@
           ]
         }
       },
-      "csvFieldDelimiter": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "equals",
-              "attribute": "fileType",
-              "value": "csv"
-            }
-          ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "equals",
-              "attribute": "fileType",
-              "value": "csv"
-            }
-          ]
-        }
-      },
-      "csvTextQualifier": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "equals",
-              "attribute": "fileType",
-              "value": "csv"
-            }
-          ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "equals",
-              "attribute": "fileType",
-              "value": "csv"
-            }
-          ]
-        }
-      },
+
       "isFileHeaderRow": {
         "visible": {
           "conditionGroup": [
@@ -516,20 +477,6 @@
         }
       },
       "markForNoRelation": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "fileType",
-              "value": [
-                "xlsx",
-                "csv"
-              ]
-            }
-          ]
-        }
-      },
-      "exportByMaxDepth": {
         "visible": {
           "conditionGroup": [
             {

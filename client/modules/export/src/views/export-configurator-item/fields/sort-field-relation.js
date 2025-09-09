@@ -11,8 +11,6 @@
 Espo.define('export:views/export-configurator-item/fields/sort-field-relation', 'views/fields/enum',
     Dep => Dep.extend({
 
-        prohibitedEmptyValue: true,
-
         setup() {
             Dep.prototype.setup.call(this);
 
@@ -36,7 +34,9 @@ Espo.define('export:views/export-configurator-item/fields/sort-field-relation', 
 
             if (this.model.get('type') === 'Field' && ['linkMultiple', 'extensibleMultiEnum'].includes(type)) {
                 this.show();
+                this.setRequired();
             } else {
+                this.setNotRequired();
                 this.hide();
             }
         },
