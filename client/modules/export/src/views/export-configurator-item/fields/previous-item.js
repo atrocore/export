@@ -24,7 +24,7 @@ Espo.define('export:views/export-configurator-item/fields/previous-item', 'views
                 offset: 0,
                 maxSize: 9999,
                 sortBy: "sortOrder",
-                asc: true,
+                asc: true
             }).success(response => {
                 if (response.total) {
                     let i = 1;
