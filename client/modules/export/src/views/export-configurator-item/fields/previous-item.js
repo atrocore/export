@@ -48,7 +48,7 @@ Espo.define('export:views/export-configurator-item/fields/previous-item', 'views
                     }
 
                     if (this.model.isNew()) {
-                        this.model.set('previousItem', previousItem);
+                        this.model.set('previousItem', lastItem);
                     }
                     this.reRender();
                 }
