@@ -19,14 +19,48 @@
       "default": 2000,
       "min": 1,
       "max": 10000,
-      "tooltip": true
+      "tooltip": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      }
     },
     "separateJob": {
       "type": "bool",
-      "tooltip": true
+      "tooltip": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      }
     },
     "replaceExistingFile": {
-      "type": "bool"
+      "type": "bool",
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isFalse",
+              "attribute": "separateJob"
+            },
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      }
     },
     "createdAt": {
       "type": "datetime",
@@ -48,7 +82,17 @@
     },
     "type": {
       "type": "enum",
-      "required": true
+      "required": true,
+      "conditionalProperties": {
+        "protected": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "id"
+            }
+          ]
+        }
+      }
     },
     "isActive": {
       "notNull": true,
@@ -63,7 +107,21 @@
       "notStorable": true,
       "dataField": true,
       "default": true,
-      "filterDisabled": true
+      "filterDisabled": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
+            }
+          ]
+        }
+      }
     },
     "csvFieldDelimiter": {
       "type": "enum",
@@ -136,7 +194,17 @@
       "dataField": true,
       "view": "export:views/export-feed/fields/entity",
       "filterDisabled": true,
-      "default": "Product"
+      "default": "Product",
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      }
     },
     "convertCollectionToString": {
       "type": "bool",
@@ -144,7 +212,32 @@
       "default": true,
       "dataField": true,
       "tooltip": true,
-      "filterDisabled": true
+      "filterDisabled": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
+            }
+          ]
+        },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "simple"
+              ]
+            }
+          ]
+        }
+      }
     },
     "delimiter": {
       "type": "varchar",
@@ -152,7 +245,41 @@
       "dataField": true,
       "required": false,
       "default": "~",
-      "filterDisabled": true
+      "filterDisabled": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
+            },
+            {
+              "type": "isTrue",
+              "attribute": "convertCollectionToString"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
+            },
+            {
+              "type": "isTrue",
+              "attribute": "convertCollectionToString"
+            }
+          ]
+        }
+      }
     },
     "convertRelationsToString": {
       "type": "bool",
@@ -160,7 +287,32 @@
       "default": true,
       "dataField": true,
       "tooltip": true,
-      "filterDisabled": true
+      "filterDisabled": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
+            }
+          ]
+        },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "simple"
+              ]
+            }
+          ]
+        }
+      }
     },
     "fieldDelimiterForRelation": {
       "type": "varchar",
@@ -168,7 +320,41 @@
       "dataField": true,
       "required": false,
       "default": "|",
-      "filterDisabled": true
+      "filterDisabled": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
+            },
+            {
+              "type": "isTrue",
+              "attribute": "convertRelationsToString"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
+            },
+            {
+              "type": "isTrue",
+              "attribute": "convertRelationsToString"
+            }
+          ]
+        }
+      }
     },
     "emptyValue": {
       "type": "varchar",
@@ -177,7 +363,29 @@
       "required": false,
       "default": "",
       "filterDisabled": true,
-      "tooltip": true
+      "tooltip": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
+            },
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "simple",
+                "ftp"
+              ]
+            }
+          ]
+        }
+      }
     },
     "nullValue": {
       "type": "varchar",
@@ -186,7 +394,29 @@
       "required": false,
       "default": "Null",
       "filterDisabled": true,
-      "tooltip": true
+      "tooltip": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
+            },
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "simple",
+                "ftp"
+              ]
+            }
+          ]
+        }
+      }
     },
     "markForNoRelation": {
       "type": "varchar",
@@ -195,7 +425,21 @@
       "required": false,
       "default": "Null",
       "filterDisabled": true,
-      "tooltip": true
+      "tooltip": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
+            }
+          ]
+        }
+      }
     },
     "markForUnlinkedAttribute": {
       "type": "varchar",
@@ -204,7 +448,17 @@
       "required": false,
       "default": "N/A",
       "filterDisabled": true,
-      "tooltip": true
+      "tooltip": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      }
     },
     "data": {
       "type": "jsonObject",
@@ -229,7 +483,17 @@
     "sortOrderField": {
       "type": "varchar",
       "required": false,
-      "view": "export:views/export-feed/fields/sort-order-field"
+      "view": "export:views/export-feed/fields/sort-order-field",
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      }
     },
     "sortOrderDirection": {
       "type": "enum",
@@ -237,7 +501,17 @@
       "options": [
         "ASC",
         "DESC"
-      ]
+      ],
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      }
     },
     "originTemplateName": {
       "type": "enum",
@@ -246,7 +520,26 @@
     },
     "isTemplateEditable": {
       "type": "bool",
-      "default": false
+      "default": false,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "originTemplate"
+            },
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "json",
+                "xml",
+                "sql"
+              ]
+            }
+          ]
+        }
+      }
     },
     "originTemplate": {
       "type": "text",
@@ -255,7 +548,26 @@
       "notStorable": true,
       "readOnly": true,
       "filterDisabled": true,
-      "view": "views/fields/script"
+      "view": "views/fields/script",
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "json",
+                "xml",
+                "sql"
+              ]
+            },
+            {
+              "type": "isNotEmpty",
+              "attribute": "originTemplate"
+            }
+          ]
+        }
+      }
     },
     "template": {
       "type": "text",
@@ -266,7 +578,34 @@
       "view": "export:views/export-feed/fields/template",
       "twigVariables": [
         "entities"
-      ]
+      ],
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "json",
+                "xml",
+                "sql"
+              ]
+            }
+          ]
+        },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isFalse",
+              "attribute": "isTemplateEditable"
+            },
+            {
+              "type": "isNotEmpty",
+              "attribute": "originTemplate"
+            }
+          ]
+        }
+      }
     },
     "lastStatus": {
       "type": "enum",
@@ -329,12 +668,43 @@
       }
     },
     "folder": {
-      "type": "link"
+      "type": "link",
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "simple"
+              ]
+            }
+          ]
+        }
+      }
     },
     "locale": {
       "type": "link",
       "entity": "Locale",
-      "required": false
+      "required": false,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      }
     },
     "fileNameMask": {
       "type": "wysiwyg",
@@ -343,11 +713,37 @@
         "feed",
         "filename",
         "interation"
-      ]
+      ],
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "simple"
+              ]
+            }
+          ]
+        }
+      }
     },
     "useQuoteForAll": {
       "type": "bool",
-      "tooltip": true
+      "tooltip": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "csv"
+              ]
+            }
+          ]
+        }
+      }
     }
   },
   "links": {
