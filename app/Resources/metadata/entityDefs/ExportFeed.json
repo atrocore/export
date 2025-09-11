@@ -18,10 +18,12 @@
       "required": true,
       "default": 2000,
       "min": 1,
-      "max": 10000
+      "max": 10000,
+      "tooltip": true
     },
     "separateJob": {
-      "type": "bool"
+      "type": "bool",
+      "tooltip": true
     },
     "replaceExistingFile": {
       "type": "bool"
