@@ -101,7 +101,9 @@
     "nullValue": "Value will be interpreted as \"NULL\" value.",
     "emptyValue": "Value will be interpreted as \"empty\" value additionally to the empty cell.",
     "exportByMaxDepth": "Specifies maximum depth of relations in the configurator field \"Related Entity Fields\"",
-    "useQuoteForAll": "All values in the exported file will be enclosed in quotation marks"
+    "useQuoteForAll": "All values in the exported file will be enclosed in quotation marks",
+    "limit": "A higher amount means fewer background jobs need to be executed.",
+    "separateJob": "The system will generate a separate export file for each export job."
   },
   "boolFilters": {
     "onlyExportFailed24Hours": "Only Export Feeds that failed during last 24 hours",

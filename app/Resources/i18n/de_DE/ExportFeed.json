@@ -90,7 +90,9 @@
     "nullValue": "Der Wert wird als \"NULL\"-Wert interpretiert.",
     "emptyValue": "Der Wert wird als \"leerer\" Wert zusätzlich zur leeren Zelle interpretiert.",
     "exportByMaxDepth": "Gibt die maximale Tiefe der Beziehungen im Konfiguratorfeld \"Verwandte Entitätsfelder\" an",
-    "useQuoteForAll": "Alle Werte in der exportierten Datei werden in Anführungszeichen gesetzt"
+    "useQuoteForAll": "Alle Werte in der exportierten Datei werden in Anführungszeichen gesetzt",
+    "limit": "Ein höherer Wert bedeutet, dass weniger Hintergrundaufgaben ausgeführt werden müssen.",
+    "separateJob": "Das System erstellt für jeden Exportauftrag eine separate Exportdatei."
   },
   "boolFilters": {
     "onlyExportFailed24Hours": "Nur Export Feeds, die in den letzten 24 Stunden fehlgeschlagen sind",
