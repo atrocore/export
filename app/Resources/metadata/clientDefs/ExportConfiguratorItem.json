@@ -3,58 +3,5 @@
   "acl": "export:acl/export-configurator-item",
   "modalViews": {
     "edit": "export:views/export-configurator-item/modals/edit"
-  },
-  "dynamicLogic": {
-    "fields": {
-      "type": {
-        "readOnly": {
-          "conditionGroup": [
-            {
-              "type": "isNotEmpty",
-              "attribute": "id"
-            }
-          ]
-        }
-      },
-      "name": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "equals",
-              "attribute": "type",
-              "value": "Field"
-            }
-          ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "equals",
-              "attribute": "type",
-              "value": "Field"
-            }
-          ]
-        },
-        "readOnly": {
-          "conditionGroup": [
-            {
-              "type": "isNotEmpty",
-              "attribute": "id"
-            }
-          ]
-        }
-      },
-      "fixedValue": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "equals",
-              "attribute": "type",
-              "value": "Fixed value"
-            }
-          ]
-        }
-      }
-    }
   }
 }

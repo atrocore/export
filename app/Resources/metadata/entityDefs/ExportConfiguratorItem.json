@@ -12,7 +12,35 @@
     },
     "name": {
       "type": "varchar",
-      "view": "export:views/export-configurator-item/fields/name"
+      "view": "export:views/export-configurator-item/fields/name",
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "Field"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "Field"
+            }
+          ]
+        },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "id"
+            }
+          ]
+        }
+      }
     },
     "column": {
       "type": "varchar",
@@ -59,7 +87,17 @@
         "Fixed value",
         "script"
       ],
-      "default": "Field"
+      "default": "Field",
+      "conditionalProperties": {
+        "protected": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "id"
+            }
+          ]
+        }
+      }
     },
     "script": {
       "type": "text",
@@ -143,7 +181,18 @@
       "default": "ASC"
     },
     "fixedValue": {
-      "type": "varchar"
+      "type": "varchar",
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "Fixed value"
+            }
+          ]
+        }
+      }
     },
     "previousItem": {
       "type": "enum",

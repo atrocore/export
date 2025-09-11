@@ -23,7 +23,27 @@
       "entity": "ExportFeed",
       "filterDisabled": true,
       "massUpdateDisabled": true,
-      "importDisabled": true
+      "importDisabled": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "export"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "export"
+            }
+          ]
+        }
+      }
     },
     "exportFeedId": {
       "type": "varchar",

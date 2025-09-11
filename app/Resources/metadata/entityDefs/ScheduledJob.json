@@ -2,7 +2,27 @@
   "fields": {
     "exportFeed": {
       "type": "link",
-      "tooltip": true
+      "tooltip": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "ExportFeed"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "ExportFeed"
+            }
+          ]
+        }
+      }
     },
     "maximumHoursToLookBack": {
       "type": "float",
