@@ -34,6 +34,8 @@ Espo.define('export:views/export-feed/fields/file-type', 'views/fields/enum', De
                 this.params.options.push(fileType);
                 this.translatedOptions[fileType] = this.getLanguage().translateOption(fileType, 'fileType', 'ExportFeed');
             });
+
+            this.originalOptionList = this.params.options;
         },
 
     })
