@@ -63,24 +63,24 @@ class Metadata extends AbstractListener
 
         $data['entityDefs']['Action']['fields']['inBackground']['conditionalProperties']['visible']['conditionGroup'][0]['value'][] = 'export';
 
-        if (empty($data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumHoursToLookBack']['visible']['conditionGroup'][0])) {
-            $data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumHoursToLookBack']['visible']['conditionGroup'][0] = [
+        if (empty($data['entityDefs']['ScheduledJob']['fields']['maximumHoursToLookBack']['conditionalProperties']['visible']['conditionGroup'][0])) {
+            $data['entityDefs']['ScheduledJob']['fields']['maximumHoursToLookBack']['conditionalProperties']['visible']['conditionGroup'][0] = [
                 'type'      => 'in',
                 'attribute' => 'type',
                 'value'     => ['ExportFeed']
             ];
         } else {
-            $data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumHoursToLookBack']['visible']['conditionGroup'][0]['value'][] = 'ExportFeed';
+            $data['entityDefs']['ScheduledJob']['fields']['maximumHoursToLookBack']['conditionalProperties']['visible']['conditionGroup'][0]['value'][] = 'ExportFeed';
         }
 
-        if (empty($data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumDaysForJobExist']['visible'])) {
-            $data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumDaysForJobExist']['visible']['conditionGroup'][0] = [
+        if (empty($data['entityDefs']['ScheduledJob']['fields']['maximumDaysForJobExist']['conditionalProperties']['visible'])) {
+            $data['entityDefs']['ScheduledJob']['fields']['maximumDaysForJobExist']['conditionalProperties']['visible']['conditionGroup'][0] = [
                 'type'      => 'in',
                 'attribute' => 'type',
                 'value'     => ['ExportJobRemove']
             ];
         } else {
-            $data['clientDefs']['ScheduledJob']['dynamicLogic']['fields']['maximumDaysForJobExist']['visible']['conditionGroup'][0]['value'][] = 'ExportJobRemove';
+            $data['entityDefs']['ScheduledJob']['fields']['maximumDaysForJobExist']['conditionalProperties']['visible']['conditionGroup'][0]['value'][] = 'ExportJobRemove';
         }
 
         foreach ($data['app']['exportTypes'] ?? [] as $type => $typeData) {
@@ -89,9 +89,9 @@ class Metadata extends AbstractListener
                 $data['entityDefs']['ExportFeed']['fields']['type']['default'] = $type;
             }
             if (!empty($typeData['fileTypeRequired'])) {
-                $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['fileType']['required']['conditionGroup'][0]['type'] = 'in';
-                $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['fileType']['required']['conditionGroup'][0]['attribute'] = 'type';
-                $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['fileType']['required']['conditionGroup'][0]['value'][] = $type;
+                $data['entityDefs']['ExportFeed']['fields']['fileType']['conditionalProperties']['required']['conditionGroup'][0]['type'] = 'in';
+                $data['entityDefs']['ExportFeed']['fields']['fileType']['conditionalProperties']['required']['conditionGroup'][0]['attribute'] = 'type';
+                $data['entityDefs']['ExportFeed']['fields']['fileType']['conditionalProperties']['required']['conditionGroup'][0]['value'][] = $type;
             }
         }
 
