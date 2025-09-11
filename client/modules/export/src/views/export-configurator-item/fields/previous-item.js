@@ -29,19 +29,26 @@ Espo.define('export:views/export-configurator-item/fields/previous-item', 'views
                 if (response.total) {
                     let i = 1;
                     let previousItem = null;
+                    let lastItem = null;
                     response.list.forEach(item => {
                         if (item.id !== this.model.get('id')) {
                             this.params.options.push(item.id);
                             this.translatedOptions[item.id] = i + '. ' + this.prepareNameLabel(item);
                         } else {
-                            this.model.set('previousItem', previousItem);
+                            previousItem = lastItem
                         }
-                        previousItem = item.id;
+                        lastItem = item.id;
                         i++;
                     });
 
-                    if (this.model.isNew()) {
+                    this.originalOptionList = this.params.options;
+
+                    if(previousItem) {
                         this.model.set('previousItem', previousItem);
+                    }
+
+                    if (this.model.isNew()) {
+                        this.model.set('previousItem', lastItem);
                     }
                     this.reRender();
                 }
