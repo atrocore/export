@@ -453,8 +453,12 @@
         "visible": {
           "conditionGroup": [
             {
-              "type": "isNotEmpty",
-              "attribute": "fileType"
+              "type": "in",
+              "attribute": "fileType",
+              "value": [
+                "xlsx",
+                "csv"
+              ]
             }
           ]
         }
