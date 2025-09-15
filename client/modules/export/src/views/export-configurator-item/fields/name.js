@@ -99,17 +99,25 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
                     let entity;
                     if (this.model.get('type') === 'Field') {
                         entity = this.getMetadata().get(['entityDefs', this.model.get('entity'), 'links', this.model.get('name'), 'entity']);
+
                         if (this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'extensibleEnumId'])) {
                             entity = 'ExtensibleEnumOption';
                         }
+
                         if (this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'type']) === 'measure') {
                             entity = 'Unit';
                         }
 
+                        if (this.model.get('entityAttributeId') && this.model.get('fieldDefs')) {
+                            let fieldDefs = this.model.get('fieldDefs');
+
+                            entity = fieldDefs.entity || 'Attribute';
+                        }
                     }
 
                     if (entity) {
                         let parts = field.split('.');
+
                         if (field.substring(field.length - 2) === 'Id') {
                             translations.push(this.translate(field.substring(0, field.length - 2), 'fields', entity) + ' ' + this.translate('id', 'fields', 'Global'));
                         } else if (field.substring(field.length - 4) === 'Name') {
