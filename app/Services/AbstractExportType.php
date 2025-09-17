@@ -414,8 +414,8 @@ abstract class AbstractExportType extends Base
     {
         $limit = $this->data['limit'];
         $offset = $this->data['offset'];
-        $maxWorkersAmount = $this->data['feed']['maxWorkersAmount'] ?? null;
-        $exportJobId = $this->data['exportJobId'] ?? null;
+        $maxWorkers = $this->data['feed']['maxWorkers'] ?? null;
+        $exportJobId = $this->data['exportJobId'];
 
         $priority = empty($this->data['feed']['priority']) ? 'Normal' : (string)$this->data['feed']['priority'];
         $jobs = new EntityCollection();
@@ -423,8 +423,8 @@ abstract class AbstractExportType extends Base
         $i = 1;
 
         while ($offset < $total) {
-            if ($maxWorkersAmount !== null && $maxWorkersAmount > 0) {
-                while ($this->getAmountOfAlreadyPendingChunks($exportJobId) >= $maxWorkersAmount) {
+            if ($maxWorkers !== null && $maxWorkers > 0) {
+                while ($this->getAmountOfAlreadyPendingChunks($exportJobId) >= $maxWorkers) {
                     sleep(1);
                 }
             }
@@ -801,7 +801,8 @@ abstract class AbstractExportType extends Base
                     "Pending",
                     "Running",
                 ],
-                'payload*' => '%"exportJobId":"'.$exportJobId.'","chunkJob":true%',
+                'type'     => 'ExportChunk',
+                'payload*' => '%"exportJobId":"'.$exportJobId.'"%',
             ])
             ->count();
     }

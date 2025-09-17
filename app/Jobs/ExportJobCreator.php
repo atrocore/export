@@ -94,6 +94,8 @@ class ExportJobCreator extends AbstractJob implements JobInterface
     {
         $user = $this->getUser();
 
+        $maxWorkers = $data['feed']['maxWorkers'] ?? null;
+
         $exportJob = $this->getEntityManager()->getEntity('ExportJob');
         $exportJob->id = Util::generateId();
         $exportJob->set('name', $jobName);
@@ -112,6 +114,12 @@ class ExportJobCreator extends AbstractJob implements JobInterface
             $this->getEntityManager()->saveEntity($exportJob);
             $this->getContainer()->get(Export::class)->runNow($data);
         } else {
+            if ($maxWorkers !== null && $maxWorkers > 0) {
+                while ($this->getAmountOfAlreadyPendingJobs($data['exportJobCreatorId'] ?? null) >= $maxWorkers) {
+                    sleep(1);
+                }
+            }
+
             $jobEntity = $this->getEntityManager()->getEntity('Job');
             $jobEntity->set([
                 'name'        => $qmJobName,
@@ -164,5 +172,23 @@ class ExportJobCreator extends AbstractJob implements JobInterface
     protected function getExportFeedService(): ExportFeed
     {
         return $this->getServiceFactory()->create('ExportFeed');
+    }
+
+    protected function getAmountOfAlreadyPendingJobs(?string $exportJobCreatorId): int
+    {
+        if (empty($exportJobCreatorId)) {
+            return 0;
+        }
+
+        return $this->getEntityManager()->getRepository('Job')
+            ->where([
+                'status'   => [
+                    "Pending",
+                    "Running",
+                ],
+                'type'     => 'Export',
+                'payload*' => '%"exportJobCreatorId":"'.$exportJobCreatorId.'"%',
+            ])
+            ->count();
     }
 }

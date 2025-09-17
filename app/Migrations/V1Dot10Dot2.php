@@ -19,12 +19,12 @@ class V1Dot10Dot2 extends Base
 {
     public function getMigrationDateTime(): ?\DateTime
     {
-        return new \DateTime('2025-09-18 11:00:00');
+        return new \DateTime('2025-09-17 18:00:00');
     }
 
     public function up(): void
     {
-        $this->exec("ALTER TABLE export_feed ADD max_workers_amount INT DEFAULT NULL");
+        $this->exec("ALTER TABLE export_feed ADD max_workers INT DEFAULT NULL");
     }
 
     protected function exec(string $sql): void

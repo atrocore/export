@@ -31,7 +31,7 @@
         }
       }
     },
-    "maxWorkersAmount": {
+    "maxWorkers": {
       "type": "int",
       "min": 1,
       "tooltip": true

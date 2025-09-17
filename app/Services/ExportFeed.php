@@ -520,6 +520,7 @@ class ExportFeed extends Base
             $data['priority'] = AbstractExportType::PRIORITIES[$priority];
             $this->getInjection('container')->get(ExportJobCreator::class)->runNow($data);
         } else {
+            $data['exportJobCreatorId'] = Util::generateId();
             $jobEntity = $this->getEntityManager()->getEntity('Job');
             $jobEntity->set([
                 'name'        => $name,
