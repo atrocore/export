@@ -174,7 +174,7 @@ class ExportFeed extends Base
                     'type'       => 'script',
                     'columnType' => 'custom',
                     'column'     => $languageObj->translate($field, 'fields', $feedEntity),
-                    'script'     => "{{ record.{$field}From }} - {{ record.{$field}To }} {{ record.{$field}UnitName }}"
+                    'script'     => "{{ record['{$field}From'] }} - {{ record['{$field}To'] }} {{ record['{$field}UnitName'] }}"
                 ]));
                 $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'From']));
                 $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'To']));
@@ -195,7 +195,7 @@ class ExportFeed extends Base
                     'type'       => 'script',
                     'columnType' => 'custom',
                     'column'     => $languageObj->translate('unit' . ucfirst($field), 'fields', $feedEntity),
-                    'script'     => "{{ record.{$field} }} {{ record.{$field}UnitName }}"
+                    'script'     => "{{ record['{$field}'] }} {{ record['{$field}UnitName'] }}"
                 ]));
             }
         }
@@ -241,7 +241,7 @@ class ExportFeed extends Base
                         'type'       => 'script',
                         'columnType' => 'custom',
                         'column'     => $fieldDefs['label'],
-                        'script'     => "{{ record.{$field}From }} - {{ record.{$field}To }} {{ record.{$field}UnitName }}"
+                        'script'     => "{{ record['{$field}From'] }} - {{ record['{$field}To'] }} {{ record['{$field}UnitName'] }}"
                     ]));
 
                     continue;
@@ -253,7 +253,7 @@ class ExportFeed extends Base
                         'type'       => 'script',
                         'columnType' => 'custom',
                         'column'     => $fieldDefs['detailViewLabel'],
-                        'script'     => "{{ record.{$field} }} {{ record.{$field}UnitName }}"
+                        'script'     => "{{ record['{$field}'] }} {{ record['{$field}UnitName'] }}"
                     ]));
                 }
 
@@ -648,7 +648,7 @@ class ExportFeed extends Base
             if (!empty($fieldDefs['unitField'])) {
                 $item['type'] = 'script';
                 $mainField = $fieldDefs['mainField'];
-                $item['script'] = "{{ record.{$mainField} }} {{ record.{$mainField}UnitName }}";
+                $item['script'] = "{{ record['{$mainField}'] }} {{ record['{$mainField}UnitName'] }}";
             }
 
             $configuration[] = (object)$item;
