@@ -1,5 +1,6 @@
 {
   "fields": {
+    "maxWorkersAmount": "Maximum worker amount",
     "replaceExistingFile": "Replace existing file",
     "template": "Template",
     "sortOrderField": "Sort Order (field)",
@@ -94,6 +95,7 @@
     "noSheets": "Please create at least one sheet to be able to execute this feed."
   },
   "tooltips": {
+    "maxWorkersAmount": "This determines how many workers can execute this feed in parallel.",
     "template": "You can use the syntax for <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine.",
     "convertCollectionToString": "Fields and attributes of type: multi-enum, array, one-to-many relation.",
     "convertRelationsToString": "Relation fields will be separated by Field Delimiter for Relation.",

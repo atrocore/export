@@ -83,6 +83,7 @@
     "noSheets": "Bitte erstellen Sie mindestens eine Tabelle, um diesen Feed ausführen zu können."
   },
   "tooltips": {
+    "maxWorkersAmount": "Dies bestimmt, wie viele Worker diesen Feed parallel ausführen können.",
     "template": "Sie können die Syntax von <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig-Template-Engine</a> verwenden.",
     "convertCollectionToString": "Felder und Attribute des Typs: multi-enum, array, one-to-many relation.",
     "convertRelationsToString": "Beziehungsfelder werden durch Feldtrennzeichen für Beziehung getrennt.",

@@ -35,9 +35,11 @@
       ],
       [
         {
-          "name": "replaceExistingFile"
+          "name": "maxWorkersAmount"
         },
-        false
+        {
+          "name": "replaceExistingFile"
+        }
       ],
       [
         {
