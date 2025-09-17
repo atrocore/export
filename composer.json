@@ -3,14 +3,13 @@
   "description": "",
   "require": {
     "atrocore/core": "~2.1.3",
-    "phpoffice/phpspreadsheet": "~1.16.0",
-    "twig/twig": "^3.4",
     "ext-zip": "*",
     "ext-dom": "*",
     "ext-libxml": "*",
     "ext-simplexml": "*",
     "ext-curl": "*",
-    "jdorn/sql-formatter": "v1.2.16"
+    "phpoffice/phpspreadsheet": "~1.16.0@stable",
+    "jdorn/sql-formatter": "v1.2.16@stable"
   },
   "conflict": {
     "atrocore/pim": "<1.14.0",
