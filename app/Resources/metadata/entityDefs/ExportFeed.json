@@ -31,6 +31,11 @@
         }
       }
     },
+    "maxWorkers": {
+      "type": "int",
+      "min": 1,
+      "tooltip": true
+    },
     "separateJob": {
       "type": "bool",
       "tooltip": true,

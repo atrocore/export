@@ -43,7 +43,7 @@ abstract class AbstractExportType extends Base
         'Low'     => 50,
         'Normal'  => 100,
         'Crucial' => 140,
-        'High'    => 150
+        'High'    => 150,
     ];
 
     protected array $data;
@@ -71,7 +71,7 @@ abstract class AbstractExportType extends Base
             $row = [
                 'field'    => $field,
                 'language' => 'main',
-                'column'   => $language->translate($field, 'fields', $scope)
+                'column'   => $language->translate($field, 'fields', $scope),
             ];
 
             if (!empty($data['multilangLocale'])) {
@@ -141,7 +141,7 @@ abstract class AbstractExportType extends Base
         if (!empty($this->data['feed']['fileNameMask'])) {
             $data = [
                 'feed'     => $this->data['feed'],
-                'fileName' => $fileName
+                'fileName' => $fileName,
             ];
             if (array_key_exists('iteration', $this->data)) {
                 $data['iteration'] = $this->data['iteration'];
@@ -383,8 +383,8 @@ abstract class AbstractExportType extends Base
                                 'path'             => $path,
                                 'fileNameTemplate' => $row['fileNameTemplate'] ?? null,
                                 'templateData'     => [
-                                    'entityId' => $record['id']
-                                ]
+                                    'entityId' => $record['id'],
+                                ],
                             ];
                         }
                         unset($result['__fileEntities']);
@@ -398,7 +398,7 @@ abstract class AbstractExportType extends Base
 
         return [
             'fileName' => $fullFileName,
-            'files'    => $files
+            'files'    => $files,
         ];
     }
 
@@ -414,13 +414,22 @@ abstract class AbstractExportType extends Base
     {
         $limit = $this->data['limit'];
         $offset = $this->data['offset'];
+        $maxWorkers = $this->data['feed']['maxWorkers'] ?? null;
+        $exportJobId = $this->data['exportJobId'];
 
         $priority = empty($this->data['feed']['priority']) ? 'Normal' : (string)$this->data['feed']['priority'];
         $jobs = new EntityCollection();
         $jobIds = [];
         $i = 1;
+
         while ($offset < $total) {
-            $jobName = $this->data['feed']['name'] . " Chunk #$i";
+            if ($maxWorkers !== null && $maxWorkers > 0) {
+                while ($this->getAmountOfAlreadyPendingChunks($exportJobId) >= $maxWorkers) {
+                    sleep(1);
+                }
+            }
+
+            $jobName = $this->data['feed']['name']." Chunk #$i";
 
             $subData = $this->data;
             $subData['chunkJob'] = true;
@@ -782,5 +791,19 @@ abstract class AbstractExportType extends Base
         }
 
         return !empty($this->data['feed']['data']['where']) ? $this->data['feed']['data']['where'] : [];
+    }
+
+    protected function getAmountOfAlreadyPendingChunks(string $exportJobId): int
+    {
+        return $this->getEntityManager()->getRepository('Job')
+            ->where([
+                'status'   => [
+                    "Pending",
+                    "Running",
+                ],
+                'type'     => 'ExportChunk',
+                'payload*' => '%"exportJobId":"'.$exportJobId.'"%',
+            ])
+            ->count();
     }
 }
