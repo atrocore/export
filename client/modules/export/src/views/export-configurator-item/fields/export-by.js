@@ -44,9 +44,8 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
         },
 
         setupOptions() {
-            let translatedOptions = this.getTranslatesForExportByField();
-            this.params.options = Object.keys(translatedOptions);
-            this.translatedOptions = this.params.translatedOptions = translatedOptions;
+            this.translatedOptions = this.params.translatedOptions = this.getTranslatesForExportByField();
+            this.originalOptionList = this.params.options = Object.keys(this.translatedOptions);
         },
 
         getTranslatesForExportByField() {
