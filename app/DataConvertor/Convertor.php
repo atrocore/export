@@ -150,6 +150,10 @@ class Convertor
             $type = 'unit';
         }
 
+        if($type === 'script') {
+            $type = $fieldDefs['outputType'] ?? 'text';
+        }
+
         return $type;
     }
 }
