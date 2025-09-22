@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\Repositories;
 
+use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use Atro\Core\Exceptions\BadRequest;
@@ -265,5 +266,39 @@ class ExportFeed extends Base
         if (count(array_unique($delimiters)) !== count($delimiters)) {
             throw new BadRequest($this->getInjection('language')->translate('delimitersMustBeDifferent', 'messages', 'ExportFeed'));
         }
+    }
+
+    public function getAttributesInConfiguratorItems(string $exportFeedId, ?array $attributeIds): array
+    {
+        $conn = $this->getConnection();
+        if (!isset($attributeIds)) {
+            $qb = $conn->createQueryBuilder()
+                ->select('a.*')
+                ->distinct()
+                ->from($conn->quoteIdentifier('attribute'), 'a')
+                ->innerJoin('a', 'export_configurator_item', 'i', 'i.entity_attribute_id=a.id AND i.deleted=:false')
+                ->innerJoin('i', 'export_feed', 'e', 'i.export_feed_id=e.id AND e.deleted=:false')
+                ->where('a.deleted=:false')
+                ->andWhere('e.id=:exportFeedId')
+                ->setParameter('false', false, ParameterType::BOOLEAN)
+                ->setParameter('exportFeedId', $exportFeedId);
+        } else {
+            $qb = $conn->createQueryBuilder()
+                ->select('a.*')
+                ->distinct()
+                ->from($conn->quoteIdentifier('attribute'), 'a')
+                ->where('a.deleted=:false')
+                ->andWhere('a.id in (:ids)')
+                ->setParameter('false', false, ParameterType::BOOLEAN)
+                ->setParameter('ids', $attributeIds, Mapper::getParameterType($attributeIds));
+        }
+
+
+        if (class_exists("\\Pim\\Module")) {
+            $qb->addSelect("c.name as channel_name");
+            $qb->leftJoin('a', 'channel', 'c', 'c.id=a.channel_id AND c.deleted=:false');
+        }
+
+        return $qb->fetchAllAssociative();
     }
 }
