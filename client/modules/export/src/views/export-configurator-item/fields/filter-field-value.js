@@ -46,6 +46,7 @@ Espo.define('export:views/export-configurator-item/fields/filter-field-value', '
                     this.translatedOptions[option] = this.translate(option, 'labels', scope);
                 });
             }
+            this.originalOptionList = this.params.options;
         },
 
         checkNotStorableField(fieldDefs) {
