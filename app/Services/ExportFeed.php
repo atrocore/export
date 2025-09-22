@@ -19,6 +19,7 @@ use Atro\Core\EventManager\Manager;
 use Atro\Core\Exceptions;
 use Atro\Core\Templates\Services\Base;
 use Atro\Core\Utils\Language;
+use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\ParameterType;
 use Espo\Core\Utils\Json;
 use Atro\Core\Utils\Util;
@@ -801,21 +802,27 @@ class ExportFeed extends Base
      * @return void
      * @throws Exceptions\Error
      */
-    public function putAttributesToMetadata(string $exportFeedId): void
+    public function putAttributesToMetadata(string $exportFeedId, ?array $feedData = null): void
     {
         $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
         if (empty($exportFeed)) {
-            return;
+            if (empty($feedData)) {
+                return;
+            }
+            $entityName = $feedData['entity'];
+            $languageObj = $this->getInjection('container')->get('language');
+            $attributeIds = array_unique(array_filter(array_column($feedData['data']['configuration'], 'entityAttributeId')));
+        } else {
+            $entityName = $exportFeed->getFeedField('entity');
+            $languageObj = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
+            $currentLocaleId = $this->getUser()->get('localeId');
+            $this->getUser()->set('localeId', $exportFeed->get('localeId'));
         }
 
-        $languageObj = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
-
-        $currentLocaleId = $this->getUser()->get('localeId');
-        $this->getUser()->set('localeId', $exportFeed->get('localeId'));
 
         $conn = $this->getEntityManager()->getConnection();
 
-        if (!empty($exportFeed->get('hasMultipleSheets'))) {
+        if (!empty($exportFeed) && !empty($exportFeed->get('hasMultipleSheets'))) {
             $res = $conn->createQueryBuilder()
                 ->select('a.*, s.entity as sheet_entity, c.name as channel_name')
                 ->from($conn->quoteIdentifier('attribute'), 'a')
@@ -855,47 +862,30 @@ class ExportFeed extends Base
                     }
                 }
             }
-        } else {
-            $entityName = $exportFeed->getFeedField('entity');
-            if ($this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
-                $qb = $conn->createQueryBuilder()
-                    ->select('a.*')
-                    ->distinct()
-                    ->from($conn->quoteIdentifier('attribute'), 'a')
-                    ->innerJoin('a', 'export_configurator_item', 'i', 'i.entity_attribute_id=a.id AND i.deleted=:false')
-                    ->innerJoin('i', 'export_feed', 'e', 'i.export_feed_id=e.id AND e.deleted=:false')
-                    ->where('a.deleted=:false')
-                    ->andWhere('e.id=:exportFeedId')
-                    ->setParameter('false', false, ParameterType::BOOLEAN)
-                    ->setParameter('exportFeedId', $exportFeedId);
+        } else if (!empty($entityName) && $this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
+            $attributes = $this->getRepository()->getAttributesInConfiguratorItems($exportFeedId, $attributeIds ?? null);
+            $exportEntity = $this->getEntityManager()->getEntity($entityName);
 
-                if (class_exists("\\Pim\\Module")) {
-                    $qb->addSelect("c.name as channel_name");
-                    $qb->leftJoin('a', 'channel', 'c', 'c.id=a.channel_id AND c.deleted=:false');
+            $attributesDefs = [];
+            foreach ($attributes as $row) {
+                if (!empty($row['channel_name'])) {
+                    $row['name'] = $row['name'] . ' / ' . $row['channel_name'];
                 }
+                $this->getAttributeFieldConverter()->convert($exportEntity, $row, $attributesDefs);
+            }
 
-                $attributes = $qb->fetchAllAssociative();
+            foreach ($attributesDefs as $name => $attributeDefs) {
+                $this
+                    ->getMetadata()
+                    ->set('entityDefs', $entityName, ['fields' => [$name => $attributeDefs]]);
 
-                $exportEntity = $this->getEntityManager()->getEntity($entityName);
-
-                $attributesDefs = [];
-                foreach ($attributes as $row) {
-                    if (!empty($row['channel_name'])) {
-                        $row['name'] = $row['name'] . ' / ' . $row['channel_name'];
-                    }
-                    $this->getAttributeFieldConverter()->convert($exportEntity, $row, $attributesDefs);
-                }
-
-                foreach ($attributesDefs as $name => $attributeDefs) {
-                    $this
-                        ->getMetadata()
-                        ->set('entityDefs', $entityName, ['fields' => [$name => $attributeDefs]]);
-
-                    $languageObj->set($entityName, 'fields', $name, $attributeDefs['label']);
-                }
+                $languageObj->set($entityName, 'fields', $name, $attributeDefs['label']);
             }
         }
-        $this->getUser()->set('localeId', $currentLocaleId);
+
+        if (isset($currentLocaleId)) {
+            $this->getUser()->set('localeId', $currentLocaleId);
+        }
     }
 
     protected function getAttributeFieldConverter(): AttributeFieldConverter

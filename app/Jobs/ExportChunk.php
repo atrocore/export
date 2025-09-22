@@ -33,10 +33,20 @@ class ExportChunk extends AbstractJob implements JobInterface
             return;
         }
 
+        $entityName = $data['feed']['entity'] ?? null;
+
         $this->getMemoryStorage()->set('exportJobId', $exportJob->get('id'));
 
+        /** @var \Export\Services\ExportFeed $exportFeedService */
+        $exportFeedService = $this->getServiceFactory()->create('ExportFeed');
+
         /** @var AbstractExportType $typeService */
-        $typeService = $this->getServiceFactory()->create('ExportFeed')->getExportTypeService($data['feed']['type'], $data);
+        $typeService = $exportFeedService->getExportTypeService($data['feed']['type'], $data);
+
+        // put attributes to metadata as fields
+        if (!empty($entityName) && $this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
+            $exportFeedService->putAttributesToMetadata($exportJob->get('exportFeedId'), $data['feed']);
+        }
 
         $res = $typeService->createCacheChunk();
 

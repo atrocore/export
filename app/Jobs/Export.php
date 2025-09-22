@@ -46,7 +46,7 @@ class Export extends AbstractJob implements JobInterface
 
             // put attributes to metadata as fields
             if (!empty($entityName) && $this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
-                $exportFeedService->putAttributesToMetadata($exportJob->get('exportFeedId'));
+                $exportFeedService->putAttributesToMetadata($exportJob->get('exportFeedId'), $data['feed']);
             }
 
             $typeService = $exportFeedService->getExportTypeService($data['feed']['type']);
