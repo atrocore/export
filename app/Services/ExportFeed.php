@@ -438,8 +438,6 @@ class ExportFeed extends Base
                 'exportBy'                  => $item->get('exportBy'),
                 'mask'                      => $item->get('mask'),
                 'searchFilter'              => $item->get('searchFilter'),
-                'filterField'               => $item->get('filterField'),
-                'filterFieldValue'          => $item->get('filterFieldValue'),
                 'offsetRelation'            => $item->get('offsetRelation'),
                 'limitRelation'             => $item->get('limitRelation'),
                 'sortFieldRelation'         => $item->get('sortFieldRelation'),

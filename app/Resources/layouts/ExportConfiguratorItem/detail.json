@@ -76,19 +76,5 @@
         }
       ]
     ]
-  },
-  {
-    "label": "filter",
-    "style": "default",
-    "rows": [
-      [
-        {
-          "name": "filterField"
-        },
-        {
-          "name": "filterFieldValue"
-        }
-      ]
-    ]
   }
 ]
