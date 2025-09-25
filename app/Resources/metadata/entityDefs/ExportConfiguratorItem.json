@@ -69,16 +69,6 @@
       "type": "array",
       "view": "export:views/export-configurator-item/fields/export-by"
     },
-    "filterField": {
-      "type": "varchar",
-      "view": "export:views/export-configurator-item/fields/filter-field",
-      "tooltip": true
-    },
-    "filterFieldValue": {
-      "type": "array",
-      "view": "export:views/export-configurator-item/fields/filter-field-value",
-      "tooltip": true
-    },
     "type": {
       "type": "enum",
       "required": true,

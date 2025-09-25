@@ -142,36 +142,6 @@ class LinkMultipleType extends LinkType
 
     protected function getWhere(array $configuration): array
     {
-        $foreignEntity = $this->getForeignEntityName($configuration['entity'], $configuration['field']);
-
-        if (!empty($configuration['filterField']) && !empty($configuration['filterFieldValue'])) {
-            switch ($this->convertor->getMetadata()->get(['entityDefs', $foreignEntity, 'fields', $configuration['filterField'], 'type'])) {
-                case 'bool':
-                    switch ($configuration['filterFieldValue']) {
-                        case ['+']:
-                            return [['type' => 'isTrue', 'attribute' => $configuration['filterField']]];
-                        case ['-']:
-                            return [['type' => 'isFalse', 'attribute' => $configuration['filterField']]];
-                    }
-                    break;
-                case 'enum':
-                    return [
-                        [
-                            'type'      => 'in',
-                            'attribute' => $configuration['filterField'],
-                            'value'     => $configuration['filterFieldValue'],
-                        ]
-                    ];
-                case 'multiEnum':
-                    return [
-                        [
-                            'type'      => 'arrayAnyOf',
-                            'attribute' => $configuration['filterField'],
-                            'value'     => $configuration['filterFieldValue'],
-                        ]
-                    ];
-            }
-        }
 
         if (!empty($configuration['searchFilter'])) {
             return !empty($configuration['searchFilter']['where']) ? $configuration['searchFilter']['where'] : [];

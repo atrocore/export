@@ -9,8 +9,6 @@
     "exportIntoSeparateColumns": "Trennen",
     "type": "Typ",
     "mask": "Maske",
-    "filterField": "Filterfeld",
-    "filterFieldValue": "Filterfeldwert",
     "offsetRelation": "Versatz",
     "limitRelation": "Grenze",
     "sortFieldRelation": "Sortierreihenfolge (Feld)",
@@ -23,10 +21,6 @@
     "script": "Skript"
   },
   "options": {
-    "boolFilterFieldValue": {
-      "+": "wahr",
-      "-": "falsch"
-    },
     "columnType": {
       "name": "Name",
       "custom": "Benutzerdefinierter Name"
@@ -34,8 +28,6 @@
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Datensätze für verknüpfte Entität werden als separate Felder/Spalten exportiert, indem für den Namen das Suffix „_1“, „_2“ usw. verwendet wird.",
-    "filterField": "Wählen Sie ein Filterfeld aus, wenn Sie einen Filter auf verknüpfte Datensätze anwenden möchten.",
-    "filterFieldValue": "Nur nach Filterfeldwert gefilterte Datensätze werden ausgewählt.",
     "column": "Sie können verknüpfte Entitätsfelder im Spaltennamen verwenden. Verwenden Sie den Feldnamen in der Datenbank als Variable, zB {{name}}. Checkbox „Separate Columns“ sollte aktiviert sein."
   },
   "exceptions": {

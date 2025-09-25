@@ -9,8 +9,6 @@
     "exportIntoSeparateColumns": "Oddzielne",
     "type": "Typ",
     "mask": "Maska",
-    "filterField": "Pole filtru",
-    "filterFieldValue": "Wartość pola filtru",
     "offsetRelation": "Przesunięcie",
     "limitRelation": "Limit",
     "sortFieldRelation": "Kolejność sortowania (pole)",
@@ -22,10 +20,6 @@
     "exportByForListAttribute": "Powiązane pola encji dla list"
   },
   "options": {
-    "boolFilterFieldValue": {
-      "+": "prawda",
-      "-": "fałsz"
-    },
     "columnType": {
       "name": "Nazwa",
       "custom": "Nazwa niestandardowa"
@@ -33,8 +27,6 @@
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Powiązane rekordy danych zostaną wyeksportowane jako różne pola/kolumny, używając dla nazwy przyrostka \"_1\", \"_2\" i tak dalej.",
-    "filterField": "Wybierz pole filtru, jeśli chcesz zastosować filtr do powiązanych rekordów.",
-    "filterFieldValue": "Wybrane zostaną tylko rekordy przefiltrowane przez wartość pola filtru.",
     "column": "Możesz użyć pól powiązanej encji w nazwie kolumny. Użyj nazwy pola w bazie danych jako zmiennej, np. {{nazwa}}. Pole wyboru \"Oddzielne kolumny\" powinno być aktywowane."
   },
   "exceptions": {

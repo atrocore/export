@@ -10,8 +10,6 @@
     "exportIntoSeparateColumns": "Separate",
     "type": "Type",
     "mask": "Mask",
-    "filterField": "Filter Field",
-    "filterFieldValue": "Filter Field Value",
     "offsetRelation": "Offset",
     "limitRelation": "Limit",
     "sortFieldRelation": "Sort Order (field)",
@@ -24,10 +22,6 @@
     "script": "Script"
   },
   "options": {
-    "boolFilterFieldValue": {
-      "+": "true",
-      "-": "false"
-    },
     "columnType": {
       "name": "Name",
       "custom": "Custom Name"
@@ -35,8 +29,6 @@
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Related data records will be exported as different fields/columns by using for the name the suffix \"_1\", \"_2\" and so on.",
-    "filterField": "Select a filter field if you want to apply a filter on related records.",
-    "filterFieldValue": "Only records filtered by filter field value will be selected.",
     "column": "You can use related entity fields in the column name. Use the field name in the database as a variable, eg {{name}}. Checkbox \"Separate Columns\" should be activated."
   },
   "exceptions": {
