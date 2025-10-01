@@ -748,7 +748,7 @@ class ExportFeed extends Base
         }
     }
 
-    public function verifyCodeEasyCatalog(string $code)
+    public function verifyFeedByCode(string $code)
     {
         $exportFeed = $this->getRepository()->where(['code' => $code])->findOne();
         if (empty($exportFeed)) {
@@ -757,7 +757,7 @@ class ExportFeed extends Base
 
         $hasIdColumn = false;
         foreach ($exportFeed->configuratorItems as $configuratorItem) {
-            if ($configuratorItem->get('column') == 'ID') {
+            if ($configuratorItem->get('column') == 'ID' || ($configuratorItem->get('name') == 'id' && empty($configuratorItem->get('column')))) {
                 $hasIdColumn = true;
                 break;
             }
@@ -770,24 +770,26 @@ class ExportFeed extends Base
         return 'Export feed is correctly configured';
     }
 
-    public function getEasyCatalog($exportFeedCode, $offset)
+    public function getData($exportFeedCode, $offset)
     {
         $exportFeed = $this->getRepository()->where(['code' => $exportFeedCode])->findOne();
         if (empty($exportFeed)) {
             throw new Exceptions\NotFound();
         }
         $data = [
-            'id'   => Util::generateId(),
-            'feed' => $this->prepareFeedData($exportFeed)
+            'id'                => Util::generateId(),
+            'feed'              => $this->prepareFeedData($exportFeed),
+            'disableCacheChunk' => true
         ];
 
         $data['offset'] = !empty($offset) ? (int)$offset : 0;
         $data['limit'] = empty($data['feed']['limit']) ? \PHP_INT_MAX : $data['feed']['limit'];
 
         $exportService = $this->getExportTypeService($data['feed']['type']);
+        $exportService->setData($data);
 
         return [
-            "total"      => $exportService->getCount($data),
+            "total"      => $exportService->getTotal(),
             "urlColumns" => $exportService->getUrlColumns(),
             "records"    => $exportService->exportEasyCatalogJson(),
         ];

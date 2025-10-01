@@ -429,7 +429,7 @@ abstract class AbstractExportType extends Base
                 }
             }
 
-            $jobName = $this->data['feed']['name']." Chunk #$i";
+            $jobName = $this->data['feed']['name'] . " Chunk #$i";
 
             $subData = $this->data;
             $subData['chunkJob'] = true;
@@ -594,7 +594,7 @@ abstract class AbstractExportType extends Base
 
         $total = $this->getTotal();
 
-        if (empty($this->data['feed']['separateJob']) && $limit < $total) {
+        if (empty($this->data['disableCacheChunk']) && empty($this->data['feed']['separateJob']) && $limit < $total) {
             return $this->createCacheFileByChunks($total);
         }
 
@@ -783,11 +783,11 @@ abstract class AbstractExportType extends Base
 
     protected function getWhere(): array
     {
-        if(!empty($this->data['feed']['data']['whereData'])){
-          $where  =  SavedSearch::getWhereFromWhereData($this->data['feed']['data']['whereData'], $this->getEntityManager());
-          if(!empty($where)){
-              return $where;
-          }
+        if (!empty($this->data['feed']['data']['whereData'])) {
+            $where = SavedSearch::getWhereFromWhereData($this->data['feed']['data']['whereData'], $this->getEntityManager());
+            if (!empty($where)) {
+                return $where;
+            }
         }
 
         return !empty($this->data['feed']['data']['where']) ? $this->data['feed']['data']['where'] : [];
@@ -802,7 +802,7 @@ abstract class AbstractExportType extends Base
                     "Running",
                 ],
                 'type'     => 'ExportChunk',
-                'payload*' => '%"exportJobId":"'.$exportJobId.'"%',
+                'payload*' => '%"exportJobId":"' . $exportJobId . '"%',
             ])
             ->count();
     }
