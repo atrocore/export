@@ -335,7 +335,7 @@ class ExportTypeSimple extends AbstractExportType
     protected function exportCsv(ExportJob $exportJob): File
     {
         $exportFeed = $exportJob->get('exportFeed');
-        if(empty($exportFeed)){
+        if (empty($exportFeed)) {
             $exportFeed = $this->getEntityManager()->getEntity('ExportFeed');
             $exportFeed->set('id', Util::generateId());
             $exportFeed->set('name', Util::generateUniqueHash());
@@ -363,7 +363,7 @@ class ExportTypeSimple extends AbstractExportType
         $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
 
         // delete tmp file
-        if(file_exists($fileName)){
+        if (file_exists($fileName)) {
             unlink($fileName);
         }
 
@@ -423,7 +423,7 @@ class ExportTypeSimple extends AbstractExportType
         }
 
         $exportFeed = $exportJob->get('exportFeed');
-        if(empty($exportFeed)){
+        if (empty($exportFeed)) {
             $exportFeed = $this->getEntityManager()->getEntity('ExportFeed');
             $exportFeed->set('id', Util::generateId());
             $exportFeed->set('name', Util::generateUniqueHash());
@@ -477,6 +477,8 @@ class ExportTypeSimple extends AbstractExportType
             $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
             $reader->setDelimiter($this->getDelimiter());
             $reader->setEnclosure($this->getEnclosure());
+
+            \PhpOffice\PhpSpreadsheet\Cell\Cell::setValueBinder(new \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder());
 
             $myWorkSheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $sheet['name']);
             $spreadsheet->addSheet($myWorkSheet, $k);
@@ -695,10 +697,10 @@ class ExportTypeSimple extends AbstractExportType
         // prepare header
         if ($this->data['feed']['isFileHeaderRow']) {
             $headerRow = array_column($columns, 'name');
-            if($useQuoteForAllValue) {
-                $enclosedRow = array_map(fn($value) => $enclosure . $value. $enclosure, $headerRow);
+            if ($useQuoteForAllValue) {
+                $enclosedRow = array_map(fn($value) => $enclosure . $value . $enclosure, $headerRow);
                 fwrite($fp, implode($delimiter, $enclosedRow) . "\n");
-            }else{
+            } else {
                 fputcsv($fp, $headerRow, $delimiter, $enclosure);
             }
         }
@@ -719,10 +721,10 @@ class ExportTypeSimple extends AbstractExportType
                 $resultRow[$pos] = isset($rowData[$columnData['number']][$columnData['name']]) ? $rowData[$columnData['number']][$columnData['name']] : null;
             }
 
-            if($useQuoteForAllValue) {
-                $enclosedRow = array_map(fn($value) => $enclosure . $value. $enclosure, $resultRow);
+            if ($useQuoteForAllValue) {
+                $enclosedRow = array_map(fn($value) => $enclosure . $value . $enclosure, $resultRow);
                 fwrite($fp, implode($delimiter, $enclosedRow) . (feof($cacheFile) ? PHP_EOL : "\n"));
-            }else{
+            } else {
                 fputcsv($fp, $resultRow, $delimiter, $enclosure);
             }
         }
