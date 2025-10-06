@@ -128,15 +128,16 @@ class ExportFeed extends Base
         }
     }
 
-    public function actionEasyCatalogVerifyCode($params, $data, $request)
+    public function actionVerifyFeedByCode($params, $data, Request $request)
     {
         if (!$request->isGet() || empty($request->get("code"))) {
             throw new BadRequest();
         }
-        return $this->getRecordService()->verifyCodeEasyCatalog($request->get("code"));
+        return ['message' => $this->getRecordService()->verifyFeedByCode($request->get("code"))];
     }
 
-    public function actionEasyCatalog($params, $data, Request $request)
+
+    public function actionExportData($params, $data, Request $request)
     {
         if (!$request->isGet() || empty($request->get("code"))) {
             throw new Exceptions\BadRequest();
@@ -146,7 +147,19 @@ class ExportFeed extends Base
             throw new Exceptions\Forbidden();
         }
 
-        return $this->getRecordService()->getEasyCatalog($request->get("code"), $request->get('offset'));
+        return $this->getRecordService()->getData($request->get("code"), $request->get('offset'));
+    }
+
+    /* For backward compatibility */
+    public function actionEasyCatalogVerifyCode($params, $data, Request $request)
+    {
+        return $this->actionVerifyFeedByCode($params, $data, $request);
+    }
+
+    /* For backward compatibility */
+    public function actionEasyCatalog($params, $data, Request $request)
+    {
+        return $this->actionExportData($params, $data, $request);
     }
 
     public function actionLoadAvailableTemplates($params, $data, Request $request)
@@ -187,6 +200,6 @@ class ExportFeed extends Base
             throw new Exceptions\BadRequest();
         }
 
-        return  $this->getRecordService()->directExportFile($data);
+        return $this->getRecordService()->directExportFile($data);
     }
 }

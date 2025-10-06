@@ -1,0 +1,89 @@
+[
+  {
+    "route": "/ExportFeed/action/verifyFeedByCode",
+    "method": "get",
+    "params": {
+      "controller": "ExportFeed",
+      "action": "verifyFeedByCode"
+    },
+    "operationId": "verifyFeedByCode",
+    "tags": [
+      "ExportFeed"
+    ],
+    "summary": "Verify that export feed is correctly configured and contains ID column",
+    "description": "Verify that export feed is correctly configured and contains ID column",
+    "security": [
+      {
+        "Authorization-Token": []
+      }
+    ],
+    "requestParameters": [
+      {
+        "name": "code",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "response": {
+      "type": "object"
+    }
+  },
+  {
+    "route": "/ExportFeed/action/exportData",
+    "method": "get",
+    "params": {
+      "controller": "ExportFeed",
+      "action": "exportData"
+    },
+    "operationId": "exportData",
+    "tags": [
+      "ExportFeed"
+    ],
+    "summary": "Get exported data",
+    "description": "Get exported data",
+    "security": [
+      {
+        "Authorization-Token": []
+      }
+    ],
+    "requestParameters": [
+      {
+        "name": "code",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "offset",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "nullable": true
+        }
+      }
+    ],
+    "response": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer"
+        },
+        "urlColumns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+]
