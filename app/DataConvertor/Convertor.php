@@ -137,7 +137,6 @@ class Convertor
 
     public function getConfigurationItemType(array $configuration): string
     {
-
         return $this->getTypeForField($configuration['entity'], $configuration['field'] ?? null);
     }
 
