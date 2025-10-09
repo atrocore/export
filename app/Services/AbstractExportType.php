@@ -768,15 +768,16 @@ abstract class AbstractExportType extends Base
     protected function getCollectionFromIds(mixed $entityIds): EntityCollection
     {
         $params = [
-            "where"       => [
+            "where" => [
                 [
                     "attribute" => "id",
-                    "type"      => "in",
-                    "value"     => $entityIds
+                    "type" => "in",
+                    "value" => $entityIds
                 ]
             ],
             "withDeleted" => true
         ];
+
         $this->addAttributesToSelectParams($params);
 
         $result = $this->getEntityService()->findEntities($params);
