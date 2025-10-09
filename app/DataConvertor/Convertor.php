@@ -172,6 +172,7 @@ class Convertor
         if($fieldDefs['type'] !== 'script') {
             return;
         }
+
         $repository = $this->getEntityManager()->getRepository($configuration['entity']);
 
         if(!method_exists($repository, 'calculateScriptField')) {
@@ -181,7 +182,6 @@ class Convertor
         $entity = $record['_entity'];
 
         $repository->calculateScriptField($entity, $configuration['field'], false);
-
 
         $record = array_merge($entity->toArray(), ['_entity' => $entity]);
     }
