@@ -42,6 +42,9 @@ class Convertor
             return [$configuration['column'] => ""];
         }
 
+
+        $this->calculateScriptsFields($record, $configuration);
+
         return $this->convertType($this->getConfigurationItemType($configuration), $record, $configuration);
     }
 
@@ -134,6 +137,7 @@ class Convertor
 
     public function getConfigurationItemType(array $configuration): string
     {
+
         return $this->getTypeForField($configuration['entity'], $configuration['field'] ?? null);
     }
 
@@ -155,5 +159,30 @@ class Convertor
         }
 
         return $type;
+    }
+
+    protected  function calculateScriptsFields(array &$record, array $configuration): void
+    {
+        if($configuration['type'] === 'script') {
+            return;
+        }
+
+        $fieldDefs = $this->getMetadata()->get(['entityDefs', $configuration['entity'], 'fields', $configuration['field']]);
+
+        if($fieldDefs['type'] !== 'script') {
+            return;
+        }
+        $repository = $this->getEntityManager()->getRepository($configuration['entity']);
+
+        if(!method_exists($repository, 'calculateScriptField')) {
+            return;
+        }
+
+        $entity = $record['_entity'];
+
+        $repository->calculateScriptField($entity, $configuration['field'], false);
+
+
+        $record = array_merge($entity->toArray(), ['_entity' => $entity]);
     }
 }

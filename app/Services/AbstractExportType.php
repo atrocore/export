@@ -281,7 +281,6 @@ abstract class AbstractExportType extends Base
         if (isset($result['collection'])) {
             $list = [];
             foreach ($result['collection'] as $entity) {
-                $this->getEntityService()->recalculateScriptFields($entity);
                 $list[] = array_merge($entity->toArray(), ['_entity' => $entity]);
             }
         } else {
