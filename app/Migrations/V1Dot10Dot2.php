@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Export\Migrations;
 
 use Atro\Core\Migration\Base;
+use Doctrine\DBAL\ParameterType;
 
 class V1Dot10Dot2 extends Base
 {
@@ -25,6 +26,14 @@ class V1Dot10Dot2 extends Base
     public function up(): void
     {
         $this->exec("ALTER TABLE export_feed ADD max_workers INT DEFAULT NULL");
+
+        $this->getConnection()->createQueryBuilder()
+            ->update('export_feed')
+            ->set('sort_order_direction', ':null')
+            ->where('sort_order_direction = :empty')
+            ->setParameter('null', null, ParameterType::NULL)
+            ->setParameter('empty', '')
+            ->executeQuery();
     }
 
     protected function exec(string $sql): void
