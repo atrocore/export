@@ -63,11 +63,6 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
             window.open(`#${this.scope}`, '_blank');
         },
 
-        setFilter(filter) {
-            let data = this.model.get('data') || {};
-            this.collection.where = data.where || [];
-        },
-
         afterRender() {
             Dep.prototype.afterRender.call(this);
 
@@ -93,7 +88,7 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
             }
 
             let whereData = this.model.get('data')?.where;
-            
+
             if(this.model.get('data')?.whereData
                 && (this.model.get('data')?.whereData['queryBuilder']
                     || this.model.get('data')?.whereData['bool']
