@@ -49,7 +49,7 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
 
             if(!this.additionalBoolFilterList.includes('unexported')) {
                 this.additionalBoolFilterList.push('unexported');
-                this.boolFilterData['unexported'] = this.model.get('lastTime')
+                this.boolFilterData['unexported'] = () => this.model.get('lastTime')
             }
 
         },
