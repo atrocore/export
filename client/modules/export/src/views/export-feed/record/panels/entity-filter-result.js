@@ -99,7 +99,6 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
                 whereData = this.model.get('data')?.whereData;
             }
 
-
             self.openSearchFilter(this.model.get('entity'), whereData,
                 ({where, whereData}) => {
                     this.model.set('data', _.extend({}, this.model.get('data'), {
