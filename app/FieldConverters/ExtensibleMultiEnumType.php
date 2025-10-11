@@ -60,16 +60,23 @@ class ExtensibleMultiEnumType extends LinkMultipleType
             return ['collection' => $collection];
         }
 
+        $extensibleEnum = $this->getMetadata()->get(['entityDefs', $entity, 'fields', $field, 'extensibleEnumId']);
+
+        if (empty($extensibleEnum)) {
+            throw new \Error('Extensible enum is not found.');
+        }
+
+        $options = [];
         if (isset($record[$field]) && is_array($record[$field])) {
             foreach ($linkedEntitiesKeys[$configuration['id']] as $v) {
                 $option = $this->getMemoryStorage()->get($v);
                 if (in_array($option->get('id'), $record[$field])) {
-                    $collection->append($option);
+                    $options[$option->get('id')] = $option;
                 }
             }
         }
 
-        return ['collection' => $collection];
+        return ['collection' => $this->prepareOptionsSorting($collection, $extensibleEnum, $options)];
     }
 
     public function queryCallback(Container $container, QueryBuilder $qb, Mapper $mapper, array $configuration): void
@@ -93,5 +100,22 @@ class ExtensibleMultiEnumType extends LinkMultipleType
         }
 
         return parent::findEntities($foreignEntity, $params);
+    }
+
+    protected function prepareOptionsSorting(EntityCollection $collection, string $extensibleEnumId, array $options): EntityCollection
+    {
+        $sortedOptions = $this
+            ->convertor
+            ->getEntityManager()
+            ->getRepository('ExtensibleEnumOption')
+            ->getPreparedOptions($extensibleEnumId, array_keys($options));
+
+        if (!empty($sortedOptions) && is_array($sortedOptions)) {
+            foreach ($sortedOptions as $option) {
+                $collection->append($options[$option['id']]);
+            }
+        }
+
+        return $collection;
     }
 }
