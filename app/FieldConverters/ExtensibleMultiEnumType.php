@@ -85,13 +85,32 @@ class ExtensibleMultiEnumType extends LinkMultipleType
         parent::queryCallback($container, $qb, $mapper, $configuration);
     }
 
-    protected function findEntities(string $foreignEntity, array $params): array
+    protected function findEntities(string $foreignEntity, array $params, array $data = []): array
     {
         $configuration = $this->getMemoryStorage()->get('configurationItemData');
         if (empty($configuration['id'])) {
             throw new \Error('No configuration id found.');
         }
 
-        return parent::findEntities($foreignEntity, $params);
+        if (empty($data['entity']) || empty($data['field'])) {
+            return parent::findEntities($foreignEntity, $params, $data);
+        }
+
+        $extensibleEnumId = $this->getMetadata()->get(['entityDefs', $data['entity'], 'fields', $data['field'], 'extensibleEnumId']);
+
+        if (empty($extensibleEnumId)) {
+            throw new \Error('Extensible enum is not found.');
+        }
+
+        $sortBy = $this->getMetadata()->get(['clientDefs', 'ExtensibleEnum', 'relationshipPanels', 'extensibleEnumOptions', 'dragDrop', 'sortField'], 'sortOrder');
+
+        if (!empty($sortBy)) {
+            $params['sortBy'] = $sortBy;
+        }
+
+        return $this
+            ->convertor
+            ->getService('ExtensibleEnum')
+            ->findLinkedEntities($extensibleEnumId, 'extensibleEnumOptions', $params);
     }
 }
