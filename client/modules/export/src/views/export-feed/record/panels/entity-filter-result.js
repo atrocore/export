@@ -52,6 +52,12 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
                 this.boolFilterData['unexported'] = this.model.get('lastTime')
             }
 
+            //collapse by default
+            let states = this.getStorage().get('collapsed-panels', 'ExportFeed') || [];
+            if(!states.includes('entityFilterResult')) {
+                states.push('entityFilterResult')
+                this.getStorage().set('collapsed-panels', 'ExportFeed', states);
+            }
         },
 
         getLayoutRelatedScope() {
