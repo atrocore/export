@@ -116,6 +116,7 @@ class ExportFeed extends Base
 
         if (!empty($requestData->ignoreFilter)) {
             $data['feed']['data']->where = [];
+            $data['feed']['data']->whereData = null;
         }
 
         if (!empty($requestData->entityFilterData)) {
