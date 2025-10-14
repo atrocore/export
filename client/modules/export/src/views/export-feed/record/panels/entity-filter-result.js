@@ -53,6 +53,12 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
 
             this.boolFilterData['unexported'] = () => this.model.get('lastTime')
 
+            //collapse by default
+            let states = this.getStorage().get('collapsed-panels', 'ExportFeed') || [];
+            if(!states.includes('entityFilterResult')) {
+                states.push('entityFilterResult')
+                this.getStorage().set('collapsed-panels', 'ExportFeed', states);
+            }
         },
 
         getLayoutRelatedScope() {
@@ -62,6 +68,11 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
         actionShowFullList(data) {
             this.getStorage().set('listQueryBuilder', this.scope, this.model.get('data').whereData || {});
             window.open(`#${this.scope}`, '_blank');
+        },
+
+        setFilter(filter) {
+            let data = this.model.get('data') || {};
+            this.collection.where = data.where || [];
         },
 
         afterRender() {
@@ -89,7 +100,7 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
             }
 
             let whereData = this.model.get('data')?.where;
-
+            
             if(this.model.get('data')?.whereData
                 && (this.model.get('data')?.whereData['queryBuilder']
                     || this.model.get('data')?.whereData['bool']
@@ -99,6 +110,7 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
             ){
                 whereData = this.model.get('data')?.whereData;
             }
+
 
             self.openSearchFilter(this.model.get('entity'), whereData,
                 ({where, whereData}) => {
