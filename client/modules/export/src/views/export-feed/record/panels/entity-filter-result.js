@@ -54,11 +54,18 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
             this.boolFilterData['unexported'] = () => this.model.get('lastTime')
 
             //collapse by default
-            let states = this.getStorage().get('collapsed-panels', 'ExportFeed') || [];
-            if(!states.includes('entityFilterResult')) {
-                states.push('entityFilterResult')
-                this.getStorage().set('collapsed-panels', 'ExportFeed', states);
-            }
+            // let states = this.getStorage().get('collapsed-panels', 'ExportFeed') || [];
+            // if(!states.includes('entityFilterResult')) {
+            //     states.push('entityFilterResult')
+            //     this.getStorage().set('collapsed-panels', 'ExportFeed', states);
+            // }
+
+            this.listenToOnce(this, 'after:render', () => {
+                if(!this.$el.get(0)) {
+                    return;
+                }
+                setTimeout(() => this.getParentView().collapseBottomPanel('entityFilterResult', 'hide'), 200)
+            })
         },
 
         getLayoutRelatedScope() {
