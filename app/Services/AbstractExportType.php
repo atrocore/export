@@ -783,13 +783,6 @@ abstract class AbstractExportType extends Base
 
     protected function getWhere(): array
     {
-        if (!empty($this->data['feed']['data']['whereData'])) {
-            $where = SavedSearch::getWhereFromWhereData($this->data['feed']['data']['whereData'], $this->getEntityManager());
-            if (!empty($where)) {
-                return $where;
-            }
-        }
-
         return !empty($this->data['feed']['data']['where']) ? $this->data['feed']['data']['where'] : [];
     }
 
