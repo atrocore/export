@@ -26,7 +26,8 @@
         "name": "entityFilterResult",
         "label": "entityFilterResult",
         "view": "export:views/export-feed/record/panels/entity-filter-result",
-        "canClose": false
+        "canClose": false,
+        "collapseByDefault": true
       }
     ]
   },
