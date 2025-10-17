@@ -645,7 +645,7 @@ class ExportFeed extends Base
                 }
             }
 
-            if (!empty($fieldDefs['unitField'])) {
+            if (empty($fieldDefs['attributeId']) && !empty($fieldDefs['unitField'])) {
                 $item['type'] = 'script';
                 $mainField = $fieldDefs['mainField'];
                 $item['script'] = "{{ record['{$mainField}'] }} {{ record['{$mainField}UnitName'] }}";
