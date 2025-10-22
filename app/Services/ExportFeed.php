@@ -616,6 +616,22 @@ class ExportFeed extends Base
             : $this->getMetadata()->get(['entityDefs', $scope, 'fields'], []);
 
         $configuration = [];
+
+        foreach ($entityDefs as $field => $fieldDefs) {
+            if (!empty($fieldDefs['attributeId']) && in_array($fieldDefs['type'] ?? null, ['int', 'float', 'varchar'])
+                && !empty($fieldDefs['unitField'])) {
+                // Add field for attribute script
+                $parts = explode(' ', $fieldDefs['label']);
+                array_pop($parts);
+                $entityDefs['unit' . ucfirst($field)] = [
+                    'attributeId'        => $fieldDefs['attributeId'],
+                    'label'              => join(' ', $parts),
+                    'mainField'          => $field,
+                    'attributeUnitField' => true,
+                ];
+            }
+        }
+
         foreach ($entityDefs as $field => $fieldDefs) {
             if (!empty($fieldDefs['exportDisabled'])) {
                 continue;
@@ -646,7 +662,8 @@ class ExportFeed extends Base
                 }
             }
 
-            if (empty($fieldDefs['attributeId']) && !empty($fieldDefs['unitField'])) {
+            if (!empty($fieldDefs['attributeUnitField']) ||
+                (empty($fieldDefs['attributeId']) && !empty($fieldDefs['unitField']))) {
                 $item['type'] = 'script';
                 $mainField = $fieldDefs['mainField'];
                 $item['script'] = "{{ record['{$mainField}'] }} {{ record['{$mainField}UnitName'] }}";
