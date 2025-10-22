@@ -668,6 +668,11 @@ class ExportFeed extends Base
                 $item['script'] = "{{ record['{$mainField}'] }} {{ record['{$mainField}UnitName'] }}";
             }
 
+            if (in_array($fieldDefs['type'] ?? null, ['rangeInt', 'rangeFloat'])) {
+                $item['type'] = 'script';
+                $item['script'] = "{{ record['{$field}From'] }} - {{ record['{$field}To'] }} {{ record['{$field}UnitName'] }}";
+            }
+
             $configuration[] = (object)$item;
         }
 
