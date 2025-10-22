@@ -38,7 +38,7 @@ class ExportFeed extends Base
             $data = json_decode(json_encode($exportFeed->get('data')), true);
             if (!empty($data['where']) && is_array($data['where'])) {
                 foreach ($data['where'] as $k => $item) {
-                    if (!empty($item['data']['unexported'])) {
+                    if(!empty($item['value']) && is_array($item['value']) && in_array('unexported', $item['value'])) {
                         $data['where'][$k]['data']['unexported'] = $lastTime->format('Y-m-d H:i:s');
                         $qb->set('data', ':data')->setParameter('data', json_encode($data));
                         break;
