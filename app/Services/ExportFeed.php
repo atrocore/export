@@ -216,21 +216,34 @@ class ExportFeed extends Base
             return false;
         }
 
-        $feedEntity = $this->getEntityManager()->getRepository($feed->get('entity') ?? $feed->getFeedField('entity'))->get();
+        foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds) as $row) {
+            $this->createExportConfiguratorItem($row);
+        }
+
+        return true;
+    }
+
+    public function prepareConfiguratorItemDataForAttributes(Entity $feed, array $attributesIds): array
+    {
+        $result = [];
+
+        $feedEntityName = $feed->get('entity') ?? $feed->getFeedField('entity');
+
+        $feedEntity = $this->getEntityManager()->getRepository($feedEntityName)->get();
 
         foreach ($this->getAttributeFieldConverter()->getAttributesRowsByIds($attributesIds) as $attribute) {
             if (!empty($attribute['channel_name'])) {
-                $attribute['name'] .= ' / ' . $attribute['channel_name'];
+                $attribute['name'] .= ' / '.$attribute['channel_name'];
             }
             $attributesDefs = [];
             $this->getAttributeFieldConverter()->convert($feedEntity, $attribute, $attributesDefs);
             foreach ($attributesDefs as $field => $fieldDefs) {
                 $data = [
-                    'name'                      => $field,
-                    'type'                      => 'Field',
-                    'columnType'                => 'name',
-                    'entityAttributeId'         => $attribute['id'],
-                    lcfirst($entityName) . 'Id' => $feed->get('id')
+                    'name'                               => $field,
+                    'type'                               => 'Field',
+                    'columnType'                         => 'name',
+                    'entityAttributeId'                  => $attribute['id'],
+                    lcfirst($feed->getEntityName()).'Id' => $feed->get('id'),
                 ];
 
                 if (in_array($fieldDefs['type'], ['link', 'file'])) {
@@ -238,32 +251,31 @@ class ExportFeed extends Base
                 }
 
                 if (in_array($fieldDefs['type'], ['rangeInt', 'rangeFloat'])) {
-                    $this->createExportConfiguratorItem(array_merge($data, [
+                    $result[] = array_merge($data, [
                         'name'       => null,
                         'type'       => 'script',
                         'columnType' => 'custom',
                         'column'     => $fieldDefs['label'],
-                        'script'     => "{{ record['{$field}From'] }} - {{ record['{$field}To'] }} {{ record['{$field}UnitName'] }}"
-                    ]));
-
+                        'script'     => "{{ record['{$field}From'] }} - {{ record['{$field}To'] }} {{ record['{$field}UnitName'] }}",
+                    ]);
                     continue;
                 }
 
                 if (in_array($fieldDefs['type'], ['int', 'float', 'varchar']) && !empty($fieldDefs['measureId'])) {
-                    $this->createExportConfiguratorItem(array_merge($data, [
+                    $result[] = array_merge($data, [
                         'name'       => null,
                         'type'       => 'script',
                         'columnType' => 'custom',
                         'column'     => $fieldDefs['detailViewLabel'],
-                        'script'     => "{{ record['{$field}'] }} {{ record['{$field}UnitName'] }}"
-                    ]));
+                        'script'     => "{{ record['{$field}'] }} {{ record['{$field}UnitName'] }}",
+                    ]);
                 }
 
-                $this->createExportConfiguratorItem($data);
+                $result[] = $data;
             }
         }
 
-        return true;
+        return $result;
     }
 
     public function addAllAttributes(string $entityName, string $id): bool
