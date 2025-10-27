@@ -111,6 +111,10 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
                     }
                 })
                 extraInfo += this.translate('channels', 'fields', 'ExportConfiguratorItem') + ': ' + res.join(', ');
+
+                if (this.model.get('compositeAttributesCombine')) {
+                    extraInfo += '<br>' + this.translate('compositeAttributesCombine', 'fields', 'ExportConfiguratorItem');
+                }
             }
 
             return extraInfo;

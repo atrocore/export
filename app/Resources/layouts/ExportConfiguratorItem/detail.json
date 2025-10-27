@@ -29,7 +29,9 @@
         {
           "name": "channels"
         },
-        false
+        {
+          "name": "compositeAttributesCombine"
+        }
       ],
       [
         {

@@ -27,8 +27,10 @@ class V1Dot10Dot4 extends Base
         if ($this->isPgSQL()) {
             $this->exec("ALTER TABLE export_configurator_item ADD channels TEXT DEFAULT NULL");
             $this->exec("COMMENT ON COLUMN export_configurator_item.channels IS '(DC2Type:jsonArray)'");
+            $this->exec("ALTER TABLE export_configurator_item ADD composite_attributes_combine BOOLEAN DEFAULT 'false' NOT NULL");
         } else {
             $this->exec("ALTER TABLE export_configurator_item ADD channels LONGTEXT DEFAULT NULL COMMENT '(DC2Type:jsonArray)'");
+            $this->exec("ALTER TABLE export_configurator_item ADD composite_attributes_combine TINYINT(1) DEFAULT '0' NOT NULL");
         }
     }
 

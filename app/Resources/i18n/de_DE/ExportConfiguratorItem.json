@@ -19,7 +19,8 @@
     "zip": "Assets in ein ZIP-Archiv exportieren",
     "fileNameTemplate": "Dateinamenvorlage",
     "exportByForListAttribute": "Verwandte Entitätsfelder für Listen",
-    "script": "Skript"
+    "script": "Skript",
+    "compositeAttributesCombine": "Kompositattribute als einzelnen Wert exportieren"
   },
   "options": {
     "columnType": {
