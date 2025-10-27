@@ -47,6 +47,19 @@ class ExportFeed extends Base
         return $this->getRecordService()->addAttributes($data->entityName, $data->id, $data->attributesIds);
     }
 
+    public function actionAddAllAttributes($params, $data, Request $request): bool
+    {
+        if (!$request->isPost() || !property_exists($data, 'id') || !property_exists($data, 'entityName')) {
+            throw new Exceptions\BadRequest();
+        }
+
+        if (!$this->getAcl()->check($this->name, 'edit')) {
+            throw new Exceptions\Forbidden();
+        }
+
+        return $this->getRecordService()->addAllAttributes($data->entityName, $data->id);
+    }
+
     public function actionAddFixed($params, $data, Request $request): bool
     {
         if (!$request->isPost() || !property_exists($data, 'id') || !property_exists($data, 'entityName')) {

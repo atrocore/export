@@ -85,7 +85,7 @@ class ExportFeed extends Base
             case 'csv':
                 $configuratorItems = $exportFeed->get('configuratorItems');
                 if (empty($configuratorItems[0])) {
-                    throw new Exceptions\BadRequest($this->getInjection('language')->translate('noConfiguratorItems', 'exceptions', 'ExportFeed'));
+                    throw new Exceptions\BadRequest($this->getLanguage()->translate('noConfiguratorItems', 'exceptions', 'ExportFeed'));
                 }
                 break;
             case 'xlsx':
@@ -97,11 +97,11 @@ class ExportFeed extends Base
                             }
                         }
                     }
-                    throw new Exceptions\BadRequest($this->getInjection('language')->translate('noSheets', 'exceptions', 'ExportFeed'));
+                    throw new Exceptions\BadRequest($this->getLanguage()->translate('noSheets', 'exceptions', 'ExportFeed'));
                 } else {
                     $configuratorItems = $exportFeed->get('configuratorItems');
                     if (empty($configuratorItems[0])) {
-                        throw new Exceptions\BadRequest($this->getInjection('language')->translate('noConfiguratorItems', 'exceptions', 'ExportFeed'));
+                        throw new Exceptions\BadRequest($this->getLanguage()->translate('noConfiguratorItems', 'exceptions', 'ExportFeed'));
                     }
                 }
                 break;
@@ -262,6 +262,40 @@ class ExportFeed extends Base
                 $this->createExportConfiguratorItem($data);
             }
         }
+
+        return true;
+    }
+
+    public function addAllAttributes(string $entityName, string $id): bool
+    {
+        if (!in_array($entityName, ['ExportFeed', 'Sheet'])) {
+            throw new Exceptions\BadRequest('Wrong entity name');
+        }
+
+        $feed = $this->getEntityManager()->getRepository($entityName)->get($id);
+        if (empty($feed)) {
+            return false;
+        }
+
+        $exists = $this->getEntityManager()->getRepository('ExportConfiguratorItem')
+            ->where([
+                'type'                    => 'allAttributes',
+                lcfirst($entityName).'Id' => $feed->get('id'),
+            ])
+            ->findOne();
+
+        if (!empty($exists)) {
+            throw new Exceptions\BadRequest($this->getLanguage()->translate('allAttributesAlreadyAdded', 'labels', 'ExportFeed'));
+        }
+
+        $data = [
+            'name'                    => null,
+            'type'                    => 'allAttributes',
+            'columnType'              => 'custom',
+            lcfirst($entityName).'Id' => $feed->get('id'),
+        ];
+
+        $this->createExportConfiguratorItem($data);
 
         return true;
     }
@@ -508,7 +542,7 @@ class ExportFeed extends Base
 
     public function pushExport(array $data): bool
     {
-        $name = $this->getInjection('language')->translate('createExportJobs', 'additionalTranslates', 'ExportFeed');
+        $name = $this->getLanguage()->translate('createExportJobs', 'additionalTranslates', 'ExportFeed');
         $name = sprintf($name, $data['feed']['name']);
 
         $priority = empty($data['feed']['priority']) ? 'Normal' : (string)$data['feed']['priority'];
@@ -644,7 +678,7 @@ class ExportFeed extends Base
             $item = $baseConfiguration;
             $item['field'] = $field;
             $item['id'] = Util::generateId();
-            $item['column'] = $this->getInjection('language')->translate($field, 'fields', $scope);
+            $item['column'] = $this->getLanguage()->translate($field, 'fields', $scope);
 
             if (in_array($fieldDefs['type'], ['link', 'linkMultiple', 'extensibleEnum', 'extensibleMultiEnum'])) {
                 $item['exportBy'] = ['name'];

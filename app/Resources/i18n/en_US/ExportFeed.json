@@ -69,7 +69,8 @@
     "Success": "Success",
     "Running": "Running",
     "Failed": "Failed",
-    "Canceled": "Canceled"
+    "Canceled": "Canceled",
+    "allAttributesAlreadyAdded": "All attributes item has been already added."
   },
   "messages": {
     "confirmTemplateGeneration": "Are you sure you want to generate Template?",
