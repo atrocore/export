@@ -19,7 +19,6 @@ use Atro\Core\Container;
 use Atro\Core\Utils\Config;
 use Atro\Core\Utils\Language;
 use Atro\Core\Utils\Metadata;
-use Espo\ORM\Entity;
 use Espo\ORM\EntityManager;
 use Espo\Services\Record;
 use Export\FieldConverters\AbstractType;
