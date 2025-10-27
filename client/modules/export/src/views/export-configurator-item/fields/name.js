@@ -53,14 +53,6 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
             return data;
         },
 
-        afterRender() {
-            Dep.prototype.afterRender.call(this);
-
-            if (this.model.get('type') === 'allAttributes') {
-                this.$el.parents('tr').css('background-color', '#eee');
-            }
-        },
-
         getValueForDisplay() {
             let name = this.model.get('name');
 
