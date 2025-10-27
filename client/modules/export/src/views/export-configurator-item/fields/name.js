@@ -46,10 +46,19 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
             let data = Dep.prototype.data.call(this);
 
             if (this.mode === 'list') {
+                data.bold = this.model.get('type') === 'allAttributes';
                 data.extraInfo = this.getExtraInfo();
             }
 
             return data;
+        },
+
+        afterRender() {
+            Dep.prototype.afterRender.call(this);
+
+            if (this.model.get('type') === 'allAttributes') {
+                this.$el.parents('tr').css('background-color', '#eee');
+            }
         },
 
         getValueForDisplay() {
@@ -61,6 +70,10 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
 
             if (this.model.get('type') === 'Field') {
                 name = this.translate(name, 'fields', this.model.get('entity'));
+            }
+
+            if (this.model.get('type') === 'allAttributes') {
+                name = this.getLanguage().translateOption('allAttributes', 'type', 'ExportConfiguratorItem');
             }
 
             if (this.model.get('type') === 'Fixed value') {

@@ -1,1 +1,1 @@
-<div>{{value}}{{#if isRequired}} *{{/if}}</div>{{#if extraInfo}}<span class="text-muted small">{{{extraInfo}}}</span>{{/if}}
+<div>{{#if bold}}<b>{{/if}}{{value}}{{#if isRequired}} *{{/if}}{{#if bold}}</b>{{/if}}</div>{{#if extraInfo}}<span class="text-muted small">{{{extraInfo}}}</span>{{/if}}
