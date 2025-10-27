@@ -29,6 +29,7 @@ class ExportConfiguratorItem extends Base
             'type',
             'columnType',
             'exportBy',
+            'channels',
             'exportIntoSeparateColumns',
             'sortOrder',
             'entityAttributeId',

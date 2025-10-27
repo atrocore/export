@@ -6,6 +6,7 @@
     "exportFeed": "Export Feed",
     "entityAttribute": "Attribute",
     "exportBy": "Related Entity Fields",
+    "channels": "Channel(s)",
     "remove": "Remove",
     "exportIntoSeparateColumns": "Separate",
     "type": "Type",
@@ -32,6 +33,9 @@
       "Fixed value": "Fixed value",
       "script": "Script"
     }
+  },
+  "labels": {
+    "withoutChannel": "Without Channel"
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Related data records will be exported as different fields/columns by using for the name the suffix \"_1\", \"_2\" and so on.",

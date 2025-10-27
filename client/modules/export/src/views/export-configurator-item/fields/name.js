@@ -92,6 +92,27 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
                 }
             }
 
+            if (this.model.get('type') === 'allAttributes') {
+                let allChannels = [];
+                this.ajaxGetRequest('Channel', null, {async: false}).success(res => {
+                    allChannels = res.list || [];
+                });
+
+                let res = [];
+                (this.model.get('channels') || []).forEach(item => {
+                    if (item === 'withoutChannel') {
+                        res.push(this.translate('withoutChannel', 'labels', 'ExportConfiguratorItem'));
+                    } else {
+                        allChannels.forEach(channel => {
+                            if (channel.id === item) {
+                                res.push(channel.name);
+                            }
+                        })
+                    }
+                })
+                extraInfo += this.translate('channels', 'fields', 'ExportConfiguratorItem') + ': ' + res.join(', ');
+            }
+
             return extraInfo;
         },
 

@@ -69,6 +69,30 @@
       "type": "array",
       "view": "export:views/export-configurator-item/fields/export-by"
     },
+    "channels": {
+      "type": "array",
+      "view": "export:views/export-configurator-item/fields/channels",
+      "conditionalProperties": {
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "allAttributes"
+            }
+          ]
+        },
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "allAttributes"
+            }
+          ]
+        }
+      }
+    },
     "type": {
       "type": "enum",
       "required": true,
