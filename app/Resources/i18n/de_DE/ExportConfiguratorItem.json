@@ -24,6 +24,12 @@
     "columnType": {
       "name": "Name",
       "custom": "Benutzerdefinierter Name"
+    },
+    "type": {
+      "Field": "Feld",
+      "allAttributes": "Alle Attribute",
+      "Fixed value": "Fester Wert",
+      "script": "Skript"
     }
   },
   "tooltips": {

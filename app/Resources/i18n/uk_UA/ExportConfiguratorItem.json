@@ -24,6 +24,12 @@
     "columnType": {
       "name": "Назва",
       "custom": "Користувацька назва"
+    },
+    "type": {
+      "Field": "Поле",
+      "allAttributes": "Всі атрибути",
+      "Fixed value": "Фіксоване значення",
+      "script": "Скрипт"
     }
   },
   "tooltips": {
