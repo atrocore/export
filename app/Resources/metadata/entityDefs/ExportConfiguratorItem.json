@@ -69,6 +69,11 @@
       "type": "array",
       "view": "export:views/export-configurator-item/fields/export-by"
     },
+    "allAttributesCount": {
+      "type": "int",
+      "notStorable": true,
+      "protected": true
+    },
     "compositeAttributesCombine": {
       "type": "bool",
       "conditionalProperties": {
