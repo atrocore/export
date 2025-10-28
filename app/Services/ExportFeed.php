@@ -243,7 +243,8 @@ class ExportFeed extends Base
                 $data = [
                     'name'                               => $field,
                     'type'                               => 'Field',
-                    'columnType'                         => 'name',
+                    'columnType'                         => 'custom',
+                    'column'                             => $fieldDefs['label'],
                     'entityAttributeId'                  => $attribute['id'],
                     lcfirst($feed->getEntityName()).'Id' => $feed->get('id'),
                 ];
@@ -264,13 +265,15 @@ class ExportFeed extends Base
                 }
 
                 if (in_array($fieldDefs['type'], ['int', 'float', 'varchar']) && !empty($fieldDefs['measureId']) && empty($fieldDefs['rangeType'])) {
+                    $result[] = $data;
                     $result[] = array_merge($data, [
                         'name'       => null,
                         'type'       => 'script',
                         'columnType' => 'custom',
-                        'column'     => $fieldDefs['detailViewLabel'],
+                        'column'     => $fieldDefs['detailViewLabel'] ?? $fieldDefs['label'],
                         'script'     => "{{ record['{$field}'] }} {{ record['{$field}UnitName'] }}",
                     ]);
+                    continue;
                 }
 
                 $result[] = $data;
@@ -911,10 +914,12 @@ class ExportFeed extends Base
         } else {
             $entityName = $exportFeed->getFeedField('entity');
             $languageObj = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
+            if (!empty($feedData['data']['configuration'])) {
+                $attributeIds = array_unique(array_filter(array_column($feedData['data']['configuration'], 'entityAttributeId')));
+            }
             $currentLocaleId = $this->getUser()->get('localeId');
             $this->getUser()->set('localeId', $exportFeed->get('localeId'));
         }
-
 
         $conn = $this->getEntityManager()->getConnection();
 
