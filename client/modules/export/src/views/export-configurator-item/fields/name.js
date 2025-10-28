@@ -65,15 +65,15 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
             }
 
             if (this.model.get('type') === 'allAttributes') {
-                name = this.getLanguage().translateOption('allAttributes', 'type', 'ExportConfiguratorItem') + ` (${this.model.get('allAttributesCount')})`;
+                name = this.translate('allAttributes', 'labels', 'ExportConfiguratorItem').replace('%s', this.model.get('allAttributesCount'));
             }
 
             if (this.model.get('type') === 'Fixed value') {
-                name = this.getLanguage().translate('fixedValue', 'fields', 'ExportConfiguratorItem');
+                name = this.translate('fixedValue', 'fields', 'ExportConfiguratorItem');
             }
 
             if (this.model.get('type') === 'script') {
-                name = this.getLanguage().translate('script', 'fields', 'ExportConfiguratorItem');
+                name = this.translate('script', 'fields', 'ExportConfiguratorItem');
             }
 
             return name;
@@ -111,10 +111,6 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
                     }
                 })
                 extraInfo += this.translate('channels', 'fields', 'ExportConfiguratorItem') + ': ' + res.join(', ');
-
-                if (this.model.get('compositeAttributesCombine')) {
-                    extraInfo += '<br>' + this.translate('compositeAttributesCombine', 'fields', 'ExportConfiguratorItem');
-                }
             }
 
             return extraInfo;

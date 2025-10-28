@@ -25,6 +25,7 @@ use Espo\Core\Utils\Json;
 use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Atro\Core\EventManager\Event;
+use Espo\ORM\EntityCollection;
 use Export\Jobs\ExportJobCreator;
 use Export\TemplateLoaders\AbstractTemplate;
 use Export\Entities\ExportFeed as ExportFeedEntity;
@@ -461,12 +462,36 @@ class ExportFeed extends Base
             $entityName = $sheet->get('entity');
         }
 
+        $collection = new EntityCollection([], 'ExportConfiguratorItem');
+        foreach ($items['collection'] as $item) {
+            if ($item->get('type') === 'allAttributes') {
+                $attributesIds = $this->getEntityManager()->getRepository('Attribute')->getAllAttributesIdsForEntity(
+                    $entityName,
+                    $feed->get('data')->where ?? [],
+                    $item->get('channels')
+                );
+
+                if (empty($attributesIds)) {
+                    continue;
+                }
+
+                foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds) as $row) {
+                    $attributeItem = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
+                    $attributeItem->set($row);
+                    $attributeItem->id = $item->id;
+                    $collection->append($attributeItem);
+                }
+            } else {
+                $collection->append($item);
+            }
+        }
+
         $configuration = [];
 
         /** @var \Export\Services\ExportConfiguratorItem $eciService */
         $eciService = $this->getInjection('serviceFactory')->create('ExportConfiguratorItem');
 
-        foreach ($items['collection'] as $item) {
+        foreach ($collection as $item) {
             $row = [
                 'id'                        => $item->get('id'),
                 'columnType'                => $item->get('columnType'),

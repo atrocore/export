@@ -13,15 +13,10 @@ declare(strict_types=1);
 
 namespace Export\Jobs;
 
-use Atro\Core\AttributeFieldConverter;
-use Atro\Core\ORM\Repositories\RDB;
 use Atro\Entities\Job;
 use Atro\Jobs\AbstractJob;
 use Atro\Jobs\JobInterface;
 use Atro\Core\Utils\Util;
-use Atro\ORM\DB\RDB\Mapper;
-use Atro\Services\Record;
-use Doctrine\DBAL\ParameterType;
 use Export\Services\ExportFeed;
 
 class ExportJobCreator extends AbstractJob implements JobInterface
@@ -37,8 +32,6 @@ class ExportJobCreator extends AbstractJob implements JobInterface
 
     public function runNow(array $data): void
     {
-        $this->prepareAllAttributesItem($data);
-
         $data['offset'] = 0;
         $data['limit'] = empty($data['feed']['limit']) ? \PHP_INT_MAX : $data['feed']['limit'];
 
@@ -196,101 +189,5 @@ class ExportJobCreator extends AbstractJob implements JobInterface
                 'payload*' => '%"exportJobCreatorId":"'.$exportJobCreatorId.'"%',
             ])
             ->count();
-    }
-
-    protected function prepareAllAttributesItem(array &$data): void
-    {
-        // @todo finish this
-        return;
-
-        $entityName = $data['feed']['entity'] ?? null;
-        if (empty($entityName)) {
-            return;
-        }
-
-        $feed = $this->getEntityManager()->getRepository('ExportFeed')->get($data['feed']['id']);
-        if (empty($feed)) {
-            return;
-        }
-
-        $configurationItems = [];
-
-        foreach ($data['feed']['data']['configuration'] ?? [] as $k => $item) {
-            if (!empty($item['type']) && $item['type'] === 'allAttributes') {
-                $configuratorItem = $this->getEntityManager()->getEntity('ExportConfiguratorItem', $item['id']);
-                if (empty($configuratorItem)) {
-                    continue;
-                }
-
-                $attributesIds = $this->getAllAttributesIdsForEntity(
-                    $entityName,
-                    $data['feed']['data']['where'] ?? [],
-                    $configuratorItem->get('channels')
-                );
-
-                if (empty($attributesIds)) {
-                    continue;
-                }
-
-                $attributesConfiguratorItems = $this
-                    ->getExportFeedService()
-                    ->prepareConfiguratorItemDataForAttributes($feed, $attributesIds);
-                foreach ($attributesConfiguratorItems as $row) {
-                    $configurationItems[] = $row;
-                }
-            } else {
-                $configurationItems[] = $item;
-            }
-        }
-
-        $data['feed']['data']['configuration'] = $configurationItems;
-    }
-
-    protected function getAllAttributesIdsForEntity(string $entityName, array $where, array $channels): array
-    {
-        $tableName = Util::toUnderScore(lcfirst($entityName));
-
-        /** @var Record $service */
-        $service = $this->getServiceFactory()->create($entityName);
-
-        /* @var $repository RDB */
-        $repository = $this->getEntityManager()->getRepository($entityName);
-
-        $sp = $service->getSelectParams(['where' => $where]);
-        $sp['select'] = ['id'];
-
-        $qb1 = $repository->getMapper()->createSelectQueryBuilder($repository->get(), $sp, true);
-
-        $qb = $repository->getConnection()->createQueryBuilder()
-            ->select('a.id, a.sort_order')
-            ->distinct()
-            ->from("{$tableName}_attribute_value", 'av')
-            ->innerJoin('av', "attribute", 'a', 'av.attribute_id = a.id AND a.deleted=:false')
-            ->where("av.{$tableName}_id in ({$qb1->getSQL()})")
-            ->andWhere('av.deleted=:false')
-            ->orderBy('a.sort_order', 'ASC')
-            ->setParameter('false', false, ParameterType::BOOLEAN);
-
-        foreach ($qb1->getParameters() as $parameterName => $value) {
-            $qb->setParameter($parameterName, $value, Mapper::getParameterType($value));
-        }
-
-        $channelSqlParts = [];
-        foreach ($channels as $channelId) {
-            if ($channelId === 'withoutChannel') {
-                $channelSqlParts[] = "a.channel_id IS NULL";
-            } else {
-                $channelSqlParts[] = "a.channel_id = :$channelId";
-                $qb->setParameter($channelId, $channelId);
-            }
-        }
-        $qb->andWhere(implode(' OR ', $channelSqlParts));
-
-        return array_column($qb->fetchAllAssociative(), 'id');
-    }
-
-    protected function getAttributeFieldConverter(): AttributeFieldConverter
-    {
-        return $this->getContainer()->get(AttributeFieldConverter::class);
     }
 }

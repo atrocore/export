@@ -19,8 +19,7 @@
     "zip": "Assets in ein ZIP-Archiv exportieren",
     "fileNameTemplate": "Dateinamenvorlage",
     "exportByForListAttribute": "Verwandte Entitätsfelder für Listen",
-    "script": "Skript",
-    "compositeAttributesCombine": "Kompositattribute als einzelnen Wert exportieren"
+    "script": "Skript"
   },
   "options": {
     "columnType": {
@@ -33,6 +32,10 @@
       "Fixed value": "Fester Wert",
       "script": "Skript"
     }
+  },
+  "labels": {
+    "withoutChannel": "Ohne Kanal",
+    "allAttributes": "Alle (%s) Attribute"
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Datensätze für verknüpfte Entität werden als separate Felder/Spalten exportiert, indem für den Namen das Suffix „_1“, „_2“ usw. verwendet wird.",

@@ -35,8 +35,7 @@ class ExportConfiguratorItem extends Base
             'entityAttributeId',
             'fixedValue',
             'zip',
-            'virtualFields',
-            'compositeAttributesCombine'
+            'virtualFields'
         ];
 
     public function prepareEntityForOutput(Entity $entity)

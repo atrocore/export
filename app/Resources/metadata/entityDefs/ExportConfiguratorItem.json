@@ -74,20 +74,6 @@
       "notStorable": true,
       "protected": true
     },
-    "compositeAttributesCombine": {
-      "type": "bool",
-      "conditionalProperties": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "equals",
-              "attribute": "type",
-              "value": "allAttributes"
-            }
-          ]
-        }
-      }
-    },
     "channels": {
       "type": "array",
       "view": "export:views/export-configurator-item/fields/channels",

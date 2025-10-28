@@ -20,8 +20,7 @@
     "zip": "Export Files to a ZIP archive",
     "fileNameTemplate": "File Name Template",
     "exportByForListAttribute": "Related Entity Fields for Lists",
-    "script": "Script",
-    "compositeAttributesCombine": "Export composite attributes as a single value"
+    "script": "Script"
   },
   "options": {
     "columnType": {
@@ -36,7 +35,8 @@
     }
   },
   "labels": {
-    "withoutChannel": "Without Channel"
+    "withoutChannel": "Without Channel",
+    "allAttributes": "All (%s) Attributes"
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Related data records will be exported as different fields/columns by using for the name the suffix \"_1\", \"_2\" and so on.",
