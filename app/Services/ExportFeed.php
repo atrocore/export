@@ -250,7 +250,7 @@ class ExportFeed extends Base
                 ];
 
                 if (in_array($fieldDefs['type'], ['link', 'file'])) {
-                    $data['exportBy'] = ['id'];
+                    $data['exportBy'] = !empty($fieldDefs['unitIdField']) ? ['name'] : ['id'];
                 }
 
                 if (in_array($fieldDefs['type'], ['rangeInt', 'rangeFloat'])) {
@@ -264,14 +264,14 @@ class ExportFeed extends Base
                     continue;
                 }
 
-                if (in_array($fieldDefs['type'], ['int', 'float', 'varchar']) && !empty($fieldDefs['measureId']) && empty($fieldDefs['rangeType'])) {
+                if (in_array($fieldDefs['type'], ['link']) && !empty($fieldDefs['unitIdField']) && empty($fieldDefs['rangeType'])) {
                     $result[] = $data;
                     $result[] = array_merge($data, [
                         'name'       => null,
                         'type'       => 'script',
                         'columnType' => 'custom',
-                        'column'     => $fieldDefs['detailViewLabel'] ?? $fieldDefs['label'],
-                        'script'     => "{{ record['{$field}'] }} {{ record['{$field}UnitName'] }}",
+                        'column'     => $attributesDefs[$fieldDefs['mainField']]['detailViewLabel'] ?? $attributesDefs[$fieldDefs['mainField']]['label'],
+                        'script'     => "{{ record['{$fieldDefs['mainField']}'] }} {{ record['{$fieldDefs['mainField']}UnitName'] }}",
                     ]);
                     continue;
                 }
