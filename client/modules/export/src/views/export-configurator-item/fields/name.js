@@ -65,7 +65,7 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
             }
 
             if (this.model.get('type') === 'allAttributes') {
-                name = this.getLanguage().translateOption('allAttributes', 'type', 'ExportConfiguratorItem');
+                name = this.getLanguage().translateOption('allAttributes', 'type', 'ExportConfiguratorItem') + ` (${this.model.get('allAttributesCount')})`;
             }
 
             if (this.model.get('type') === 'Fixed value') {
