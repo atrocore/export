@@ -74,7 +74,7 @@ class ExportConfiguratorItem extends Base
                 ->getAllAttributesIdsForEntity(
                     $entity->get('entity'),
                     $feed->get('data')->where ?? [],
-                    $entity->get('channels')
+                    $entity->get('channels') ?? []
                 );
 
             $entity->set('allAttributesCount', count($attributesIds));

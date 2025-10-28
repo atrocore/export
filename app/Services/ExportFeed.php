@@ -222,6 +222,7 @@ class ExportFeed extends Base
         }
 
         return true;
+
     }
 
     public function prepareConfiguratorItemDataForAttributes(Entity $feed, array $attributesIds): array
@@ -262,7 +263,7 @@ class ExportFeed extends Base
                     continue;
                 }
 
-                if (in_array($fieldDefs['type'], ['int', 'float', 'varchar']) && !empty($fieldDefs['measureId'])) {
+                if (in_array($fieldDefs['type'], ['int', 'float', 'varchar']) && !empty($fieldDefs['measureId']) && empty($fieldDefs['rangeType'])) {
                     $result[] = array_merge($data, [
                         'name'       => null,
                         'type'       => 'script',
@@ -306,6 +307,7 @@ class ExportFeed extends Base
             'type'                    => 'allAttributes',
             'columnType'              => 'custom',
             lcfirst($entityName).'Id' => $feed->get('id'),
+            'channels'                => ['withoutChannel'],
         ];
 
         $this->createExportConfiguratorItem($data);
