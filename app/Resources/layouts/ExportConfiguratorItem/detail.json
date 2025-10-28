@@ -27,6 +27,12 @@
       ],
       [
         {
+          "name": "channels"
+        },
+        false
+      ],
+      [
+        {
           "name": "exportBy"
         },
         {

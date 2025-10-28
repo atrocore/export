@@ -29,6 +29,7 @@ class ExportConfiguratorItem extends Base
             'type',
             'columnType',
             'exportBy',
+            'channels',
             'exportIntoSeparateColumns',
             'sortOrder',
             'entityAttributeId',
@@ -67,6 +68,17 @@ class ExportConfiguratorItem extends Base
         $entity->set('editable', $this->getAcl()->check($feed, 'edit'));
 
         $entity->set('fileNameTemplate', $entity->getVirtualField('fileNameTemplate'));
+
+        if ($entity->get('type') === 'allAttributes') {
+            $attributesIds = $this->getEntityManager()->getRepository('Attribute')
+                ->getAllAttributesIdsForEntity(
+                    $entity->get('entity'),
+                    $feed->get('data')->where ?? [],
+                    $entity->get('channels') ?? []
+                );
+
+            $entity->set('allAttributesCount', count($attributesIds));
+        }
     }
 
     public function updateEntity($id, $data)

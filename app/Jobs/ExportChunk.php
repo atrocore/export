@@ -29,7 +29,7 @@ class ExportChunk extends AbstractJob implements JobInterface
             return;
         }
 
-        if (!in_array($exportJob->get('state'), ['Pending', 'Running'])) {
+        if (!in_array($exportJob->get('state'), ['Pending', 'Running']) && empty($job->_debug)) {
             return;
         }
 

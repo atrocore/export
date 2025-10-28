@@ -69,11 +69,41 @@
       "type": "array",
       "view": "export:views/export-configurator-item/fields/export-by"
     },
+    "allAttributesCount": {
+      "type": "int",
+      "notStorable": true,
+      "protected": true
+    },
+    "channels": {
+      "type": "array",
+      "view": "export:views/export-configurator-item/fields/channels",
+      "conditionalProperties": {
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "allAttributes"
+            }
+          ]
+        },
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "allAttributes"
+            }
+          ]
+        }
+      }
+    },
     "type": {
       "type": "enum",
       "required": true,
       "options": [
         "Field",
+        "allAttributes",
         "Fixed value",
         "script"
       ],

@@ -46,6 +46,7 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
             let data = Dep.prototype.data.call(this);
 
             if (this.mode === 'list') {
+                data.bold = this.model.get('type') === 'allAttributes';
                 data.extraInfo = this.getExtraInfo();
             }
 
@@ -63,12 +64,16 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
                 name = this.translate(name, 'fields', this.model.get('entity'));
             }
 
+            if (this.model.get('type') === 'allAttributes') {
+                name = this.translate('allAttributes', 'labels', 'ExportConfiguratorItem').replace('%s', this.model.get('allAttributesCount'));
+            }
+
             if (this.model.get('type') === 'Fixed value') {
-                name = this.getLanguage().translate('fixedValue', 'fields', 'ExportConfiguratorItem');
+                name = this.translate('fixedValue', 'fields', 'ExportConfiguratorItem');
             }
 
             if (this.model.get('type') === 'script') {
-                name = this.getLanguage().translate('script', 'fields', 'ExportConfiguratorItem');
+                name = this.translate('script', 'fields', 'ExportConfiguratorItem');
             }
 
             return name;
@@ -85,6 +90,27 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
                 if (this.model.get('zip')) {
                     extraInfo += '<br> Zip'
                 }
+            }
+
+            if (this.model.get('type') === 'allAttributes') {
+                let allChannels = [];
+                this.ajaxGetRequest('Channel', null, {async: false}).success(res => {
+                    allChannels = res.list || [];
+                });
+
+                let res = [];
+                (this.model.get('channels') || []).forEach(item => {
+                    if (item === 'withoutChannel') {
+                        res.push(this.translate('withoutChannel', 'labels', 'ExportConfiguratorItem'));
+                    } else {
+                        allChannels.forEach(channel => {
+                            if (channel.id === item) {
+                                res.push(channel.name);
+                            }
+                        })
+                    }
+                })
+                extraInfo += this.translate('channels', 'fields', 'ExportConfiguratorItem') + ': ' + res.join(', ');
             }
 
             return extraInfo;

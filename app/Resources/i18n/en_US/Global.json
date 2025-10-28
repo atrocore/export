@@ -15,6 +15,7 @@
     "filter": "Filter",
     "selectFields": "Select field(s)",
     "selectAttributes": "Select attribute(s)",
+    "addAllAttributes": "Add all attributes",
     "addFixed": "Add fixed value",
     "addScript": "Add script",
     "removeAllItems": "Remove all",

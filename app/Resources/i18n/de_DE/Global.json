@@ -14,6 +14,7 @@
     "tryAgain": "Erneut exportieren",
     "filter": "Filter",
     "selectAttributes": "Attribut(e) auswählen",
+    "addAllAttributes": "Alle Attribute hinzufügen",
     "removeAllItems": "Alle Regel entfernen",
     "exportErrorDuring24Hours": "Fehler beim Exportieren von Feeds/Jobs während 24 Stunden",
     "exportErrorDuring7Days": "Fehler beim Exportieren von Feeds/Jobs während 7 Tagen",

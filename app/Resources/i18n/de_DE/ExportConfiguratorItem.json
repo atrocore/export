@@ -6,6 +6,7 @@
     "exportFeed": "Exportfeed",
     "remove": "Löschen",
     "exportBy": "Verwandte Entitätsfelder",
+    "channels": "Kanal(e)",
     "exportIntoSeparateColumns": "Trennen",
     "type": "Typ",
     "mask": "Maske",
@@ -24,7 +25,17 @@
     "columnType": {
       "name": "Name",
       "custom": "Benutzerdefinierter Name"
+    },
+    "type": {
+      "Field": "Feld",
+      "allAttributes": "Alle Attribute",
+      "Fixed value": "Fester Wert",
+      "script": "Skript"
     }
+  },
+  "labels": {
+    "withoutChannel": "Ohne Kanal",
+    "allAttributes": "Alle (%s) Attribute"
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Datensätze für verknüpfte Entität werden als separate Felder/Spalten exportiert, indem für den Namen das Suffix „_1“, „_2“ usw. verwendet wird.",

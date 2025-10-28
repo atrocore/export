@@ -25,6 +25,7 @@ use Espo\Core\Utils\Json;
 use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Atro\Core\EventManager\Event;
+use Espo\ORM\EntityCollection;
 use Export\Jobs\ExportJobCreator;
 use Export\TemplateLoaders\AbstractTemplate;
 use Export\Entities\ExportFeed as ExportFeedEntity;
@@ -85,7 +86,7 @@ class ExportFeed extends Base
             case 'csv':
                 $configuratorItems = $exportFeed->get('configuratorItems');
                 if (empty($configuratorItems[0])) {
-                    throw new Exceptions\BadRequest($this->getInjection('language')->translate('noConfiguratorItems', 'exceptions', 'ExportFeed'));
+                    throw new Exceptions\BadRequest($this->getLanguage()->translate('noConfiguratorItems', 'exceptions', 'ExportFeed'));
                 }
                 break;
             case 'xlsx':
@@ -97,11 +98,11 @@ class ExportFeed extends Base
                             }
                         }
                     }
-                    throw new Exceptions\BadRequest($this->getInjection('language')->translate('noSheets', 'exceptions', 'ExportFeed'));
+                    throw new Exceptions\BadRequest($this->getLanguage()->translate('noSheets', 'exceptions', 'ExportFeed'));
                 } else {
                     $configuratorItems = $exportFeed->get('configuratorItems');
                     if (empty($configuratorItems[0])) {
-                        throw new Exceptions\BadRequest($this->getInjection('language')->translate('noConfiguratorItems', 'exceptions', 'ExportFeed'));
+                        throw new Exceptions\BadRequest($this->getLanguage()->translate('noConfiguratorItems', 'exceptions', 'ExportFeed'));
                     }
                 }
                 break;
@@ -216,52 +217,103 @@ class ExportFeed extends Base
             return false;
         }
 
-        $feedEntity = $this->getEntityManager()->getRepository($feed->get('entity') ?? $feed->getFeedField('entity'))->get();
+        foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds) as $row) {
+            $this->createExportConfiguratorItem($row);
+        }
+
+        return true;
+
+    }
+
+    public function prepareConfiguratorItemDataForAttributes(Entity $feed, array $attributesIds): array
+    {
+        $result = [];
+
+        $feedEntityName = $feed->get('entity') ?? $feed->getFeedField('entity');
+
+        $feedEntity = $this->getEntityManager()->getRepository($feedEntityName)->get();
 
         foreach ($this->getAttributeFieldConverter()->getAttributesRowsByIds($attributesIds) as $attribute) {
             if (!empty($attribute['channel_name'])) {
-                $attribute['name'] .= ' / ' . $attribute['channel_name'];
+                $attribute['name'] .= ' / '.$attribute['channel_name'];
             }
             $attributesDefs = [];
             $this->getAttributeFieldConverter()->convert($feedEntity, $attribute, $attributesDefs);
             foreach ($attributesDefs as $field => $fieldDefs) {
                 $data = [
-                    'name'                      => $field,
-                    'type'                      => 'Field',
-                    'columnType'                => 'name',
-                    'entityAttributeId'         => $attribute['id'],
-                    lcfirst($entityName) . 'Id' => $feed->get('id')
+                    'name'                               => $field,
+                    'type'                               => 'Field',
+                    'columnType'                         => 'custom',
+                    'column'                             => $fieldDefs['label'],
+                    'entityAttributeId'                  => $attribute['id'],
+                    lcfirst($feed->getEntityName()).'Id' => $feed->get('id'),
                 ];
 
                 if (in_array($fieldDefs['type'], ['link', 'file'])) {
-                    $data['exportBy'] = ['id'];
+                    $data['exportBy'] = !empty($fieldDefs['unitIdField']) ? ['name'] : ['id'];
                 }
 
                 if (in_array($fieldDefs['type'], ['rangeInt', 'rangeFloat'])) {
-                    $this->createExportConfiguratorItem(array_merge($data, [
+                    $result[] = array_merge($data, [
                         'name'       => null,
                         'type'       => 'script',
                         'columnType' => 'custom',
                         'column'     => $fieldDefs['label'],
-                        'script'     => "{{ record['{$field}From'] }} - {{ record['{$field}To'] }} {{ record['{$field}UnitName'] }}"
-                    ]));
-
+                        'script'     => "{{ record['{$field}From'] }} - {{ record['{$field}To'] }} {{ record['{$field}UnitName'] }}",
+                    ]);
                     continue;
                 }
 
-                if (in_array($fieldDefs['type'], ['int', 'float', 'varchar']) && !empty($fieldDefs['measureId'])) {
-                    $this->createExportConfiguratorItem(array_merge($data, [
+                if (in_array($fieldDefs['type'], ['link']) && !empty($fieldDefs['unitIdField']) && empty($fieldDefs['rangeType'])) {
+                    $result[] = $data;
+                    $result[] = array_merge($data, [
                         'name'       => null,
                         'type'       => 'script',
                         'columnType' => 'custom',
-                        'column'     => $fieldDefs['detailViewLabel'],
-                        'script'     => "{{ record['{$field}'] }} {{ record['{$field}UnitName'] }}"
-                    ]));
+                        'column'     => $attributesDefs[$fieldDefs['mainField']]['detailViewLabel'] ?? $attributesDefs[$fieldDefs['mainField']]['label'],
+                        'script'     => "{{ record['{$fieldDefs['mainField']}'] }} {{ record['{$fieldDefs['mainField']}UnitName'] }}",
+                    ]);
+                    continue;
                 }
 
-                $this->createExportConfiguratorItem($data);
+                $result[] = $data;
             }
         }
+
+        return $result;
+    }
+
+    public function addAllAttributes(string $entityName, string $id): bool
+    {
+        if (!in_array($entityName, ['ExportFeed', 'Sheet'])) {
+            throw new Exceptions\BadRequest('Wrong entity name');
+        }
+
+        $feed = $this->getEntityManager()->getRepository($entityName)->get($id);
+        if (empty($feed)) {
+            return false;
+        }
+
+        $exists = $this->getEntityManager()->getRepository('ExportConfiguratorItem')
+            ->where([
+                'type'                    => 'allAttributes',
+                lcfirst($entityName).'Id' => $feed->get('id'),
+            ])
+            ->findOne();
+
+        if (!empty($exists)) {
+            throw new Exceptions\BadRequest($this->getLanguage()->translate('allAttributesAlreadyAdded', 'labels', 'ExportFeed'));
+        }
+
+        $data = [
+            'name'                    => null,
+            'type'                    => 'allAttributes',
+            'columnType'              => 'custom',
+            lcfirst($entityName).'Id' => $feed->get('id'),
+            'channels'                => ['withoutChannel'],
+        ];
+
+        $this->createExportConfiguratorItem($data);
 
         return true;
     }
@@ -415,12 +467,36 @@ class ExportFeed extends Base
             $entityName = $sheet->get('entity');
         }
 
+        $collection = new EntityCollection([], 'ExportConfiguratorItem');
+        foreach ($items['collection'] as $item) {
+            if ($item->get('type') === 'allAttributes') {
+                $attributesIds = $this->getEntityManager()->getRepository('Attribute')->getAllAttributesIdsForEntity(
+                    $entityName,
+                    $feed->get('data')->where ?? [],
+                    $item->get('channels')
+                );
+
+                if (empty($attributesIds)) {
+                    continue;
+                }
+
+                foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds) as $row) {
+                    $attributeItem = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
+                    $attributeItem->set($row);
+                    $attributeItem->id = $item->id;
+                    $collection->append($attributeItem);
+                }
+            } else {
+                $collection->append($item);
+            }
+        }
+
         $configuration = [];
 
         /** @var \Export\Services\ExportConfiguratorItem $eciService */
         $eciService = $this->getInjection('serviceFactory')->create('ExportConfiguratorItem');
 
-        foreach ($items['collection'] as $item) {
+        foreach ($collection as $item) {
             $row = [
                 'id'                        => $item->get('id'),
                 'columnType'                => $item->get('columnType'),
@@ -508,7 +584,7 @@ class ExportFeed extends Base
 
     public function pushExport(array $data): bool
     {
-        $name = $this->getInjection('language')->translate('createExportJobs', 'additionalTranslates', 'ExportFeed');
+        $name = $this->getLanguage()->translate('createExportJobs', 'additionalTranslates', 'ExportFeed');
         $name = sprintf($name, $data['feed']['name']);
 
         $priority = empty($data['feed']['priority']) ? 'Normal' : (string)$data['feed']['priority'];
@@ -644,7 +720,7 @@ class ExportFeed extends Base
             $item = $baseConfiguration;
             $item['field'] = $field;
             $item['id'] = Util::generateId();
-            $item['column'] = $this->getInjection('language')->translate($field, 'fields', $scope);
+            $item['column'] = $this->getLanguage()->translate($field, 'fields', $scope);
 
             if (in_array($fieldDefs['type'], ['link', 'linkMultiple', 'extensibleEnum', 'extensibleMultiEnum'])) {
                 $item['exportBy'] = ['name'];
@@ -838,10 +914,12 @@ class ExportFeed extends Base
         } else {
             $entityName = $exportFeed->getFeedField('entity');
             $languageObj = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
+            if (!empty($feedData['data']['configuration'])) {
+                $attributeIds = array_unique(array_filter(array_column($feedData['data']['configuration'], 'entityAttributeId')));
+            }
             $currentLocaleId = $this->getUser()->get('localeId');
             $this->getUser()->set('localeId', $exportFeed->get('localeId'));
         }
-
 
         $conn = $this->getEntityManager()->getConnection();
 

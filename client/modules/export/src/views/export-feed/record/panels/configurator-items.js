@@ -27,6 +27,10 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                         action: 'selectAttributes'
                     },
                     {
+                        label: 'addAllAttributes',
+                        action: 'addAllAttributes'
+                    },
+                    {
                         label: 'addFixed',
                         action: 'addFixed'
                     },
@@ -77,11 +81,14 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
 
         prepareActionsVisibility() {
             const $selectAttributes = $('.action[data-action=selectAttributes][data-panel=configuratorItems]');
+            const $addAllAttributes = $('.action[data-action=addAllAttributes][data-panel=configuratorItems]');
 
             if (this.getMetadata().get(`scopes.${this.model.get('entity')}.hasAttribute`)) {
                 $selectAttributes.show();
+                $addAllAttributes.show();
             } else {
                 $selectAttributes.hide();
+                $addAllAttributes.hide();
             }
         },
 
@@ -211,6 +218,19 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                         this.refreshPanel();
                     });
                 });
+            });
+        },
+
+        actionAddAllAttributes() {
+            this.notify('Saving...');
+            this.ajaxPostRequest(`ExportFeed/action/addAllAttributes`, {
+                id: this.model.get('id'),
+                entityName: this.model.name
+            }).success(() => {
+                this.notify('Saved', 'success');
+                this.refreshPanel();
+            }).error(() => {
+                this.notify('Error occurred', 'error');
             });
         },
 

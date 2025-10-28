@@ -38,7 +38,11 @@ Espo.define('export:views/export-configurator-item/fields/column-type', 'views/f
             },
 
             checkFieldVisibility() {
-                this.$el.show();
+                if (this.model.get('type') !== 'allAttributes') {
+                    this.$el.parent().show();
+                } else {
+                    this.$el.parent().hide();
+                }
             },
 
             checkFieldDisability() {

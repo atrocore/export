@@ -84,7 +84,6 @@ class ExportJobCreator extends AbstractJob implements JobInterface
                     }
                 }
             }
-
         } else {
             $this->pushExportJob($data['feed']['name'], $data);
         }
