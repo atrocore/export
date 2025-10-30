@@ -982,7 +982,10 @@ class ExportFeed extends Base
         // put attributes to metadata
         $attributesIds = array_unique(array_filter(array_column($collection->toArray(), 'entityAttributeId')));
         if (!empty($attributesIds)) {
-            $attributes = $this->getEntityManager()->getRepository('Attribute')->getAttributesByIds($attributesIds);
+            $attributes = $this
+                ->getEntityManager()
+                ->getRepository('Attribute')
+                ->getAttributesByIds(array_values($attributesIds));
             if (!empty($attributes)) {
                 $language = self::getLocalizedLanguage($this->getInjection('container'), $feed->get('localeId'));
 
