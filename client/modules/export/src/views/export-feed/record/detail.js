@@ -26,7 +26,7 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
             ];
 
             // Check if import module is installed
-            if (this.getMetadata('entityDefs.ImportFeed') && this.model.get('type') === 'simple') {
+            if (this.getMetadata().get('scopes.ImportFeed.type')) {
                 this.additionalButtons.push({
                     "action": "duplicateAsImport",
                     "label": this.translate('DuplicateAsImport', 'labels', 'ExportFeed')
