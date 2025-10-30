@@ -243,8 +243,7 @@ class ExportFeed extends Base
                 $data = [
                     'name'                               => $field,
                     'type'                               => 'Field',
-                    'columnType'                         => 'custom',
-                    'column'                             => $fieldDefs['label'],
+                    'columnType'                         => 'name',
                     'entityAttributeId'                  => $attribute['id'],
                     lcfirst($feed->getEntityName()).'Id' => $feed->get('id'),
                 ];
@@ -451,12 +450,6 @@ class ExportFeed extends Base
 
     public function prepareFeedDataConfiguration(Entity $sheet): array
     {
-        $items = $this->getInjection('serviceFactory')->create($sheet->getEntityType())
-            ->findLinkedEntities($sheet->get('id'), 'configuratorItems', ['maxSize' => \PHP_INT_MAX, 'sortBy' => 'sortOrder']);
-        if (empty($items['total'])) {
-            return [];
-        }
-
         if ($sheet->getEntityType() === 'ExportFeed') {
             /** @var ExportFeedEntity $feed */
             $feed = $sheet;
@@ -467,36 +460,12 @@ class ExportFeed extends Base
             $entityName = $sheet->get('entity');
         }
 
-        $collection = new EntityCollection([], 'ExportConfiguratorItem');
-        foreach ($items['collection'] as $item) {
-            if ($item->get('type') === 'allAttributes') {
-                $attributesIds = $this->getEntityManager()->getRepository('Attribute')->getAllAttributesIdsForEntity(
-                    $entityName,
-                    $feed->get('data')->where ?? [],
-                    $item->get('channels')
-                );
-
-                if (empty($attributesIds)) {
-                    continue;
-                }
-
-                foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds) as $row) {
-                    $attributeItem = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
-                    $attributeItem->set($row);
-                    $attributeItem->id = $item->id;
-                    $collection->append($attributeItem);
-                }
-            } else {
-                $collection->append($item);
-            }
-        }
-
         $configuration = [];
 
         /** @var \Export\Services\ExportConfiguratorItem $eciService */
         $eciService = $this->getInjection('serviceFactory')->create('ExportConfiguratorItem');
 
-        foreach ($collection as $item) {
+        foreach ($this->getPreparedConfiguratorItems($feed, $sheet, $entityName) as $item) {
             $row = [
                 'id'                        => $item->get('id'),
                 'columnType'                => $item->get('columnType'),
@@ -894,13 +863,6 @@ class ExportFeed extends Base
         ];
     }
 
-    /**
-     * Put attributes to metadata as fields
-     *
-     * @param string $exportFeedId
-     * @return void
-     * @throws Exceptions\Error
-     */
     public function putAttributesToMetadata(string $exportFeedId, ?array $feedData = null): void
     {
         $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
@@ -909,21 +871,17 @@ class ExportFeed extends Base
                 return;
             }
             $entityName = $feedData['entity'];
-            $languageObj = $this->getInjection('container')->get('language');
-            $attributeIds = array_unique(array_filter(array_column($feedData['data']['configuration'], 'entityAttributeId')));
+            $language = $this->getInjection('container')->get('language');
+            $attributesIds = array_unique(array_filter(array_column($feedData['data']['configuration'] ?? [], 'entityAttributeId')));
         } else {
             $entityName = $exportFeed->getFeedField('entity');
-            $languageObj = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
-            if (!empty($feedData['data']['configuration'])) {
-                $attributeIds = array_unique(array_filter(array_column($feedData['data']['configuration'], 'entityAttributeId')));
-            }
+            $language = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
             $currentLocaleId = $this->getUser()->get('localeId');
             $this->getUser()->set('localeId', $exportFeed->get('localeId'));
         }
 
-        $conn = $this->getEntityManager()->getConnection();
-
         if (!empty($exportFeed) && !empty($exportFeed->get('hasMultipleSheets'))) {
+            $conn = $this->getEntityManager()->getConnection();
             $res = $conn->createQueryBuilder()
                 ->select('a.*, s.entity as sheet_entity, c.name as channel_name')
                 ->from($conn->quoteIdentifier('attribute'), 'a')
@@ -944,49 +902,102 @@ class ExportFeed extends Base
 
             foreach ($result as $entityName => $attributes) {
                 if ($this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
-                    $exportEntity = $this->getEntityManager()->getEntity($entityName);
-
-                    $attributesDefs = [];
                     foreach ($attributes as $row) {
-                        if (!empty($row['channel_name'])) {
-                            $row['name'] = $row['name'] . ' / ' . $row['channel_name'];
-                        }
-                        $this->getAttributeFieldConverter()->convert($exportEntity, $row, $attributesDefs);
-                    }
-
-                    foreach ($attributesDefs as $name => $attributeDefs) {
-                        $this
-                            ->getMetadata()
-                            ->set('entityDefs', $entityName, ['fields' => [$name => $attributeDefs]]);
-
-                        $languageObj->set($entityName, 'fields', $name, $attributeDefs['label']);
+                        $this->putAttributeToMetadata($entityName, $language, $row);
                     }
                 }
             }
         } else if (!empty($entityName) && $this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
-            $attributes = $this->getRepository()->getAttributesInConfiguratorItems($exportFeedId, $attributeIds ?? null);
-            $exportEntity = $this->getEntityManager()->getEntity($entityName);
-
-            $attributesDefs = [];
-            foreach ($attributes as $row) {
-                if (!empty($row['channel_name'])) {
-                    $row['name'] = $row['name'] . ' / ' . $row['channel_name'];
-                }
-                $this->getAttributeFieldConverter()->convert($exportEntity, $row, $attributesDefs);
+            if (empty($attributesIds)){
+                $attributes = $this->getRepository()->getAttributesInConfiguratorItems($exportFeedId);
+            } else {
+                $attributes = $this->getEntityManager()->getRepository('Attribute')->getAttributesByIds($attributesIds);
             }
 
-            foreach ($attributesDefs as $name => $attributeDefs) {
-                $this
-                    ->getMetadata()
-                    ->set('entityDefs', $entityName, ['fields' => [$name => $attributeDefs]]);
-
-                $languageObj->set($entityName, 'fields', $name, $attributeDefs['label']);
+            foreach ($attributes as $row) {
+                $this->putAttributeToMetadata($entityName, $language, $row);
             }
         }
 
         if (isset($currentLocaleId)) {
             $this->getUser()->set('localeId', $currentLocaleId);
         }
+    }
+
+    public function putAttributeToMetadata(string $entityName, Language $language, array $attributeRow): void
+    {
+        $attributesDefs = [];
+        if (!empty($attributeRow['channel_name'])) {
+            $attributeRow['name'] = $attributeRow['name'].' / '.$attributeRow['channel_name'];
+        }
+
+        $this
+            ->getAttributeFieldConverter()
+            ->convert($this->getEntityManager()->getEntity($entityName), $attributeRow, $attributesDefs);
+
+        foreach ($attributesDefs as $name => $attributeDefs) {
+            $this
+                ->getMetadata()
+                ->set('entityDefs', $entityName, ['fields' => [$name => $attributeDefs]]);
+
+            $language->set($entityName, 'fields', $name, $attributeDefs['label']);
+        }
+    }
+
+    protected function getPreparedConfiguratorItems(Entity $feed, Entity $sheet, string $entityName): EntityCollection
+    {
+        $items = $this->getEntityManager()->getRepository('ExportConfiguratorItem')
+            ->where([
+                lcfirst($sheet->getEntityName()).'Id' => $sheet->get('id'),
+            ])
+            ->order('sortOrder')
+            ->find();
+
+        $collection = new EntityCollection([], 'ExportConfiguratorItem');
+        foreach ($items as $item) {
+            if ($item->get('type') === 'allAttributes') {
+                $attributesIds = $this->getEntityManager()->getRepository('Attribute')->getAllAttributesIdsForEntity(
+                    $entityName,
+                    $feed->get('data')->where ?? [],
+                    $item->get('channels')
+                );
+
+                if (empty($attributesIds)) {
+                    continue;
+                }
+
+                foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds) as $row) {
+                    $attributeItem = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
+                    $attributeItem->set($row);
+                    $attributeItem->id = $item->id;
+                    $attributeItem->set('entity', $entityName);
+                    $collection->append($attributeItem);
+                }
+            } else {
+                $item->set('entity', $entityName);
+                $collection->append($item);
+            }
+        }
+
+        // put attributes to metadata
+        $attributesIds = array_unique(array_filter(array_column($collection->toArray(), 'entityAttributeId')));
+        if (!empty($attributesIds)) {
+            $attributes = $this->getEntityManager()->getRepository('Attribute')->getAttributesByIds($attributesIds);
+            if (!empty($attributes)) {
+                $language = self::getLocalizedLanguage($this->getInjection('container'), $feed->get('localeId'));
+
+                $currentLocaleId = $this->getUser()->get('localeId') ?? $feed->get('localeId');
+                $this->getUser()->set('localeId', $feed->get('localeId'));
+
+                foreach ($attributes as $row) {
+                    $this->putAttributeToMetadata($entityName, $language, $row);
+                }
+
+                $this->getUser()->set('localeId', $currentLocaleId);
+            }
+        }
+
+        return $collection;
     }
 
     protected function getAttributeFieldConverter(): AttributeFieldConverter
