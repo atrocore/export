@@ -872,12 +872,16 @@ class ExportFeed extends Base
             }
             $entityName = $feedData['entity'];
             $language = $this->getInjection('container')->get('language');
-            $attributesIds = array_unique(array_filter(array_column($feedData['data']['configuration'] ?? [], 'entityAttributeId')));
         } else {
             $entityName = $exportFeed->getFeedField('entity');
             $language = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
             $currentLocaleId = $this->getUser()->get('localeId');
             $this->getUser()->set('localeId', $exportFeed->get('localeId'));
+        }
+
+        if (!empty($feedData['data']['configuration'])) {
+            $attributesIds = array_column($feedData['data']['configuration'], 'entityAttributeId');
+            $attributesIds = array_values(array_unique(array_filter($attributesIds)));
         }
 
         if (!empty($exportFeed) && !empty($exportFeed->get('hasMultipleSheets'))) {
