@@ -76,6 +76,10 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
         },
 
         panelVisible() {
+            if (this.model.name === 'Sheet'){
+                return true;
+            }
+
             return !(this.model.get('hasMultipleSheets')) && ['csv', 'xlsx'].includes(this.model.get('fileType'));
         },
 

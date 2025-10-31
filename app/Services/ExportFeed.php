@@ -867,7 +867,7 @@ class ExportFeed extends Base
     {
         $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
         if (empty($exportFeed)) {
-            if (empty($feedData)) {
+            if ($feedData === null) {
                 return;
             }
             $entityName = $feedData['entity'];
@@ -879,45 +879,42 @@ class ExportFeed extends Base
             $this->getUser()->set('localeId', $exportFeed->get('localeId'));
         }
 
-        if (!empty($feedData['data']['configuration'])) {
-            $attributesIds = array_column($feedData['data']['configuration'], 'entityAttributeId');
-            $attributesIds = array_values(array_unique(array_filter($attributesIds)));
-        }
-
         if (!empty($exportFeed) && !empty($exportFeed->get('hasMultipleSheets'))) {
-            $conn = $this->getEntityManager()->getConnection();
-            $res = $conn->createQueryBuilder()
-                ->select('a.*, s.entity as sheet_entity, c.name as channel_name')
-                ->from($conn->quoteIdentifier('attribute'), 'a')
-                ->leftJoin('a', 'channel', 'c', 'c.id=a.channel_id AND c.deleted=:false')
-                ->innerJoin('a', 'export_configurator_item', 'i', 'i.entity_attribute_id=a.id AND i.deleted=:false')
-                ->innerJoin('i', $conn->quoteIdentifier('sheet'), 's', 'i.sheet_id=s.id AND s.deleted=:false')
-                ->innerJoin('s', 'export_feed', 'e', 's.export_feed_id=e.id AND e.deleted=:false')
-                ->where('a.deleted=:false')
-                ->andWhere('e.id=:exportFeedId')
-                ->setParameter('false', false, ParameterType::BOOLEAN)
-                ->setParameter('exportFeedId', $exportFeedId)
-                ->fetchAllAssociative();
-
-            $result = [];
-            foreach ($res as $v) {
-                $result[$v['sheet_entity']][$v['id']] = $v;
-            }
-
-            foreach ($result as $entityName => $attributes) {
-                if ($this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
-                    foreach ($attributes as $row) {
-                        $this->putAttributeToMetadata($entityName, $language, $row);
+            if ($feedData) {
+                foreach ($feedData['sheets'] ?? [] as $sheet) {
+                    $attributesIds = array_column($sheet['configuration'], 'entityAttributeId');
+                    $attributesIds = array_values(array_unique(array_filter($attributesIds)));
+                    if (!empty($attributesIds)) {
+                        $attributes = $this->getEntityManager()->getRepository('Attribute')->getAttributesByIds($attributesIds);
+                        foreach ($attributes as $row) {
+                            $this->putAttributeToMetadata($sheet['entity'], $language, $row);
+                        }
+                    }
+                }
+            } else {
+                foreach ($exportFeed->get('sheets') ?? [] as $sheet) {
+                    $items = $this->getPreparedConfiguratorItems($exportFeed, $sheet, $sheet->get('entity'));
+                    $attributesIds = array_column($items->toArray(), 'entityAttributeId');
+                    $attributesIds = array_values(array_unique(array_filter($attributesIds)));
+                    if (!empty($attributesIds)) {
+                        $attributes = $this->getEntityManager()->getRepository('Attribute')->getAttributesByIds($attributesIds);
+                        foreach ($attributes as $row) {
+                            $this->putAttributeToMetadata($sheet->get('entity'), $language, $row);
+                        }
                     }
                 }
             }
-        } else if (!empty($entityName) && $this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
-            if (empty($attributesIds)){
-                $attributes = $this->getRepository()->getAttributesInConfiguratorItems($exportFeedId);
+        } elseif (!empty($entityName) && $this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
+            if ($feedData) {
+                $attributesIds = array_column($feedData['data']['configuration'] ?? [], 'entityAttributeId');
+                $attributesIds = array_values(array_unique(array_filter($attributesIds)));
             } else {
-                $attributes = $this->getEntityManager()->getRepository('Attribute')->getAttributesByIds($attributesIds);
+                $items = $this->getPreparedConfiguratorItems($exportFeed, $exportFeed, $entityName);
+                $attributesIds = array_column($items->toArray(), 'entityAttributeId');
+                $attributesIds = array_values(array_unique(array_filter($attributesIds)));
             }
 
+            $attributes = $this->getEntityManager()->getRepository('Attribute')->getAttributesByIds($attributesIds);
             foreach ($attributes as $row) {
                 $this->putAttributeToMetadata($entityName, $language, $row);
             }

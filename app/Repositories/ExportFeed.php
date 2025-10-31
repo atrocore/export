@@ -267,25 +267,4 @@ class ExportFeed extends Base
             throw new BadRequest($this->getInjection('language')->translate('delimitersMustBeDifferent', 'messages', 'ExportFeed'));
         }
     }
-
-    public function getAttributesInConfiguratorItems(string $exportFeedId): array
-    {
-        $qb = $this->getConnection()->createQueryBuilder()
-            ->select('a.*')
-            ->distinct()
-            ->from($this->getConnection()->quoteIdentifier('attribute'), 'a')
-            ->innerJoin('a', 'export_configurator_item', 'i', 'i.entity_attribute_id=a.id AND i.deleted=:false')
-            ->innerJoin('i', 'export_feed', 'e', 'i.export_feed_id=e.id AND e.deleted=:false')
-            ->where('a.deleted=:false')
-            ->andWhere('e.id=:exportFeedId')
-            ->setParameter('false', false, ParameterType::BOOLEAN)
-            ->setParameter('exportFeedId', $exportFeedId);
-
-        if (class_exists("\\Pim\\Module")) {
-            $qb->addSelect("c.name as channel_name");
-            $qb->leftJoin('a', 'channel', 'c', 'c.id=a.channel_id AND c.deleted=:false');
-        }
-
-        return $qb->fetchAllAssociative();
-    }
 }
