@@ -15,7 +15,6 @@ namespace Export\Services;
 
 use Atro\Core\EventManager\Event;
 use Atro\Core\EventManager\Manager;
-use Atro\Core\Exceptions\NotModified;
 use Atro\Entities\Folder;
 use Atro\Core\Exceptions\Error;
 use Atro\Core\Exceptions\Exception;
@@ -109,33 +108,34 @@ class ExportTypeSimple extends AbstractExportType
     public function createExportFileFolder(\Export\Entities\ExportFeed $exportFeed): Folder
     {
         $folder = $exportFeed->get('folder');
+        if (!empty($folder)) {
+            return $folder;
+        }
 
+        /** @var \Atro\Repositories\Folder $folderRepository */
+        $folderRepository = $this->getEntityManager()->getRepository('Folder');
+
+        $root = $folderRepository->where(['code' => 'export_feeds'])->findOne();
+        if (empty($root)) {
+            $post = new \stdClass();
+            $post->name = '.export_feeds';
+            $post->code = 'export_feeds';
+
+            $this->getService('Folder')->createEntity($post);
+
+            $root = $folderRepository->where(['code' => 'export_feeds'])->findOne();
+        }
+
+        $folder = $folderRepository->where(['code' => $exportFeed->get('id')])->findOne();
         if (empty($folder)) {
-            /** @var \Atro\Repositories\Folder $folderRepo */
-            $folderRepo = $this->getEntityManager()->getRepository('Folder');
+            $post = new \stdClass();
+            $post->name = $exportFeed->get('id');
+            $post->code = $exportFeed->get('id');
+            $post->parentId = $root->get('id');
 
-            $root = $folderRepo->where(['code' => 'export_feeds'])->findOne();
-            if (empty($root)) {
-                $root = $folderRepo->get();
-                $root->set([
-                    'name'   => 'Export Feeds',
-                    'hidden' => true,
-                    'code'   => 'export_feeds'
-                ]);
-                $this->getEntityManager()->saveEntity($root);
-            }
+            $this->getService('Folder')->createEntity($post);
 
-            $folder = $folderRepo->where(['code' => $exportFeed->get('id')])->findOne();
-            if (empty($folder)) {
-                $folder = $folderRepo->get();
-                $folder->set([
-                    'name'   => $exportFeed->get('name'),
-                    'hidden' => true,
-                    'code'   => $exportFeed->get('id')
-                ]);
-                $this->getEntityManager()->saveEntity($folder);
-                $folderRepo->relate($folder, 'parents', $root);
-            }
+            $folder = $folderRepository->where(['code' => $exportFeed->get('id')])->findOne();
         }
 
         return $folder;
