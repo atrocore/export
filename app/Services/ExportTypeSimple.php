@@ -15,7 +15,6 @@ namespace Export\Services;
 
 use Atro\Core\EventManager\Event;
 use Atro\Core\EventManager\Manager;
-use Atro\Core\Exceptions\NotModified;
 use Atro\Entities\Folder;
 use Atro\Core\Exceptions\Error;
 use Atro\Core\Exceptions\Exception;
@@ -28,7 +27,6 @@ use Export\TemplateLoaders\AbstractTemplate;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
-use stdClass;
 
 class ExportTypeSimple extends AbstractExportType
 {
