@@ -153,7 +153,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $input = new \stdClass();
         $input->name = 'empty.txt';
-        $input->hidden = true;
+        $input->exportJobId = $exportJob->id;
         $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
         $this->reuploadIfNeeds($input);
@@ -188,7 +188,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $input = new \stdClass();
         $input->name = $this->getExportFileName('json');
-        $input->hidden = true;
+        $input->exportJobId = $exportJob->id;
         $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
         $this->reuploadIfNeeds($input);
@@ -218,7 +218,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $input = new \stdClass();
         $input->name = $this->getExportFileName('sql');
-        $input->hidden = true;
+        $input->exportJobId = $exportJob->id;
         $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
         $this->reuploadIfNeeds($input);
@@ -243,7 +243,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $input = new \stdClass();
         $input->name = $this->getExportFileName('xml');
-        $input->hidden = true;
+        $input->exportJobId = $exportJob->id;
         $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
         $this->reuploadIfNeeds($input);
@@ -343,7 +343,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $input = new \stdClass();
         $input->name = $this->getExportFileName('csv');
-        $input->hidden = true;
+        $input->exportJobId = $exportJob->id;
         $input->folderId = $this->createExportFileFolder($exportFeed)->get('id');
 
         $this->initZipArchive([$this->data['feed']['data']['configuration']]);
@@ -369,7 +369,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $file = $this->getEntityManager()->getRepository('File')->get($fileData['id']);
 
-        return $this->exportAsZip($file);
+        return $this->exportAsZip($file, $exportJob);
     }
 
     protected function canBuildZipArchive(array $configurations)
@@ -431,7 +431,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $input = new \stdClass();
         $input->name = $this->getExportFileName('xlsx');
-        $input->hidden = true;
+        $input->exportJobId = $exportJob->id;
         $input->folderId = $this->createExportFileFolder($exportFeed)->get('id');
 
         $this->initZipArchive(
@@ -571,7 +571,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $file = $this->getEntityManager()->getRepository('File')->get($fileData['id']);
 
-        return $this->exportAsZip($file);
+        return $this->exportAsZip($file, $exportJob);
     }
 
     private function reuploadIfNeeds(\stdClass $input): void
@@ -613,7 +613,7 @@ class ExportTypeSimple extends AbstractExportType
         }
     }
 
-    protected function exportAsZip(File $file): File
+    protected function exportAsZip(File $file, ExportJob $exportJob): File
     {
         if (!empty($this->zipArchive)) {
             $this->zipArchive->addFile($file->getFilePath(), $file->get('name'));
@@ -621,7 +621,7 @@ class ExportTypeSimple extends AbstractExportType
 
             $input = new \stdClass();
             $input->name = $this->getExportFileName('zip');
-            $input->hidden = true;
+            $input->exportJobId = $exportJob->id;
             $input->folderId = $file->get('folderId');
 
             $this->getEntityManager()->removeEntity($file);

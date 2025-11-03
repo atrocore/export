@@ -25,6 +25,16 @@
       "filterDisabled": true,
       "importDisabled": true,
       "emHidden": true
+    },
+    "exportJob": {
+      "type": "link",
+      "readOnly": true
+    }
+  },
+  "links": {
+    "exportJob": {
+      "type": "belongsTo",
+      "entity": "ExportJob"
     }
   }
 }
