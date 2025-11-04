@@ -32,6 +32,13 @@
       "type": "link",
       "readOnly": true
     },
+    "files": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "noLoad": true,
+      "importDisabled": true
+    },
     "queueItem": {
       "type": "link",
       "readOnly": true
@@ -118,6 +125,11 @@
       "type": "belongsTo",
       "foreign": "exportJobs",
       "entity": "ExportFeed"
+    },
+    "files": {
+      "type": "hasMany",
+      "foreign": "exportJob",
+      "entity": "File"
     },
     "queueItem": {
       "type": "belongsTo",

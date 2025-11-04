@@ -1,6 +1,8 @@
 {
   "fields": {
     "sharedDownloadUrl": "Download URL (shared)",
-    "sharedViewUrl": "View URL (shared)"
+    "sharedViewUrl": "View URL (shared)",
+    "exportFeed": "Export Feed",
+    "exportJob": "Export Job"
   }
 }

@@ -1,5 +1,6 @@
 {
   "fields": {
+    "folder": "Folder",
     "maxWorkers": "Maximum Number of workers",
     "replaceExistingFile": "Replace existing file",
     "template": "Template",
@@ -37,7 +38,8 @@
     "exportAllField": "Export All fields",
     "fieldList": "Field List",
     "useExistingExportFeed": "Use existing export feed",
-    "useQuoteForAll": "Use quotes for all values"
+    "useQuoteForAll": "Use quotes for all values",
+    "files": "Files"
   },
   "options": {
     "fileType": {

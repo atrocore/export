@@ -25,6 +25,26 @@
       "filterDisabled": true,
       "importDisabled": true,
       "emHidden": true
+    },
+    "exportFeed": {
+      "type": "link",
+      "protected": true
+    },
+    "exportJob": {
+      "type": "link",
+      "protected": true
+    }
+  },
+  "links": {
+    "exportFeed": {
+      "type": "belongsTo",
+      "foreign": "files",
+      "entity": "ExportFeed"
+    },
+    "exportJob": {
+      "type": "belongsTo",
+      "foreign": "files",
+      "entity": "ExportJob"
     }
   }
 }

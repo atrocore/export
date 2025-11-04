@@ -6,7 +6,8 @@
     "stateMessage": "Statusmeldung",
     "start": "Start",
     "end": "End",
-    "count": "Anzahl"
+    "count": "Anzahl",
+    "files": "Dateien"
   },
   "labels": {
     "Pending": "Steht aus",

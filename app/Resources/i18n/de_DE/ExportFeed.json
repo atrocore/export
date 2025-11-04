@@ -1,5 +1,6 @@
 {
   "fields": {
+    "folder": "Ordner",
     "replaceExistingFile": "Vorhandene Datei ersetzen",
     "template": "Vorlage",
     "sortOrderField": "Sortierreihenfolge (Feld)",
@@ -35,7 +36,8 @@
     "exportAllField": "Alle Felder exportieren",
     "fieldList": "Liste der Felder",
     "useExistingExportFeed": "UBestehendes Exportfutter verwenden",
-    "useQuoteForAll": "Anführungszeichen für alle Werte verwenden"
+    "useQuoteForAll": "Anführungszeichen für alle Werte verwenden",
+    "files": "Dateien"
   },
   "labels": {
     "generateTemplate": "Vorlage generieren",

@@ -489,6 +489,13 @@
       "noLoad": true,
       "importDisabled": true
     },
+    "files": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "noLoad": true,
+      "importDisabled": true
+    },
     "sortOrderField": {
       "type": "varchar",
       "required": false,
@@ -678,19 +685,7 @@
     },
     "folder": {
       "type": "link",
-      "conditionalProperties": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "simple"
-              ]
-            }
-          ]
-        }
-      }
+      "required": true
     },
     "locale": {
       "type": "link",
@@ -774,6 +769,11 @@
       "type": "hasMany",
       "foreign": "exportFeed",
       "entity": "ExportJob"
+    },
+    "files": {
+      "type": "hasMany",
+      "foreign": "exportFeed",
+      "entity": "File"
     },
     "folder": {
       "type": "belongsTo",

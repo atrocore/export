@@ -1,6 +1,8 @@
 {
   "fields": {
     "sharedDownloadUrl": "Download URL (freigegeben)",
-    "sharedViewUrl": "View URL (freigegeben)"
+    "sharedViewUrl": "View URL (freigegeben)",
+    "exportFeed": "Export Feed",
+    "exportJob": "Exportauftrag"
   }
 }
