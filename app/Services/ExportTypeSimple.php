@@ -138,6 +138,9 @@ class ExportTypeSimple extends AbstractExportType
             $folder = $folderRepository->where(['code' => $exportFeed->get('id')])->findOne();
         }
 
+        $exportFeed->set('folderId', $folder->get('id'));
+        $this->getEntityManager()->saveEntity($exportFeed);
+
         return $folder;
     }
 

@@ -685,19 +685,7 @@
     },
     "folder": {
       "type": "link",
-      "conditionalProperties": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "simple"
-              ]
-            }
-          ]
-        }
-      }
+      "required": true
     },
     "locale": {
       "type": "link",
