@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\Repositories;
 
+use Atro\Core\Utils\Util;
 use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
@@ -59,6 +60,13 @@ class ExportFeed extends Base
             ->setParameter('lastStatus', $lastStatus)
             ->setParameter('id', $exportFeedId)
             ->executeQuery();
+    }
+
+    public function hasDeletedRecordsToClear(): bool
+    {
+        Util::removeDir('data/.tmp-export');
+
+        return parent::hasDeletedRecordsToClear();
     }
 
     public function removeInvalidConfiguratorItems(string $exportFeedId): void
