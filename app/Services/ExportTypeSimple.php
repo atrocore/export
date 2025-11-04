@@ -136,6 +136,10 @@ class ExportTypeSimple extends AbstractExportType
             $this->getService('Folder')->createEntity($post);
 
             $folder = $folderRepository->where(['code' => $exportFeed->get('id')])->findOne();
+        } else {
+            $post = new \stdClass();
+            $post->parentId = $root->get('id');
+            $this->getService('Folder')->updateEntity($folder->id, $post);
         }
 
         $exportFeed->set('folderId', $folder->get('id'));
