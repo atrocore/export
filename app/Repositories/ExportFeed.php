@@ -14,14 +14,13 @@ declare(strict_types=1);
 namespace Export\Repositories;
 
 use Atro\Core\Utils\Util;
-use Atro\ORM\DB\RDB\Mapper;
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use Atro\Core\Exceptions\BadRequest;
 use Atro\Core\Templates\Repositories\Base;
 use Espo\Core\Utils\Json;
 use Espo\ORM\Entity;
 use Export\Entities\ExportFeed as ExportFeedEntity;
+use Export\Services\AbstractExportType;
 
 class ExportFeed extends Base
 {
@@ -64,7 +63,7 @@ class ExportFeed extends Base
 
     public function hasDeletedRecordsToClear(): bool
     {
-        Util::removeDir('data/.tmp-export');
+        Util::removeDir(AbstractExportType::TMP_DIR);
 
         return parent::hasDeletedRecordsToClear();
     }
