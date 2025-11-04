@@ -1,5 +1,6 @@
 {
   "fields": {
+    "folder": "Ordner",
     "replaceExistingFile": "Vorhandene Datei ersetzen",
     "template": "Vorlage",
     "sortOrderField": "Sortierreihenfolge (Feld)",

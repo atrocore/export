@@ -1,5 +1,6 @@
 {
   "fields": {
+    "folder": "Folder",
     "maxWorkers": "Maximum Number of workers",
     "replaceExistingFile": "Replace existing file",
     "template": "Template",
