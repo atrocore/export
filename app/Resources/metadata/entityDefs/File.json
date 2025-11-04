@@ -28,11 +28,11 @@
     },
     "exportFeed": {
       "type": "link",
-      "readOnly": true
+      "protected": true
     },
     "exportJob": {
       "type": "link",
-      "readOnly": true
+      "protected": true
     }
   },
   "links": {
