@@ -27,6 +27,9 @@ class V1Dot10Dot5 extends Base
         $this->exec("ALTER TABLE file ADD export_job_id VARCHAR(36) DEFAULT NULL");
         $this->exec("CREATE INDEX IDX_FILE_EXPORT_JOB_ID ON file (export_job_id, deleted)");
 
+        $this->exec("ALTER TABLE file ADD export_feed_id VARCHAR(36) DEFAULT NULL");
+        $this->exec("CREATE INDEX IDX_FILE_EXPORT_FEED_ID ON file (export_job_id, deleted)");
+
         $offset = 0;
         $limit = 10000;
 
@@ -49,8 +52,10 @@ class V1Dot10Dot5 extends Base
                 $this->getConnection()->createQueryBuilder()
                     ->update('file')
                     ->set('export_job_id', ':exportJobId')
+                    ->set('export_feed_id', ':exportFeedId')
                     ->where('id=:fileId')
                     ->setParameter('exportJobId', $row['id'])
+                    ->setParameter('exportFeedId', $row['export_feed_id'])
                     ->setParameter('fileId', $row['file_id'])
                     ->executeQuery();
             }

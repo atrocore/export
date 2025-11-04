@@ -153,6 +153,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $input = new \stdClass();
         $input->name = 'empty.txt';
+        $input->exportFeedId = $exportJob->get('exportFeedId');
         $input->exportJobId = $exportJob->id;
         $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
@@ -188,6 +189,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $input = new \stdClass();
         $input->name = $this->getExportFileName('json');
+        $input->exportFeedId = $exportJob->get('exportFeedId');
         $input->exportJobId = $exportJob->id;
         $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
@@ -218,6 +220,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $input = new \stdClass();
         $input->name = $this->getExportFileName('sql');
+        $input->exportFeedId = $exportJob->get('exportFeedId');
         $input->exportJobId = $exportJob->id;
         $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
@@ -243,6 +246,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $input = new \stdClass();
         $input->name = $this->getExportFileName('xml');
+        $input->exportFeedId = $exportJob->get('exportFeedId');
         $input->exportJobId = $exportJob->id;
         $input->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
 
@@ -343,6 +347,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $input = new \stdClass();
         $input->name = $this->getExportFileName('csv');
+        $input->exportFeedId = $exportJob->get('exportFeedId');
         $input->exportJobId = $exportJob->id;
         $input->folderId = $this->createExportFileFolder($exportFeed)->get('id');
 
@@ -431,6 +436,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $input = new \stdClass();
         $input->name = $this->getExportFileName('xlsx');
+        $input->exportFeedId = $exportJob->get('exportFeedId');
         $input->exportJobId = $exportJob->id;
         $input->folderId = $this->createExportFileFolder($exportFeed)->get('id');
 
@@ -621,6 +627,7 @@ class ExportTypeSimple extends AbstractExportType
 
             $input = new \stdClass();
             $input->name = $this->getExportFileName('zip');
+            $input->exportFeedId = $exportJob->get('exportFeedId');
             $input->exportJobId = $exportJob->id;
             $input->folderId = $file->get('folderId');
 

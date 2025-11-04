@@ -37,7 +37,8 @@
     "exportAllField": "Export All fields",
     "fieldList": "Field List",
     "useExistingExportFeed": "Use existing export feed",
-    "useQuoteForAll": "Use quotes for all values"
+    "useQuoteForAll": "Use quotes for all values",
+    "files": "Files"
   },
   "options": {
     "fileType": {

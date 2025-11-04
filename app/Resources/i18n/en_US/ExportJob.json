@@ -6,7 +6,8 @@
     "stateMessage": "Message",
     "start": "Start",
     "end": "End",
-    "count": "Count"
+    "count": "Count",
+    "files": "Files"
   },
   "labels": {
     "Pending": "Pending",

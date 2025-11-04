@@ -489,6 +489,13 @@
       "noLoad": true,
       "importDisabled": true
     },
+    "files": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "noLoad": true,
+      "importDisabled": true
+    },
     "sortOrderField": {
       "type": "varchar",
       "required": false,
@@ -774,6 +781,11 @@
       "type": "hasMany",
       "foreign": "exportFeed",
       "entity": "ExportJob"
+    },
+    "files": {
+      "type": "hasMany",
+      "foreign": "exportFeed",
+      "entity": "File"
     },
     "folder": {
       "type": "belongsTo",
