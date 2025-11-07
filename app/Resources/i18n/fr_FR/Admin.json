@@ -9,6 +9,6 @@
     "exportFeed": "Exporter des flux"
   },
   "descriptions": {
-    "exportFeed": "Configuration des modèles d'exportation à utiliser pour exporter les données des entités TreoCore"
+    "exportFeed": "Configuration des modèles d'exportation à utiliser pour exporter les données des entités AtroCore"
   }
 }

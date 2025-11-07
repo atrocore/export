@@ -9,6 +9,6 @@
         "exportFeed": "Export Feeds"
     },
     "descriptions": {
-        "exportFeed": "Configuration of export templates to be used for exporting data from the TreoCore entities"
+        "exportFeed": "Configuration of export templates to be used for exporting data from the AtroCore entities"
     }
 }
