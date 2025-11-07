@@ -7,5 +7,8 @@
   },
   "getEntity": {
     "handler": "\\Export\\TwigFunction\\GetEntity"
+  },
+  "getSharedUrl": {
+    "handler": "\\Export\\TwigFunction\\GetSharedUrl"
   }
 }

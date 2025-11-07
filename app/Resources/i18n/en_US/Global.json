@@ -33,7 +33,8 @@
     "functions": {
       "getPreviousCategoryId": "Retrieves the ID of the previous category in a hierarchical category structure",
       "getExtensibleEnumOption": "Fetches an option value from an extensible enum",
-      "getEntity": "Retrieves an entity object by its identifier"
+      "getEntity": "Retrieves an entity object by its identifier",
+      "getSharedUrl": "Retrieves a shared URL for a file"
     },
     "filters": {
       "prepareEntity": "Prepares an entity for export",
