@@ -5,7 +5,9 @@
       {
         "url": "#ExportFeed",
         "label": "exportFeed",
-        "description": "exportFeed"
+        "description": "exportFeed",
+        "icon": "ph ph-export",
+        "docsUrl": "https://help.atrocore.com/data-exchange/export-feeds"
       }
     ]
   }
