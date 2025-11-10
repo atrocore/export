@@ -132,6 +132,7 @@ class ExportTypeSimple extends AbstractExportType
             $post->name = $exportFeed->get('id');
             $post->code = $exportFeed->get('id');
             $post->parentId = $root->get('id');
+            $post->parentsIds = [$root->get('id')];
 
             $this->getService('Folder')->createEntity($post);
 
