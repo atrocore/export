@@ -115,19 +115,19 @@ class ExportTypeSimple extends AbstractExportType
         /** @var \Atro\Repositories\Folder $folderRepository */
         $folderRepository = $this->getEntityManager()->getRepository('Folder');
 
-        $root = $folderRepository->where(['code' => 'export_feeds'])->findOne();
-        if (empty($root)) {
-            $post = new \stdClass();
-            $post->name = '.export_feeds';
-            $post->code = 'export_feeds';
-
-            $this->getService('Folder')->createEntity($post);
-
-            $root = $folderRepository->where(['code' => 'export_feeds'])->findOne();
-        }
-
         $folder = $folderRepository->where(['code' => $exportFeed->get('id')])->findOne();
         if (empty($folder)) {
+            $root = $folderRepository->where(['code' => 'export_feeds'])->findOne();
+            if (empty($root)) {
+                $post = new \stdClass();
+                $post->name = '.export_feeds';
+                $post->code = 'export_feeds';
+
+                $this->getService('Folder')->createEntity($post);
+
+                $root = $folderRepository->where(['code' => 'export_feeds'])->findOne();
+            }
+
             $post = new \stdClass();
             $post->name = $exportFeed->get('id');
             $post->code = $exportFeed->get('id');
@@ -136,10 +136,6 @@ class ExportTypeSimple extends AbstractExportType
             $this->getService('Folder')->createEntity($post);
 
             $folder = $folderRepository->where(['code' => $exportFeed->get('id')])->findOne();
-        } else {
-            $post = new \stdClass();
-            $post->parentId = $root->get('id');
-            $this->getService('Folder')->updateEntity($folder->id, $post);
         }
 
         $exportFeed->set('folderId', $folder->get('id'));
