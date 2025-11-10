@@ -1,8 +1,8 @@
 {
-    "labels": {
-        "exportFeed": "Exportfeed"
-    },
-    "descriptions": {
-        "exportFeed": "Exportfeed konfigurieren"
-    }
+  "labels": {
+    "exportFeed": "Exportfeed"
+  },
+  "descriptions": {
+    "exportFeed": "Exportfeed konfigurieren"
+  }
 }
