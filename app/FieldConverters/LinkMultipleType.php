@@ -191,7 +191,7 @@ class LinkMultipleType extends LinkType
 
         $entity = $this->convertor->getEntityManager()->getEntity($linkDefs['entity']);
         $qb1 = $mapper->createSelectQueryBuilder($entity, $sp, true);
-        $qb1->select("$mtAlias.id AS {$configuration['id']}_col");
+
 
         if (!empty($sp['orderBy']) && strpos($sp['orderBy'], '.')) {
             $orderByParts = explode('.', $sp['orderBy'], 2);
@@ -206,6 +206,18 @@ class LinkMultipleType extends LinkType
                 $qb1->leftJoin($mtAlias, $joinTable, $orderByHash, "$mtAlias.$joinColumn = $orderByHash.id");
                 $qb1->orderBy($orderBy, $sp['order'] ?? 'ASC');
             }
+        }
+
+        $orderBySql = join(', ', $qb1->getQueryPart('orderBy'));
+        if (!empty($orderBySql)) {
+            $orderBySql = 'ORDER BY ' . $orderBySql;
+            $qb1->resetQueryPart('orderBy');
+        }
+
+        if (Converter::isPgSQL($container->get('connection'))) {
+            $qb1->select("string_agg($mtAlias.id::text, ',' $orderBySql)");
+        } else {
+            $qb1->select("GROUP_CONCAT($mtAlias.id $orderBySql SEPARATOR ',')");
         }
 
         if (empty($linkDefs['relationName'])) {
@@ -224,12 +236,7 @@ class LinkMultipleType extends LinkType
         }
 
         $innerSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
-
-        if (Converter::isPgSQL($container->get('connection'))) {
-            $qb->addSelect("(SELECT string_agg({$uniqueHash}_c.{$configuration['id']}_col::text, ',') FROM ($innerSql) AS {$uniqueHash}_c) AS {$configuration['id']}");
-        } else {
-            $qb->addSelect("(SELECT GROUP_CONCAT({$uniqueHash}_c.{$configuration['id']}_col SEPARATOR ',') FROM ($innerSql) AS {$uniqueHash}_c) AS {$configuration['id']}");
-        }
+        $qb->addSelect("({$innerSql})  AS {$configuration['id']}");
 
         foreach ($qb1->getParameters() as $pName => $pValue) {
             $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
