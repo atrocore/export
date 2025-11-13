@@ -1,15 +1,15 @@
 {
   "fields": {
-    "name": "",
+    "name": "Pole",
     "column": "",
     "columnType": "",
     "exportFeed": "",
-    "entityAttribute": "",
+    "entityAttribute": "Atribut",
     "exportBy": "",
     "channels": "",
-    "remove": "",
+    "remove": "Smazat",
     "exportIntoSeparateColumns": "",
-    "type": "",
+    "type": "Typ",
     "mask": "",
     "offsetRelation": "",
     "limitRelation": "",
@@ -20,18 +20,18 @@
     "zip": "",
     "fileNameTemplate": "",
     "exportByForListAttribute": "",
-    "script": ""
+    "script": "Skript"
   },
   "options": {
     "columnType": {
-      "name": "",
+      "name": "Název",
       "custom": ""
     },
     "type": {
-      "Field": "",
+      "Field": "Pole",
       "allAttributes": "",
       "Fixed value": "",
-      "script": ""
+      "script": "Skript"
     }
   },
   "labels": {
