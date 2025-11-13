@@ -1,5 +1,6 @@
 {
   "fields": {
-    "sharedDownloadUrl": "URL для загрузки (публичный)"
+    "sharedDownloadUrl": "URL для загрузки (публичный)",
+    "sharedViewUrl": "Просмотр URL (общий)"
   }
 }
