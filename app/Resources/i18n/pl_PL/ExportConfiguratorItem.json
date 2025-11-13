@@ -19,7 +19,8 @@
     "fileNameTemplate": "Szablon nazwy pliku",
     "exportByForListAttribute": "Powiązane pola encji dla list",
     "entityAttribute": "Atrybut",
-    "script": "Skrypt"
+    "script": "Skrypt",
+    "channels": "Kanał(y)"
   },
   "options": {
     "columnType": {
@@ -29,7 +30,8 @@
     "type": {
       "Field": "Pole",
       "Fixed value": "Wartość stała",
-      "script": "Skrypt"
+      "script": "Skrypt",
+      "allAttributes": "Wszystkie atrybuty"
     }
   },
   "tooltips": {
@@ -39,5 +41,9 @@
   "exceptions": {
     "noSuchAttribute": "Atrybut o takim kodzie '%s' nie istnieje.",
     "unknownModifier": "Modyfikator '%s' jest nieznany."
+  },
+  "labels": {
+    "withoutChannel": "Bez kanału",
+    "allAttributes": "Wszystkie (%s) atrybuty"
   }
 }
