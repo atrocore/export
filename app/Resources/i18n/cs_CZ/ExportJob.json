@@ -2,19 +2,19 @@
   "fields": {
     "exportFeed": "",
     "file": "",
-    "state": "",
+    "state": "Stát",
     "stateMessage": "",
-    "start": "",
-    "end": "",
+    "start": "Start",
+    "end": "Konec",
     "count": "",
-    "files": ""
+    "files": "Soubory"
   },
   "labels": {
-    "Pending": "",
-    "Success": "",
+    "Pending": "Čekající",
+    "Success": "Úspěch",
     "Running": "",
     "Failed": "",
-    "Canceled": "",
+    "Canceled": "Zrušeno",
     "exportDownloadNotification": ""
   },
   "exceptions": {
