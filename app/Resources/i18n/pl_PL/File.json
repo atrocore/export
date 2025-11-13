@@ -1,6 +1,8 @@
 {
   "fields": {
     "sharedDownloadUrl": "Adres URL pobierania (udostępniony)",
-    "sharedViewUrl": "Adres  URL wyświetl (udostępniony)"
+    "sharedViewUrl": "Adres  URL wyświetl (udostępniony)",
+    "exportFeed": "Eksportuj kanał",
+    "exportJob": "Zadanie eksportu"
   }
 }
