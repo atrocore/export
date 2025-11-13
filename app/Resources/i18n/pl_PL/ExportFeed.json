@@ -36,7 +36,10 @@
     "replaceExistingFile": "Zastąp istniejący plik",
     "markForUnlinkedAttribute": "Marker dla niepowiązanego atrybutu",
     "maxWorkers": "Maksymalna liczba pracowników",
-    "useQuoteForAll": "Proszę używać cudzysłowów dla wszystkich wartości"
+    "useQuoteForAll": "Proszę używać cudzysłowów dla wszystkich wartości",
+    "locale": "Lokalizacja",
+    "folder": "Folder",
+    "files": "Pliki"
   },
   "options": {
     "fileType": {
