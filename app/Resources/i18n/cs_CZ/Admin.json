@@ -1,14 +1,14 @@
 {
   "fieldTypes": {
-    "exportLink": ""
+    "exportLink": "Odkaz na export"
   },
   "fields": {
-    "dataUrl": ""
+    "dataUrl": "Datová URL adresa"
   },
   "labels": {
-    "exportFeed": ""
+    "exportFeed": "Exportní kanály"
   },
   "descriptions": {
-    "exportFeed": ""
+    "exportFeed": "Konfigurace šablon exportu, které se použijí pro export dat z entit AtroCore."
   }
 }
