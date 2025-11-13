@@ -1,0 +1,12 @@
+{
+  "fields": {
+    "exportFeed": "",
+    "maximumHoursToLookBack": "",
+    "maximumDaysForJobExist": ""
+  },
+  "options": {
+    "type": {
+      "ExportFeed": ""
+    }
+  }
+}
