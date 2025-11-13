@@ -7,5 +7,12 @@
     "type": {
       "export": "Flux d'export"
     }
+  },
+  "twigVariables": {
+    "payload": {
+      "sourceEntities": "Collection d'entités à exporter",
+      "sourceEntitiesIds": "Tableau d'identifiants d'entités à exporter",
+      "entity": "Première entité de la collection à exporter"
+    }
   }
 }
