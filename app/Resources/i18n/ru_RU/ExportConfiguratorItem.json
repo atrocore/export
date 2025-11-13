@@ -15,7 +15,11 @@
     "sortOrderRelation": "Порядок сортировки (направление)",
     "fixedValue": "Фиксированное значение",
     "previousItem": "Предыдущий элемент",
-    "fileNameTemplate": "Шаблон имени файла"
+    "fileNameTemplate": "Шаблон имени файла",
+    "zip": "Экспорт файлов в ZIP-архив",
+    "script": "Скрипт",
+    "channels": "Канал(ы)",
+    "exportByForListAttribute": "Связанные поля сущности для списков"
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Записи данных для свяанных сущностей будут экспортированы как отдельные поля/столбцы, с использованием для имени суффикса \"_1\", \"_2\"и т. д.",
@@ -24,5 +28,18 @@
   "exceptions": {
     "noSuchAttribute": "Атрибут с таким кодом '%s' не существует.",
     "unknownModifier": "Модификатор '%s' неизвестен."
+  },
+  "options": {
+    "columnType": {
+      "custom": "Пользовательское имя"
+    },
+    "type": {
+      "allAttributes": "Все атрибуты",
+      "script": "Скрипт"
+    }
+  },
+  "labels": {
+    "withoutChannel": "Без канала",
+    "allAttributes": "Все (%s) Атрибуты"
   }
 }
