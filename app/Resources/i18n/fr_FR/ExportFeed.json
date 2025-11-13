@@ -35,7 +35,11 @@
     "fileNameMask": "Masque de nom de fichier",
     "maxWorkers": "Nombre maximum de travailleurs",
     "markForUnlinkedAttribute": "Marqueur pour l'attribut non lié",
-    "useQuoteForAll": "Utilisez des guillemets pour toutes les valeurs"
+    "useQuoteForAll": "Utilisez des guillemets pour toutes les valeurs",
+    "replaceExistingFile": "Remplacer le fichier existant",
+    "locale": "Local",
+    "folder": "Dossier",
+    "files": "Fichiers"
   },
   "options": {
     "fileType": {
