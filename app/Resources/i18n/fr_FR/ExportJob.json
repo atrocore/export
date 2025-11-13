@@ -6,7 +6,8 @@
     "stateMessage": "Message",
     "start": "Démarrer",
     "end": "Fin",
-    "count": "Compter"
+    "count": "Compter",
+    "files": "Fichiers"
   },
   "labels": {
     "Pending": "En attente",
