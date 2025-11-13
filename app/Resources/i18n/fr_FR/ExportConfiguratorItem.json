@@ -18,12 +18,18 @@
     "zip": "Exporter des fichiers vers une archive ZIP",
     "fileNameTemplate": "Modèle de nom de fichier",
     "exportByForListAttribute": "Champs d'entité connexes pour les listes",
-    "script": "Script"
+    "script": "Script",
+    "entityAttribute": "Attribut"
   },
   "options": {
     "columnType": {
       "name": "Nom",
       "custom": "Nom personnalisé"
+    },
+    "type": {
+      "Field": "Champ",
+      "Fixed value": "Valeur fixe",
+      "script": "Script"
     }
   },
   "tooltips": {
