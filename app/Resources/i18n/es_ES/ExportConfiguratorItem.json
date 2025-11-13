@@ -1,15 +1,15 @@
 {
   "fields": {
-    "name": "",
+    "name": "Campo",
     "column": "",
     "columnType": "",
     "exportFeed": "",
-    "entityAttribute": "",
+    "entityAttribute": "Atributo",
     "exportBy": "",
     "channels": "",
-    "remove": "",
+    "remove": "Eliminar",
     "exportIntoSeparateColumns": "",
-    "type": "",
+    "type": "Type",
     "mask": "",
     "offsetRelation": "",
     "limitRelation": "",
@@ -24,11 +24,11 @@
   },
   "options": {
     "columnType": {
-      "name": "",
+      "name": "Nombre",
       "custom": ""
     },
     "type": {
-      "Field": "",
+      "Field": "Campo",
       "allAttributes": "",
       "Fixed value": "",
       "script": ""
