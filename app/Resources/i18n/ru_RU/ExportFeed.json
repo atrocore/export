@@ -36,7 +36,10 @@
     "originTemplate": "Шаблон происхождения",
     "isTemplateEditable": "Редактируемый",
     "fileNameMask": "Маска имени файла",
-    "useQuoteForAll": "Используйте кавычки для всех значений"
+    "useQuoteForAll": "Используйте кавычки для всех значений",
+    "locale": "Локаль",
+    "folder": "Папка",
+    "files": "Файлы"
   },
   "labels": {
     "typeToSearch": "Введите для поиска...",
