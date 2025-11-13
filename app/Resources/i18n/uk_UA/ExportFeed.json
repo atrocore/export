@@ -34,7 +34,8 @@
     "exportAllField": "Експортувати всі поля",
     "fieldList": "Список полів",
     "useExistingExportFeed": "Використовуйте наявний канал експорту",
-    "useQuoteForAll": "Використовувати лапки для усіх значень"
+    "useQuoteForAll": "Використовувати лапки для усіх значень",
+    "maxWorkers": "Максимальна кількість працівників"
   },
   "labels": {
     "generateTemplate": "Згенерувати шаблон",
@@ -57,7 +58,8 @@
     "Success": "Успішно",
     "Running": "Виконується",
     "Failed": "Не виконано",
-    "Canceled": "Скасовано"
+    "Canceled": "Скасовано",
+    "allAttributesAlreadyAdded": "Всі атрибути вже додано."
   },
   "messages": {
     "confirmTemplateGeneration": "Ви впевнені, що хочете згенерувати шаблон?",
@@ -68,7 +70,8 @@
     "noFieldSelected": "Не вибрано жодного поля"
   },
   "additionalTranslates": {
-    "exportName": "Експорт: %s"
+    "exportName": "Експорт: %s",
+    "createExportJobs": "Створити експортні завдання для %s"
   },
   "exceptions": {
     "toManyAttributesSelected": "Максимальна кількість обраних атрибутів не може бути більшою за 2000.",
@@ -98,5 +101,24 @@
     "onlyExportFailed24Hours": "Eкспортний фід , які зазнали невдачі протягом останніх 24 годин",
     "onlyExportFailed7Days": "Eкспортний фід , які зазнали невдачі протягом останніх 7 днів",
     "onlyExportFailed28Days": "Eкспортний фід , які зазнали невдачі протягом останніх 28 днів"
+  },
+  "twigVariables": {
+    "template": {
+      "entities": "Збір суб'єктів для експорту"
+    },
+    "fileNameMask": {
+      "feed": "Дані подачі",
+      "filename": "Ім'я файлу за замовчуванням, згенероване системою",
+      "interation": "Номер ітерації завдання"
+    }
+  },
+  "options": {
+    "fileType": {
+      "xlsx": "XLSX (Excel)",
+      "csv": "CSV",
+      "json": "JSON",
+      "xml": "XML",
+      "sql": "SQL"
+    }
   }
 }
