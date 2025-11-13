@@ -1,49 +1,49 @@
 {
   "fields": {
     "name": "Campo",
-    "column": "",
-    "columnType": "",
-    "exportFeed": "",
+    "column": "Nombre de la columna",
+    "columnType": "Etiqueta de columna",
+    "exportFeed": "Exportación",
     "entityAttribute": "Atributo",
-    "exportBy": "",
-    "channels": "",
+    "exportBy": "Campos de entidad relacionados",
+    "channels": "Canal(es)",
     "remove": "Eliminar",
-    "exportIntoSeparateColumns": "",
+    "exportIntoSeparateColumns": "Separe",
     "type": "Type",
-    "mask": "",
-    "offsetRelation": "",
-    "limitRelation": "",
-    "sortFieldRelation": "",
-    "sortOrderRelation": "",
-    "fixedValue": "",
-    "previousItem": "",
-    "zip": "",
-    "fileNameTemplate": "",
-    "exportByForListAttribute": "",
-    "script": ""
+    "mask": "Máscara",
+    "offsetRelation": "Desplazamiento",
+    "limitRelation": "Limite",
+    "sortFieldRelation": "Orden de clasificación (campo)",
+    "sortOrderRelation": "Orden de clasificación (dirección)",
+    "fixedValue": "Valor fijo",
+    "previousItem": "Artículo anterior",
+    "zip": "Exportar archivos a un archivo ZIP",
+    "fileNameTemplate": "Plantilla de nombre de archivo",
+    "exportByForListAttribute": "Campos de entidad relacionados para las listas",
+    "script": "Guión"
   },
   "options": {
     "columnType": {
       "name": "Nombre",
-      "custom": ""
+      "custom": "Nombre personalizado"
     },
     "type": {
       "Field": "Campo",
-      "allAttributes": "",
-      "Fixed value": "",
-      "script": ""
+      "allAttributes": "Todos los atributos",
+      "Fixed value": "Valor fijo",
+      "script": "Guión"
     }
   },
   "labels": {
-    "withoutChannel": "",
-    "allAttributes": ""
+    "withoutChannel": "Sin canal",
+    "allAttributes": "Todos (%s) Atributos"
   },
   "tooltips": {
-    "exportIntoSeparateColumns": "",
-    "column": ""
+    "exportIntoSeparateColumns": "Los registros de datos relacionados se exportarán como campos/columnas diferentes utilizando para el nombre el sufijo \"_1\", \"_2\", etc.",
+    "column": "Puede utilizar campos de entidad relacionados en el nombre de la columna. Utilice el nombre del campo en la base de datos como variable, por ejemplo {{nombre}}. Active la casilla \"Separar columnas\"."
   },
   "exceptions": {
-    "noSuchAttribute": "",
-    "unknownModifier": ""
+    "noSuchAttribute": "El atributo con tal código '%s' no existe.",
+    "unknownModifier": "El modificador '%s' es desconocido."
   }
 }
