@@ -19,7 +19,8 @@
     "fileNameTemplate": "Modèle de nom de fichier",
     "exportByForListAttribute": "Champs d'entité connexes pour les listes",
     "script": "Script",
-    "entityAttribute": "Attribut"
+    "entityAttribute": "Attribut",
+    "channels": "Chaîne(s)"
   },
   "options": {
     "columnType": {
@@ -29,7 +30,8 @@
     "type": {
       "Field": "Champ",
       "Fixed value": "Valeur fixe",
-      "script": "Script"
+      "script": "Script",
+      "allAttributes": "Tous les attributs"
     }
   },
   "tooltips": {
@@ -39,5 +41,9 @@
   "exceptions": {
     "noSuchAttribute": "L'attribut portant le code \"%s\" n'existe pas.",
     "unknownModifier": "Le modificateur \"%s\" est inconnu."
+  },
+  "labels": {
+    "withoutChannel": "Sans canal",
+    "allAttributes": "Tous (%s) Attributs"
   }
 }
