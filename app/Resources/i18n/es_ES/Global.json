@@ -33,7 +33,9 @@
     "removeAllItems": "Eliminar todo",
     "exportErrorDuring24Hours": "Error en la exportación de feeds/trabajos durante 24 horas",
     "exportErrorDuring7Days": "Error en la exportación de feeds/trabajos durante 7 días",
-    "exportErrorDuring28Days": "Error en la exportación de feeds/trabajos durante 28 días"
+    "exportErrorDuring28Days": "Error en la exportación de feeds/trabajos durante 28 días",
+    "Generate": "Generar",
+    "filter": "Filtro"
   },
   "boolFilters": {
     "unexported": "Sin exportar"
