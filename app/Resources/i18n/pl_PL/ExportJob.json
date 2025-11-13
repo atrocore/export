@@ -1,31 +1,32 @@
 {
-	"fields": {
-		"exportFeed": "Eksportuj kanał",
-		"file": "Eksportowany plik",
-		"state": "Stan",
-		"stateMessage": "Wiadomość",
-		"start": "Start",
-		"end": "Koniec",
-		"count": "Liczba"
-	},
-	"labels": {
-		"Pending": "Oczekujący",
-		"Success": "Sukces",
-		"Running": "Trwa",
-		"Failed": "Niepowodzenie",
-		"Canceled": "Anulowane",
-		"exportDownloadNotification": "Eksport został zakończony. Możesz <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">pobrać</a> plik."
-	},
-	"exceptions": {
-		"wrongJobState": "Nie można ustawić takiego stanu zadania.",
-		"notExecutableJob": "To zadanie nie może zostać wykonane ponownie."
-	},
-	"boolFilters": {
-		"onlyExportFailed24Hours": "Tylko zadania eksportu, które nie powiodły się w ciągu ostatnich 24 godzin",
-		"onlyExportFailed7Days": "Tylko zadania eksportu, które nie powiodły się w ciągu ostatnich 7 dni",
-		"onlyExportFailed28Days": "Tylko zadania eksportu, które nie powiodły się w ciągu ostatnich 28 dni"
-	},
-	"messages": {
-		"xmlValidationFailed": "Walidacja schematu XML nie powiodła się:"
-	}
+  "fields": {
+    "exportFeed": "Eksportuj kanał",
+    "file": "Eksportowany plik",
+    "state": "Stan",
+    "stateMessage": "Wiadomość",
+    "start": "Start",
+    "end": "Koniec",
+    "count": "Liczba",
+    "files": "Pliki"
+  },
+  "labels": {
+    "Pending": "Oczekujący",
+    "Success": "Sukces",
+    "Running": "Trwa",
+    "Failed": "Niepowodzenie",
+    "Canceled": "Anulowane",
+    "exportDownloadNotification": "Eksport został zakończony. Możesz <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">pobrać</a> plik."
+  },
+  "exceptions": {
+    "wrongJobState": "Nie można ustawić takiego stanu zadania.",
+    "notExecutableJob": "To zadanie nie może zostać wykonane ponownie."
+  },
+  "boolFilters": {
+    "onlyExportFailed24Hours": "Tylko zadania eksportu, które nie powiodły się w ciągu ostatnich 24 godzin",
+    "onlyExportFailed7Days": "Tylko zadania eksportu, które nie powiodły się w ciągu ostatnich 7 dni",
+    "onlyExportFailed28Days": "Tylko zadania eksportu, które nie powiodły się w ciągu ostatnich 28 dni"
+  },
+  "messages": {
+    "xmlValidationFailed": "Walidacja schematu XML nie powiodła się:"
+  }
 }
