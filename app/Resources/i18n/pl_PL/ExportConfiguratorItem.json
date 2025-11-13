@@ -17,12 +17,19 @@
     "previousItem": "Poprzedni element",
     "zip": "Eksportuj zasoby do archiwum ZIP",
     "fileNameTemplate": "Szablon nazwy pliku",
-    "exportByForListAttribute": "Powiązane pola encji dla list"
+    "exportByForListAttribute": "Powiązane pola encji dla list",
+    "entityAttribute": "Atrybut",
+    "script": "Skrypt"
   },
   "options": {
     "columnType": {
       "name": "Nazwa",
       "custom": "Nazwa niestandardowa"
+    },
+    "type": {
+      "Field": "Pole",
+      "Fixed value": "Wartość stała",
+      "script": "Skrypt"
     }
   },
   "tooltips": {
