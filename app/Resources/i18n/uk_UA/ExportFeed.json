@@ -35,7 +35,11 @@
     "fieldList": "Список полів",
     "useExistingExportFeed": "Використовуйте наявний канал експорту",
     "useQuoteForAll": "Використовувати лапки для усіх значень",
-    "maxWorkers": "Максимальна кількість працівників"
+    "maxWorkers": "Максимальна кількість працівників",
+    "folder": "Папка",
+    "replaceExistingFile": "Замінити існуючий файл",
+    "locale": "Мова",
+    "files": "Файли"
   },
   "labels": {
     "generateTemplate": "Згенерувати шаблон",
