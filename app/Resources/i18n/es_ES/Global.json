@@ -1,1 +1,44 @@
-{}
+{
+  "scopeNames": {
+    "ExportFeed": "Exportación",
+    "ExportConfiguratorItem": "Configurador",
+    "ExportJob": "Trabajo de exportación"
+  },
+  "twig": {
+    "filters": {
+      "escapeDoubleQuote": "Escapa las comillas dobles en una cadena añadiendo barras invertidas (\" se convierte en \\\")",
+      "prepareEntity": "Prepara una entidad para la exportación",
+      "isImage": "Comprueba si el valor proporcionado representa una imagen, validando las extensiones de archivo o los tipos MIME.",
+      "backslashNToBr": "Convierte los caracteres de nueva línea (\\n) en etiquetas de salto de línea HTML (<br>)"
+    },
+    "functions": {
+      "getPreviousCategoryId": "Recupera el ID de la categoría anterior en una estructura jerárquica de categorías",
+      "getExtensibleEnumOption": "Obtiene un valor de opción de un enum extensible",
+      "getEntity": "Recupera un objeto entidad por su identificador",
+      "getSharedUrl": "Recupera una URL compartida para un archivo"
+    }
+  },
+  "scopeNamesPlural": {
+    "ExportFeed": "Exportación",
+    "ExportConfiguratorItem": "Configurador",
+    "ExportJob": "Trabajos de exportación"
+  },
+  "labels": {
+    "tryAgain": "Exportar de nuevo",
+    "selectFields": "Seleccione campo(s)",
+    "selectAttributes": "Seleccione atributo(s)",
+    "addAllAttributes": "Añadir todos los atributos",
+    "addFixed": "Añadir valor fijo",
+    "addScript": "Añadir script",
+    "removeAllItems": "Eliminar todo",
+    "exportErrorDuring24Hours": "Error en la exportación de feeds/trabajos durante 24 horas",
+    "exportErrorDuring7Days": "Error en la exportación de feeds/trabajos durante 7 días",
+    "exportErrorDuring28Days": "Error en la exportación de feeds/trabajos durante 28 días"
+  },
+  "boolFilters": {
+    "unexported": "Sin exportar"
+  },
+  "dashlets": {
+    "DataSyncErrorsExport": "Errores de sincronización de datos para la exportación"
+  }
+}
