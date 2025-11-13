@@ -1,8 +1,8 @@
 {
   "fields": {
-    "sharedDownloadUrl": "",
-    "sharedViewUrl": "",
-    "exportFeed": "",
-    "exportJob": ""
+    "sharedDownloadUrl": "Adresa URL ke stažení (sdílená)",
+    "sharedViewUrl": "Zobrazit URL (sdílené)",
+    "exportFeed": "Exportní kanál",
+    "exportJob": "Exportní úloha"
   }
 }
