@@ -38,7 +38,8 @@
     "useExistingExportFeed": "UBestehendes Exportfutter verwenden",
     "useQuoteForAll": "Anführungszeichen für alle Werte verwenden",
     "files": "Dateien",
-    "maxWorkers": "Maximale Anzahl von Arbeitern"
+    "maxWorkers": "Maximale Anzahl von Arbeitern",
+    "locale": "Gebietsschema"
   },
   "labels": {
     "generateTemplate": "Vorlage generieren",
