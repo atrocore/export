@@ -1,32 +1,32 @@
 {
   "fields": {
-    "exportFeed": "",
-    "file": "",
+    "exportFeed": "Exportación",
+    "file": "Archivo exportado",
     "state": "",
-    "stateMessage": "",
-    "start": "",
-    "end": "",
-    "count": "",
-    "files": ""
+    "stateMessage": "Mensaje",
+    "start": "Inicie",
+    "end": "Fin",
+    "count": "Cuente",
+    "files": "Archivos"
   },
   "labels": {
-    "Pending": "",
+    "Pending": "Pendiente",
     "Success": "",
-    "Running": "",
-    "Failed": "",
+    "Running": "Correr",
+    "Failed": "Fallida",
     "Canceled": "",
-    "exportDownloadNotification": ""
+    "exportDownloadNotification": "La exportación ha finalizado. Puede <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">descargar</a> el archivo."
   },
   "exceptions": {
-    "wrongJobState": "",
-    "notExecutableJob": ""
+    "wrongJobState": "Este estado del trabajo no se puede establecer.",
+    "notExecutableJob": "El trabajo no puede ejecutarse de nuevo."
   },
   "boolFilters": {
-    "onlyExportFailed24Hours": "",
-    "onlyExportFailed7Days": "",
-    "onlyExportFailed28Days": ""
+    "onlyExportFailed24Hours": "Sólo los trabajos de exportación que fallaron durante las últimas 24 horas",
+    "onlyExportFailed7Days": "Sólo los trabajos de exportación que fallaron durante los últimos 7 días",
+    "onlyExportFailed28Days": "Sólo los trabajos de exportación que fallaron durante los últimos 28 días"
   },
   "messages": {
-    "xmlValidationFailed": ""
+    "xmlValidationFailed": "Falló la validación del esquema XML:"
   }
 }
