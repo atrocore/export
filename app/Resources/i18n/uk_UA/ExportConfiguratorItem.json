@@ -19,7 +19,8 @@
     "zip": "Експорт ассетів у ZIP-архів",
     "fileNameTemplate": "Шаблон імені файлу",
     "exportByForListAttribute": "Пов’язані поля сутності для списків",
-    "script": "Скрипт"
+    "script": "Скрипт",
+    "entityAttribute": "Атрибут"
   },
   "options": {
     "columnType": {
