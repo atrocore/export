@@ -1,6 +1,8 @@
 {
   "fields": {
     "sharedDownloadUrl": "URL для загрузки (публичный)",
-    "sharedViewUrl": "Просмотр URL (общий)"
+    "sharedViewUrl": "Просмотр URL (общий)",
+    "exportFeed": "Экспортный фид",
+    "exportJob": "Задание экспорта"
   }
 }
