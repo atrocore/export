@@ -37,7 +37,8 @@
     "fieldList": "Liste der Felder",
     "useExistingExportFeed": "UBestehendes Exportfutter verwenden",
     "useQuoteForAll": "Anführungszeichen für alle Werte verwenden",
-    "files": "Dateien"
+    "files": "Dateien",
+    "maxWorkers": "Maximale Anzahl von Arbeitern"
   },
   "labels": {
     "generateTemplate": "Vorlage generieren",
@@ -60,7 +61,8 @@
     "Success": "Erfolg",
     "Running": "In Arbeit",
     "Failed": "Fehlgeschlagen",
-    "Canceled": "Abgebrochen"
+    "Canceled": "Abgebrochen",
+    "allAttributesAlreadyAdded": "Alle Attribute sind bereits hinzugefügt worden."
   },
   "messages": {
     "confirmTemplateGeneration": "Sind Sie sicher, dass Sie eine Vorlage erstellen wollen?",
@@ -71,7 +73,8 @@
     "noFieldSelected": "Keine Felder ausgewählt"
   },
   "additionalTranslates": {
-    "exportName": "Datenexport im Feed %s"
+    "exportName": "Datenexport im Feed %s",
+    "createExportJobs": "Exportaufträge für %s erstellen"
   },
   "exceptions": {
     "toManyAttributesSelected": "Die maximale Anzahl ausgewählter Attribute sollte unter 2000 Datensätzen liegen.",
@@ -101,5 +104,24 @@
     "onlyExportFailed24Hours": "Nur Export Feeds, die in den letzten 24 Stunden fehlgeschlagen sind",
     "onlyExportFailed7Days": "Nur Export Feeds, die in den letzten 7 Tagen fehlgeschlagen sind",
     "onlyExportFailed28Days": "Nur Export Feeds, die in den letzten 28 Tagen fehlgeschlagen sind"
+  },
+  "options": {
+    "fileType": {
+      "sql": "SQL",
+      "xlsx": "XLSX (Excel)",
+      "csv": "CSV",
+      "json": "JSON",
+      "xml": "XML"
+    }
+  },
+  "twigVariables": {
+    "template": {
+      "entities": "Sammlung der zu exportierenden Entitäten"
+    },
+    "fileNameMask": {
+      "feed": "Daten einspeisen",
+      "filename": "Vom System generierter Standard-Dateiname",
+      "interation": "Job-Iterationsnummer"
+    }
   }
 }
