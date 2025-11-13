@@ -17,9 +17,30 @@
     "removeAllItems": "Usuń wszystko",
     "exportErrorDuring24Hours": "Błąd eksportu kanałów/zadań przez 24 godziny",
     "exportErrorDuring7Days": "Błąd eksportu kanałów/zadań przez 7 dni",
-    "exportErrorDuring28Days": "Błąd eksportu kanałów/zadań przez 28 dni"
+    "exportErrorDuring28Days": "Błąd eksportu kanałów/zadań przez 28 dni",
+    "selectFields": "Proszę wybrać pole(a)",
+    "addFixed": "Proszę dodać stałą wartość",
+    "addScript": "Proszę dodać skrypt",
+    "addAllAttributes": "Proszę dodać wszystkie atrybuty"
   },
   "dashlets": {
     "DataSyncErrorsExport": "Błędy synchronizacji danych podczas eksportu"
+  },
+  "boolFilters": {
+    "unexported": "Niewyeksportowany"
+  },
+  "twig": {
+    "functions": {
+      "getPreviousCategoryId": "Pobiera identyfikator poprzedniej kategorii w hierarchicznej strukturze kategorii",
+      "getExtensibleEnumOption": "Pobiera wartość opcji z rozszerzalnego wyliczenia",
+      "getEntity": "Pobiera obiekt encji według jego identyfikatora",
+      "getSharedUrl": "Pobiera udostępniony adres URL pliku"
+    },
+    "filters": {
+      "prepareEntity": "Przygotowuje podmiot do eksportu",
+      "isImage": "Sprawdza, czy podana wartość reprezentuje obraz, sprawdzając rozszerzenia plików lub typy MIME",
+      "escapeDoubleQuote": "Unika podwójnych cudzysłowów w ciągu znaków, dodając odwrotne ukośniki (\" staje się \\\")",
+      "backslashNToBr": "Konwertuje znaki nowej linii (\\n) na znaczniki podziału wiersza HTML (<br>)."
+    }
   }
 }
