@@ -41,5 +41,9 @@
   "exceptions": {
     "noSuchAttribute": "Атрибут з таким кодом '%s' не існує.",
     "unknownModifier": "Модифікатор '%s' невідомий."
+  },
+  "labels": {
+    "withoutChannel": "Без каналу",
+    "allAttributes": "Всі (%) Атрибути"
   }
 }
