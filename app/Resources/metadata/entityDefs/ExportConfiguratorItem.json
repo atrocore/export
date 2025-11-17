@@ -172,6 +172,9 @@
       "notStorable": true,
       "view": "export:views/export-configurator-item/fields/remove"
     },
+    "searchFilter": {
+      "type": "jsonObject"
+    },
     "createdAt": {
       "type": "datetime",
       "readOnly": true
