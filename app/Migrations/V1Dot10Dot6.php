@@ -28,7 +28,7 @@ class V1Dot10Dot6 extends Base
             $this->exec("ALTER TABLE export_configurator_item ADD search_filter TEXT DEFAULT NULL");
             $this->exec("COMMENT ON COLUMN export_configurator_item.search_filter IS '(DC2Type:jsonObject)'");
         }else{
-            $this->exec("ALTER TABLE export_configurator_item ADD search_filter LONGTEXT DEFAULT NULL COMMENT '(DC2Type:jsonObject)';");
+            $this->exec("ALTER TABLE export_configurator_item ADD search_filter LONGTEXT DEFAULT NULL COMMENT '(DC2Type:jsonObject)'");
         }
     }
 
