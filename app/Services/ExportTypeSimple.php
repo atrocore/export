@@ -347,6 +347,7 @@ class ExportTypeSimple extends AbstractExportType
             $exportFeed = $this->getEntityManager()->getEntity('ExportFeed');
             $exportFeed->set('id', Util::generateId());
             $exportFeed->set('name', Util::generateUniqueHash());
+            $exportFeed->_shouldNotSave = true;
         }
 
         $input = new \stdClass();
@@ -436,6 +437,7 @@ class ExportTypeSimple extends AbstractExportType
             $exportFeed = $this->getEntityManager()->getEntity('ExportFeed');
             $exportFeed->set('id', Util::generateId());
             $exportFeed->set('name', Util::generateUniqueHash());
+            $exportFeed->_shouldNotSave = true;
         }
 
         $input = new \stdClass();
