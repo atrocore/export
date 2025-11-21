@@ -354,7 +354,6 @@ class ExportTypeSimple extends AbstractExportType
         $input->name = $this->getExportFileName('csv');
         $input->exportFeedId = $exportJob->get('exportFeedId');
         $input->exportJobId = $exportJob->id;
-
         $input->folderId = $this->createExportFileFolder($exportFeed)->get('id');
 
         $this->initZipArchive([$this->data['feed']['data']['configuration']]);
