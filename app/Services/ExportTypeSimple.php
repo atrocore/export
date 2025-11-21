@@ -347,12 +347,14 @@ class ExportTypeSimple extends AbstractExportType
             $exportFeed = $this->getEntityManager()->getEntity('ExportFeed');
             $exportFeed->set('id', Util::generateId());
             $exportFeed->set('name', Util::generateUniqueHash());
+            $exportFeed->_shouldNotSave = true;
         }
 
         $input = new \stdClass();
         $input->name = $this->getExportFileName('csv');
         $input->exportFeedId = $exportJob->get('exportFeedId');
         $input->exportJobId = $exportJob->id;
+
         $input->folderId = $this->createExportFileFolder($exportFeed)->get('id');
 
         $this->initZipArchive([$this->data['feed']['data']['configuration']]);
@@ -436,6 +438,7 @@ class ExportTypeSimple extends AbstractExportType
             $exportFeed = $this->getEntityManager()->getEntity('ExportFeed');
             $exportFeed->set('id', Util::generateId());
             $exportFeed->set('name', Util::generateUniqueHash());
+            $exportFeed->_shouldNotSave = true;
         }
 
         $input = new \stdClass();

@@ -207,6 +207,14 @@ class ExportFeed extends Base
         }
     }
 
+    public function save(Entity $entity, array $options = [])
+    {
+        if(!empty($entity->_shouldNotSave)) {
+            return false;
+        }
+        return parent::save($entity, $options);
+    }
+
     protected function afterSave(Entity $entity, array $options = [])
     {
         parent::afterSave($entity, $options);
