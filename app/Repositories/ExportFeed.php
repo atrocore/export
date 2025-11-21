@@ -209,7 +209,7 @@ class ExportFeed extends Base
 
     public function save(Entity $entity, array $options = [])
     {
-        if(!empty($entity->_shouldNotSave)) {
+        if ($entity->isNew() && !empty($entity->_shouldNotSave)) {
             return false;
         }
         return parent::save($entity, $options);
