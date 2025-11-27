@@ -22,6 +22,7 @@ use Atro\Core\Utils\Metadata;
 use Espo\ORM\EntityManager;
 use Espo\Services\Record;
 use Export\FieldConverters\AbstractType;
+use Export\Services\ExportFeed;
 
 class Convertor
 {
@@ -129,6 +130,11 @@ class Convertor
         /** @var Language $language */
         $language = $this->container->get('language');
         return $language->translate($key, $tab, $scope);
+    }
+
+    public function getLocalizedLanguage(string $locale): Language
+    {
+        return ExportFeed::getLocalizedLanguage($this->container, $locale);
     }
 
     public function getConfigurationItemType(array $configuration): string
