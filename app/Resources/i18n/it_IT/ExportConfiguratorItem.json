@@ -1,0 +1,49 @@
+{
+  "fields": {
+    "name": "",
+    "column": "",
+    "columnType": "",
+    "exportFeed": "",
+    "entityAttribute": "",
+    "exportBy": "",
+    "channels": "",
+    "remove": "",
+    "exportIntoSeparateColumns": "",
+    "type": "",
+    "mask": "",
+    "offsetRelation": "",
+    "limitRelation": "",
+    "sortFieldRelation": "",
+    "sortOrderRelation": "",
+    "fixedValue": "",
+    "previousItem": "",
+    "zip": "",
+    "fileNameTemplate": "",
+    "exportByForListAttribute": "",
+    "script": ""
+  },
+  "options": {
+    "columnType": {
+      "name": "",
+      "custom": ""
+    },
+    "type": {
+      "Field": "",
+      "allAttributes": "",
+      "Fixed value": "",
+      "script": ""
+    }
+  },
+  "labels": {
+    "withoutChannel": "",
+    "allAttributes": ""
+  },
+  "tooltips": {
+    "exportIntoSeparateColumns": "",
+    "column": ""
+  },
+  "exceptions": {
+    "noSuchAttribute": "",
+    "unknownModifier": ""
+  }
+}
