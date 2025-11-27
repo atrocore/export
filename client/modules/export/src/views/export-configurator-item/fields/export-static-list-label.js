@@ -12,7 +12,7 @@ Espo.define('export:views/export-configurator-item/fields/export-static-list-lab
     Dep => Dep.extend({
         afterRender() {
             Dep.prototype.afterRender.call(this);
-            // debugger
+
             let type = this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'type']);
             if(!['enum', 'multiEnum'].includes(type)) {
                 this.hide();
