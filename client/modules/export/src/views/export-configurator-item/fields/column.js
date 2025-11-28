@@ -33,6 +33,10 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
                 this.checkFieldVisibility();
                 this.checkFieldDisability();
             }
+
+            if(this.mode === 'list') {
+                this.setReadOnly();
+            }
         },
 
         checkFieldDisability() {

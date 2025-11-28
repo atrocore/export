@@ -498,6 +498,8 @@ class ExportFeed extends Base
                 'sortOrderDirection'        => $sheet->get('sortOrderDirection'),
                 'script'                    => $item->get('script') ?? null,
                 'entityAttributeId'         => $item->get('entityAttributeId') ?? null,
+                'exportStaticListLabel'     => $item->get('exportStaticListLabel'),
+                'localeId'                  => $feed->get('localeId'),
             ];
             if ($feed->get('type') === 'simple') {
                 $row['convertCollectionToString'] = true;
