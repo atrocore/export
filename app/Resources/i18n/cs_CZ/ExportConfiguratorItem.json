@@ -20,7 +20,8 @@
     "zip": "Export souborů do archivu ZIP",
     "fileNameTemplate": "Šablona názvu souboru",
     "exportByForListAttribute": "Související pole entit pro seznamy",
-    "script": "Skript"
+    "script": "Skript",
+    "exportStaticListLabel": "Exportní štítek"
   },
   "options": {
     "columnType": {
