@@ -17,12 +17,21 @@
     "previousItem": "Poprzedni element",
     "zip": "Eksportuj zasoby do archiwum ZIP",
     "fileNameTemplate": "Szablon nazwy pliku",
-    "exportByForListAttribute": "Powiązane pola encji dla list"
+    "exportByForListAttribute": "Powiązane pola encji dla list",
+    "entityAttribute": "Atrybut",
+    "script": "Skrypt",
+    "channels": "Kanał(y)"
   },
   "options": {
     "columnType": {
       "name": "Nazwa",
       "custom": "Nazwa niestandardowa"
+    },
+    "type": {
+      "Field": "Pole",
+      "Fixed value": "Wartość stała",
+      "script": "Skrypt",
+      "allAttributes": "Wszystkie atrybuty"
     }
   },
   "tooltips": {
@@ -32,5 +41,9 @@
   "exceptions": {
     "noSuchAttribute": "Atrybut o takim kodzie '%s' nie istnieje.",
     "unknownModifier": "Modyfikator '%s' jest nieznany."
+  },
+  "labels": {
+    "withoutChannel": "Bez kanału",
+    "allAttributes": "Wszystkie (%s) atrybuty"
   }
 }

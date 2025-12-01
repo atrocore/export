@@ -1,8 +1,14 @@
 {
-    "labels": {
-        "exportFeed": "Exportfeed"
-    },
-    "descriptions": {
-        "exportFeed": "Exportfeed konfigurieren"
-    }
+  "labels": {
+    "exportFeed": "Exportfeed"
+  },
+  "descriptions": {
+    "exportFeed": "Konfiguration der Exportvorlagen, die für den Export von Daten aus den AtroCore-Entitäten verwendet werden sollen"
+  },
+  "fieldTypes": {
+    "exportLink": "Link exportieren"
+  },
+  "fields": {
+    "dataUrl": "Daten Url"
+  }
 }

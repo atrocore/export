@@ -1,0 +1,49 @@
+{
+  "fields": {
+    "name": "Pole",
+    "column": "Název sloupce",
+    "columnType": "Označení sloupce",
+    "exportFeed": "Exportní kanál",
+    "entityAttribute": "Atribut",
+    "exportBy": "Související pole entit",
+    "channels": "Kanál(y)",
+    "remove": "Odstranit",
+    "exportIntoSeparateColumns": "Oddělená stránka",
+    "type": "Typ",
+    "mask": "Maska",
+    "offsetRelation": "Offset",
+    "limitRelation": "Limit",
+    "sortFieldRelation": "Pořadí řazení (pole)",
+    "sortOrderRelation": "Pořadí řazení (směr)",
+    "fixedValue": "Pevná hodnota",
+    "previousItem": "Předchozí položka",
+    "zip": "Export souborů do archivu ZIP",
+    "fileNameTemplate": "Šablona názvu souboru",
+    "exportByForListAttribute": "Související pole entit pro seznamy",
+    "script": "Skript"
+  },
+  "options": {
+    "columnType": {
+      "name": "Název",
+      "custom": "Vlastní název"
+    },
+    "type": {
+      "Field": "Pole",
+      "allAttributes": "Všechny atributy",
+      "Fixed value": "Pevná hodnota",
+      "script": "Skript"
+    }
+  },
+  "labels": {
+    "withoutChannel": "Bez kanálu",
+    "allAttributes": "Všechny (%s) Atributy"
+  },
+  "tooltips": {
+    "exportIntoSeparateColumns": "Související datové záznamy budou exportovány jako různá pole/sloupce s použitím přípony \"_1\", \"_2\" atd..",
+    "column": "V názvu sloupce můžete použít pole souvisejících entit. Název pole v databázi použijte jako proměnnou, např. {{jméno}}. Mělo by být aktivováno zaškrtávací políčko \"Oddělit sloupce\"."
+  },
+  "exceptions": {
+    "noSuchAttribute": "Atribut s takovým kódem '%s' neexistuje.",
+    "unknownModifier": "Modifikátor '%s' je neznámý."
+  }
+}

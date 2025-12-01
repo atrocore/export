@@ -1,0 +1,12 @@
+{
+  "fields": {
+    "exportFeed": "Exportní kanál",
+    "maximumHoursToLookBack": "Maximální počet hodin na ohlédnutí",
+    "maximumDaysForJobExist": "Maximální doba uchovávání ve dnech"
+  },
+  "options": {
+    "type": {
+      "ExportFeed": "Exportní kanál"
+    }
+  }
+}

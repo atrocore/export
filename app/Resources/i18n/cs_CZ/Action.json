@@ -1,0 +1,18 @@
+{
+  "fields": {
+    "exportFeed": "Exportní kanál",
+    "payload": "Payload (užitečná data)"
+  },
+  "options": {
+    "type": {
+      "export": "Exportní kanál"
+    }
+  },
+  "twigVariables": {
+    "payload": {
+      "sourceEntities": "Kolekce entit k exportu",
+      "sourceEntitiesIds": "Pole identifikátorů entit, které se mají exportovat",
+      "entity": "První entita kolekce, která se má exportovat"
+    }
+  }
+}

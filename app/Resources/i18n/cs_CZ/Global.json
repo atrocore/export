@@ -1,0 +1,46 @@
+{
+  "scopeNames": {
+    "ExportFeed": "Exportní kanál",
+    "ExportConfiguratorItem": "Konfigurátor",
+    "ExportJob": "Exportní úloha"
+  },
+  "scopeNamesPlural": {
+    "ExportFeed": "Exportní kanály",
+    "ExportConfiguratorItem": "Konfigurátor",
+    "ExportJob": "Pracovní nabídky pro export"
+  },
+  "labels": {
+    "Generate": "Generovat",
+    "tryAgain": "Znovu exportovat",
+    "selectFields": "Vyberte pole",
+    "selectAttributes": "Vyberte atribut(y)",
+    "addAllAttributes": "Přidání všech atributů",
+    "addFixed": "Přidání pevné hodnoty",
+    "addScript": "Přidat skript",
+    "removeAllItems": "Odstranění všech",
+    "exportErrorDuring24Hours": "Chyba při exportu krmiv/úloh během 24 hodin",
+    "exportErrorDuring7Days": "Chyba při exportu krmiv/úloh během 7 dnů",
+    "exportErrorDuring28Days": "Chyba při exportu krmiv/úloh během 28 dnů",
+    "filter": "Filtr"
+  },
+  "boolFilters": {
+    "unexported": "Neexportované"
+  },
+  "dashlets": {
+    "DataSyncErrorsExport": "Chyby synchronizace dat při exportu"
+  },
+  "twig": {
+    "functions": {
+      "getPreviousCategoryId": "Vyhledá ID předchozí kategorie v hierarchické struktuře kategorií.",
+      "getExtensibleEnumOption": "načte hodnotu možnosti z rozšiřitelného výčtu",
+      "getEntity": "Vyhledá objekt entity podle jeho identifikátoru",
+      "getSharedUrl": "načte sdílenou adresu URL souboru"
+    },
+    "filters": {
+      "prepareEntity": "Připraví entitu na export",
+      "isImage": "Ověří, zda zadaná hodnota představuje obrázek, a to ověřením přípon souborů nebo typů MIME.",
+      "escapeDoubleQuote": "Unikne dvojitým uvozovkám v řetězci přidáním zpětných lomítek (\" se stane \\\").",
+      "backslashNToBr": "Převádí znaky nového řádku (\\n) na značky zalomení řádku HTML (<br>)."
+    }
+  }
+}

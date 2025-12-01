@@ -1,6 +1,8 @@
 {
   "fields": {
     "sharedDownloadUrl": "URL de téléchargement (partagé)",
-    "sharedViewUrl": "Voir l'URL (partagé)"
+    "sharedViewUrl": "Voir l'URL (partagé)",
+    "exportJob": "Emploi à l'exportation",
+    "exportFeed": "Flux d'export"
   }
 }

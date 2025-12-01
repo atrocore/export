@@ -18,12 +18,20 @@
     "zip": "Exporter des fichiers vers une archive ZIP",
     "fileNameTemplate": "Modèle de nom de fichier",
     "exportByForListAttribute": "Champs d'entité connexes pour les listes",
-    "script": "Script"
+    "script": "Script",
+    "entityAttribute": "Attribut",
+    "channels": "Chaîne(s)"
   },
   "options": {
     "columnType": {
       "name": "Nom",
       "custom": "Nom personnalisé"
+    },
+    "type": {
+      "Field": "Champ",
+      "Fixed value": "Valeur fixe",
+      "script": "Script",
+      "allAttributes": "Tous les attributs"
     }
   },
   "tooltips": {
@@ -33,5 +41,9 @@
   "exceptions": {
     "noSuchAttribute": "L'attribut portant le code \"%s\" n'existe pas.",
     "unknownModifier": "Le modificateur \"%s\" est inconnu."
+  },
+  "labels": {
+    "withoutChannel": "Sans canal",
+    "allAttributes": "Tous (%s) Attributs"
   }
 }

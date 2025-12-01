@@ -1,0 +1,14 @@
+{
+  "fieldTypes": {
+    "exportLink": "Enlace de exportación"
+  },
+  "fields": {
+    "dataUrl": "Url de datos"
+  },
+  "labels": {
+    "exportFeed": "Exportación"
+  },
+  "descriptions": {
+    "exportFeed": "Configuración de las plantillas de exportación que se utilizarán para exportar los datos de las entidades AtroCore"
+  }
+}

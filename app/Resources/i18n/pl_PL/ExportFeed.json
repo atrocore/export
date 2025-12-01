@@ -16,9 +16,9 @@
     "fieldOrAttribute": "Pole/Atrybut",
     "delimiter": "Separator wartości listy",
     "exportJobs": "Zadania eksportu",
-    "emptyValue": "Pusta wartość",
-    "nullValue": "Wartość null",
-    "markForNoRelation": "Oznaczenie braku relacji",
+    "emptyValue": "Znacznik pustej wartości",
+    "nullValue": "Znacznik wartości zerowej",
+    "markForNoRelation": "Znacznik braku związku",
     "fieldDelimiterForRelation": "Separator pól dla relacji",
     "limit": "Maksymalna liczba rekordów na iterację",
     "separateJob": "Oddzielne zadanie na iterację",
@@ -32,7 +32,14 @@
     "fileNameMask": "Maska nazwy pliku",
     "exportAllField": "Eksportuj wszystkie pola",
     "fieldList": "Lista pól",
-    "useExistingExportFeed": "Proszę użyć istniejącego kanału eksportu"
+    "useExistingExportFeed": "Proszę użyć istniejącego kanału eksportu",
+    "replaceExistingFile": "Zastąp istniejący plik",
+    "markForUnlinkedAttribute": "Marker dla niepowiązanego atrybutu",
+    "maxWorkers": "Maksymalna liczba pracowników",
+    "useQuoteForAll": "Proszę używać cudzysłowów dla wszystkich wartości",
+    "locale": "Lokalizacja",
+    "folder": "Folder",
+    "files": "Pliki"
   },
   "options": {
     "fileType": {
@@ -64,7 +71,8 @@
     "Success": "Sukces",
     "Running": "Uruchamianie",
     "Failed": "Niepowodzenie",
-    "Canceled": "Anulowano"
+    "Canceled": "Anulowano",
+    "allAttributesAlreadyAdded": "Wszystkie atrybuty zostały już dodane."
   },
   "messages": {
     "confirmTemplateGeneration": "Czy na pewno chcesz wygenerować szablon?",
@@ -96,11 +104,25 @@
     "exportByMaxDepth": "Określa maksymalną głębokość relacji w polu konfiguratora \"Powiązane pola encji\"",
     "markForNoRelation": "Określa, jak powinna być oznaczana relacja niepowiązana.",
     "nullValue": "Wartość zostanie zinterpretowana jako wartość \"NULL\".",
-    "emptyValue": "Wartość zostanie zinterpretowana jako \"pusta\" wartość dodatkowo do pustej komórki."
+    "emptyValue": "Wartość zostanie zinterpretowana jako \"pusta\" wartość dodatkowo do pustej komórki.",
+    "maxWorkers": "Określa to, ilu pracowników może równolegle wykonać ten feed.",
+    "useQuoteForAll": "Wszystkie wartości w wyeksportowanym pliku zostaną ujęte w cudzysłów",
+    "limit": "Wyższa wartość oznacza mniejszą liczbę zadań wykonywanych w tle.",
+    "separateJob": "System wygeneruje oddzielny plik eksportu dla każdego zadania eksportu."
   },
   "boolFilters": {
     "onlyExportFailed24Hours": "Tylko przesyłki eksportu, które nie powiodły się w ciągu ostatnich 24 godzin",
     "onlyExportFailed7Days": "Tylko przesyłki eksportu, które nie powiodły się w ciągu ostatnich 7 dni",
     "onlyExportFailed28Days": "Tylko przesyłki eksportu, które nie powiodły się w ciągu ostatnich 28 dni"
+  },
+  "twigVariables": {
+    "template": {
+      "entities": "Zbiór podmiotów do wyeksportowania"
+    },
+    "fileNameMask": {
+      "feed": "Dane zasilające",
+      "filename": "Domyślna nazwa pliku generowana przez system",
+      "interation": "Numer iteracji zadania"
+    }
   }
 }

@@ -16,9 +16,9 @@
     "fieldOrAttribute": "Champ/Attribut",
     "delimiter": "Séparateur de valeur de liste",
     "exportJobs": "Emplois à l'exportation",
-    "emptyValue": "Valeur vide",
-    "nullValue": "Valeur nulle",
-    "markForNoRelation": "Marquage d'absence de relation",
+    "emptyValue": "Marqueur de valeur vide",
+    "nullValue": "Marqueur de valeur nulle",
+    "markForNoRelation": "Marqueur d'absence de lien de parenté",
     "fieldDelimiterForRelation": "Délimiteur de champ pour la relation",
     "limit": "Nombre maximal d'enregistrements par itération",
     "separateJob": "Travail séparé par itération",
@@ -32,7 +32,14 @@
     "exportAllField": "Exporter tous les champs",
     "fieldList": "Liste des champs",
     "useExistingExportFeed": "Utiliser le flux d'exportation existant",
-    "fileNameMask": "Masque de nom de fichier"
+    "fileNameMask": "Masque de nom de fichier",
+    "maxWorkers": "Nombre maximum de travailleurs",
+    "markForUnlinkedAttribute": "Marqueur pour l'attribut non lié",
+    "useQuoteForAll": "Utilisez des guillemets pour toutes les valeurs",
+    "replaceExistingFile": "Remplacer le fichier existant",
+    "locale": "Local",
+    "folder": "Dossier",
+    "files": "Fichiers"
   },
   "options": {
     "fileType": {
@@ -64,7 +71,8 @@
     "Success": "Succès",
     "Running": "En cours d'exécution",
     "Failed": "Échec",
-    "Canceled": "Annulé"
+    "Canceled": "Annulé",
+    "allAttributesAlreadyAdded": "Tous les attributs ont déjà été ajoutés."
   },
   "messages": {
     "confirmTemplateGeneration": "Êtes-vous sûr de vouloir générer des gabarits ?",
@@ -96,11 +104,25 @@
     "markForNoRelation": "Indiquez comment une relation non liée doit être étiquetée.",
     "nullValue": "La valeur sera interprétée comme une valeur \"NULL\".",
     "emptyValue": "La valeur sera interprétée comme une valeur \"vide\" en plus de la cellule vide.",
-    "exportByMaxDepth": "Spécifie la profondeur maximale des relations dans le champ \"Related Entity Fields\" du configurateur"
+    "exportByMaxDepth": "Spécifie la profondeur maximale des relations dans le champ \"Related Entity Fields\" du configurateur",
+    "maxWorkers": "Cela détermine le nombre de travailleurs qui peuvent exécuter ce flux en parallèle.",
+    "useQuoteForAll": "Toutes les valeurs du fichier exporté seront placées entre guillemets.",
+    "limit": "Un montant plus élevé signifie que moins de tâches d'arrière-plan doivent être exécutées.",
+    "separateJob": "Le système génère un fichier d'exportation distinct pour chaque tâche d'exportation."
   },
   "boolFilters": {
     "onlyExportFailed24Hours": "Exporter uniquement les flux qui ont échoué au cours des dernières 24 heures",
     "onlyExportFailed7Days": "Exporter uniquement les flux qui ont échoué au cours des 7 derniers jours",
     "onlyExportFailed28Days": "Exporter uniquement les flux qui ont échoué au cours des 28 derniers jours"
+  },
+  "twigVariables": {
+    "template": {
+      "entities": "Collection d'entités à exporter"
+    },
+    "fileNameMask": {
+      "feed": "Données d'alimentation",
+      "filename": "Nom de fichier par défaut généré par le système",
+      "interation": "Numéro d'itération du travail"
+    }
   }
 }

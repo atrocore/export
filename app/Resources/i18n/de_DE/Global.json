@@ -18,9 +18,29 @@
     "removeAllItems": "Alle Regel entfernen",
     "exportErrorDuring24Hours": "Fehler beim Exportieren von Feeds/Jobs während 24 Stunden",
     "exportErrorDuring7Days": "Fehler beim Exportieren von Feeds/Jobs während 7 Tagen",
-    "exportErrorDuring28Days": "Fehler beim Exportieren von Feeds/Jobs während 28 Tagen"
+    "exportErrorDuring28Days": "Fehler beim Exportieren von Feeds/Jobs während 28 Tagen",
+    "selectFields": "Feld(er) auswählen",
+    "addFixed": "Festen Wert hinzufügen",
+    "addScript": "Skript hinzufügen"
   },
   "dashlets": {
     "DataSyncErrorsExport": "Synchronisierungsfehler für Datenexport"
+  },
+  "boolFilters": {
+    "unexported": "Nicht importierte"
+  },
+  "twig": {
+    "functions": {
+      "getPreviousCategoryId": "Ruft die ID der vorherigen Kategorie in einer hierarchischen Kategoriestruktur ab",
+      "getExtensibleEnumOption": "Holt einen Optionswert aus einer erweiterbaren Aufzählung",
+      "getEntity": "Ruft ein Entitätsobjekt anhand seines Bezeichners ab",
+      "getSharedUrl": "Ruft eine gemeinsame URL für eine Datei ab"
+    },
+    "filters": {
+      "prepareEntity": "Bereitet eine Entität für den Export vor",
+      "isImage": "Überprüft, ob der angegebene Wert ein Bild darstellt, indem Dateierweiterungen oder MIME-Typen überprüft werden",
+      "escapeDoubleQuote": "Umgeht doppelte Anführungszeichen in einer Zeichenkette durch Hinzufügen von Backslashes (\" wird zu \\\")",
+      "backslashNToBr": "Konvertiert Zeilenumbruchzeichen (\\n) in HTML-Zeilenumbruch-Tags (<br>)"
+    }
   }
 }

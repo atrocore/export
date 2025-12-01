@@ -1,0 +1,128 @@
+{
+  "fields": {
+    "folder": "Složka",
+    "maxWorkers": "Maximální počet pracovníků",
+    "replaceExistingFile": "Nahradit stávající soubor",
+    "template": "Šablona",
+    "sortOrderField": "Pořadí řazení (pole)",
+    "sortOrderDirection": "Pořadí řazení (směr)",
+    "locale": "Místní nastavení",
+    "entity": "Subjekt",
+    "type": "Typ",
+    "isActive": "Aktivní",
+    "lastStatus": "Poslední stav",
+    "lastTime": "Poslední běh",
+    "fileType": "Formát",
+    "isFileHeaderRow": "Řádek záhlaví",
+    "csvFieldDelimiter": "Oddělovač polí",
+    "csvTextQualifier": "Textový kvalifikátor",
+    "field": "Pole",
+    "fieldOrAttribute": "Pole/atribut",
+    "delimiter": "Oddělovač hodnot seznamu",
+    "exportJobs": "Pracovní nabídky pro export",
+    "emptyValue": "Značka pro prázdnou hodnotu",
+    "nullValue": "Značka pro nulovou hodnotu",
+    "markForNoRelation": "Značka pro No Relation",
+    "markForUnlinkedAttribute": "Značka pro nepropojený atribut",
+    "fieldDelimiterForRelation": "Oddělovač polí pro relaci",
+    "limit": "Maximální počet záznamů na jednu iteraci",
+    "separateJob": "Samostatná úloha pro každou iteraci",
+    "configuratorItems": "Konfigurátor",
+    "convertCollectionToString": "Převést kolekci na řetězec",
+    "convertRelationsToString": "Převést vztahy na řetězec",
+    "exportByMaxDepth": "Maximální hloubka zobrazovaných vztahů",
+    "originTemplateName": "Název šablony",
+    "originTemplate": "Šablona původu",
+    "isTemplateEditable": "Upravitelné",
+    "fileNameMask": "Název souboru Maska",
+    "exportAllField": "Exportovat všechna pole",
+    "fieldList": "Seznam polí",
+    "useExistingExportFeed": "Použití stávajícího exportního kanálu",
+    "useQuoteForAll": "Pro všechny hodnoty použijte uvozovky",
+    "files": "Soubory"
+  },
+  "options": {
+    "fileType": {
+      "xlsx": "XLSX (Excel)",
+      "csv": "CSV",
+      "json": "JSON",
+      "xml": "XML",
+      "sql": "SQL"
+    }
+  },
+  "labels": {
+    "generateTemplate": "Generování šablony",
+    "simple": "Soubor",
+    "typeToSearch": "Zadejte hledání...",
+    "removeAllItemsConfirmation": "Opravdu chcete odstranit všechna pravidla konfigurátoru?",
+    "fields": "Pole",
+    "ignoreFilter": "Ignorování filtru ve feedu",
+    "Export Data Settings": "Nastavení exportu dat",
+    "Feed Settings": "Nastavení krmiva",
+    "entityFilter": "Filtr",
+    "entityFilterResult": "Výsledek filtru",
+    "Configurator": "Konfigurátor",
+    "addEntityField": "Přidání pole entity",
+    "doubleQuote": "Dvojitá citace",
+    "singleQuote": "Jediná citace",
+    "Export": "Export",
+    "DuplicateAsImport": "Duplikovat jako Import",
+    "Pending": "Čekající",
+    "Success": "Úspěch",
+    "Running": "Běh",
+    "Failed": "Neúspěšný",
+    "Canceled": "Zrušeno",
+    "allAttributesAlreadyAdded": "Všechny položky atributů již byly přidány."
+  },
+  "messages": {
+    "confirmTemplateGeneration": "Jste si jisti, že chcete generovat šablonu?",
+    "delimitersMustBeDifferent": "Všechny parametry krmiva by měly mít jedinečné hodnoty.",
+    "noExportFeedSelected": "Není vybrán žádný ExportFeed.",
+    "columnAlreadyExist": "Sloupec s takovým názvem již existuje.",
+    "duplicateAsImport": "Jste si jisti, že chcete vytvořit importní kanál z tohoto exportního kanálu ?",
+    "noFieldSelected": "Nejsou vybrána žádná pole"
+  },
+  "additionalTranslates": {
+    "exportName": "Export: %s",
+    "createExportJobs": "Vytvořit exportní úlohy pro %s"
+  },
+  "exceptions": {
+    "toManyAttributesSelected": "Maximální počet vybraných atributů by měl být nižší než 2000 záznamů.",
+    "noSuchAttribute": "Atribut '%s' neexistuje.",
+    "noDataFound": "Krmivo nemá co vyvážet.",
+    "exportValidationFailed": "Takový soubor nelze exportovat. Zkontrolujte prosím formulář a zkuste to znovu.",
+    "lastRecordIsRequired": "Poslední záznam v konfigurátoru nelze odstranit.",
+    "noFieldLabel": "Label pro pole \"%s\" pro jazyk \"%s\" není nastaven.",
+    "noAttributeLabel": "Label pro atribut \"%s\" pro jazyk \"%s\" není nastaven.",
+    "noConfiguratorItems": "Vytvořte prosím alespoň jedno pravidlo konfigurátoru, aby bylo možné tento kanál spustit.",
+    "noSheets": "Vytvořte si prosím alespoň jeden list, abyste mohli tento kanál spustit."
+  },
+  "tooltips": {
+    "maxWorkers": "To určuje, kolik pracovníků může tento kanál provádět paralelně.",
+    "template": "Můžete použít syntaxi pro <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine.",
+    "convertCollectionToString": "Pole a atributy typu: multienum, pole, relace one-to-many.",
+    "convertRelationsToString": "Pole relací budou oddělena oddělovačem polí pro relaci.",
+    "markForNoRelation": "Určete, jak má být nepropojený vztah označen.",
+    "nullValue": "Hodnota bude interpretována jako hodnota \"NULL\".",
+    "emptyValue": "Hodnota bude interpretována jako \"prázdná\" hodnota navíc k prázdné buňce.",
+    "exportByMaxDepth": "Určuje maximální hloubku vztahů v poli konfigurátoru \"Pole souvisejících entit\".",
+    "useQuoteForAll": "Všechny hodnoty v exportovaném souboru budou uzavřeny v uvozovkách.",
+    "limit": "Vyšší částka znamená, že je třeba provést méně úloh na pozadí.",
+    "separateJob": "Systém vygeneruje pro každou exportní úlohu samostatný exportní soubor."
+  },
+  "boolFilters": {
+    "onlyExportFailed24Hours": "Pouze exportní kanály, které selhaly během posledních 24 hodin",
+    "onlyExportFailed7Days": "Pouze exportní kanály, které selhaly během posledních 7 dní",
+    "onlyExportFailed28Days": "Pouze exportní kanály, které selhaly během posledních 28 dnů"
+  },
+  "twigVariables": {
+    "template": {
+      "entities": "Kolekce entit k exportu"
+    },
+    "fileNameMask": {
+      "feed": "Data o krmivech",
+      "filename": "Výchozí název souboru generovaný systémem",
+      "interation": "Číslo iterace úlohy"
+    }
+  }
+}

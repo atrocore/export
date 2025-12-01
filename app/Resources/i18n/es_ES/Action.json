@@ -1,0 +1,18 @@
+{
+  "fields": {
+    "exportFeed": "Exportación",
+    "payload": "Carga útil"
+  },
+  "options": {
+    "type": {
+      "export": "Exportación"
+    }
+  },
+  "twigVariables": {
+    "payload": {
+      "sourceEntities": "Colección de entidades a exportar",
+      "sourceEntitiesIds": "Matriz de ids de entidad a exportar",
+      "entity": "Primera entidad de la colección a exportar"
+    }
+  }
+}

@@ -1,11 +1,18 @@
 {
-	"fields": {
-		"exportFeed": "Eksportuj kanał",
-		"payload": "Ładunek"
-	},
-	"options": {
-		"type": {
-			"export": "Eksportuj kanał"
-		}
-	}
+  "fields": {
+    "exportFeed": "Eksportuj kanał",
+    "payload": "Ładunek"
+  },
+  "options": {
+    "type": {
+      "export": "Eksportuj kanał"
+    }
+  },
+  "twigVariables": {
+    "payload": {
+      "sourceEntities": "Zbiór podmiotów do wyeksportowania",
+      "sourceEntitiesIds": "Tablica identyfikatorów podmiotów do wyeksportowania",
+      "entity": "Pierwszy podmiot kolekcji do wyeksportowania"
+    }
+  }
 }
