@@ -20,7 +20,8 @@
     "exportByForListAttribute": "Champs d'entité connexes pour les listes",
     "script": "Script",
     "entityAttribute": "Attribut",
-    "channels": "Chaîne(s)"
+    "channels": "Chaîne(s)",
+    "exportStaticListLabel": "Label d'exportation"
   },
   "options": {
     "columnType": {
