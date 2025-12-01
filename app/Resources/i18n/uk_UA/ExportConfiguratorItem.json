@@ -20,7 +20,7 @@
     "fileNameTemplate": "Шаблон імені файлу",
     "exportByForListAttribute": "Пов’язані поля сутності для списків",
     "script": "Скрипт",
-    "entityAttribute": "Атрибут"
+    "exportStaticListLabel": "Експортувати мітку"
   },
   "options": {
     "columnType": {

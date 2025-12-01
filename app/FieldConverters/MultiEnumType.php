@@ -15,4 +15,31 @@ namespace Export\FieldConverters;
 
 class MultiEnumType extends ArrayType
 {
+    public function convertToString(array &$result, array $record, array $configuration): void
+    {
+        $field = $configuration['field'];
+        $column = $configuration['column'];
+        $emptyValue = $configuration['emptyValue'];
+        $nullValue = $configuration['nullValue'];
+        $delimiter = $configuration['delimiter'];
+
+        $result[$column] = $nullValue;
+
+        if (isset($record[$field])) {
+            if (empty($record[$field])) {
+                $result[$column] = $record[$field] === null ? $nullValue : $emptyValue;
+            } else {
+                if (is_array($record[$field])) {
+                    $values = $record[$field];
+                    if (!empty($configuration['exportStaticListLabel'])) {
+                        $values = array_map(
+                            fn($value) => $this->convertor->getLocalizedLanguage($configuration['localeId'])->translateOption($value, $field, $configuration['entity'] ?? null),
+                            $values
+                        );
+                    }
+                    $result[$column] = implode($delimiter, $values);
+                }
+            }
+        }
+    }
 }

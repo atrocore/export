@@ -24,6 +24,11 @@ class ExportConfiguratorItem extends Base
         return true;
     }
 
+    public function _hasExportStaticListLabel(): bool
+    {
+        return true;
+    }
+
     public function _getFileNameTemplate()
     {
         return $this->getVirtualField('fileNameTemplate');
@@ -32,6 +37,15 @@ class ExportConfiguratorItem extends Base
     public function _setFileNameTemplate(?string $fileNameTemplate): void
     {
         $this->setVirtualField('fileNameTemplate', $fileNameTemplate);
+    }
+
+    public function _getExportStaticListLabel(): ?bool {
+        return !empty($this->getVirtualField('exportStaticListLabel'));
+    }
+
+    public function _setExportStaticListLabel(?bool $exportStaticListLabel): void
+    {
+        $this->setVirtualField('exportStaticListLabel', $exportStaticListLabel);
     }
 
     public function getVirtualField(string $name)

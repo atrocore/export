@@ -249,6 +249,12 @@
       "exportDisabled": true,
       "importDisabled": true,
       "emHidden": true
+    },
+    "exportStaticListLabel": {
+      "type": "bool",
+      "view": "export:views/export-configurator-item/fields/export-static-list-label",
+      "notStorable": true,
+      "filterDisabled": true
     }
   },
   "links": {

@@ -20,7 +20,7 @@
     "fileNameTemplate": "Dateinamenvorlage",
     "exportByForListAttribute": "Verwandte Entitätsfelder für Listen",
     "script": "Skript",
-    "entityAttribute": "Attribut"
+    "exportStaticListLabel": "Exportbezeichnung"
   },
   "options": {
     "columnType": {
