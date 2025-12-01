@@ -1,14 +1,14 @@
 {
   "fieldTypes": {
-    "exportLink": ""
+    "exportLink": "Link all'esportazione"
   },
   "fields": {
-    "dataUrl": ""
+    "dataUrl": "Dati Url"
   },
   "labels": {
-    "exportFeed": ""
+    "exportFeed": "Esportazione di feed"
   },
   "descriptions": {
-    "exportFeed": ""
+    "exportFeed": "Configurazione dei modelli di esportazione da utilizzare per esportare i dati dalle entità AtroCore."
   }
 }
