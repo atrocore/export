@@ -272,7 +272,7 @@ abstract class AbstractExportType extends Base
         $params['disableCount'] = true;
         $params['offset'] = $offset;
         $params['maxSize'] = $limit;
-        $params['queryCallbacks'][] = [$this, 'queryCallback'];
+        $params['subQueryCallbacks'][] = [$this, 'queryCallback'];
 
         $this->addAttributesToSelectParams($params);
 
@@ -309,7 +309,7 @@ abstract class AbstractExportType extends Base
         $params['maxSize'] = $this->data['limit'];
         $params['withDeleted'] = !empty($this->data['feed']['data']['withDeleted']);
         $params['disableCount'] = true;
-        $params['queryCallbacks'][] = [$this, 'queryCallback'];
+        $params['subQueryCallbacks'][] = [$this, 'queryCallback'];
 
         $this->addAttributesToSelectParams($params);
 
