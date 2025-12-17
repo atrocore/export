@@ -4,8 +4,8 @@
     "file": "Exported File",
     "state": "State",
     "stateMessage": "Message",
-    "start": "Start",
-    "end": "End",
+    "start": "Started At",
+    "end": "Finished At",
     "count": "Count",
     "files": "Files"
   },

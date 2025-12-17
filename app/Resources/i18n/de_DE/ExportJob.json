@@ -4,8 +4,8 @@
     "file": "Exportierte Datei",
     "state": "Status",
     "stateMessage": "Statusmeldung",
-    "start": "Start",
-    "end": "End",
+    "start": "Angefangen bei",
+    "end": "Beendet am",
     "count": "Anzahl",
     "files": "Dateien"
   },
