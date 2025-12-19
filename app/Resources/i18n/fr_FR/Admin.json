@@ -1,6 +1,6 @@
 {
   "fieldTypes": {
-    "exportLink": "Lien d'exportation"
+    "exportLink": "Lien d'export"
   },
   "fields": {
     "dataUrl": "Url des données"
