@@ -18,7 +18,7 @@
     "exportErrorDuring24Hours": "Erreur d'exportation de flux/travaux pendant 24 heures",
     "exportErrorDuring7Days": "Erreur d'exportation de flux/emplois pendant 7 jours",
     "exportErrorDuring28Days": "Erreur d'exportation de flux/emplois pendant 28 jours",
-    "selectFields": "Sélectionnez le(s) champ(s)",
+    "selectFields": "Sélectionner les champs",
     "addFixed": "Ajouter une valeur fixe",
     "addScript": "Ajouter un script",
     "addAllAttributes": "Ajouter tous les attributs"
@@ -31,14 +31,14 @@
   },
   "twig": {
     "functions": {
-      "getPreviousCategoryId": "Récupère l'ID de la catégorie précédente dans une structure hiérarchique de catégories.",
-      "getExtensibleEnumOption": "Récupère une valeur d'option dans un enum extensible",
-      "getEntity": "Recherche d'un objet d'entité par son identifiant",
+      "getPreviousCategoryId": "Récupère l'ID de la catégorie précédente dans une structure hiérarchique de catégories",
+      "getExtensibleEnumOption": "Récupère une valeur d'option dans un liste non static",
+      "getEntity": "Recherche une entité par son identifiant",
       "getSharedUrl": "Récupère l'URL partagée d'un fichier"
     },
     "filters": {
       "prepareEntity": "Préparer une entité pour l'exportation",
-      "isImage": "Vérifie si la valeur fournie représente une image, en validant les extensions de fichiers ou les types MIME.",
+      "isImage": "Vérifie si la valeur fournie représente une image, en validant les extensions de fichiers ou les types MIME",
       "escapeDoubleQuote": "Échappe les guillemets doubles d'une chaîne en ajoutant des barres obliques inverses (\" devient \\\")",
       "backslashNToBr": "Convertit les caractères de retour à la ligne (\\n) en balises de retour à la ligne HTML (<br>)"
     }
