@@ -2,12 +2,12 @@
   "scopeNames": {
     "ExportFeed": "Flux d'export",
     "ExportConfiguratorItem": "Configurateur",
-    "ExportJob": "Emploi à l'exportation"
+    "ExportJob": "Tâche d'export"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Flux d'export",
     "ExportConfiguratorItem": "Configurateur",
-    "ExportJob": "Emplois à l'exportation"
+    "ExportJob": "Tâches d'export"
   },
   "labels": {
     "Generate": "Générer",
@@ -24,7 +24,7 @@
     "addAllAttributes": "Ajouter tous les attributs"
   },
   "dashlets": {
-    "DataSyncErrorsExport": "Erreurs de synchronisation des données pour l'exportation"
+    "DataSyncErrorsExport": "Erreurs de synchronisation des données pour l'export"
   },
   "boolFilters": {
     "unexported": "Non exporté"
@@ -37,7 +37,7 @@
       "getSharedUrl": "Récupère l'URL partagée d'un fichier"
     },
     "filters": {
-      "prepareEntity": "Préparer une entité pour l'exportation",
+      "prepareEntity": "Préparer une entité pour l'export",
       "isImage": "Vérifie si la valeur fournie représente une image, en validant les extensions de fichiers ou les types MIME",
       "escapeDoubleQuote": "Échappe les guillemets doubles d'une chaîne en ajoutant des barres obliques inverses (\" devient \\\")",
       "backslashNToBr": "Convertit les caractères de retour à la ligne (\\n) en balises de retour à la ligne HTML (<br>)"
