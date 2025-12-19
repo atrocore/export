@@ -12,7 +12,7 @@
     "offsetRelation": "Décalage",
     "limitRelation": "Limite",
     "sortFieldRelation": "Ordre de tri (champ)",
-    "sortOrderRelation": "Ordre de tri (sens)",
+    "sortOrderRelation": "Ordre de tri (direction)",
     "fixedValue": "Valeur fixe",
     "previousItem": "Point précédent",
     "zip": "Exporter des fichiers vers une archive ZIP",
