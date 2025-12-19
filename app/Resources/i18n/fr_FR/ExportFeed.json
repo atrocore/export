@@ -18,7 +18,7 @@
     "exportJobs": "Emplois à l'exportation",
     "emptyValue": "Marqueur de valeur vide",
     "nullValue": "Marqueur de valeur nulle",
-    "markForNoRelation": "Marqueur d'absence de lien de parenté",
+    "markForNoRelation": "Marqueur pour pas de relation",
     "fieldDelimiterForRelation": "Délimiteur de champ pour la relation",
     "limit": "Nombre maximal d'enregistrements par itération",
     "separateJob": "Travail séparé par itération",
@@ -33,11 +33,11 @@
     "fieldList": "Liste des champs",
     "useExistingExportFeed": "Utiliser le flux d'exportation existant",
     "fileNameMask": "Masque de nom de fichier",
-    "maxWorkers": "Nombre maximum de travailleurs",
-    "markForUnlinkedAttribute": "Marqueur pour l'attribut non lié",
-    "useQuoteForAll": "Utilisez des guillemets pour toutes les valeurs",
+    "maxWorkers": "Nombre maximum de workers",
+    "markForUnlinkedAttribute": "Marqueur pour attribut non lié",
+    "useQuoteForAll": "Utiliser des guillemets pour toutes les valeurs",
     "replaceExistingFile": "Remplacer le fichier existant",
-    "locale": "Local",
+    "locale": "Paramètre régional",
     "folder": "Dossier",
     "files": "Fichiers"
   },
@@ -105,24 +105,24 @@
     "nullValue": "La valeur sera interprétée comme une valeur \"NULL\".",
     "emptyValue": "La valeur sera interprétée comme une valeur \"vide\" en plus de la cellule vide.",
     "exportByMaxDepth": "Spécifie la profondeur maximale des relations dans le champ \"Related Entity Fields\" du configurateur",
-    "maxWorkers": "Cela détermine le nombre de travailleurs qui peuvent exécuter ce flux en parallèle.",
-    "useQuoteForAll": "Toutes les valeurs du fichier exporté seront placées entre guillemets.",
+    "maxWorkers": "Cela détermine le nombre de workers qui peuvent exécuter cet flux d'exportation en parallèle.",
+    "useQuoteForAll": "Toutes les valeurs du fichier exporté seront placées entre guillemets",
     "limit": "Un montant plus élevé signifie que moins de tâches d'arrière-plan doivent être exécutées.",
     "separateJob": "Le système génère un fichier d'exportation distinct pour chaque tâche d'exportation."
   },
   "boolFilters": {
-    "onlyExportFailed24Hours": "Exporter uniquement les flux qui ont échoué au cours des dernières 24 heures",
-    "onlyExportFailed7Days": "Exporter uniquement les flux qui ont échoué au cours des 7 derniers jours",
-    "onlyExportFailed28Days": "Exporter uniquement les flux qui ont échoué au cours des 28 derniers jours"
+    "onlyExportFailed24Hours": "Uniquement les échecs des dernières 24 heures",
+    "onlyExportFailed7Days": "Uniquement leséchecs au cours des 7 derniers jours",
+    "onlyExportFailed28Days": "Uniquement les échecs au cours des 28 derniers jours"
   },
   "twigVariables": {
     "template": {
       "entities": "Collection d'entités à exporter"
     },
     "fileNameMask": {
-      "feed": "Données d'alimentation",
+      "feed": "Données du flux",
       "filename": "Nom de fichier par défaut généré par le système",
-      "interation": "Numéro d'itération du travail"
+      "interation": "Numéro d'itération de la tâche"
     }
   }
 }
