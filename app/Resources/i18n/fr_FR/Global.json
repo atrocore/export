@@ -5,7 +5,7 @@
     "ExportJob": "Emploi à l'exportation"
   },
   "scopeNamesPlural": {
-    "ExportFeed": "Exporter des flux",
+    "ExportFeed": "Flux d'export",
     "ExportConfiguratorItem": "Configurateur",
     "ExportJob": "Emplois à l'exportation"
   },
@@ -15,9 +15,9 @@
     "tryAgain": "Exporter à nouveau",
     "selectAttributes": "Sélectionnez le(s) attribut(s)",
     "removeAllItems": "Supprimer tout",
-    "exportErrorDuring24Hours": "Erreur d'exportation de flux/travaux pendant 24 heures",
-    "exportErrorDuring7Days": "Erreur d'exportation de flux/emplois pendant 7 jours",
-    "exportErrorDuring28Days": "Erreur d'exportation de flux/emplois pendant 28 jours",
+    "exportErrorDuring24Hours": "Erreur tâche/flux d'export pendant 24 heures",
+    "exportErrorDuring7Days": "Erreur tâches/flux d'export pendant 7 jours",
+    "exportErrorDuring28Days": "Erreur tâches/flux d'export pendant 28 jours",
     "selectFields": "Sélectionner les champs",
     "addFixed": "Ajouter une valeur fixe",
     "addScript": "Ajouter un script",
