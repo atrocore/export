@@ -21,7 +21,7 @@
     "markForNoRelation": "Marqueur pour pas de relation",
     "fieldDelimiterForRelation": "Délimiteur de champ pour la relation",
     "limit": "Nombre maximal d'enregistrements par itération",
-    "separateJob": "Travail séparé par itération",
+    "separateJob": "Tâche distincte par itération",
     "configuratorItems": "Configurateur",
     "convertCollectionToString": "Convertir une collection en chaîne de caractères",
     "convertRelationsToString": "Convertir les relations en chaînes de caractères",
