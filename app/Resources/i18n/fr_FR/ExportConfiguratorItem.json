@@ -3,7 +3,7 @@
     "name": "Champ",
     "column": "Nom de la colonne",
     "columnType": "Étiquette de la colonne",
-    "exportFeed": "Exportation de flux",
+    "exportFeed": "Flux d'export",
     "exportBy": "Champs d'entité connexes",
     "remove": "Enlever",
     "exportIntoSeparateColumns": "Séparer",
@@ -20,8 +20,8 @@
     "exportByForListAttribute": "Champs d'entité connexes pour les listes",
     "script": "Script",
     "entityAttribute": "Attribut",
-    "channels": "Chaîne(s)",
-    "exportStaticListLabel": "Label d'exportation"
+    "channels": "Canaux",
+    "exportStaticListLabel": "Libellé d'exportation"
   },
   "options": {
     "columnType": {
