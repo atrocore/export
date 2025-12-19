@@ -89,7 +89,7 @@
   "exceptions": {
     "toManyAttributesSelected": "Le nombre maximum d'attributs sélectionnés doit être inférieur à 2000 enregistrements.",
     "noSuchAttribute": "L'attribut \"%s\" n'existe pas.",
-    "noDataFound": "Les aliments pour animaux n'ont rien à exporter.",
+    "noDataFound": "Le flux n'a rien à exporter",
     "exportValidationFailed": "Vous ne pouvez pas exporter un tel fichier. Veuillez vérifier le formulaire et réessayer.",
     "lastRecordIsRequired": "Le dernier enregistrement dans le configurateur ne peut pas être supprimé.",
     "noFieldLabel": "L'étiquette du champ '%s' pour la langue '%s' n'est pas définie.",
