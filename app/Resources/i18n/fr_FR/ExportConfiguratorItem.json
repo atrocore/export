@@ -4,7 +4,7 @@
     "column": "Nom de la colonne",
     "columnType": "Étiquette de la colonne",
     "exportFeed": "Flux d'export",
-    "exportBy": "Champs d'entité connexes",
+    "exportBy": "Champs de l’entité associée",
     "remove": "Enlever",
     "exportIntoSeparateColumns": "Séparer",
     "type": "Type",
@@ -17,11 +17,11 @@
     "previousItem": "Point précédent",
     "zip": "Exporter des fichiers vers une archive ZIP",
     "fileNameTemplate": "Modèle de nom de fichier",
-    "exportByForListAttribute": "Champs d'entité connexes pour les listes",
+    "exportByForListAttribute": "Champs de l’entité associée pour la liste",
     "script": "Script",
     "entityAttribute": "Attribut",
     "channels": "Canaux",
-    "exportStaticListLabel": "Libellé d'exportation"
+    "exportStaticListLabel": "Libellé de l'export"
   },
   "options": {
     "columnType": {
@@ -36,7 +36,7 @@
     }
   },
   "tooltips": {
-    "exportIntoSeparateColumns": "Les enregistrements de données connexes seront exportés sous forme de champs/colonnes différents en utilisant pour le nom le suffixe \"_1\", \"_2\", etc.",
+    "exportIntoSeparateColumns": "Les enregistrements de données associés seront exportés sous forme de champs/colonnes distincts, en utilisant pour le nom le suffixe “_1”, “_2”, et ainsi de suite.",
     "column": "Vous pouvez utiliser des champs d'entités connexes dans le nom de la colonne. Utilisez le nom du champ dans la base de données comme variable, par exemple {{nom}}. La case à cocher \"Séparer les colonnes\" doit être activée."
   },
   "exceptions": {
