@@ -98,7 +98,7 @@
     "noSheets": "Veuillez créer au moins une feuille pour pouvoir exécuter ce transfert."
   },
   "tooltips": {
-    "template": "Vous pouvez utiliser la syntaxe pour <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine.",
+    "template": "Vous pouvez utiliser la syntaxe du moteur de template <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
     "convertCollectionToString": "Champs et attributs de type : multi-enum, tableau, relation un-à-plusieurs.",
     "convertRelationsToString": "Les champs de relation seront séparés par le délimiteur de champ pour la relation.",
     "markForNoRelation": "Indiquez comment une relation non liée doit être étiquetée.",
