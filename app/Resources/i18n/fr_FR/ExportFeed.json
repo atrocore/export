@@ -2,7 +2,7 @@
   "fields": {
     "template": "Modèle",
     "sortOrderField": "Ordre de tri (champ)",
-    "sortOrderDirection": "Ordre de tri (sens)",
+    "sortOrderDirection": "Ordre de tri (direction)",
     "entity": "Entité",
     "type": "Type",
     "isActive": "Actif",
