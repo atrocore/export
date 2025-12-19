@@ -15,7 +15,7 @@
     "field": "Champ",
     "fieldOrAttribute": "Champ/Attribut",
     "delimiter": "Séparateur de valeur de liste",
-    "exportJobs": "Emplois à l'exportation",
+    "exportJobs": "Tâches d'export",
     "emptyValue": "Marqueur de valeur vide",
     "nullValue": "Marqueur de valeur nulle",
     "markForNoRelation": "Marqueur pour pas de relation",
@@ -31,7 +31,7 @@
     "isTemplateEditable": "Modifiable",
     "exportAllField": "Exporter tous les champs",
     "fieldList": "Liste des champs",
-    "useExistingExportFeed": "Utiliser le flux d'exportation existant",
+    "useExistingExportFeed": "Utiliser le flux d'export existant",
     "fileNameMask": "Masque de nom de fichier",
     "maxWorkers": "Nombre maximum de workers",
     "markForUnlinkedAttribute": "Marqueur pour attribut non lié",
@@ -57,7 +57,7 @@
     "removeAllItemsConfirmation": "Êtes-vous sûr de vouloir supprimer toutes les règles du configurateur ?",
     "fields": "Domaines",
     "ignoreFilter": "Ignorer le filtre dans le flux",
-    "Export Data Settings": "Paramètres d'exportation des données",
+    "Export Data Settings": "Paramètres d'export des données",
     "Feed Settings": "paramètres d'alimentation",
     "entityFilter": "Filtre",
     "entityFilterResult": "Résultat du filtre",
@@ -65,8 +65,8 @@
     "addEntityField": "Ajouter un champ d'entité",
     "doubleQuote": "Double citation",
     "singleQuote": "Citation unique",
-    "Export": "Exportation",
-    "DuplicateAsImport": "Dupliquer comme importer",
+    "Export": "Export",
+    "DuplicateAsImport": "Dupliquer en Flux import",
     "Pending": "En attente",
     "Success": "Succès",
     "Running": "En cours d'exécution",
@@ -77,14 +77,14 @@
   "messages": {
     "confirmTemplateGeneration": "Êtes-vous sûr de vouloir générer des gabarits ?",
     "delimitersMustBeDifferent": "Tous les paramètres d'alimentation doivent avoir des valeurs uniques.",
-    "noExportFeedSelected": "Aucun ExportFeed n'est sélectionné.",
+    "noExportFeedSelected": "Aucun flux d'export n'est sélectionné.",
     "columnAlreadyExist": "Une colonne portant ce nom existe déjà.",
-    "duplicateAsImport": "Êtes-vous sûr de vouloir créer un flux d'importation à partir de ce flux d'exportation ?",
+    "duplicateAsImport": "Êtes-vous sûr de vouloir créer un flux d'import à partir de ce flux d'export ?",
     "noFieldSelected": "Aucun champ sélectionné"
   },
   "additionalTranslates": {
-    "exportName": "Exportation : %s",
-    "createExportJobs": "Créer des emplois d'exportation pour %s"
+    "exportName": "Export : %s",
+    "createExportJobs": "Créer des tâches d'export pour %s"
   },
   "exceptions": {
     "toManyAttributesSelected": "Le nombre maximum d'attributs sélectionnés doit être inférieur à 2000 enregistrements.",
