@@ -1,6 +1,6 @@
 {
   "fields": {
-    "exportFeed": "Exportation de flux",
+    "exportFeed": "Flux d'export",
     "payload": "Charge utile"
   },
   "options": {
