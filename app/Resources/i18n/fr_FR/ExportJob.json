@@ -15,7 +15,7 @@
     "Running": "En cours d'exécution",
     "Failed": "Échec",
     "Canceled": "Annulé",
-    "exportDownloadNotification": "L'exportation est terminée. Vous pouvez télécharger <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\"></a> le fichier."
+    "exportDownloadNotification": "L'export est terminée. Vous pouvez télécharger <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\"></a> le fichier."
   },
   "exceptions": {
     "wrongJobState": "Cet état de travail ne peut pas être défini.",
