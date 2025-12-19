@@ -1,10 +1,10 @@
 {
   "fields": {
-    "exportFeed": "Exportation de flux",
+    "exportFeed": "Flux d'export",
     "file": "Fichier exporté",
     "state": "État",
     "stateMessage": "Message",
-    "start": "Commencé à",
+    "start": "Démarré à",
     "end": "Terminé à",
     "count": "Compter",
     "files": "Fichiers"
@@ -22,9 +22,9 @@
     "notExecutableJob": "Le travail ne peut pas être exécuté à nouveau."
   },
   "boolFilters": {
-    "onlyExportFailed24Hours": "Uniquement les travaux d'exportation qui ont échoué au cours des dernières 24 heures",
-    "onlyExportFailed7Days": "Uniquement les travaux d'exportation qui ont échoué au cours des 7 derniers jours",
-    "onlyExportFailed28Days": "Uniquement les travaux d'exportation qui ont échoué au cours des 28 derniers jours"
+    "onlyExportFailed24Hours": "Uniquement les échecs au cours des dernières 24 heures",
+    "onlyExportFailed7Days": "Uniquement les échecs au cours des 7 derniers jours",
+    "onlyExportFailed28Days": "Uniquement les échecs au cours des 28 derniers jours"
   },
   "messages": {
     "xmlValidationFailed": "La validation du schéma XML a échoué :"
