@@ -6,7 +6,7 @@
     "dataUrl": "Url des données"
   },
   "labels": {
-    "exportFeed": "Flux d'export"
+    "exportFeed": "Flux d'exports"
   },
   "descriptions": {
     "exportFeed": "Configuration des modèles d'exportation à utiliser pour exporter les données des entités AtroCore"
