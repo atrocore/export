@@ -111,9 +111,9 @@
     "separateJob": "Le système génère un fichier d'exportation distinct pour chaque tâche d'exportation."
   },
   "boolFilters": {
-    "onlyExportFailed24Hours": "Uniquement les échecs des dernières 24 heures",
-    "onlyExportFailed7Days": "Uniquement leséchecs au cours des 7 derniers jours",
-    "onlyExportFailed28Days": "Uniquement les échecs au cours des 28 derniers jours"
+    "onlyExportFailed24Hours": "Les échecs des dernières 24 heures",
+    "onlyExportFailed7Days": "Les échecs au cours des 7 derniers jours",
+    "onlyExportFailed28Days": "Les échecs au cours des 28 derniers jours"
   },
   "twigVariables": {
     "template": {
