@@ -7,7 +7,7 @@
   "scopeNamesPlural": {
     "ExportFeed": "Flux d'exports",
     "ExportConfiguratorItem": "Configurateur",
-    "ExportJob": "Tâches d'export"
+    "ExportJob": "Tâches d'exports"
   },
   "labels": {
     "Generate": "Générer",
