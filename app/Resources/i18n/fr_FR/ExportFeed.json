@@ -15,7 +15,7 @@
     "field": "Champ",
     "fieldOrAttribute": "Champ/Attribut",
     "delimiter": "Séparateur de valeur de liste",
-    "exportJobs": "Tâches d'export",
+    "exportJobs": "Tâches d'exports",
     "emptyValue": "Marqueur de valeur vide",
     "nullValue": "Marqueur de valeur nulle",
     "markForNoRelation": "Marqueur pour pas de relation",
