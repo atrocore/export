@@ -20,7 +20,8 @@
     "script": "Скрипт",
     "channels": "Канал(ы)",
     "exportByForListAttribute": "Связанные поля сущности для списков",
-    "entityAttribute": "Атрибут"
+    "entityAttribute": "Атрибут",
+    "exportStaticListLabel": "Экспортная этикетка"
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Записи данных для свяанных сущностей будут экспортированы как отдельные поля/столбцы, с использованием для имени суффикса \"_1\", \"_2\"и т. д.",

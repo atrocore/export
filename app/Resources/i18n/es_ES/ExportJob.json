@@ -4,8 +4,8 @@
     "file": "Archivo exportado",
     "state": "Estado",
     "stateMessage": "Mensaje",
-    "start": "Inicie",
-    "end": "Fin",
+    "start": "Comenzó en",
+    "end": "Terminado en",
     "count": "Cuente",
     "files": "Archivos"
   },

@@ -1,0 +1,46 @@
+{
+  "scopeNames": {
+    "ExportFeed": "Esportazione di mangimi",
+    "ExportConfiguratorItem": "Configuratore",
+    "ExportJob": "Esportazione di lavoro"
+  },
+  "scopeNamesPlural": {
+    "ExportFeed": "Esportazione di feed",
+    "ExportConfiguratorItem": "Configuratore",
+    "ExportJob": "Lavori di esportazione"
+  },
+  "labels": {
+    "removeAllItems": "Rimuovi tutto",
+    "Generate": "Generare",
+    "tryAgain": "Esporti di nuovo",
+    "filter": "Filtro",
+    "selectFields": "Selezionare il campo (o i campi)",
+    "selectAttributes": "Selezioni l'attributo (o gli attributi)",
+    "addAllAttributes": "Aggiunga tutti gli attributi",
+    "addFixed": "Aggiungere un valore fisso",
+    "addScript": "Aggiungi script",
+    "exportErrorDuring24Hours": "Errore nell'esportazione dei feed/lavori durante le 24 ore",
+    "exportErrorDuring7Days": "Esportazione di feed/lavori Errore durante 7 giorni",
+    "exportErrorDuring28Days": "Errore nell'esportazione di feed/lavori durante 28 giorni"
+  },
+  "twig": {
+    "filters": {
+      "prepareEntity": "Prepara un'entità per l'esportazione",
+      "isImage": "Controlla se il valore fornito rappresenta un'immagine, convalidando le estensioni dei file o i tipi MIME.",
+      "escapeDoubleQuote": "Evade le doppie virgolette in una stringa aggiungendo dei backslash (\" diventa \\\").",
+      "backslashNToBr": "Converte i caratteri di newline (\\n) in tag di interruzione di riga HTML (<br>)."
+    },
+    "functions": {
+      "getPreviousCategoryId": "Recupera l'ID della categoria precedente in una struttura gerarchica di categorie.",
+      "getExtensibleEnumOption": "Preleva un valore di opzione da un'enum estensibile",
+      "getEntity": "Recupera un oggetto entità in base al suo identificatore",
+      "getSharedUrl": "Recupera un URL condiviso per un file"
+    }
+  },
+  "boolFilters": {
+    "unexported": "Non esportato"
+  },
+  "dashlets": {
+    "DataSyncErrorsExport": "Errori di sincronizzazione dei dati per l'esportazione"
+  }
+}

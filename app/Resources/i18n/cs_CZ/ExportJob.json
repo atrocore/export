@@ -4,8 +4,8 @@
     "file": "Exportovaný soubor",
     "state": "Stát",
     "stateMessage": "Zpráva",
-    "start": "Start",
-    "end": "Konec",
+    "start": "Začínáme v",
+    "end": "Dokončeno v",
     "count": "Hrabě",
     "files": "Soubory"
   },

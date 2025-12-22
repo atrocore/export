@@ -2,7 +2,7 @@
   "fields": {
     "template": "Modèle",
     "sortOrderField": "Ordre de tri (champ)",
-    "sortOrderDirection": "Ordre de tri (sens)",
+    "sortOrderDirection": "Ordre de tri (direction)",
     "entity": "Entité",
     "type": "Type",
     "isActive": "Actif",
@@ -15,13 +15,13 @@
     "field": "Champ",
     "fieldOrAttribute": "Champ/Attribut",
     "delimiter": "Séparateur de valeur de liste",
-    "exportJobs": "Emplois à l'exportation",
+    "exportJobs": "Tâches d'exports",
     "emptyValue": "Marqueur de valeur vide",
     "nullValue": "Marqueur de valeur nulle",
-    "markForNoRelation": "Marqueur d'absence de lien de parenté",
+    "markForNoRelation": "Marqueur pour pas de relation",
     "fieldDelimiterForRelation": "Délimiteur de champ pour la relation",
     "limit": "Nombre maximal d'enregistrements par itération",
-    "separateJob": "Travail séparé par itération",
+    "separateJob": "Tâche distincte par itération",
     "configuratorItems": "Configurateur",
     "convertCollectionToString": "Convertir une collection en chaîne de caractères",
     "convertRelationsToString": "Convertir les relations en chaînes de caractères",
@@ -31,13 +31,13 @@
     "isTemplateEditable": "Modifiable",
     "exportAllField": "Exporter tous les champs",
     "fieldList": "Liste des champs",
-    "useExistingExportFeed": "Utiliser le flux d'exportation existant",
+    "useExistingExportFeed": "Utiliser le flux d'export existant",
     "fileNameMask": "Masque de nom de fichier",
-    "maxWorkers": "Nombre maximum de travailleurs",
-    "markForUnlinkedAttribute": "Marqueur pour l'attribut non lié",
-    "useQuoteForAll": "Utilisez des guillemets pour toutes les valeurs",
+    "maxWorkers": "Nombre maximum de workers",
+    "markForUnlinkedAttribute": "Marqueur pour attribut non lié",
+    "useQuoteForAll": "Utiliser des guillemets pour toutes les valeurs",
     "replaceExistingFile": "Remplacer le fichier existant",
-    "locale": "Local",
+    "locale": "Paramètre régional",
     "folder": "Dossier",
     "files": "Fichiers"
   },
@@ -57,7 +57,7 @@
     "removeAllItemsConfirmation": "Êtes-vous sûr de vouloir supprimer toutes les règles du configurateur ?",
     "fields": "Domaines",
     "ignoreFilter": "Ignorer le filtre dans le flux",
-    "Export Data Settings": "Paramètres d'exportation des données",
+    "Export Data Settings": "Paramètres d'export des données",
     "Feed Settings": "paramètres d'alimentation",
     "entityFilter": "Filtre",
     "entityFilterResult": "Résultat du filtre",
@@ -65,8 +65,8 @@
     "addEntityField": "Ajouter un champ d'entité",
     "doubleQuote": "Double citation",
     "singleQuote": "Citation unique",
-    "Export": "Exportation",
-    "DuplicateAsImport": "Dupliquer comme importer",
+    "Export": "Exporter",
+    "DuplicateAsImport": "Dupliquer en flux d'import",
     "Pending": "En attente",
     "Success": "Succès",
     "Running": "En cours d'exécution",
@@ -77,19 +77,19 @@
   "messages": {
     "confirmTemplateGeneration": "Êtes-vous sûr de vouloir générer des gabarits ?",
     "delimitersMustBeDifferent": "Tous les paramètres d'alimentation doivent avoir des valeurs uniques.",
-    "noExportFeedSelected": "Aucun ExportFeed n'est sélectionné.",
+    "noExportFeedSelected": "Aucun flux d'export n'est sélectionné.",
     "columnAlreadyExist": "Une colonne portant ce nom existe déjà.",
-    "duplicateAsImport": "Êtes-vous sûr de vouloir créer un flux d'importation à partir de ce flux d'exportation ?",
+    "duplicateAsImport": "Êtes-vous sûr de vouloir créer un flux d'import à partir de ce flux d'export ?",
     "noFieldSelected": "Aucun champ sélectionné"
   },
   "additionalTranslates": {
-    "exportName": "Exportation : %s",
-    "createExportJobs": "Créer des emplois d'exportation pour %s"
+    "exportName": "Export : %s",
+    "createExportJobs": "Créer des tâches d'export pour %s"
   },
   "exceptions": {
     "toManyAttributesSelected": "Le nombre maximum d'attributs sélectionnés doit être inférieur à 2000 enregistrements.",
     "noSuchAttribute": "L'attribut \"%s\" n'existe pas.",
-    "noDataFound": "Les aliments pour animaux n'ont rien à exporter.",
+    "noDataFound": "Le flux n'a rien à exporter",
     "exportValidationFailed": "Vous ne pouvez pas exporter un tel fichier. Veuillez vérifier le formulaire et réessayer.",
     "lastRecordIsRequired": "Le dernier enregistrement dans le configurateur ne peut pas être supprimé.",
     "noFieldLabel": "L'étiquette du champ '%s' pour la langue '%s' n'est pas définie.",
@@ -98,31 +98,31 @@
     "noSheets": "Veuillez créer au moins une feuille pour pouvoir exécuter ce transfert."
   },
   "tooltips": {
-    "template": "Vous pouvez utiliser la syntaxe pour <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine.",
+    "template": "Vous pouvez utiliser la syntaxe du moteur de template <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
     "convertCollectionToString": "Champs et attributs de type : multi-enum, tableau, relation un-à-plusieurs.",
     "convertRelationsToString": "Les champs de relation seront séparés par le délimiteur de champ pour la relation.",
     "markForNoRelation": "Indiquez comment une relation non liée doit être étiquetée.",
     "nullValue": "La valeur sera interprétée comme une valeur \"NULL\".",
     "emptyValue": "La valeur sera interprétée comme une valeur \"vide\" en plus de la cellule vide.",
     "exportByMaxDepth": "Spécifie la profondeur maximale des relations dans le champ \"Related Entity Fields\" du configurateur",
-    "maxWorkers": "Cela détermine le nombre de travailleurs qui peuvent exécuter ce flux en parallèle.",
-    "useQuoteForAll": "Toutes les valeurs du fichier exporté seront placées entre guillemets.",
+    "maxWorkers": "Cela détermine le nombre de workers qui peuvent exécuter cet flux d'exportation en parallèle.",
+    "useQuoteForAll": "Toutes les valeurs du fichier exporté seront placées entre guillemets",
     "limit": "Un montant plus élevé signifie que moins de tâches d'arrière-plan doivent être exécutées.",
     "separateJob": "Le système génère un fichier d'exportation distinct pour chaque tâche d'exportation."
   },
   "boolFilters": {
-    "onlyExportFailed24Hours": "Exporter uniquement les flux qui ont échoué au cours des dernières 24 heures",
-    "onlyExportFailed7Days": "Exporter uniquement les flux qui ont échoué au cours des 7 derniers jours",
-    "onlyExportFailed28Days": "Exporter uniquement les flux qui ont échoué au cours des 28 derniers jours"
+    "onlyExportFailed24Hours": "Les échecs des dernières 24 heures",
+    "onlyExportFailed7Days": "Les échecs au cours des 7 derniers jours",
+    "onlyExportFailed28Days": "Les échecs au cours des 28 derniers jours"
   },
   "twigVariables": {
     "template": {
       "entities": "Collection d'entités à exporter"
     },
     "fileNameMask": {
-      "feed": "Données d'alimentation",
+      "feed": "Données du flux",
       "filename": "Nom de fichier par défaut généré par le système",
-      "interation": "Numéro d'itération du travail"
+      "interation": "Numéro d'itération de la tâche"
     }
   }
 }

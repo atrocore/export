@@ -20,7 +20,8 @@
     "exportByForListAttribute": "Powiązane pola encji dla list",
     "entityAttribute": "Atrybut",
     "script": "Skrypt",
-    "channels": "Kanał(y)"
+    "channels": "Kanał(y)",
+    "exportStaticListLabel": "Etykieta eksportowa"
   },
   "options": {
     "columnType": {

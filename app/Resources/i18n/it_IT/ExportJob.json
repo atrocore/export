@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "exportFeed": "Esportazione di mangimi",
+    "file": "File esportato",
+    "state": "Stato",
+    "stateMessage": "Messaggio",
+    "start": "Iniziato a",
+    "end": "Finito a",
+    "count": "Conteggio",
+    "files": "File"
+  },
+  "labels": {
+    "Pending": "In attesa",
+    "Success": "Il successo",
+    "Running": "In esecuzione",
+    "Failed": "Fallito",
+    "Canceled": "Annullato",
+    "exportDownloadNotification": "L'esportazione è terminata. Può <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">scaricare</a> il file."
+  },
+  "exceptions": {
+    "wrongJobState": "Questo stato di lavoro non può essere impostato.",
+    "notExecutableJob": "Il lavoro non può essere eseguito di nuovo."
+  },
+  "boolFilters": {
+    "onlyExportFailed24Hours": "Solo i lavori di esportazione falliti nelle ultime 24 ore",
+    "onlyExportFailed7Days": "Solo i lavori di esportazione falliti negli ultimi 7 giorni",
+    "onlyExportFailed28Days": "Solo i lavori di esportazione falliti negli ultimi 28 giorni"
+  },
+  "messages": {
+    "xmlValidationFailed": "La convalida di XML Schema non è riuscita:"
+  }
+}

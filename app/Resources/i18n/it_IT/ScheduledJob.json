@@ -1,0 +1,12 @@
+{
+  "fields": {
+    "exportFeed": "Esportazione di mangimi",
+    "maximumHoursToLookBack": "Ore massime per guardare indietro",
+    "maximumDaysForJobExist": "Periodo massimo di conservazione in giorni"
+  },
+  "options": {
+    "type": {
+      "ExportFeed": "Esportazione di mangimi"
+    }
+  }
+}

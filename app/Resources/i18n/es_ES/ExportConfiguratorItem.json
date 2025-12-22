@@ -20,7 +20,8 @@
     "zip": "Exportar archivos a un archivo ZIP",
     "fileNameTemplate": "Plantilla de nombre de archivo",
     "exportByForListAttribute": "Campos de entidad relacionados para las listas",
-    "script": "Guión"
+    "script": "Guión",
+    "exportStaticListLabel": "Etiqueta de exportación"
   },
   "options": {
     "columnType": {

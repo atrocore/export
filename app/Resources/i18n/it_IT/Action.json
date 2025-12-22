@@ -1,0 +1,18 @@
+{
+  "fields": {
+    "exportFeed": "Esportazione di mangimi",
+    "payload": "Carico utile"
+  },
+  "options": {
+    "type": {
+      "export": "Esportazione di mangimi"
+    }
+  },
+  "twigVariables": {
+    "payload": {
+      "sourceEntities": "Raccolta di entità da esportare",
+      "sourceEntitiesIds": "Array di id di entità da esportare",
+      "entity": "Prima Entità della collezione da esportare"
+    }
+  }
+}

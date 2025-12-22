@@ -1,0 +1,8 @@
+{
+  "fields": {
+    "sharedDownloadUrl": "URL di download (condiviso)",
+    "sharedViewUrl": "Visualizza URL (condiviso)",
+    "exportFeed": "Esportazione di mangimi",
+    "exportJob": "Esportazione di lavoro"
+  }
+}
