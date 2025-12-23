@@ -17,7 +17,7 @@
     "field": "Feld",
     "fieldOrAttribute": "Feld/Attribut",
     "delimiter": "Listenwerttrennzeichen",
-    "exportJobs": "Exportaufträge",
+    "exportJobs": "Exportausführungen",
     "emptyValue": "Markierung für leeren Wert",
     "nullValue": "Markierung für Nullwert",
     "markForNoRelation": "Markierung für Keine Relation",
@@ -75,7 +75,7 @@
   },
   "additionalTranslates": {
     "exportName": "Datenexport im Feed %s",
-    "createExportJobs": "Exportaufträge für %s erstellen"
+    "createExportJobs": "Exportausführungen für %s erstellen"
   },
   "exceptions": {
     "toManyAttributesSelected": "Die maximale Anzahl ausgewählter Attribute sollte unter 2000 Datensätzen liegen.",

@@ -19,7 +19,7 @@
     "field": "Field",
     "fieldOrAttribute": "Field/Attribute",
     "delimiter": "List Value Separator",
-    "exportJobs": "Export Jobs",
+    "exportJobs": "Export Executions",
     "emptyValue": "Marker for Empty Value",
     "nullValue": "Marker for Null Value",
     "markForNoRelation": "Marker for No Relation",
@@ -84,7 +84,7 @@
   },
   "additionalTranslates": {
     "exportName": "Export: %s",
-    "createExportJobs": "Create Export Jobs for %s"
+    "createExportJobs": "Create Export Executions for %s"
   },
   "exceptions": {
     "toManyAttributesSelected": "Maximum amount of selected attributes should be below 2000 records.",

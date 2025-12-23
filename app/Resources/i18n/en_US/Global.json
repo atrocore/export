@@ -2,12 +2,12 @@
   "scopeNames": {
     "ExportFeed": "Export Feed",
     "ExportConfiguratorItem": "Configurator",
-    "ExportJob": "Export Job"
+    "ExportJob": "Export Execution"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Export Feeds",
     "ExportConfiguratorItem": "Configurator",
-    "ExportJob": "Export Jobs"
+    "ExportJob": "Export Executions"
   },
   "labels": {
     "Generate": "Generate",
@@ -19,9 +19,9 @@
     "addFixed": "Add fixed value",
     "addScript": "Add script",
     "removeAllItems": "Remove all",
-    "exportErrorDuring24Hours": "Export Feeds/Jobs Error during 24 Hours",
-    "exportErrorDuring7Days": "Export Feeds/Jobs Error during 7 days",
-    "exportErrorDuring28Days": "Export Feeds/Jobs Error during 28 days"
+    "exportErrorDuring24Hours": "Export Feeds/Executions Error during 24 Hours",
+    "exportErrorDuring7Days": "Export Feeds/Executions Error during 7 days",
+    "exportErrorDuring28Days": "Export Feeds/Executions Error during 28 days"
   },
   "boolFilters": {
     "unexported": "Unexported"

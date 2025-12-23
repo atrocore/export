@@ -2,12 +2,12 @@
   "scopeNames": {
     "ExportFeed": "Export Feed",
     "ExportConfiguratorItem": "Konfigurator",
-    "ExportJob": "Exportauftrag"
+    "ExportJob": "Exportausführung"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Export Feeds",
     "ExportConfiguratorItem": "Konfigurator",
-    "ExportJob": "Exportaufträge"
+    "ExportJob": "Exportausführungen"
   },
   "labels": {
     "Generate": "Generieren",
@@ -16,9 +16,9 @@
     "selectAttributes": "Attribut(e) auswählen",
     "addAllAttributes": "Alle Attribute hinzufügen",
     "removeAllItems": "Alle Regel entfernen",
-    "exportErrorDuring24Hours": "Fehler beim Exportieren von Feeds/Jobs während 24 Stunden",
-    "exportErrorDuring7Days": "Fehler beim Exportieren von Feeds/Jobs während 7 Tagen",
-    "exportErrorDuring28Days": "Fehler beim Exportieren von Feeds/Jobs während 28 Tagen",
+    "exportErrorDuring24Hours": "Fehler beim Exportieren von Feeds/Ausführungen innerhalb von 24 Stunden",
+    "exportErrorDuring7Days": "Fehler beim Exportieren von Feeds/Ausführungen während der letzten 7 Tage",
+    "exportErrorDuring28Days": "Fehler beim Exportieren von Feeds/Ausführungen während der letzten 28 Tage",
     "selectFields": "Feld(er) auswählen",
     "addFixed": "Festen Wert hinzufügen",
     "addScript": "Skript hinzufügen"
