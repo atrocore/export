@@ -7,7 +7,7 @@
   "scopeNamesPlural": {
     "ExportFeed": "Exportní kanály",
     "ExportConfiguratorItem": "Konfigurátor",
-    "ExportJob": "Pracovní místa pro export"
+    "ExportJob": "Provádění exportu"
   },
   "labels": {
     "Generate": "Generovat",
