@@ -2,7 +2,7 @@
   "scopeNames": {
     "ExportFeed": "Exportní kanál",
     "ExportConfiguratorItem": "Konfigurátor",
-    "ExportJob": "Exportní úloha"
+    "ExportJob": "Provedení exportu"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Exportní kanály",
