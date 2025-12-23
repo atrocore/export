@@ -2,7 +2,7 @@
   "scopeNames": {
     "ExportFeed": "Exportación",
     "ExportConfiguratorItem": "Configurador",
-    "ExportJob": "Trabajo de exportación"
+    "ExportJob": "Ejecución de exportaciones"
   },
   "twig": {
     "filters": {
@@ -21,7 +21,7 @@
   "scopeNamesPlural": {
     "ExportFeed": "Exportación",
     "ExportConfiguratorItem": "Configurador",
-    "ExportJob": "Trabajos de exportación"
+    "ExportJob": "Ejecuciones de exportación"
   },
   "labels": {
     "tryAgain": "Exportar de nuevo",
@@ -31,9 +31,9 @@
     "addFixed": "Añadir valor fijo",
     "addScript": "Añadir script",
     "removeAllItems": "Eliminar todo",
-    "exportErrorDuring24Hours": "Error en la exportación de feeds/trabajos durante 24 horas",
-    "exportErrorDuring7Days": "Error en la exportación de feeds/trabajos durante 7 días",
-    "exportErrorDuring28Days": "Error en la exportación de feeds/trabajos durante 28 días",
+    "exportErrorDuring24Hours": "Error de exportación de feeds/ejecuciones durante 24 horas",
+    "exportErrorDuring7Days": "Error de exportación de feeds/ejecuciones durante 7 días",
+    "exportErrorDuring28Days": "Errores en las alimentaciones/ejecuciones de exportación durante 28 días",
     "Generate": "Generar",
     "filter": "Filtro"
   },
