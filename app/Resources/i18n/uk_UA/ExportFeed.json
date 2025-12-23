@@ -38,7 +38,7 @@
     "maxWorkers": "Максимальна кількість працівників",
     "folder": "Папка",
     "replaceExistingFile": "Замінити існуючий файл",
-    "locale": "Мова",
+    "locale": "Локаль",
     "files": "Файли"
   },
   "labels": {
