@@ -12,7 +12,7 @@
     "csvTextQualifier": "Классификатор текста",
     "field": "Поле",
     "delimiter": "Разделитель значений списка",
-    "exportJobs": "Задания экспорта",
+    "exportJobs": "Экспортные операции",
     "emptyValue": "Маркер для пустого значения",
     "nullValue": "Маркер для нулевого значения",
     "markForNoRelation": "Маркер \"Без родственников",
@@ -75,7 +75,7 @@
   },
   "additionalTranslates": {
     "exportName": "Экспорт: %s",
-    "createExportJobs": "Создайте задания на экспорт для %s"
+    "createExportJobs": "Создание экспортных исполнений для %s"
   },
   "exceptions": {
     "toManyAttributesSelected": "Максимальное количество выбранных атрибутов не может быть больше 2000.",
