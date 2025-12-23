@@ -1,12 +1,12 @@
 {
   "scopeNames": {
     "ExportFeed": "Експортний фід",
-    "ExportJob": "Задача експорту",
+    "ExportJob": "Здійснення експорту",
     "ExportConfiguratorItem": "Конфігуратор"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Експортний фіди",
-    "ExportJob": "Задачі експорту",
+    "ExportJob": "Виконання експортних контрактів",
     "ExportConfiguratorItem": "Конфігуратор"
   },
   "labels": {
@@ -16,9 +16,9 @@
     "selectAttributes": "Вибрати атрибут(и)",
     "addAllAttributes": "Додати всі атрибути",
     "removeAllItems": "Видалити всі правила",
-    "exportErrorDuring24Hours": "Помилка експортних фідів/завдань протягом 24 годин",
-    "exportErrorDuring7Days": "Помилка експортих фідів/завдань протягом 7 днів",
-    "exportErrorDuring28Days": "Помилка експортних фідів/завдань протягом 28 днів",
+    "exportErrorDuring24Hours": "Помилка експорту каналів/виконань протягом 24 годин",
+    "exportErrorDuring7Days": "Помилка експорту каналів/виконань протягом 7 днів",
+    "exportErrorDuring28Days": "Помилка експорту каналів/виконань протягом 28 днів",
     "selectFields": "Виберіть поле(и)",
     "addFixed": "Додати фіксоване значення",
     "addScript": "Додати скрипт"
