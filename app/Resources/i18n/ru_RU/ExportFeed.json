@@ -37,7 +37,7 @@
     "isTemplateEditable": "Редактируемый",
     "fileNameMask": "Маска имени файла",
     "useQuoteForAll": "Используйте кавычки для всех значений",
-    "locale": "Язык",
+    "locale": "Локаль",
     "folder": "Папка",
     "files": "Файлы"
   },
