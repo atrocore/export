@@ -15,7 +15,7 @@
     "field": "Champ",
     "fieldOrAttribute": "Champ/Attribut",
     "delimiter": "Séparateur de valeur de liste",
-    "exportJobs": "Tâches d'exports",
+    "exportJobs": "Exécution des exportations",
     "emptyValue": "Marqueur de valeur vide",
     "nullValue": "Marqueur de valeur nulle",
     "markForNoRelation": "Marqueur pour pas de relation",
@@ -84,7 +84,7 @@
   },
   "additionalTranslates": {
     "exportName": "Export : %s",
-    "createExportJobs": "Créer des tâches d'export pour %s"
+    "createExportJobs": "Créer des exécutions d'exportation pour %s"
   },
   "exceptions": {
     "toManyAttributesSelected": "Le nombre maximum d'attributs sélectionnés doit être inférieur à 2000 enregistrements.",
