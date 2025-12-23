@@ -15,7 +15,7 @@
     "field": "Pole",
     "fieldOrAttribute": "Pole/Atrybut",
     "delimiter": "Separator wartości listy",
-    "exportJobs": "Zadania eksportu",
+    "exportJobs": "Wykonanie eksportu",
     "emptyValue": "Znacznik pustej wartości",
     "nullValue": "Znacznik wartości zerowej",
     "markForNoRelation": "Znacznik braku związku",
@@ -84,7 +84,7 @@
   },
   "additionalTranslates": {
     "exportName": "Eksport: %s",
-    "createExportJobs": "Utwórz zadania eksportu dla %s"
+    "createExportJobs": "Create Export Executions for %s"
   },
   "exceptions": {
     "toManyAttributesSelected": "Maksymalna liczba wybranych atrybutów powinna być poniżej 2000 rekordów.",
