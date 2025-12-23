@@ -18,7 +18,7 @@
     "addFixed": "Přidání pevné hodnoty",
     "addScript": "Přidat skript",
     "removeAllItems": "Odstranění všech",
-    "exportErrorDuring24Hours": "Chyba při exportu krmiv/úloh během 24 hodin",
+    "exportErrorDuring24Hours": "Chyba při exportu krmiv/výkonů během 24 hodin",
     "exportErrorDuring7Days": "Chyba při exportu krmiv/úloh během 7 dnů",
     "exportErrorDuring28Days": "Chyba při exportu krmiv/úloh během 28 dnů",
     "filter": "Filtr"
