@@ -2,12 +2,12 @@
   "scopeNames": {
     "ExportFeed": "Flux d'export",
     "ExportConfiguratorItem": "Configurateur",
-    "ExportJob": "Exécution des exportations"
+    "ExportJob": "Exécution d'export"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Flux d'exports",
     "ExportConfiguratorItem": "Configurateur",
-    "ExportJob": "Exécution des exportations"
+    "ExportJob": "Exécutions d'export"
   },
   "labels": {
     "Generate": "Générer",
@@ -15,9 +15,9 @@
     "tryAgain": "Exporter à nouveau",
     "selectAttributes": "Sélectionner des attributs",
     "removeAllItems": "Supprimer tout",
-    "exportErrorDuring24Hours": "Erreur dans les flux d'exportation/exécutions pendant 24 heures",
-    "exportErrorDuring7Days": "Erreur dans les flux d'exportation/exécutions pendant 7 jours",
-    "exportErrorDuring28Days": "Flux d'exportation/Exécutions Erreur pendant 28 jours",
+    "exportErrorDuring24Hours": "Erreur dans les flux d'exports/exécutions pendant 24 heures",
+    "exportErrorDuring7Days": "Erreur dans les flux d'exports/exécutions pendant 7 jours",
+    "exportErrorDuring28Days": "Flux d'exports/Exécutions Erreur pendant 28 jours",
     "selectFields": "Sélectionner des champs",
     "addFixed": "Ajouter une valeur fixe",
     "addScript": "Ajouter un script",
