@@ -1,12 +1,12 @@
 {
   "scopeNames": {
     "ExportFeed": "Экспортный фид",
-    "ExportJob": "Задание экспорта",
+    "ExportJob": "Выполнение экспорта",
     "ExportConfiguratorItem": "Конфигуратор"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Экспортные фиды",
-    "ExportJob": "Задания экспорта",
+    "ExportJob": "Экспортные операции",
     "ExportConfiguratorItem": "Конфигуратор"
   },
   "labels": {
@@ -15,12 +15,12 @@
     "filter": "Фильтр",
     "selectAttributes": "Выбрать атрибут(ы)",
     "removeAllItems": "Удалить все правила",
-    "exportErrorDuring24Hours": "Ошибка экспорта Feeds/Jobs в течение 24 часов",
+    "exportErrorDuring24Hours": "Ошибка экспорта Feeds/Executions в течение 24 часов",
     "selectFields": "Выберите поле (поля)",
     "addFixed": "Добавьте фиксированное значение",
     "addScript": "Добавьте скрипт",
-    "exportErrorDuring7Days": "Экспорт Feeds/Jobs Ошибка в течение 7 дней",
-    "exportErrorDuring28Days": "Экспорт Feeds/Jobs Ошибка в течение 28 дней",
+    "exportErrorDuring7Days": "Ошибка экспорта Feeds/Executions в течение 7 дней",
+    "exportErrorDuring28Days": "Ошибка экспорта Feeds/Executions в течение 28 дней",
     "addAllAttributes": "Добавьте все атрибуты"
   },
   "boolFilters": {

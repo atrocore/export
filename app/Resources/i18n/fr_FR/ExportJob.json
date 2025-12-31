@@ -22,7 +22,7 @@
     "notExecutableJob": "Le travail ne peut pas être exécuté à nouveau."
   },
   "boolFilters": {
-    "onlyExportFailed24Hours": "Les échecs au cours des dernières 24 heures",
+    "onlyExportFailed24Hours": "Les échecs des dernières 24 heures",
     "onlyExportFailed7Days": "Les échecs au cours des 7 derniers jours",
     "onlyExportFailed28Days": "Les échecs au cours des 28 derniers jours"
   },

@@ -19,7 +19,7 @@
     "field": "Pole",
     "fieldOrAttribute": "Pole/atribut",
     "delimiter": "Oddělovač hodnot seznamu",
-    "exportJobs": "Pracovní nabídky pro export",
+    "exportJobs": "Provádění exportu",
     "emptyValue": "Značka pro prázdnou hodnotu",
     "nullValue": "Značka pro nulovou hodnotu",
     "markForNoRelation": "Značka pro No Relation",
@@ -54,7 +54,7 @@
     "generateTemplate": "Generování šablony",
     "simple": "Soubor",
     "typeToSearch": "Zadejte hledání...",
-    "removeAllItemsConfirmation": "Opravdu chcete odstranit všechna pravidla konfigurátoru?",
+    "removeAllItemsConfirmation": "Jste si jisti, že chcete odstranit všechna pravidla konfigurátoru?",
     "fields": "Pole",
     "ignoreFilter": "Ignorování filtru ve feedu",
     "Export Data Settings": "Nastavení exportu dat",
@@ -64,7 +64,7 @@
     "Configurator": "Konfigurátor",
     "addEntityField": "Přidání pole entity",
     "doubleQuote": "Dvojitá citace",
-    "singleQuote": "Jediná citace",
+    "singleQuote": "Jednotlivá citace",
     "Export": "Export",
     "DuplicateAsImport": "Duplikovat jako Import",
     "Pending": "Čekající",
@@ -84,7 +84,7 @@
   },
   "additionalTranslates": {
     "exportName": "Export: %s",
-    "createExportJobs": "Vytvořit exportní úlohy pro %s"
+    "createExportJobs": "Vytvoření exportních výkonů pro %s"
   },
   "exceptions": {
     "toManyAttributesSelected": "Maximální počet vybraných atributů by měl být nižší než 2000 záznamů.",

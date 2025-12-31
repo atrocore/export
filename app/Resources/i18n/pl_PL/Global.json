@@ -2,12 +2,12 @@
   "scopeNames": {
     "ExportFeed": "Eksportuj kanał",
     "ExportConfiguratorItem": "Konfigurator",
-    "ExportJob": "Zadanie eksportu"
+    "ExportJob": "Realizacja eksportu"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Eksportuj kanały",
     "ExportConfiguratorItem": "Konfigurator",
-    "ExportJob": "Zadania eksportu"
+    "ExportJob": "Wykonanie eksportu"
   },
   "labels": {
     "Generate": "Generuj",
@@ -15,9 +15,9 @@
     "filter": "Filtruj",
     "selectAttributes": "Wybierz atrybut(y)",
     "removeAllItems": "Usuń wszystko",
-    "exportErrorDuring24Hours": "Błąd eksportu kanałów/zadań przez 24 godziny",
-    "exportErrorDuring7Days": "Błąd eksportu kanałów/zadań przez 7 dni",
-    "exportErrorDuring28Days": "Błąd eksportu kanałów/zadań przez 28 dni",
+    "exportErrorDuring24Hours": "Błąd eksportu kanałów/wykonań w ciągu 24 godzin",
+    "exportErrorDuring7Days": "Błąd eksportu kanałów/wykonań w ciągu 7 dni",
+    "exportErrorDuring28Days": "Błąd eksportu kanałów/wykonań w ciągu 28 dni",
     "selectFields": "Proszę wybrać pole(a)",
     "addFixed": "Proszę dodać stałą wartość",
     "addScript": "Proszę dodać skrypt",

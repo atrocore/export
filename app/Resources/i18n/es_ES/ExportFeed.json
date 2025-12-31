@@ -19,7 +19,7 @@
     "field": "Campo",
     "fieldOrAttribute": "Campo/Atributo",
     "delimiter": "Separador de valores de la lista",
-    "exportJobs": "Trabajos de exportación",
+    "exportJobs": "Ejecuciones de exportación",
     "emptyValue": "Marcador de valor vacío",
     "nullValue": "Marcador de valor nulo",
     "markForNoRelation": "Marcador para Sin relación",
@@ -84,7 +84,7 @@
   },
   "additionalTranslates": {
     "exportName": "Exportar: %s",
-    "createExportJobs": "Crear trabajos de exportación para %s"
+    "createExportJobs": "Crear ejecuciones de exportación para %s"
   },
   "exceptions": {
     "toManyAttributesSelected": "La cantidad máxima de atributos seleccionados debe ser inferior a 2000 registros.",

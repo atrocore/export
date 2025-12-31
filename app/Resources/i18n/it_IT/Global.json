@@ -2,12 +2,12 @@
   "scopeNames": {
     "ExportFeed": "Esportazione di mangimi",
     "ExportConfiguratorItem": "Configuratore",
-    "ExportJob": "Esportazione di lavoro"
+    "ExportJob": "Esecuzione dell'esportazione"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Esportazione di feed",
     "ExportConfiguratorItem": "Configuratore",
-    "ExportJob": "Lavori di esportazione"
+    "ExportJob": "Esecuzioni di esportazione"
   },
   "labels": {
     "removeAllItems": "Rimuovi tutto",
@@ -19,9 +19,9 @@
     "addAllAttributes": "Aggiunga tutti gli attributi",
     "addFixed": "Aggiungere un valore fisso",
     "addScript": "Aggiungi script",
-    "exportErrorDuring24Hours": "Errore nell'esportazione dei feed/lavori durante le 24 ore",
-    "exportErrorDuring7Days": "Esportazione di feed/lavori Errore durante 7 giorni",
-    "exportErrorDuring28Days": "Errore nell'esportazione di feed/lavori durante 28 giorni"
+    "exportErrorDuring24Hours": "Errore nell'esportazione dei feed/esecuzioni durante le 24 ore",
+    "exportErrorDuring7Days": "Errore nell'esportazione dei feed/esecuzioni durante 7 giorni",
+    "exportErrorDuring28Days": "Errore nell'esportazione di Feed/Esecuzioni durante 28 giorni"
   },
   "twig": {
     "filters": {
