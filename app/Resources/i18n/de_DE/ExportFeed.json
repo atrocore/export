@@ -38,7 +38,7 @@
     "useExistingExportFeed": "UBestehendes Exportfutter verwenden",
     "useQuoteForAll": "Anführungszeichen für alle Werte verwenden",
     "files": "Dateien",
-    "maxWorkers": "Maximale Anzahl von Arbeitern",
+    "maxWorkers": "Maximale Worker-Anzahl",
     "locale": "Gebietsschema"
   },
   "labels": {
@@ -123,8 +123,8 @@
       "entities": "Sammlung der zu exportierenden Entitäten"
     },
     "fileNameMask": {
-      "feed": "Daten einspeisen",
-      "filename": "Vom System generierter Standard-Dateiname",
+      "feed": "Feed-Daten",
+      "filename": "Der vom System generierte Standard-Dateiname",
       "interation": "Job-Iterationsnummer"
     }
   }
