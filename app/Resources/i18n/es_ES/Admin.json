@@ -9,6 +9,6 @@
     "exportFeed": "Exportación"
   },
   "descriptions": {
-    "exportFeed": "Configuración de las plantillas de exportación que se utilizarán para exportar los datos de las entidades AtroCore"
+    "exportFeed": "Configuración de las plantillas de exportación que se utilizarán para exportar los datos de las entidades AtroCore."
   }
 }
