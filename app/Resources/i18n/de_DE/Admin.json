@@ -3,12 +3,12 @@
     "exportFeed": "Exportfeed"
   },
   "descriptions": {
-    "exportFeed": "Konfiguration der Exportvorlagen, die für den Export von Daten aus den AtroCore-Entitäten verwendet werden sollen"
+    "exportFeed": "Konfiguration der Exportvorlagen, die für den Export von Daten aus den AtroCore-Entitäten verwendet werden sollen."
   },
   "fieldTypes": {
-    "exportLink": "Link exportieren"
+    "exportLink": "Export-Link"
   },
   "fields": {
-    "dataUrl": "Daten Url"
+    "dataUrl": "Daten-Url"
   }
 }
