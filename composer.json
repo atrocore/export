@@ -3,7 +3,7 @@
   "description": "",
   "require": {
     "atrocore/core": "~2.0.33",
-    "phpoffice/phpspreadsheet": "~5.3.0@stable",
+    "phpoffice/phpspreadsheet": "^1.16.0@stable",
     "twig/twig": "^3.4",
     "ext-zip": "*",
     "ext-dom": "*",
