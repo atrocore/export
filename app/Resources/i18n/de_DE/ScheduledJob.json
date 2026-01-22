@@ -1,12 +1,12 @@
 {
   "fields": {
-    "exportFeed": "Exportfeed",
+    "exportFeed": "Export-Feed",
     "maximumHoursToLookBack": "Maximale Stundenzahl für die Rückschau",
     "maximumDaysForJobExist": "Maximale Aufbewahrungsfrist in Tagen"
   },
   "options": {
     "type": {
-      "ExportFeed": "Exportfeed"
+      "ExportFeed": "Export-Feed"
     }
   }
 }
