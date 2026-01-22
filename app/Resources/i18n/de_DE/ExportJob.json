@@ -1,6 +1,6 @@
 {
   "fields": {
-    "exportFeed": "Exportfeed",
+    "exportFeed": "Export-Feed",
     "file": "Exportierte Datei",
     "state": "Status",
     "stateMessage": "Statusmeldung",
@@ -22,9 +22,9 @@
     "notExecutableJob": "Der Job kann nicht erneut ausgeführt werden."
   },
   "boolFilters": {
-    "onlyExportFailed24Hours": "Nur Exportaufträge, die in den letzten 24 Stunden fehlgeschlagen sind",
-    "onlyExportFailed7Days": "Nur Exportaufträge, die in den letzten 7 Tagen fehlgeschlagen sind",
-    "onlyExportFailed28Days": "Nur Exportaufträge, die in den letzten 28 Tagen fehlgeschlagen sind"
+    "onlyExportFailed24Hours": "Nur Export-Aufträge, die in den letzten 24 Stunden fehlgeschlagen sind",
+    "onlyExportFailed7Days": "Nur Export-Aufträge, die in den letzten 7 Tagen fehlgeschlagen sind",
+    "onlyExportFailed28Days": "Nur Export-Aufträge, die in den letzten 28 Tagen fehlgeschlagen sind"
   },
   "messages": {
     "xmlValidationFailed": "Validierung des XML-Schemas fehlgeschlagen:"
