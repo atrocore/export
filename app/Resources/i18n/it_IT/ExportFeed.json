@@ -30,7 +30,7 @@
     "configuratorItems": "Configuratore",
     "convertCollectionToString": "Convertire la collezione in stringa",
     "convertRelationsToString": "Convertire le relazioni in stringhe",
-    "exportByMaxDepth": "Massima profondità delle relazioni da mostrare",
+    "exportByMaxDepth": "Profondità massima delle relazioni da mostrare",
     "originTemplateName": "Nome del modello",
     "originTemplate": "Modello di origine",
     "isTemplateEditable": "Modificabile",
