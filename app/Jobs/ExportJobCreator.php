@@ -121,15 +121,16 @@ class ExportJobCreator extends AbstractJob implements JobInterface
 
             $jobEntity = $this->getEntityManager()->getEntity('Job');
             $jobEntity->set([
+                'id'          => Util::generateId(),
                 'name'        => $qmJobName,
                 'type'        => 'Export',
                 'payload'     => $data,
                 'ownerUserId' => $data['ownerUserId'],
                 'priority'    => $data['priority'],
             ]);
-            $this->getEntityManager()->saveEntity($jobEntity);
             $exportJob->set('queueItemId', $jobEntity->get('id'));
             $this->getEntityManager()->saveEntity($exportJob);
+            $this->getEntityManager()->saveEntity($jobEntity);
         }
 
         return $exportJob->get('id');
