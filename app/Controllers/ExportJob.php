@@ -13,8 +13,27 @@ declare(strict_types=1);
 
 namespace Export\Controllers;
 
+use Atro\Core\Exceptions\BadRequest;
 use Espo\Core\Templates\Controllers\Base;
+use Slim\Http\Request;
 
 class ExportJob extends Base
 {
+    public function actionExportAgain($params, $data, Request $request): bool
+    {
+        if (!$request->isPost() || empty($data->id)) {
+            throw new BadRequest();
+        }
+
+        return $this->getRecordService()->exportAgain($data->id);
+    }
+
+    public function actionResendRequest($params, $data, Request $request): bool
+    {
+        if (!$request->isPost() || empty($data->id)) {
+            throw new BadRequest();
+        }
+
+        return $this->getRecordService()->resendRequest($data->id);
+    }
 }

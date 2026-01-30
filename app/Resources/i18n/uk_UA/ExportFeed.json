@@ -65,6 +65,9 @@
     "Canceled": "Скасовано",
     "allAttributesAlreadyAdded": "Всі атрибути вже додано."
   },
+  "actions": {
+    "tryAgainExportJob": "Повторити спробу"
+  },
   "messages": {
     "confirmTemplateGeneration": "Ви впевнені, що хочете згенерувати шаблон?",
     "delimitersMustBeDifferent": "Усі параметри фіду повинні мати унікальні значення.",

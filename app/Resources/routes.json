@@ -85,5 +85,67 @@
         }
       }
     }
+  },
+  {
+    "route": "/ExportJob/action/exportAgain",
+    "method": "post",
+    "description": "Retried export for failed or canceled jobs",
+    "operationId": "exportAgain",
+    "tags": [
+      "ExportJob"
+    ],
+    "params": {
+      "controller": "ExportJob",
+      "action": "exportAgain"
+    },
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "type": "boolean"
+    }
+  },
+  {
+    "route": "/ExportJob/action/resendRequest",
+    "method": "post",
+    "description": "Retried the export without recalculating the body, it just resend the request with the same parameters",
+    "operationId": "resendRequest",
+    "tags": [
+      "ExportJob"
+    ],
+    "params": {
+      "controller": "ExportJob",
+      "action": "resendRequest"
+    },
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "type": "boolean"
+    }
   }
 ]

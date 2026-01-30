@@ -74,6 +74,9 @@
     "Canceled": "Annullato",
     "allAttributesAlreadyAdded": "Tutti gli attributi sono già stati aggiunti."
   },
+  "actions": {
+    "tryAgainExportJob": "Esporti di nuovo"
+  },
   "messages": {
     "confirmTemplateGeneration": "È sicuro di voler generare Template?",
     "delimitersMustBeDifferent": "Tutti i parametri di alimentazione devono avere valori unici.",

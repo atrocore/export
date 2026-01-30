@@ -74,6 +74,9 @@
     "Canceled": "Zrušeno",
     "allAttributesAlreadyAdded": "Všechny položky atributů již byly přidány."
   },
+  "actions": {
+    "tryAgainExportJob": "Znovu exportovat"
+  },
   "messages": {
     "confirmTemplateGeneration": "Jste si jisti, že chcete generovat šablonu?",
     "delimitersMustBeDifferent": "Všechny parametry krmiva by měly mít jedinečné hodnoty.",

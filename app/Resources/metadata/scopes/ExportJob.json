@@ -26,5 +26,6 @@
   "disableActionHistory": true,
   "autoDeleteAfterDays": 21,
   "clearDeletedAfterDays": 35,
-  "selectionDisabled": true
+  "selectionDisabled": true,
+  "bookmarkDisabled": true
 }

@@ -74,6 +74,9 @@
     "Canceled": "Anulowano",
     "allAttributesAlreadyAdded": "Wszystkie atrybuty zostały już dodane."
   },
+  "actions": {
+    "tryAgainExportJob": "Eksportuj ponownie"
+  },
   "messages": {
     "confirmTemplateGeneration": "Czy na pewno chcesz wygenerować szablon?",
     "delimitersMustBeDifferent": "Wszystkie parametry przesyłki powinny mieć unikalne wartości.",
