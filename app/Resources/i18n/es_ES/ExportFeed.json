@@ -74,6 +74,9 @@
     "Canceled": "Canceled",
     "allAttributesAlreadyAdded": "Ya se han añadido todos los atributos."
   },
+  "actions": {
+    "tryAgainExportJob": "Exportar de nuevo"
+  },
   "messages": {
     "confirmTemplateGeneration": "¿Está seguro de que quiere generar Plantilla?",
     "delimitersMustBeDifferent": "Todos los parámetros de alimentación deben tener valores únicos.",

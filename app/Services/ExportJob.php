@@ -15,6 +15,7 @@ namespace Export\Services;
 
 use Atro\Core\Templates\Services\Base;
 use Espo\ORM\Entity;
+use Espo\ORM\Entity as OrmEntity;
 
 class ExportJob extends Base
 {
@@ -29,5 +30,49 @@ class ExportJob extends Base
             $entity->set('fileId', null);
             $entity->set('fileName', null);
         }
+    }
+
+    public function putAclMetaForLink(OrmEntity $entityFrom, string $link, OrmEntity $entity): void
+    {
+        if ($entityFrom->getEntityName() !== 'ExportFeed' || $link !== 'exportJobs') {
+            parent::putAclMetaForLink($entityFrom, $link, $entity);
+            return;
+        }
+
+        parent::putAclMetaForLink($entityFrom, $link, $entity);
+
+        $condition = in_array($entity->get('state'), ['Failed', 'Canceled'])
+            && ($this->getUser()->isAdmin() ?? $this->getAcl()->check($entity, 'edit'));
+
+        $entity->setMetaPermission('tryAgainExportJob', $condition);
+    }
+
+    public function exportAgain(string $id): bool
+    {
+        $entity  = $this->getEntity($id);
+
+        if(!in_array($entity->get('state'), ['Failed', 'Canceled'])) {
+            return false;
+        }
+
+        $entity->set('state', 'Pending');
+        $this->getEntityManager()->saveEntity($entity);
+
+        return true;
+    }
+
+    public function resendRequest(string $id): bool
+    {
+        $entity  = $this->getEntity($id);
+
+        if(!in_array($entity->get('state'), ['Failed', 'Canceled'])) {
+            return false;
+        }
+
+        $entity->set('state', 'Pending');
+        $entity->set('shouldResend', true);
+        $this->getEntityManager()->saveEntity($entity);
+
+        return true;
     }
 }

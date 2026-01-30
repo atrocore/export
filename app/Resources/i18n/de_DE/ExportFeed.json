@@ -65,6 +65,9 @@
     "Canceled": "Abgebrochen",
     "allAttributesAlreadyAdded": "Alle Attribute sind bereits hinzugefügt worden."
   },
+  "actions": {
+    "tryAgainExportJob": "Erneut exportieren"
+  },
   "messages": {
     "confirmTemplateGeneration": "Sind Sie sicher, dass Sie eine Vorlage erstellen wollen?",
     "delimitersMustBeDifferent": "Alle Feedparameter sollten eindeutige Werte haben.",

@@ -65,6 +65,9 @@
     "allAttributesAlreadyAdded": "Все атрибуты уже добавлены.",
     "generateTemplate": "Создайте шаблон"
   },
+  "actions": {
+    "tryAgainExportJob": "Повторить попытку"
+  },
   "messages": {
     "delimitersMustBeDifferent": "Все параметры фида должны иметь уникальные значения.",
     "noExportFeedSelected": "Экспортный фид не выбран.",

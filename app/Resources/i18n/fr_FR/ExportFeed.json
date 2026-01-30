@@ -74,6 +74,9 @@
     "Canceled": "Annulé",
     "allAttributesAlreadyAdded": "Tous les attributs ont déjà été ajoutés."
   },
+  "actions": {
+    "tryAgainExportJob": "Exporter à nouveau"
+  },
   "messages": {
     "confirmTemplateGeneration": "Êtes-vous sûr de vouloir générer des gabarits ?",
     "delimitersMustBeDifferent": "Tous les paramètres d'alimentation doivent avoir des valeurs uniques.",

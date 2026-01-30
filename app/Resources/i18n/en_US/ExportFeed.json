@@ -74,6 +74,9 @@
     "Canceled": "Canceled",
     "allAttributesAlreadyAdded": "All attributes item has been already added."
   },
+  "actions": {
+    "tryAgainExportJob": "Export again"
+  },
   "messages": {
     "confirmTemplateGeneration": "Are you sure you want to generate Template?",
     "delimitersMustBeDifferent": "All feed parameters should have unique values.",

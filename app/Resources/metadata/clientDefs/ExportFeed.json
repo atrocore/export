@@ -49,9 +49,47 @@
       "create": false,
       "select": false,
       "canClose": false,
-      "rowActionsView": "export:views/export-job/record/row-actions/relationship",
       "view": "export:views/export-feed/record/panels/export-jobs",
+      "actions": {
+        "quickView": {
+          "disabled": true
+        },
+        "quickEdit": {
+          "disabled": true
+        },
+        "unlinkRelated": {
+          "disabled": true
+        },
+        "tryAgainExportJob": {
+          "url": "ExportJob/action/exportAgain",
+          "refresh": false,
+          "sortOrder": 10
+        }
+      },
       "layout": "listInExportFeed"
+    },
+    "entityFilterResult": {
+      "dynamicActionDisabled": true,
+      "actions": {
+        "quickEdit": {
+          "disabled": true
+        },
+        "inheritRelated": {
+          "disabled": true
+        },
+        "unlinkRelated": {
+          "disabled": true
+        },
+        "removeRelated": {
+          "disabled": true
+        },
+        "openInTab": {
+          "disabled": true
+        },
+        "reupload": {
+          "disabled": true
+        }
+      }
     }
   }
 }

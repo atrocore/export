@@ -26,6 +26,9 @@
     "onlyExportFailed7Days": "Only Export Jobs that failed during last 7 days",
     "onlyExportFailed28Days": "Only Export Jobs that failed during last 28 days"
   },
+  "actions": {
+    "tryAgainExportJob": "Export again"
+  },
   "messages": {
     "xmlValidationFailed": "XML Schema validation failed:"
   }

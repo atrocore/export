@@ -27,6 +27,6 @@
     "onlyExportFailed28Days": "Les échecs au cours des 28 derniers jours"
   },
   "messages": {
-    "xmlValidationFailed": "La validation du schéma XML a échoué :"
+    "xmlValidationFailed": "La validation du schéma XML a échoué :"
   }
 }
