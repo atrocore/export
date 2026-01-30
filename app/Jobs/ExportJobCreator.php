@@ -101,8 +101,11 @@ class ExportJobCreator extends AbstractJob implements JobInterface
         $exportJob->set('exportFeedId', $data['feed']['id']);
         $exportJob->set('start', (new \DateTime())->format('Y-m-d H:i:s'));
         $exportJob->set('ownerUserId', $user->get('id'));
-        $exportJob->set('assignedUserId', $user->get('id'));
-        $exportJob->set('teamsIds', array_column($user->get('teams')->toArray(), 'id'));
+        $exportJob->set('assignedUserId', $data['feed']['assignedUserId'] ?? $user->get('id'));
+        $exportJob->set('teamsIds', array_intersect(
+            $data['feed']['teamsIds'] ?? [],
+            array_column($user->get('teams')->toArray(), 'id')
+        ));
         $exportJob->set('payload', $data);
 
         $data['exportJobId'] = $exportJob->get('id');
