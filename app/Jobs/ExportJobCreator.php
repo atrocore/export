@@ -91,6 +91,12 @@ class ExportJobCreator extends AbstractJob implements JobInterface
 
     protected function pushExportJob(string $jobName, array $data): string
     {
+        $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $data['feed']['id']);
+
+        if (empty($exportFeed)) {
+            throw new \Exception('ExportFeed not found');
+        }
+
         $user = $this->getUser();
 
         $maxWorkers = $data['feed']['maxWorkers'] ?? null;
@@ -101,8 +107,11 @@ class ExportJobCreator extends AbstractJob implements JobInterface
         $exportJob->set('exportFeedId', $data['feed']['id']);
         $exportJob->set('start', (new \DateTime())->format('Y-m-d H:i:s'));
         $exportJob->set('ownerUserId', $user->get('id'));
-        $exportJob->set('assignedUserId', $user->get('id'));
-        $exportJob->set('teamsIds', array_column($user->get('teams')->toArray(), 'id'));
+        $exportJob->set('assignedUserId', $exportFeed->get('assignedUserId') ?? $user->get('id'));
+        $exportJob->set('teamsIds', array_intersect(
+            array_column($exportFeed->get('teams')->toArray(), 'id'),
+            array_column($user->get('teams')->toArray(), 'id')
+        ));
         $exportJob->set('payload', $data);
 
         $data['exportJobId'] = $exportJob->get('id');
