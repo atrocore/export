@@ -28,5 +28,8 @@
   },
   "messages": {
     "xmlValidationFailed": "La convalida di XML Schema non è riuscita:"
+  },
+  "actions": {
+    "tryAgainExportJob": "Esporti di nuovo"
   }
 }
