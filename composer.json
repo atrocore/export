@@ -12,7 +12,7 @@
     "jdorn/sql-formatter": "v1.2.16@stable"
   },
   "conflict": {
-    "atrocore/pim": "<1.14.0",
+    "atrocore/pim": "<1.15.23",
     "atrocore/import": "<1.9.0"
   },
   "autoload": {
