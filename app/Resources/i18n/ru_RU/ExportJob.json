@@ -28,5 +28,8 @@
   },
   "messages": {
     "xmlValidationFailed": "Проверка XML Schema не удалась:"
+  },
+  "actions": {
+    "tryAgainExportJob": "Повторить попытку"
   }
 }
