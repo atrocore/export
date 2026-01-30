@@ -28,5 +28,8 @@
   },
   "messages": {
     "xmlValidationFailed": "Falló la validación del esquema XML:"
+  },
+  "actions": {
+    "tryAgainExportJob": "Exportar de nuevo"
   }
 }
