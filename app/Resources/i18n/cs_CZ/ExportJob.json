@@ -28,5 +28,8 @@
   },
   "messages": {
     "xmlValidationFailed": "Schema XML se nepodařilo ověřit:"
+  },
+  "actions": {
+    "tryAgainExportJob": "Znovu exportovat"
   }
 }
