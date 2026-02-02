@@ -13,13 +13,18 @@ declare(strict_types=1);
 
 namespace Export\Repositories;
 
+use Atro\Core\Utils\IdGenerator;
 use Doctrine\DBAL\ParameterType;
 use Atro\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
-use Export\Core\ValueModifier;
 
 class ExportConfiguratorItem extends Base
 {
+    public static function generateId(): string
+    {
+        return IdGenerator::unsortableId();
+    }
+
     protected function beforeSave(Entity $entity, array $options = [])
     {
         if ($entity->isNew() && !$entity->has('previousItem')) {
