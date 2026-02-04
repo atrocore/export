@@ -20,6 +20,11 @@ use Espo\ORM\Entity;
 
 class ExportConfiguratorItem extends Base
 {
+    public static function generateId(): string
+    {
+        return IdGenerator::sortableId();
+    }
+
     protected function beforeSave(Entity $entity, array $options = [])
     {
         if ($entity->isNew() && !$entity->has('previousItem')) {
