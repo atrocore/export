@@ -2,7 +2,7 @@
   "name": "atrocore/export",
   "description": "",
   "require": {
-    "atrocore/core": "~2.2.14",
+    "atrocore/core": "~2.2.15",
     "ext-zip": "*",
     "ext-dom": "*",
     "ext-libxml": "*",
