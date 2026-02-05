@@ -20,7 +20,7 @@ use Espo\ORM\Entity;
 
 class ExportConfiguratorItem extends Base
 {
-    public static function generateId(): string
+    public function generateId(): string
     {
         return IdGenerator::sortableId();
     }
