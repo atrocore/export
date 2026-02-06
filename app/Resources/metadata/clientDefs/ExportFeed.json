@@ -43,7 +43,14 @@
       "sortBy": "sortOrder",
       "asc": true,
       "view": "export:views/export-feed/record/panels/configurator-items",
-      "rowActionsView": "views/record/row-actions/edit-and-remove"
+      "actions": {
+        "unlinkRelated": {
+          "disabled": true
+        },
+        "quickView": {
+          "disabled": true
+        }
+      }
     },
     "exportJobs": {
       "create": false,
