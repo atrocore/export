@@ -28,7 +28,7 @@ Espo.define('export:views/export-configurator-item/fields/remove', 'view', funct
 
                     this.notify('Removing...');
 
-                    $(`[data-action="quickRemove"][data-id="${this.model.get('id')}"]`).trigger('click')
+                    $(`[data-action="removeRelated"][data-id="${this.model.get('id')}"]`).trigger('click')
                 }
             }
         },

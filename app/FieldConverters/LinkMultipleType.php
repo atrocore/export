@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
-use AdvancedDataTypes\Core\Utils\MigrationHelper;
 use Atro\Core\Container;
 use Atro\Core\Exceptions\Error;
 use Atro\Core\Utils\Database\DBAL\Schema\Converter;
@@ -26,6 +25,11 @@ use Espo\ORM\EntityCollection;
 
 class LinkMultipleType extends LinkType
 {
+    public static function idToHash(string $id): string
+    {
+        return 'a' . str_replace('-', '_', $id);
+    }
+
     public function convertToString(array &$result, array $record, array $configuration): void
     {
         $field = $configuration['field'];
@@ -237,7 +241,7 @@ class LinkMultipleType extends LinkType
         }
 
         $innerSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
-        $qb->addSelect("({$innerSql}) AS {$configuration['id']}");
+        $qb->addSelect("({$innerSql}) AS " . static::idToHash($configuration['id']));
 
         foreach ($qb1->getParameters() as $pName => $pValue) {
             $qb->setParameter($pName, $pValue, $mapper::getParameterType($pValue));
@@ -262,8 +266,8 @@ class LinkMultipleType extends LinkType
 
         $collection = new EntityCollection([], $relEntityType);
 
-        if (!empty($record['_entity']->rowData[$configuration['id']])) {
-            $ids = explode(',', $record['_entity']->rowData[$configuration['id']]);
+        if (!empty($record['_entity']->rowData[static::idToHash($configuration['id'])])) {
+            $ids = explode(',', $record['_entity']->rowData[static::idToHash($configuration['id'])]);
             foreach ($ids as $id) {
                 if ($id && trim($id) !== '') {
                     $collection->append($this->getMemoryStorage()->get($this->createKey($configuration['id'], $id)));
@@ -287,8 +291,8 @@ class LinkMultipleType extends LinkType
 
         $ids = [];
         foreach ($this->getMemoryStorage()->get('exportRecordsPart') ?? [] as $record) {
-            if (!empty($record['_entity']->rowData[$configuration['id']])) {
-                foreach (explode(',', $record['_entity']->rowData[$configuration['id']]) as $id) {
+            if (!empty($record['_entity']->rowData[static::idToHash($configuration['id'])])) {
+                foreach (explode(',', $record['_entity']->rowData[static::idToHash($configuration['id'])]) as $id) {
                     if ($id && trim($id) !== '' && !in_array($id, $ids)) {
                         $ids[] = $id;
                     }
@@ -321,6 +325,6 @@ class LinkMultipleType extends LinkType
 
     protected function createKey(string $configurationId, string $id): string
     {
-        return "export_{$configurationId}_id_{$id}";
+        return "export_" . static::idToHash($configurationId) . "_id_{$id}";
     }
 }
