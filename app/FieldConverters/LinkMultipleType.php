@@ -17,10 +17,10 @@ use Atro\Core\Container;
 use Atro\Core\Exceptions\Error;
 use Atro\Core\Utils\Database\DBAL\Schema\Converter;
 use Atro\Core\Utils\IdGenerator;
+use Atro\Core\Utils\Util;
 use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Espo\Core\Utils\Util;
 use Espo\ORM\EntityCollection;
 
 class LinkMultipleType extends LinkType
