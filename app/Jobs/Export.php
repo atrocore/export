@@ -98,7 +98,7 @@ class Export extends AbstractJob implements JobInterface
 
         $notification->set('userId', $ownerUserId);
 
-        if ($ownerUserId !== 'system') {
+        if ($ownerUserId !== $this->getConfig()->get('systemUserId')) {
             $this->getEntityManager()->saveEntity($notification);
         }
     }
