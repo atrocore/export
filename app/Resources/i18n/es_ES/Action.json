@@ -11,7 +11,7 @@
   "twigVariables": {
     "payload": {
       "sourceEntities": "Colección de entidades a exportar",
-      "sourceEntitiesIds": "Matriz de ids de entidad a exportar",
+      "sourceEntitiesIds": "Matriz de ids de entidades a exportar",
       "entity": "Primera entidad de la colección a exportar"
     }
   }
