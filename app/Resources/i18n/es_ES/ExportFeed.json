@@ -68,10 +68,10 @@
     "Export": "Exportar",
     "DuplicateAsImport": "Duplicar como Importar",
     "Pending": "Pendiente",
-    "Success": "Success",
+    "Success": "Exito",
     "Running": "Correr",
     "Failed": "Fallida",
-    "Canceled": "Canceled",
+    "Canceled": "Cancelado",
     "allAttributesAlreadyAdded": "Ya se han añadido todos los atributos."
   },
   "actions": {
