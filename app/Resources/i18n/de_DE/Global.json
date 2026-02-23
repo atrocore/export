@@ -1,6 +1,6 @@
 {
   "scopeNames": {
-    "ExportFeed": "Export Feed",
+    "ExportFeed": "Export-Feed",
     "ExportConfiguratorItem": "Konfigurator",
     "ExportJob": "Exportausführung"
   },
@@ -27,7 +27,7 @@
     "DataSyncErrorsExport": "Synchronisierungsfehler für Datenexport"
   },
   "boolFilters": {
-    "unexported": "Nicht importierte"
+    "unexported": "Nicht importierte Daten"
   },
   "twig": {
     "functions": {
@@ -38,8 +38,8 @@
     },
     "filters": {
       "prepareEntity": "Bereitet eine Entität für den Export vor",
-      "isImage": "Überprüft, ob der angegebene Wert ein Bild darstellt, indem Dateierweiterungen oder MIME-Typen überprüft werden",
-      "escapeDoubleQuote": "Umgeht doppelte Anführungszeichen in einer Zeichenkette durch Hinzufügen von Backslashes (\" wird zu \\\")",
+      "isImage": "Checkt, ob der angegebene Wert ein Bild darstellt, indem Dateierweiterungen oder MIME-Typen überprüft werden",
+      "escapeDoubleQuote": "Maskiert doppelte Anführungszeichen in einer Zeichenfolge durch das Hinzufügen von Backslashes (\" wird zu \\\")",
       "backslashNToBr": "Konvertiert Zeilenumbruchzeichen (\\n) in HTML-Zeilenumbruch-Tags (<br>)"
     }
   }

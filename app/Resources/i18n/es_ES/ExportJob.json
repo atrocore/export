@@ -14,7 +14,7 @@
     "Success": "Success",
     "Running": "Correr",
     "Failed": "Fallida",
-    "Canceled": "Canceled",
+    "Canceled": "Cancelado",
     "exportDownloadNotification": "La exportación ha finalizado. Puede <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">descargar</a> el archivo."
   },
   "exceptions": {
@@ -28,5 +28,8 @@
   },
   "messages": {
     "xmlValidationFailed": "Falló la validación del esquema XML:"
+  },
+  "actions": {
+    "tryAgainExportJob": "Exportar de nuevo"
   }
 }

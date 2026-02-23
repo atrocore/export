@@ -1,14 +1,14 @@
 {
-	"fieldTypes": {
-		"exportLink": "Link eksportu"
-	},
-	"fields": {
-		"dataUrl": "Adres URL danych"
-	},
-	"labels": {
-		"exportFeed": "Eksportuj kanały"
-	},
-	"descriptions": {
-		"exportFeed": "Konfiguracja szablonów eksportu do użycia przy eksportowaniu danych z jednostek AtroCore"
-	}
+  "fieldTypes": {
+    "exportLink": "Link eksportu"
+  },
+  "fields": {
+    "dataUrl": "Adres URL danych"
+  },
+  "labels": {
+    "exportFeed": "Eksportuj kanały"
+  },
+  "descriptions": {
+    "exportFeed": "Konfiguracja szablonów eksportu do użycia przy eksportowaniu danych z jednostek AtroCore."
+  }
 }

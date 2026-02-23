@@ -4,7 +4,7 @@
     "file": "Exportovaný soubor",
     "state": "Stát",
     "stateMessage": "Zpráva",
-    "start": "Začínáme v",
+    "start": "Začato v",
     "end": "Dokončeno v",
     "count": "Hrabě",
     "files": "Soubory"
@@ -12,7 +12,7 @@
   "labels": {
     "Pending": "Čekající",
     "Success": "Úspěch",
-    "Running": "Běh",
+    "Running": "Probíhá",
     "Failed": "Neúspěšný",
     "Canceled": "Zrušeno",
     "exportDownloadNotification": "Export byl dokončen. Soubor si můžete stáhnout z <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\"></a> ."
@@ -28,5 +28,8 @@
   },
   "messages": {
     "xmlValidationFailed": "Schema XML se nepodařilo ověřit:"
+  },
+  "actions": {
+    "tryAgainExportJob": "Znovu exportovat"
   }
 }

@@ -38,7 +38,7 @@
     "useExistingExportFeed": "UBestehendes Exportfutter verwenden",
     "useQuoteForAll": "Anführungszeichen für alle Werte verwenden",
     "files": "Dateien",
-    "maxWorkers": "Maximale Anzahl von Arbeitern",
+    "maxWorkers": "Maximale Worker-Anzahl",
     "locale": "Gebietsschema"
   },
   "labels": {
@@ -105,9 +105,9 @@
     "separateJob": "Das System erstellt für jeden Exportauftrag eine separate Exportdatei."
   },
   "boolFilters": {
-    "onlyExportFailed24Hours": "Nur Export Feeds, die in den letzten 24 Stunden fehlgeschlagen sind",
-    "onlyExportFailed7Days": "Nur Export Feeds, die in den letzten 7 Tagen fehlgeschlagen sind",
-    "onlyExportFailed28Days": "Nur Export Feeds, die in den letzten 28 Tagen fehlgeschlagen sind"
+    "onlyExportFailed24Hours": "Nur Export-Feeds, die in den letzten 24 Stunden fehlgeschlagen sind",
+    "onlyExportFailed7Days": "Nur Export-Feeds, die in den letzten 7 Tagen fehlgeschlagen sind",
+    "onlyExportFailed28Days": "Nur Export-Feeds, die in den letzten 28 Tagen fehlgeschlagen sind"
   },
   "options": {
     "fileType": {
@@ -123,8 +123,8 @@
       "entities": "Sammlung der zu exportierenden Entitäten"
     },
     "fileNameMask": {
-      "feed": "Daten einspeisen",
-      "filename": "Vom System generierter Standard-Dateiname",
+      "feed": "Feed-Daten",
+      "filename": "Der vom System generierte Standard-Dateiname",
       "interation": "Job-Iterationsnummer"
     }
   }

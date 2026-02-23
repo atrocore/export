@@ -3,7 +3,7 @@
     "name": "Feld",
     "column": "Spaltenname",
     "columnType": "Spaltenbezeichnung",
-    "exportFeed": "Exportfeed",
+    "exportFeed": "Export-Feed",
     "remove": "Löschen",
     "exportBy": "Verwandte Entitätsfelder",
     "channels": "Kanal(e)",
@@ -44,7 +44,7 @@
     "column": "Sie können verknüpfte Entitätsfelder im Spaltennamen verwenden. Verwenden Sie den Feldnamen in der Datenbank als Variable, zB {{name}}. Checkbox „Separate Columns“ sollte aktiviert sein."
   },
   "exceptions": {
-    "noSuchAttribute": "Das Attribut mit diesem Code '%s' existiert nicht.",
+    "noSuchAttribute": "Das Attribut mit dem Code '%s' existiert nicht.",
     "unknownModifier": "Der Modifikator „%s“ ist unbekannt."
   }
 }

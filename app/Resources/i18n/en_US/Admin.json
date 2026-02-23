@@ -1,14 +1,14 @@
 {
-    "fieldTypes": {
-        "exportLink": "Export Link"
-    },
-    "fields": {
-        "dataUrl": "Data Url"
-    },
-    "labels": {
-        "exportFeed": "Export Feeds"
-    },
-    "descriptions": {
-        "exportFeed": "Configuration of export templates to be used for exporting data from the AtroCore entities"
-    }
+  "fieldTypes": {
+    "exportLink": "Export Link"
+  },
+  "fields": {
+    "dataUrl": "Data Url"
+  },
+  "labels": {
+    "exportFeed": "Export Feeds"
+  },
+  "descriptions": {
+    "exportFeed": "Configuration of export templates to be used for exporting data from the AtroCore entities."
+  }
 }
