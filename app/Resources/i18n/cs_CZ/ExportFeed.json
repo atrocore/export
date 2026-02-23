@@ -69,7 +69,7 @@
     "DuplicateAsImport": "Duplikovat jako Import",
     "Pending": "Čekající",
     "Success": "Úspěch",
-    "Running": "Běh",
+    "Running": "Probíhá",
     "Failed": "Neúspěšný",
     "Canceled": "Zrušeno",
     "allAttributesAlreadyAdded": "Všechny položky atributů již byly přidány."
