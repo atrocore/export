@@ -117,8 +117,8 @@
   },
   "boolFilters": {
     "onlyExportFailed24Hours": "Esporta solo i feed che non hanno funzionato nelle ultime 24 ore.",
-    "onlyExportFailed7Days": "Esporta solo i feed falliti negli ultimi 7 giorni.",
-    "onlyExportFailed28Days": "Esporta solo i feed che non hanno funzionato negli ultimi 28 giorni."
+    "onlyExportFailed7Days": "Esporta solo i feed che non hanno funzionato negli ultimi 7 giorni.",
+    "onlyExportFailed28Days": "Esporta solo i feed falliti negli ultimi 28 giorni."
   },
   "twigVariables": {
     "template": {
