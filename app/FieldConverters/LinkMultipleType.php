@@ -162,9 +162,25 @@ class LinkMultipleType extends LinkType
         return $linkedEntitiesKeys[$configuration['id']] ?? [];
     }
 
-
     public function queryCallback(Container $container, QueryBuilder $qb, Mapper $mapper, array $configuration): void
     {
+        // for attribute
+        if (!empty($configuration['entityAttributeId'])) {
+            $tableName = Util::toUnderScore(lcfirst($configuration['entity']));
+            $avTable = "{$tableName}_attribute_value";
+            $entityIdColumn = "{$tableName}_id";
+
+            $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
+            $paramName = 'eaid_' . IdGenerator::unsortableId();
+
+            $innerSql = "(SELECT av.json_value FROM {$avTable} av WHERE av.{$entityIdColumn}={$mtAlias}.id AND av.attribute_id=:{$paramName} AND av.deleted=:false LIMIT 1)";
+
+            $qb->addSelect("{$innerSql} AS " . static::idToHash($configuration['id']));
+            $qb->setParameter($paramName, $configuration['entityAttributeId']);
+            $qb->setParameter('false', false, ParameterType::BOOLEAN);
+
+            return;
+        }
 
         $linkDefs = $this
             ->getMetadata()
@@ -267,7 +283,7 @@ class LinkMultipleType extends LinkType
         $collection = new EntityCollection([], $relEntityType);
 
         if (!empty($record['_entity']->rowData[static::idToHash($configuration['id'])])) {
-            $ids = explode(',', $record['_entity']->rowData[static::idToHash($configuration['id'])]);
+            $ids = $this->parseLinkedIds($record['_entity']->rowData[static::idToHash($configuration['id'])]);
             foreach ($ids as $id) {
                 if ($id && trim($id) !== '') {
                     $collection->append($this->getMemoryStorage()->get($this->createKey($configuration['id'], $id)));
@@ -292,7 +308,7 @@ class LinkMultipleType extends LinkType
         $ids = [];
         foreach ($this->getMemoryStorage()->get('exportRecordsPart') ?? [] as $record) {
             if (!empty($record['_entity']->rowData[static::idToHash($configuration['id'])])) {
-                foreach (explode(',', $record['_entity']->rowData[static::idToHash($configuration['id'])]) as $id) {
+                foreach ($this->parseLinkedIds($record['_entity']->rowData[static::idToHash($configuration['id'])]) as $id) {
                     if ($id && trim($id) !== '' && !in_array($id, $ids)) {
                         $ids[] = $id;
                     }
@@ -321,6 +337,16 @@ class LinkMultipleType extends LinkType
         }
 
         $this->getMemoryStorage()->set("{$configuration['id']}_ids", $linkedEntitiesKeys);
+    }
+
+    protected function parseLinkedIds(string $raw): array
+    {
+        $trimmed = trim($raw);
+        if (str_starts_with($trimmed, '[')) {
+            return array_filter(json_decode($trimmed, true) ?? [], fn($id) => $id !== null && $id !== '');
+        }
+
+        return explode(',', $raw);
     }
 
     protected function createKey(string $configurationId, string $id): string
