@@ -17,9 +17,14 @@
         "visible": {
           "conditionGroup": [
             {
-              "type": "equals",
+              "type": "in",
               "attribute": "type",
-              "value": "Field"
+              "value": [
+                "Field",
+                "allAttributes",
+                "Fixed value",
+                "script"
+              ]
             }
           ]
         },
