@@ -14,26 +14,20 @@ Espo.define('export:views/export-feed/record/detail-bottom', 'views/record/detai
         setup() {
             Dep.prototype.setup.call(this);
 
-            this.listenTo(this.model, 'change:entity change:hasMultipleSheets after:save', () => {
-                (this.getMetadata().get(['clientDefs', 'ExportFeed', 'bottomPanels', 'detail']) || []).forEach(row => {
-                    if (row.name === 'simpleTypeEntityFilter' || row.name === 'entityFilterResult') {
-                        this.createPanelView(row, view => {
-                            view.render();
-                        });
-                    }
-                });
+            let filterResultPanel = null;
+            (this.getMetadata().get(['clientDefs', 'ExportFeed', 'bottomPanels', 'detail']) || []).forEach(row => {
+                if (row.name === 'entityFilterResult') {
+                    filterResultPanel = row;
+                }
             });
 
-            this.listenTo(this.model, 'change:data', () => {
-                (this.getMetadata().get(['clientDefs', 'ExportFeed', 'bottomPanels', 'detail']) || []).forEach(row => {
-                    if (row.name === 'entityFilterResult') {
-                        this.createPanelView(row, view => {
-                            view.render();
-                        });
-                    }
+            this.onModelReady(() => {
+                this.listenTo(this.model, 'change:data change:entity change:hasMultipleSheets after:save', () => {
+                    this.createPanelView(filterResultPanel, view => {
+                        view.render();
+                    });
                 });
             });
         },
-
     })
 );

@@ -17,45 +17,47 @@ Espo.define('export:views/export-feed/fields/origin-template-name', 'views/field
         setup() {
             Dep.prototype.setup.call(this);
 
-            this.initialModel = this.model.getClonedAttributes();
+            this.onModelReady(() => {
+                this.initialModel = this.model.getClonedAttributes();
 
-            this.listenTo(this.model, 'change:type change:fileType change:entity', () => {
-                if (Object.keys(this.initialModel).length) {
-                    this.model.set(this.name, null);
-                }
-                this.setupOptions();
-            });
+                this.listenTo(this.model, 'change:type change:fileType change:entity', () => {
+                    if (Object.keys(this.initialModel).length) {
+                        this.model.set(this.name, null);
+                    }
+                    this.prepareEnumOptions();
+                });
 
-            this.listenTo(this.model, 'change:' + this.name, () => {
-                this.model.set('originTemplate', null);
-                this.model.set('template', null);
-                this.model.set('isTemplateEditable', false);
+                this.listenTo(this.model, 'change:' + this.name, () => {
+                    this.model.set('originTemplate', null);
+                    this.model.set('template', null);
+                    this.model.set('isTemplateEditable', false);
 
-                let templateId = this.model.get(this.name);
+                    let templateId = this.model.get(this.name);
 
-                if (templateId) {
-                    let templateName = this.translatedOptions[templateId];
+                    if (templateId) {
+                        let templateName = this.translatedOptions[templateId];
 
-                    this.model.set('template', '{% extends "' + templateName + '" %}');
+                        this.model.set('template', '{% extends "' + templateName + '" %}');
 
-                    this.notify('Loading...');
-                    this.loadOriginalTemplate(templateId, () => {
-                        this.notify(false);
-                    });
-                }
-            });
+                        this.notify('Loading...');
+                        this.loadOriginalTemplate(templateId, () => {
+                            this.notify(false);
+                        });
+                    }
+                });
 
-            this.listenTo(this.model, 'cancel:export-feed-edit', () => {
-                this.setupOptions();
+                this.listenTo(this.model, 'cancel:export-feed-edit', () => {
+                    this.prepareEnumOptions();
+                    this.loadOriginalTemplate(this.model.get(this.name));
+                });
+
                 this.loadOriginalTemplate(this.model.get(this.name));
             });
-
-            this.loadOriginalTemplate(this.model.get(this.name));
         },
 
-        setupOptions() {
-            this.params.options = [''];
-            this.translatedOptions = {'': ''};
+        prepareEnumOptions() {
+            this.params.options = [];
+            this.translatedOptions = {};
 
             this.loadAvailableTemplates();
         },
