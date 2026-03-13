@@ -95,6 +95,47 @@ class Metadata extends AbstractListener
             }
         }
 
+
+        // add connection if configured
+        if (!empty($data['scopes']['ExportFeed']['connectionTypes'])) {
+            $data['entityDefs']['ExportFeed']['fields']['connection'] = [
+                'type'                  => 'link',
+                'view'                  => 'export:views/export-feed/fields/connection',
+                'conditionalProperties' => [
+                    'visible'  => [
+                        'conditionGroup' => [
+                            [
+                                'type'      => 'in',
+                                'attribute' => 'type',
+                                'value'     => array_keys($data['scopes']['ExportFeed']['connectionTypes'])
+                            ]
+                        ]
+                    ],
+                    'required' => [
+                        'conditionGroup' => [
+                            [
+                                'type'      => 'in',
+                                'attribute' => 'type',
+                                'value'     => []
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+
+            $data['entityDefs']['ExportFeed']['links']['connection'] = [
+                'type'    => 'belongsTo',
+                'entity'  => 'Connection',
+                'foreign' => 'exportFeeds'
+            ];
+
+            $data['entityDefs']['Connection']['links']['exportFeeds'] = [
+                'type'    => 'hasMany',
+                'entity'  => 'ExportFeed',
+                'foreign' => 'connection'
+            ];
+        }
+
         $event->setArgument('data', $data);
     }
 

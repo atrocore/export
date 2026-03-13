@@ -52,6 +52,11 @@ class ExportFeed extends Base
 
     public function getFeedField(string $name)
     {
+        // For backward compatibility
+        if ($name === 'httpConnectionId') {
+            return $this->get('connectionId');
+        }
+
         $data = $this->getFeedFields();
 
         if (!isset($data[$name])) {
