@@ -13,7 +13,18 @@ declare(strict_types=1);
 
 namespace Export;
 
-use Atro\Core\OpenApiGenerator;
+use Atro\Core\EntityTypeHandlers\CreateLinkHandler;
+use Atro\Core\EntityTypeHandlers\FollowHandler;
+use Atro\Core\EntityTypeHandlers\GetDuplicateAttributesHandler;
+use Atro\Core\EntityTypeHandlers\ListHandler;
+use Atro\Core\EntityTypeHandlers\ListLinkedHandler;
+use Atro\Core\EntityTypeHandlers\MassDeleteHandler;
+use Atro\Core\EntityTypeHandlers\MassFollowHandler;
+use Atro\Core\EntityTypeHandlers\MassUnfollowHandler;
+use Atro\Core\EntityTypeHandlers\MassUpdateHandler;
+use Atro\Core\EntityTypeHandlers\MergeHandler;
+use Atro\Core\EntityTypeHandlers\RemoveLinkHandler;
+use Atro\Core\EntityTypeHandlers\UnfollowHandler;
 use Atro\Core\ModuleManager\AbstractModule;
 use Espo\Core\Utils\Util;
 
@@ -35,148 +46,22 @@ class Module extends AbstractModule
         Util::removeDir(\Export\Services\AbstractExportType::TMP_DIR);
     }
 
-    public function prepareApiDocs(array &$data, array $schemas): void
+    public function getEntityTypeHandlerExcludes(): array
     {
-        parent::prepareApiDocs($data, $schemas);
-
-        $data['paths']["/ExportFeed/action/exportFile"]['post'] = [
-            'tags'        => ['ExportFeed'],
-            "summary"     => "Export data to file",
-            "description" => "Export data to file",
-            "operationId" => "exportFile",
-            'security'    => [['Authorization-Token' => []]],
-            'requestBody' => [
-                'required' => true,
-                'content'  => [
-                    'application/json' => [
-                        'schema' => [
-                            "type"       => "object",
-                            "properties" => [
-                                "id" => [
-                                    "type" => "string",
-                                ],
-                            ],
-                        ]
-                    ]
-                ],
-            ],
-            "responses"   => OpenApiGenerator::prepareResponses(["type" => "boolean"]),
+        return [
+            // ExportConfiguratorItem — managed exclusively via ExportFeed; direct CRUD is not allowed
+            ListHandler::class                   => ['ExportConfiguratorItem'],
+            ListLinkedHandler::class             => ['ExportConfiguratorItem'],
+            MassUpdateHandler::class             => ['ExportConfiguratorItem'],
+            MassDeleteHandler::class             => ['ExportConfiguratorItem'],
+            CreateLinkHandler::class             => ['ExportConfiguratorItem'],
+            RemoveLinkHandler::class             => ['ExportConfiguratorItem'],
+            FollowHandler::class                 => ['ExportConfiguratorItem'],
+            UnfollowHandler::class               => ['ExportConfiguratorItem'],
+            MergeHandler::class                  => ['ExportConfiguratorItem'],
+            GetDuplicateAttributesHandler::class => ['ExportConfiguratorItem'],
+            MassFollowHandler::class             => ['ExportConfiguratorItem'],
+            MassUnfollowHandler::class           => ['ExportConfiguratorItem'],
         ];
-
-        $data['paths']["/ExportFeed/action/exportChannel"]['post'] = [
-            'tags'        => ['ExportFeed'],
-            "summary"     => "Export channel data to file",
-            "description" => "Export channel data to file",
-            "operationId" => "exportChannel",
-            'security'    => [['Authorization-Token' => []]],
-            'requestBody' => [
-                'required' => true,
-                'content'  => [
-                    'application/json' => [
-                        'schema' => [
-                            "type"       => "object",
-                            "properties" => [
-                                "id" => [
-                                    "type" => "string",
-                                ],
-                            ],
-                        ]
-                    ]
-                ],
-            ],
-            "responses"   => OpenApiGenerator::prepareResponses(["type" => "boolean"]),
-        ];
-
-        $data['paths']['/ExportFeed/action/directExportFile']['post'] = [
-            'tags'        => ['ExportFeed'],
-            "operationId" => "directExportFile",
-            "summary"     => "Directly Export records of an entity to file without",
-            "description" => "The system will run will generate directly an export file of the selected record and the selected fields of the record, this will only support simple type, for more complex type please consider create and appropriate Export feed",
-            'security'    => [['Authorization-Token' => []]],
-            "requestBody" => [
-                "required" => true,
-                "content"  => [
-                    "application/json" => [
-                        "schema" => [
-                            "type"       => "object",
-                            "properties" => [
-                                "scope"            => [
-                                    "type"    => "string",
-                                    "example" => "Product"
-                                ],
-                                "fileType"         => [
-                                    "type"    => "string",
-                                    "example" => "csv"
-                                ],
-                                "fieldList"        => [
-                                    "type"  => "array",
-                                    "items" => [
-                                        "type" => "string"
-                                    ]
-                                ],
-                                "entityFilterData" => [
-                                    "type"       => "object",
-                                    "properties" => [
-                                        "byWhere"    => [
-                                            "type" => "boolean"
-                                        ],
-                                        "selectData" => [
-                                            "type"       => "object",
-                                            "properties" => [
-                                                "select" => [
-                                                    "type"    => "string",
-                                                    "example" => "id,name"
-                                                ]
-                                            ]
-                                        ],
-                                        "where"      => [
-                                            "type"  => "array",
-                                            "items" => [
-                                                "type"       => "object",
-                                                "properties" => [
-                                                    "type"      => [
-                                                        "type"    => "string",
-                                                        "example" => "isNotNull"
-                                                    ],
-                                                    "attribute" => [
-                                                        "type"    => "string",
-                                                        "example" => "name"
-                                                    ],
-                                                    "value"     => [
-                                                        "oneOf" => [
-                                                            [
-                                                                "type"    => "integer",
-                                                                "example" => 10
-                                                            ],
-                                                            [
-                                                                "type"    => "number",
-                                                                "example" => 20.35
-                                                            ],
-                                                            [
-                                                                "type"    => "string",
-                                                                "example" => 'red'
-                                                            ],
-                                                            [
-                                                                "type" => "array"
-                                                            ],
-                                                            [
-                                                                "type"    => "boolean",
-                                                                "example" => false
-                                                            ]
-                                                        ]
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            "responses"   => OpenApiGenerator::prepareResponses(["type" => "boolean"])
-        ];
-
     }
 }
