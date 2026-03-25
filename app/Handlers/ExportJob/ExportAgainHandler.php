@@ -33,7 +33,7 @@ use Psr\Http\Server\RequestHandlerInterface;
         400 => ['description' => 'id is required'],
     ],
 )]
-class ExportJobExportAgainHandler extends AbstractHandler
+class ExportAgainHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

@@ -36,7 +36,7 @@ use Psr\Http\Server\RequestHandlerInterface;
         404 => ['description' => 'Not found'],
     ],
 )]
-class ExportConfiguratorItemDeleteHandler extends AbstractHandler
+class DeleteHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

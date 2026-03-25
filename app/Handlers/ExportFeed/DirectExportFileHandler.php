@@ -33,7 +33,7 @@ use Psr\Http\Server\RequestHandlerInterface;
         400 => ['description' => 'Bad request'],
     ],
 )]
-class ExportFeedDirectExportFileHandler extends AbstractHandler
+class DirectExportFileHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

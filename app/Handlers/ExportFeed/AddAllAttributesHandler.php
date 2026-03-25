@@ -23,19 +23,19 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
-    path: '/ExportFeed/action/addScript',
+    path: '/ExportFeed/action/addAllAttributes',
     methods: ['POST'],
-    summary: 'Add script column to export feed',
-    description: 'Adds a script-computed column to the export feed configurator.',
+    summary: 'Add all attributes to export feed',
+    description: 'Adds all available attributes for the given entity to the export feed configurator.',
     tag: 'ExportFeed',
     requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['id', 'entityName'], 'properties' => ['id' => ['type' => 'string'], 'entityName' => ['type' => 'string']]]]]],
     responses: [
-        200 => ['description' => 'Script column added', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
+        200 => ['description' => 'All attributes added', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
         400 => ['description' => 'Bad request'],
         403 => ['description' => 'Forbidden'],
     ],
 )]
-class ExportFeedAddScriptHandler extends AbstractHandler
+class AddAllAttributesHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -50,7 +50,7 @@ class ExportFeedAddScriptHandler extends AbstractHandler
         }
 
         return new BoolResponse(
-            $this->getRecordService('ExportFeed')->addScript((string) $data->entityName, (string) $data->id)
+            $this->getRecordService('ExportFeed')->addAllAttributes((string) $data->entityName, (string) $data->id)
         );
     }
 }

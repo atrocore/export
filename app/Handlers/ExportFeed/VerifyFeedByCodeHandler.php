@@ -35,7 +35,7 @@ use Psr\Http\Server\RequestHandlerInterface;
         400 => ['description' => 'code is required'],
     ],
 )]
-class ExportFeedVerifyFeedByCodeHandler extends AbstractHandler
+class VerifyFeedByCodeHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

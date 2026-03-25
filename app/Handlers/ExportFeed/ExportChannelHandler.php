@@ -23,34 +23,32 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
-    path: '/ExportFeed/action/addAttributes',
+    path: '/ExportFeed/action/exportChannel',
     methods: ['POST'],
-    summary: 'Add attributes to export feed',
-    description: 'Adds the specified attributes to the export feed configurator.',
+    summary: 'Export channel data to file',
+    description: 'Triggers an export job for the channel linked to the specified export feed.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['id', 'entityName', 'attributesIds'], 'properties' => ['id' => ['type' => 'string'], 'entityName' => ['type' => 'string'], 'attributesIds' => ['type' => 'array', 'items' => ['type' => 'string']]]]]]],
+    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['id'], 'properties' => ['id' => ['type' => 'string']]]]]],
     responses: [
-        200 => ['description' => 'Attributes added', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
+        200 => ['description' => 'Export job created', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
         400 => ['description' => 'Bad request'],
         403 => ['description' => 'Forbidden'],
     ],
 )]
-class ExportFeedAddAttributesHandler extends AbstractHandler
+class ExportChannelHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$this->getAcl()->check('ExportFeed', 'edit')) {
+        if (!$this->getAcl()->check('ExportFeed', 'read') || !$this->getAcl()->check('Channel', 'read')) {
             throw new Forbidden();
         }
 
         $data = $this->getRequestBody($request);
 
-        if (!property_exists($data, 'id') || !property_exists($data, 'attributesIds') || !property_exists($data, 'entityName')) {
+        if (!property_exists($data, 'id')) {
             throw new BadRequest();
         }
 
-        return new BoolResponse(
-            $this->getRecordService('ExportFeed')->addAttributes((string) $data->entityName, (string) $data->id, (array) $data->attributesIds)
-        );
+        return new BoolResponse($this->getRecordService('ExportFeed')->exportChannel((string) $data->id));
     }
 }

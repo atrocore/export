@@ -40,7 +40,7 @@ use Psr\Http\Server\RequestHandlerInterface;
         200 => ['description' => 'Collection of export feeds', 'content' => ['application/json' => ['schema' => ['type' => 'object', 'properties' => ['total' => ['type' => 'integer'], 'list' => ['type' => 'array', 'items' => ['type' => 'object']]]]]]],
     ],
 )]
-class ExportFeedListHandler extends AbstractHandler
+class ListHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

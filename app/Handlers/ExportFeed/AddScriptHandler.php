@@ -15,7 +15,7 @@ namespace Export\Handlers\ExportFeed;
 
 use Atro\Core\Exceptions\BadRequest;
 use Atro\Core\Exceptions\Forbidden;
-use Atro\Core\Http\Response\JsonResponse;
+use Atro\Core\Http\Response\BoolResponse;
 use Atro\Core\Routing\Route;
 use Atro\Handlers\AbstractHandler;
 use Psr\Http\Message\ResponseInterface;
@@ -23,34 +23,34 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
-    path: '/ExportFeed/action/loadAvailableTemplates',
+    path: '/ExportFeed/action/addScript',
     methods: ['POST'],
-    summary: 'Load available export templates',
-    description: 'Returns export templates available for the given entity and export feed configuration.',
+    summary: 'Add script column to export feed',
+    description: 'Adds a script-computed column to the export feed configurator.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object']]]],
+    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['id', 'entityName'], 'properties' => ['id' => ['type' => 'string'], 'entityName' => ['type' => 'string']]]]]],
     responses: [
-        200 => ['description' => 'Available templates', 'content' => ['application/json' => ['schema' => ['type' => 'array', 'items' => ['type' => 'object']]]]],
+        200 => ['description' => 'Script column added', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
         400 => ['description' => 'Bad request'],
         403 => ['description' => 'Forbidden'],
     ],
 )]
-class ExportFeedLoadAvailableTemplatesHandler extends AbstractHandler
+class AddScriptHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$this->getAcl()->check('ExportFeed', 'read')) {
+        if (!$this->getAcl()->check('ExportFeed', 'edit')) {
             throw new Forbidden();
         }
 
         $data = $this->getRequestBody($request);
 
-        if (empty($data)) {
+        if (!property_exists($data, 'id') || !property_exists($data, 'entityName')) {
             throw new BadRequest();
         }
 
-        $dataArray = json_decode(json_encode($data), true);
-
-        return new JsonResponse($this->getRecordService('ExportFeed')->getAvailableTemplates($dataArray));
+        return new BoolResponse(
+            $this->getRecordService('ExportFeed')->addScript((string) $data->entityName, (string) $data->id)
+        );
     }
 }

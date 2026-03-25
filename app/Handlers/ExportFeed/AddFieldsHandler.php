@@ -23,19 +23,19 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
-    path: '/ExportFeed/action/removeAllItems',
+    path: '/ExportFeed/action/addFields',
     methods: ['POST'],
-    summary: 'Remove all configurator items from export feed',
-    description: 'Removes all configurator items for the specified entity type from the export feed.',
+    summary: 'Add fields to export feed',
+    description: 'Adds the specified fields to the export feed configurator.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['id', 'entityType'], 'properties' => ['id' => ['type' => 'string'], 'entityType' => ['type' => 'string']]]]]],
+    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['id', 'entityName', 'fields'], 'properties' => ['id' => ['type' => 'string'], 'entityName' => ['type' => 'string'], 'fields' => ['type' => 'array', 'items' => ['type' => 'string']]]]]]],
     responses: [
-        200 => ['description' => 'All items removed', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
+        200 => ['description' => 'Fields added', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
         400 => ['description' => 'Bad request'],
         403 => ['description' => 'Forbidden'],
     ],
 )]
-class ExportFeedRemoveAllItemsHandler extends AbstractHandler
+class AddFieldsHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -45,12 +45,12 @@ class ExportFeedRemoveAllItemsHandler extends AbstractHandler
 
         $data = $this->getRequestBody($request);
 
-        if (!property_exists($data, 'entityType') || !property_exists($data, 'id')) {
+        if (!property_exists($data, 'id') || !property_exists($data, 'fields') || !property_exists($data, 'entityName')) {
             throw new BadRequest();
         }
 
         return new BoolResponse(
-            $this->getRecordService('ExportFeed')->removeAllItems((string) $data->entityType, (string) $data->id)
+            $this->getRecordService('ExportFeed')->addFields((string) $data->entityName, (string) $data->id, (array) $data->fields)
         );
     }
 }

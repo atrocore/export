@@ -35,7 +35,7 @@ use Psr\Http\Server\RequestHandlerInterface;
         403 => ['description' => 'Forbidden'],
     ],
 )]
-class ExportFeedAddFixedHandler extends AbstractHandler
+class AddFixedHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
