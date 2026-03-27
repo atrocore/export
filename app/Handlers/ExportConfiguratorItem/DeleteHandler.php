@@ -23,17 +23,27 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportConfiguratorItem/{id}',
-    methods: ['DELETE'],
+    methods: [
+        'DELETE',
+    ],
     summary: 'Delete export configurator item',
     description: 'Deletes an export configurator item. Pass skip404=1 to suppress NotFound errors.',
     tag: 'ExportConfiguratorItem',
     parameters: [
-        ['name' => 'id',      'in' => 'path',  'required' => true,  'schema' => ['type' => 'string']],
-        ['name' => 'skip404', 'in' => 'query', 'required' => false, 'schema' => ['type' => 'string']],
+        ['name' => 'id',      'in' => 'path',  'required' => true,  'schema' => [
+            'type' => 'string',
+        ]],
+        ['name' => 'skip404', 'in' => 'query', 'required' => false, 'schema' => [
+            'type' => 'string',
+        ]],
     ],
     responses: [
-        200 => ['description' => 'Deleted', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
-        404 => ['description' => 'Not found'],
+        200 => ['description' => 'Deleted', 'content' => ['application/json' => ['schema' => [
+            'type' => 'boolean',
+        ]]]],
+        404 => [
+            'description' => 'Not found',
+        ],
     ],
 )]
 class DeleteHandler extends AbstractHandler

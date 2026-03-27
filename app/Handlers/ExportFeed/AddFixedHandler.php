@@ -24,15 +24,30 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportFeed/action/addFixed',
-    methods: ['POST'],
+    methods: [
+        'POST',
+    ],
     summary: 'Add fixed column to export feed',
     description: 'Adds a fixed-value column to the export feed configurator.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['id', 'entityName'], 'properties' => ['id' => ['type' => 'string'], 'entityName' => ['type' => 'string']]]]]],
+    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => [
+        'id',
+        'entityName',
+    ], 'properties' => ['id' => [
+        'type' => 'string',
+    ], 'entityName' => [
+        'type' => 'string',
+    ]]]]]],
     responses: [
-        200 => ['description' => 'Fixed column added', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
-        400 => ['description' => 'Bad request'],
-        403 => ['description' => 'Forbidden'],
+        200 => ['description' => 'Fixed column added', 'content' => ['application/json' => ['schema' => [
+            'type' => 'boolean',
+        ]]]],
+        400 => [
+            'description' => 'Bad request',
+        ],
+        403 => [
+            'description' => 'Forbidden',
+        ],
     ],
 )]
 class AddFixedHandler extends AbstractHandler

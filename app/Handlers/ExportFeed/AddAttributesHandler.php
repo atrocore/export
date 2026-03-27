@@ -24,15 +24,33 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportFeed/action/addAttributes',
-    methods: ['POST'],
+    methods: [
+        'POST',
+    ],
     summary: 'Add attributes to export feed',
     description: 'Adds the specified attributes to the export feed configurator.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['id', 'entityName', 'attributesIds'], 'properties' => ['id' => ['type' => 'string'], 'entityName' => ['type' => 'string'], 'attributesIds' => ['type' => 'array', 'items' => ['type' => 'string']]]]]]],
+    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => [
+        'id',
+        'entityName',
+        'attributesIds',
+    ], 'properties' => ['id' => [
+        'type' => 'string',
+    ], 'entityName' => [
+        'type' => 'string',
+    ], 'attributesIds' => ['type' => 'array', 'items' => [
+        'type' => 'string',
+    ]]]]]]],
     responses: [
-        200 => ['description' => 'Attributes added', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
-        400 => ['description' => 'Bad request'],
-        403 => ['description' => 'Forbidden'],
+        200 => ['description' => 'Attributes added', 'content' => ['application/json' => ['schema' => [
+            'type' => 'boolean',
+        ]]]],
+        400 => [
+            'description' => 'Bad request',
+        ],
+        403 => [
+            'description' => 'Forbidden',
+        ],
     ],
 )]
 class AddAttributesHandler extends AbstractHandler

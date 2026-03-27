@@ -23,16 +23,24 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportFeed/action/verifyFeedByCode',
-    methods: ['GET'],
+    methods: [
+        'GET',
+    ],
     summary: 'Verify that export feed is correctly configured and contains ID column',
     description: 'Verify that export feed is correctly configured and contains ID column.',
     tag: 'ExportFeed',
     parameters: [
-        ['name' => 'code', 'in' => 'query', 'required' => true, 'schema' => ['type' => 'string']],
+        ['name' => 'code', 'in' => 'query', 'required' => true, 'schema' => [
+            'type' => 'string',
+        ]],
     ],
     responses: [
-        200 => ['description' => 'Verification result', 'content' => ['application/json' => ['schema' => ['type' => 'object']]]],
-        400 => ['description' => 'code is required'],
+        200 => ['description' => 'Verification result', 'content' => ['application/json' => ['schema' => [
+            'type' => 'object',
+        ]]]],
+        400 => [
+            'description' => 'code is required',
+        ],
     ],
 )]
 class VerifyFeedByCodeHandler extends AbstractHandler

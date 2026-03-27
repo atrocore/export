@@ -24,18 +24,35 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportFeed/action/exportData',
-    methods: ['GET'],
+    methods: [
+        'GET',
+    ],
     summary: 'Get exported data',
     description: 'Returns exported data for the export feed identified by code.',
     tag: 'ExportFeed',
     parameters: [
-        ['name' => 'code',   'in' => 'query', 'required' => true,  'schema' => ['type' => 'string']],
-        ['name' => 'offset', 'in' => 'query', 'required' => false, 'schema' => ['type' => 'integer', 'nullable' => true]],
+        ['name' => 'code',   'in' => 'query', 'required' => true,  'schema' => [
+            'type' => 'string',
+        ]],
+        ['name' => 'offset', 'in' => 'query', 'required' => false, 'schema' => [
+            'type' => 'integer',
+            'nullable' => true,
+        ]],
     ],
     responses: [
-        200 => ['description' => 'Exported data', 'content' => ['application/json' => ['schema' => ['type' => 'object', 'properties' => ['total' => ['type' => 'integer'], 'urlColumns' => ['type' => 'array', 'items' => ['type' => 'string']], 'records' => ['type' => 'array', 'items' => ['type' => 'object']]]]]]],
-        400 => ['description' => 'code is required'],
-        403 => ['description' => 'Forbidden'],
+        200 => ['description' => 'Exported data', 'content' => ['application/json' => ['schema' => ['type' => 'object', 'properties' => ['total' => [
+            'type' => 'integer',
+        ], 'urlColumns' => ['type' => 'array', 'items' => [
+            'type' => 'string',
+        ]], 'records' => ['type' => 'array', 'items' => [
+            'type' => 'object',
+        ]]]]]]],
+        400 => [
+            'description' => 'code is required',
+        ],
+        403 => [
+            'description' => 'Forbidden',
+        ],
     ],
 )]
 class ExportDataHandler extends AbstractHandler

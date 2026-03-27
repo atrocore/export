@@ -24,17 +24,28 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportFeed/action/getOriginTemplate',
-    methods: ['GET'],
+    methods: [
+        'GET',
+    ],
     summary: 'Get origin export template',
     description: 'Returns the content of the specified export template file.',
     tag: 'ExportFeed',
     parameters: [
-        ['name' => 'template', 'in' => 'query', 'required' => true, 'schema' => ['type' => 'string']],
+        ['name' => 'template', 'in' => 'query', 'required' => true, 'schema' => [
+            'type' => 'string',
+        ]],
     ],
     responses: [
-        200 => ['description' => 'Template content', 'content' => ['application/json' => ['schema' => ['type' => 'object', 'properties' => ['template' => ['type' => 'string', 'nullable' => true]]]]]],
-        400 => ['description' => 'template is required'],
-        403 => ['description' => 'Forbidden'],
+        200 => ['description' => 'Template content', 'content' => ['application/json' => ['schema' => ['type' => 'object', 'properties' => ['template' => [
+            'type' => 'string',
+            'nullable' => true,
+        ]]]]]],
+        400 => [
+            'description' => 'template is required',
+        ],
+        403 => [
+            'description' => 'Forbidden',
+        ],
     ],
 )]
 class GetOriginTemplateHandler extends AbstractHandler

@@ -24,15 +24,27 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportFeed/action/exportFile',
-    methods: ['POST'],
+    methods: [
+        'POST',
+    ],
     summary: 'Export data to file',
     description: 'Triggers an export job for the specified export feed.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['id'], 'properties' => ['id' => ['type' => 'string']]]]]],
+    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => [
+        'id',
+    ], 'properties' => ['id' => [
+        'type' => 'string',
+    ]]]]]],
     responses: [
-        200 => ['description' => 'Export job created', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
-        400 => ['description' => 'Bad request'],
-        403 => ['description' => 'Forbidden'],
+        200 => ['description' => 'Export job created', 'content' => ['application/json' => ['schema' => [
+            'type' => 'boolean',
+        ]]]],
+        400 => [
+            'description' => 'Bad request',
+        ],
+        403 => [
+            'description' => 'Forbidden',
+        ],
     ],
 )]
 class ExportFileHandler extends AbstractHandler

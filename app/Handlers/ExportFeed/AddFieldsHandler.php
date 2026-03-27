@@ -24,15 +24,33 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportFeed/action/addFields',
-    methods: ['POST'],
+    methods: [
+        'POST',
+    ],
     summary: 'Add fields to export feed',
     description: 'Adds the specified fields to the export feed configurator.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['id', 'entityName', 'fields'], 'properties' => ['id' => ['type' => 'string'], 'entityName' => ['type' => 'string'], 'fields' => ['type' => 'array', 'items' => ['type' => 'string']]]]]]],
+    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => [
+        'id',
+        'entityName',
+        'fields',
+    ], 'properties' => ['id' => [
+        'type' => 'string',
+    ], 'entityName' => [
+        'type' => 'string',
+    ], 'fields' => ['type' => 'array', 'items' => [
+        'type' => 'string',
+    ]]]]]]],
     responses: [
-        200 => ['description' => 'Fields added', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
-        400 => ['description' => 'Bad request'],
-        403 => ['description' => 'Forbidden'],
+        200 => ['description' => 'Fields added', 'content' => ['application/json' => ['schema' => [
+            'type' => 'boolean',
+        ]]]],
+        400 => [
+            'description' => 'Bad request',
+        ],
+        403 => [
+            'description' => 'Forbidden',
+        ],
     ],
 )]
 class AddFieldsHandler extends AbstractHandler

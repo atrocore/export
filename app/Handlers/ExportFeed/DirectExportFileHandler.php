@@ -23,14 +23,35 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportFeed/action/directExportFile',
-    methods: ['POST'],
+    methods: [
+        'POST',
+    ],
     summary: 'Directly export records of an entity to file',
     description: 'Generates an export file directly for the selected records and fields. Only supports simple entity types; for complex types use an Export Feed.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['fileType', 'scope'], 'properties' => ['scope' => ['type' => 'string', 'example' => 'Product'], 'fileType' => ['type' => 'string', 'example' => 'csv'], 'fieldList' => ['type' => 'array', 'items' => ['type' => 'string']], 'exportAllField' => ['type' => 'boolean'], 'entityFilterData' => ['type' => 'object']]]]]],
+    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => [
+        'fileType',
+        'scope',
+    ], 'properties' => ['scope' => [
+        'type' => 'string',
+        'example' => 'Product',
+    ], 'fileType' => [
+        'type' => 'string',
+        'example' => 'csv',
+    ], 'fieldList' => ['type' => 'array', 'items' => [
+        'type' => 'string',
+    ]], 'exportAllField' => [
+        'type' => 'boolean',
+    ], 'entityFilterData' => [
+        'type' => 'object',
+    ]]]]]],
     responses: [
-        200 => ['description' => 'Export job created', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
-        400 => ['description' => 'Bad request'],
+        200 => ['description' => 'Export job created', 'content' => ['application/json' => ['schema' => [
+            'type' => 'boolean',
+        ]]]],
+        400 => [
+            'description' => 'Bad request',
+        ],
     ],
 )]
 class DirectExportFileHandler extends AbstractHandler

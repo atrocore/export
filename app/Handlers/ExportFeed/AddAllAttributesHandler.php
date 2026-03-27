@@ -24,15 +24,30 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportFeed/action/addAllAttributes',
-    methods: ['POST'],
+    methods: [
+        'POST',
+    ],
     summary: 'Add all attributes to export feed',
     description: 'Adds all available attributes for the given entity to the export feed configurator.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['id', 'entityName'], 'properties' => ['id' => ['type' => 'string'], 'entityName' => ['type' => 'string']]]]]],
+    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => [
+        'id',
+        'entityName',
+    ], 'properties' => ['id' => [
+        'type' => 'string',
+    ], 'entityName' => [
+        'type' => 'string',
+    ]]]]]],
     responses: [
-        200 => ['description' => 'All attributes added', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
-        400 => ['description' => 'Bad request'],
-        403 => ['description' => 'Forbidden'],
+        200 => ['description' => 'All attributes added', 'content' => ['application/json' => ['schema' => [
+            'type' => 'boolean',
+        ]]]],
+        400 => [
+            'description' => 'Bad request',
+        ],
+        403 => [
+            'description' => 'Forbidden',
+        ],
     ],
 )]
 class AddAllAttributesHandler extends AbstractHandler

@@ -24,15 +24,30 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportFeed/action/removeAllItems',
-    methods: ['POST'],
+    methods: [
+        'POST',
+    ],
     summary: 'Remove all configurator items from export feed',
     description: 'Removes all configurator items for the specified entity type from the export feed.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['id', 'entityType'], 'properties' => ['id' => ['type' => 'string'], 'entityType' => ['type' => 'string']]]]]],
+    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => [
+        'id',
+        'entityType',
+    ], 'properties' => ['id' => [
+        'type' => 'string',
+    ], 'entityType' => [
+        'type' => 'string',
+    ]]]]]],
     responses: [
-        200 => ['description' => 'All items removed', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
-        400 => ['description' => 'Bad request'],
-        403 => ['description' => 'Forbidden'],
+        200 => ['description' => 'All items removed', 'content' => ['application/json' => ['schema' => [
+            'type' => 'boolean',
+        ]]]],
+        400 => [
+            'description' => 'Bad request',
+        ],
+        403 => [
+            'description' => 'Forbidden',
+        ],
     ],
 )]
 class RemoveAllItemsHandler extends AbstractHandler

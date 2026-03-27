@@ -23,14 +23,24 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportJob/action/resendRequest',
-    methods: ['POST'],
+    methods: [
+        'POST',
+    ],
     summary: 'Resend export request',
     description: 'Resends the export request without recalculating the body — reuses the same parameters as the original job.',
     tag: 'ExportJob',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => ['id'], 'properties' => ['id' => ['type' => 'string']]]]]],
+    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => [
+        'id',
+    ], 'properties' => ['id' => [
+        'type' => 'string',
+    ]]]]]],
     responses: [
-        200 => ['description' => 'Request resent', 'content' => ['application/json' => ['schema' => ['type' => 'boolean']]]],
-        400 => ['description' => 'id is required'],
+        200 => ['description' => 'Request resent', 'content' => ['application/json' => ['schema' => [
+            'type' => 'boolean',
+        ]]]],
+        400 => [
+            'description' => 'id is required',
+        ],
     ],
 )]
 class ResendRequestHandler extends AbstractHandler

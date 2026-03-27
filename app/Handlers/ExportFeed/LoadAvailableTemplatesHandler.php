@@ -24,15 +24,25 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportFeed/action/loadAvailableTemplates',
-    methods: ['POST'],
+    methods: [
+        'POST',
+    ],
     summary: 'Load available export templates',
     description: 'Returns export templates available for the given entity and export feed configuration.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object']]]],
+    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => [
+        'type' => 'object',
+    ]]]],
     responses: [
-        200 => ['description' => 'Available templates', 'content' => ['application/json' => ['schema' => ['type' => 'array', 'items' => ['type' => 'object']]]]],
-        400 => ['description' => 'Bad request'],
-        403 => ['description' => 'Forbidden'],
+        200 => ['description' => 'Available templates', 'content' => ['application/json' => ['schema' => ['type' => 'array', 'items' => [
+            'type' => 'object',
+        ]]]]],
+        400 => [
+            'description' => 'Bad request',
+        ],
+        403 => [
+            'description' => 'Forbidden',
+        ],
     ],
 )]
 class LoadAvailableTemplatesHandler extends AbstractHandler

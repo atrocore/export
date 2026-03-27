@@ -23,21 +23,45 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
     path: '/ExportFeed',
-    methods: ['GET'],
+    methods: [
+        'GET',
+    ],
     summary: 'List export feeds',
     description: 'Returns a collection of export feed records. Supports the exportEntity query parameter to filter by target entity.',
     tag: 'ExportFeed',
     parameters: [
-        ['name' => 'exportEntity', 'in' => 'query', 'required' => false, 'schema' => ['type' => 'string']],
-        ['name' => 'select',       'in' => 'query', 'required' => false, 'schema' => ['type' => 'string']],
-        ['name' => 'where',        'in' => 'query', 'required' => false, 'schema' => ['anyOf' => [['type' => 'array'], ['type' => 'object'], ['type' => 'string']]]],
-        ['name' => 'offset',       'in' => 'query', 'required' => false, 'schema' => ['type' => 'integer']],
-        ['name' => 'maxSize',      'in' => 'query', 'required' => false, 'schema' => ['type' => 'integer']],
-        ['name' => 'sortBy',       'in' => 'query', 'required' => false, 'schema' => ['type' => 'string']],
-        ['name' => 'asc',          'in' => 'query', 'required' => false, 'schema' => ['type' => 'boolean']],
+        ['name' => 'exportEntity', 'in' => 'query', 'required' => false, 'schema' => [
+            'type' => 'string',
+        ]],
+        ['name' => 'select',       'in' => 'query', 'required' => false, 'schema' => [
+            'type' => 'string',
+        ]],
+        ['name' => 'where',        'in' => 'query', 'required' => false, 'schema' => ['anyOf' => [[
+            'type' => 'array',
+        ], [
+            'type' => 'object',
+        ], [
+            'type' => 'string',
+        ]]]],
+        ['name' => 'offset',       'in' => 'query', 'required' => false, 'schema' => [
+            'type' => 'integer',
+        ]],
+        ['name' => 'maxSize',      'in' => 'query', 'required' => false, 'schema' => [
+            'type' => 'integer',
+        ]],
+        ['name' => 'sortBy',       'in' => 'query', 'required' => false, 'schema' => [
+            'type' => 'string',
+        ]],
+        ['name' => 'asc',          'in' => 'query', 'required' => false, 'schema' => [
+            'type' => 'boolean',
+        ]],
     ],
     responses: [
-        200 => ['description' => 'Collection of export feeds', 'content' => ['application/json' => ['schema' => ['type' => 'object', 'properties' => ['total' => ['type' => 'integer'], 'list' => ['type' => 'array', 'items' => ['type' => 'object']]]]]]],
+        200 => ['description' => 'Collection of export feeds', 'content' => ['application/json' => ['schema' => ['type' => 'object', 'properties' => ['total' => [
+            'type' => 'integer',
+        ], 'list' => ['type' => 'array', 'items' => [
+            'type' => 'object',
+        ]]]]]]],
     ],
 )]
 class ListHandler extends AbstractHandler
