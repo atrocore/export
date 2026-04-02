@@ -81,7 +81,7 @@ class ExportConfiguratorItem extends Base
         }
     }
 
-    public function updateEntity($id, $data)
+    public function updateEntity($id, $data): bool
     {
         if (property_exists($data, '_previousItemId') && property_exists($data, '_itemId')) {
             $data->previousItem = $data->_previousItemId;
