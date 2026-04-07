@@ -163,9 +163,9 @@ class ExportTypeSimple extends AbstractExportType
 
         $this->reuploadIfNeeds($input);
 
-        $fileData = $this->getService('File')->createFileViaContents($input, '');
+        $fileId = $this->getService('File')->createFileViaContents($input, '');
 
-        return $this->getEntityManager()->getRepository('File')->get($fileData['id']);
+        return $this->getEntityManager()->getRepository('File')->get($fileId);
     }
 
     protected function exportJson(ExportJob $exportJob): File
@@ -199,9 +199,9 @@ class ExportTypeSimple extends AbstractExportType
 
         $this->reuploadIfNeeds($input);
 
-        $fileData = $this->getService('File')->createFileViaContents($input, $contents);
+        $fileId = $this->getService('File')->createFileViaContents($input, $contents);
 
-        return $this->getEntityManager()->getRepository('File')->get($fileData['id']);
+        return $this->getEntityManager()->getRepository('File')->get($fileId);
     }
 
     protected function exportSql(ExportJob $exportJob): File
@@ -231,9 +231,9 @@ class ExportTypeSimple extends AbstractExportType
         $this->reuploadIfNeeds($input);
 
         $contents = empty($contents) ? " " : $contents;
-        $fileData = $this->getService('File')->createFileViaContents($input, $contents);
+        $fileId = $this->getService('File')->createFileViaContents($input, $contents);
 
-        return $this->getEntityManager()->getRepository('File')->get($fileData['id']);
+        return $this->getEntityManager()->getRepository('File')->get($fileId);
     }
 
     protected function exportXml(ExportJob $exportJob): File
@@ -256,9 +256,9 @@ class ExportTypeSimple extends AbstractExportType
 
         $this->reuploadIfNeeds($input);
 
-        $fileData = $this->getService('File')->createFileViaContents($input, $contents);
+        $fileId = $this->getService('File')->createFileViaContents($input, $contents);
 
-        $file = $this->getEntityManager()->getRepository('File')->get($fileData['id']);
+        $file = $this->getEntityManager()->getRepository('File')->get($fileId);
 
         $this->validateXml($file, $exportJob);
 
@@ -370,14 +370,14 @@ class ExportTypeSimple extends AbstractExportType
 
         $this->reuploadIfNeeds($input);
 
-        $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
+        $fileId = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
 
         // delete tmp file
         if (file_exists($fileName)) {
             unlink($fileName);
         }
 
-        $file = $this->getEntityManager()->getRepository('File')->get($fileData['id']);
+        $file = $this->getEntityManager()->getRepository('File')->get($fileId);
 
         return $this->exportAsZip($file, $exportJob);
     }
@@ -572,7 +572,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $this->reuploadIfNeeds($input);
 
-        $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
+        $fileId = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
 
         // delete tmp file
         if (file_exists($fileName)) {
@@ -581,7 +581,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $exportJob->set('count', $count);
 
-        $file = $this->getEntityManager()->getRepository('File')->get($fileData['id']);
+        $file = $this->getEntityManager()->getRepository('File')->get($fileId);
 
         return $this->exportAsZip($file, $exportJob);
     }
@@ -639,12 +639,12 @@ class ExportTypeSimple extends AbstractExportType
 
             $this->getEntityManager()->removeEntity($file);
 
-            $fileData = $this->getService('File')->moveLocalFileToFileEntity($input, $this->zipFileName);
+            $fileId = $this->getService('File')->moveLocalFileToFileEntity($input, $this->zipFileName);
 
             //  delete tmp zip file
             Util::removeDir($this->getZipTmpDir());
 
-            return $this->getEntityManager()->getRepository('File')->get($fileData['id']);
+            return $this->getEntityManager()->getRepository('File')->get($fileId);
         }
 
         return $file;
