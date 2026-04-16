@@ -26,6 +26,7 @@ use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Atro\Core\EventManager\Event;
 use Espo\ORM\EntityCollection;
+use Espo\ORM\IEntity;
 use Export\Jobs\ExportJobCreator;
 use Export\TemplateLoaders\AbstractTemplate;
 use Export\Entities\ExportFeed as ExportFeedEntity;
@@ -377,7 +378,7 @@ class ExportFeed extends Base
         }
     }
 
-    public function readEntity($id)
+    public function readEntity(string $id): ?IEntity
     {
         $this->getRepository()->removeInvalidConfiguratorItems($id);
 
