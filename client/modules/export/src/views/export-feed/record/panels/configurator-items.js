@@ -170,10 +170,9 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
         actionAddScript() {
             this.notify('Saving...');
             let postData = {
-                id: this.model.get('id'),
                 entityName: this.model.name,
             };
-            this.ajaxPostRequest(`ExportFeed/action/addScript`, postData).then(() => {
+            this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addScript`, postData).then(() => {
                 this.notify('Saved', 'success');
                 this.refreshPanel();
             });
