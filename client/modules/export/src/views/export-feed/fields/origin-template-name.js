@@ -77,7 +77,7 @@ Espo.define('export:views/export-feed/fields/origin-template-name', 'views/field
                 return;
             }
 
-            this.ajaxGetRequest('ExportFeed/action/getOriginTemplate', {template: template}).success(res => {
+            this.ajaxGetRequest('ExportFeed/getOriginTemplate', {template: template}).success(res => {
                 if (res.template) {
                     this.model.set('originTemplate', res.template);
                 }
@@ -95,7 +95,7 @@ Espo.define('export:views/export-feed/fields/origin-template-name', 'views/field
                 return;
             }
 
-            this.ajaxPostRequest('ExportFeed/action/loadAvailableTemplates', this.model.attributes, {async: false}).then(result => {
+            this.ajaxPostRequest('ExportFeed/loadAvailableTemplates', this.model.attributes, {async: false}).then(result => {
                 if (result) {
                     Object.keys(result).forEach(template => {
                         this.params.options.push(template);

@@ -102,10 +102,9 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
 
                 let postData = {
                     entityType: this.model.urlRoot,
-                    id: this.model.get('id')
                 };
 
-                this.ajaxPostRequest(`ExportFeed/action/removeAllItems`, postData).then(response => {
+                this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/removeAllItems`, postData).then(response => {
                     this.notify('Removed', 'success');
                     this.refreshPanel();
                 });
@@ -143,13 +142,12 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                     });
 
                     let postData = {
-                        id: this.model.get('id'),
                         fields: fields,
                         entityName: this.model.name,
                     };
 
                     this.notify('Saving...');
-                    this.ajaxPostRequest(`ExportFeed/action/addFields`, postData).then(() => {
+                    this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addFields`, postData).then(() => {
                         this.notify('Saved', 'success');
                         this.refreshPanel();
                     });
@@ -160,10 +158,9 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
         actionAddFixed() {
             this.notify('Saving...');
             let postData = {
-                id: this.model.get('id'),
                 entityName: this.model.name,
             };
-            this.ajaxPostRequest(`ExportFeed/action/addFixed`, postData).then(() => {
+            this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addFixed`, postData).then(() => {
                 this.notify('Saved', 'success');
                 this.refreshPanel();
             });
@@ -172,10 +169,9 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
         actionAddScript() {
             this.notify('Saving...');
             let postData = {
-                id: this.model.get('id'),
                 entityName: this.model.name,
             };
-            this.ajaxPostRequest(`ExportFeed/action/addScript`, postData).then(() => {
+            this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addScript`, postData).then(() => {
                 this.notify('Saved', 'success');
                 this.refreshPanel();
             });
@@ -212,12 +208,11 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                     });
 
                     let postData = {
-                        id: this.model.get('id'),
                         attributesIds: attributesIds,
                         entityName: this.model.name
                     };
 
-                    this.ajaxPostRequest(`ExportFeed/action/addAttributes`, postData).then(() => {
+                    this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addAttributes`, postData).then(() => {
                         this.notify('Saved', 'success');
                         this.refreshPanel();
                     });
@@ -227,8 +222,7 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
 
         actionAddAllAttributes() {
             this.notify('Saving...');
-            this.ajaxPostRequest(`ExportFeed/action/addAllAttributes`, {
-                id: this.model.get('id'),
+            this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addAllAttributes`, {
                 entityName: this.model.name
             }).success(() => {
                 this.notify('Saved', 'success');

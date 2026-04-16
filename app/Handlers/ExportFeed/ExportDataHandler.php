@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Export\Handlers\ExportFeed;
 
 use Atro\Core\Exceptions\BadRequest;
-use Atro\Core\Exceptions\Forbidden;
 use Atro\Core\Http\Response\JsonResponse;
 use Atro\Core\Routing\Route;
 use Atro\Handlers\AbstractHandler;
@@ -23,7 +22,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
-    path: '/ExportFeed/action/exportData',
+    path: '/ExportFeed/exportData',
     methods: [
         'GET',
     ],
@@ -31,27 +30,57 @@ use Psr\Http\Server\RequestHandlerInterface;
     description: 'Returns exported data for the export feed identified by code.',
     tag: 'ExportFeed',
     parameters: [
-        ['name' => 'code',   'in' => 'query', 'required' => true,  'schema' => [
-            'type' => 'string',
-        ]],
-        ['name' => 'offset', 'in' => 'query', 'required' => false, 'schema' => [
-            'type' => 'integer',
-            'nullable' => true,
-        ]],
+        [
+            'name'     => 'code',
+            'in'       => 'query',
+            'required' => true,
+            'schema'   => [
+                'type' => 'string',
+            ],
+        ],
+        [
+            'name'     => 'offset',
+            'in'       => 'query',
+            'required' => false,
+            'schema'   => [
+                'type'     => 'integer',
+                'nullable' => true,
+            ],
+        ],
     ],
     responses: [
-        200 => ['description' => 'Exported data', 'content' => ['application/json' => ['schema' => ['type' => 'object', 'properties' => ['total' => [
-            'type' => 'integer',
-        ], 'urlColumns' => ['type' => 'array', 'items' => [
-            'type' => 'string',
-        ]], 'records' => ['type' => 'array', 'items' => [
-            'type' => 'object',
-        ]]]]]]],
+        200 => [
+            'description' => 'Exported data',
+            'content'     => [
+                'application/json' => [
+                    'schema' => [
+                        'type'       => 'object',
+                        'properties' => [
+                            'total'      => [
+                                'type' => 'integer',
+                            ],
+                            'urlColumns' => [
+                                'type'  => 'array',
+                                'items' => [
+                                    'type' => 'string',
+                                ],
+                            ],
+                            'records'    => [
+                                'type'  => 'array',
+                                'items' => [
+                                    'type' => 'object',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
         400 => [
             'description' => 'code is required',
         ],
         403 => [
-            'description' => 'Forbidden',
+            'description' => 'Access denied',
         ],
     ],
 )]
@@ -59,15 +88,11 @@ class ExportDataHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$this->getAcl()->check('ExportFeed', 'read')) {
-            throw new Forbidden();
-        }
-
         $qp   = $request->getQueryParams();
         $code = $qp['code'] ?? '';
 
         if (empty($code)) {
-            throw new BadRequest('code is required');
+            throw new BadRequest("'code' is required.");
         }
 
         $offset = isset($qp['offset']) ? (int) $qp['offset'] : null;

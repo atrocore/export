@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Export\Handlers\ExportFeed;
 
 use Atro\Core\Exceptions\BadRequest;
-use Atro\Core\Exceptions\Forbidden;
 use Atro\Core\Http\Response\BoolResponse;
 use Atro\Core\Routing\Route;
 use Atro\Handlers\AbstractHandler;
@@ -23,30 +22,59 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
-    path: '/ExportFeed/action/addAllAttributes',
+    path: '/ExportFeed/{id}/addAllAttributes',
     methods: [
         'POST',
     ],
     summary: 'Add all attributes to export feed',
     description: 'Adds all available attributes for the given entity to the export feed configurator.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => [
-        'id',
-        'entityName',
-    ], 'properties' => ['id' => [
-        'type' => 'string',
-    ], 'entityName' => [
-        'type' => 'string',
-    ]]]]]],
+    parameters: [
+        [
+            'name'        => 'id',
+            'in'          => 'path',
+            'required'    => true,
+            'description' => 'Export feed record ID',
+            'schema'      => [
+                'type' => 'string',
+            ],
+        ],
+    ],
+    requestBody: [
+        'required' => true,
+        'content'  => [
+            'application/json' => [
+                'schema' => [
+                    'type'       => 'object',
+                    'required'   => [
+                        'entityName',
+                    ],
+                    'properties' => [
+                        'entityName' => [
+                            'type'        => 'string',
+                            'description' => 'Entity name of the target entity of the export feed or sheet',
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
     responses: [
-        200 => ['description' => 'All attributes added', 'content' => ['application/json' => ['schema' => [
-            'type' => 'boolean',
-        ]]]],
+        200 => [
+            'description' => 'All attributes added',
+            'content'     => [
+                'application/json' => [
+                    'schema' => [
+                        'type' => 'boolean',
+                    ],
+                ],
+            ],
+        ],
         400 => [
-            'description' => 'Bad request',
+            'description' => 'entityName is required or invalid',
         ],
         403 => [
-            'description' => 'Forbidden',
+            'description' => 'Access denied',
         ],
     ],
 )]
@@ -54,18 +82,20 @@ class AddAllAttributesHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$this->getAcl()->check('ExportFeed', 'edit')) {
-            throw new Forbidden();
+        $id = (string) $request->getAttribute('id');
+
+        if (empty($id)) {
+            throw new BadRequest("'id' is required.");
         }
 
         $data = $this->getRequestBody($request);
 
-        if (!property_exists($data, 'id') || !property_exists($data, 'entityName')) {
-            throw new BadRequest();
+        if (!property_exists($data, 'entityName')) {
+            throw new BadRequest("'entityName' is required.");
         }
 
         return new BoolResponse(
-            $this->getRecordService('ExportFeed')->addAllAttributes((string) $data->entityName, (string) $data->id)
+            $this->getRecordService('ExportFeed')->addAllAttributes((string) $data->entityName, $id)
         );
     }
 }

@@ -137,6 +137,10 @@ class ExportFeed extends Base
 
     public function addFields(string $entityName, string $id, array $fields): bool
     {
+        if (!$this->getAcl()->check('ExportFeed', 'edit')) {
+            throw new Exceptions\Forbidden();
+        }
+
         if (!in_array($entityName, ['ExportFeed', 'Sheet'])) {
             throw new Exceptions\BadRequest('Wrong entity name');
         }
@@ -208,6 +212,10 @@ class ExportFeed extends Base
 
     public function addAttributes(string $entityName, string $id, array $attributesIds): bool
     {
+        if (!$this->getAcl()->check('ExportFeed', 'edit')) {
+            throw new Exceptions\Forbidden();
+        }
+
         if (!in_array($entityName, ['ExportFeed', 'Sheet'])) {
             throw new Exceptions\BadRequest('Wrong entity name');
         }
@@ -284,6 +292,10 @@ class ExportFeed extends Base
 
     public function addAllAttributes(string $entityName, string $id): bool
     {
+        if (!$this->getAcl()->check('ExportFeed', 'edit')) {
+            throw new Exceptions\Forbidden();
+        }
+
         if (!in_array($entityName, ['ExportFeed', 'Sheet'])) {
             throw new Exceptions\BadRequest('Wrong entity name');
         }

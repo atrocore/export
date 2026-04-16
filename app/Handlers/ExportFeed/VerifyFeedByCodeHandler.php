@@ -22,7 +22,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
-    path: '/ExportFeed/action/verifyFeedByCode',
+    path: '/ExportFeed/verifyFeedByCode',
     methods: [
         'GET',
     ],
@@ -30,16 +30,31 @@ use Psr\Http\Server\RequestHandlerInterface;
     description: 'Verify that export feed is correctly configured and contains ID column.',
     tag: 'ExportFeed',
     parameters: [
-        ['name' => 'code', 'in' => 'query', 'required' => true, 'schema' => [
-            'type' => 'string',
-        ]],
+        [
+            'name'     => 'code',
+            'in'       => 'query',
+            'required' => true,
+            'schema'   => [
+                'type' => 'string',
+            ],
+        ],
     ],
     responses: [
-        200 => ['description' => 'Verification result', 'content' => ['application/json' => ['schema' => [
-            'type' => 'object',
-        ]]]],
+        200 => [
+            'description' => 'Verification result',
+            'content'     => [
+                'application/json' => [
+                    'schema' => [
+                        'type' => 'object',
+                    ],
+                ],
+            ],
+        ],
         400 => [
-            'description' => 'code is required',
+            'description' => "'code' is required",
+        ],
+        403 => [
+            'description' => 'Access denied',
         ],
     ],
 )]
@@ -47,11 +62,10 @@ class VerifyFeedByCodeHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $qp   = $request->getQueryParams();
-        $code = $qp['code'] ?? '';
+        $code = $request->getQueryParams()['code'] ?? '';
 
         if (empty($code)) {
-            throw new BadRequest('code is required');
+            throw new BadRequest("'code' is required.");
         }
 
         return new JsonResponse(['message' => $this->getRecordService('ExportFeed')->verifyFeedByCode($code)]);

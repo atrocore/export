@@ -68,7 +68,7 @@
           "disabled": true
         },
         "tryAgainExportJob": {
-          "url": "ExportJob/action/exportAgain",
+          "url": "ExportJob/{{id}}/exportAgain",
           "refresh": false,
           "sortOrder": 10
         }
