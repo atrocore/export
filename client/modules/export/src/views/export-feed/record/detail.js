@@ -94,7 +94,7 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
                 return;
             }
 
-            this.ajaxPostRequest('ExportFeed/action/exportFile', {id: this.model.id}).then(response => {
+            this.ajaxPostRequest(`ExportFeed/${this.model.id}/exportFile`).then(response => {
                 this.notify('Created', 'success');
                 this.model.fetch();
                 $('.action[data-action="refresh"][data-panel="exportJobs"]').click();
