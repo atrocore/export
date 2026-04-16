@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Export\Handlers\ExportFeed;
 
-use Atro\Core\Exceptions\BadRequest;
-use Atro\Core\Exceptions\Forbidden;
 use Atro\Core\Http\Response\JsonResponse;
 use Atro\Core\Routing\Route;
 use Atro\Handlers\AbstractHandler;
@@ -23,25 +21,39 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
-    path: '/ExportFeed/action/loadAvailableTemplates',
+    path: '/ExportFeed/loadAvailableTemplates',
     methods: [
         'POST',
     ],
     summary: 'Load available export templates',
     description: 'Returns export templates available for the given entity and export feed configuration.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => [
-        'type' => 'object',
-    ]]]],
+    requestBody: [
+        'required' => true,
+        'content'  => [
+            'application/json' => [
+                'schema' => [
+                    'type' => 'object',
+                ],
+            ],
+        ],
+    ],
     responses: [
-        200 => ['description' => 'Available templates', 'content' => ['application/json' => ['schema' => ['type' => 'array', 'items' => [
-            'type' => 'object',
-        ]]]]],
-        400 => [
-            'description' => 'Bad request',
+        200 => [
+            'description' => 'Available templates',
+            'content'     => [
+                'application/json' => [
+                    'schema' => [
+                        'type'  => 'array',
+                        'items' => [
+                            'type' => 'object',
+                        ],
+                    ],
+                ],
+            ],
         ],
         403 => [
-            'description' => 'Forbidden',
+            'description' => 'Access denied',
         ],
     ],
 )]
@@ -49,15 +61,7 @@ class LoadAvailableTemplatesHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$this->getAcl()->check('ExportFeed', 'read')) {
-            throw new Forbidden();
-        }
-
         $data = $this->getRequestBody($request);
-
-        if (empty($data)) {
-            throw new BadRequest();
-        }
 
         $dataArray = json_decode(json_encode($data), true);
 

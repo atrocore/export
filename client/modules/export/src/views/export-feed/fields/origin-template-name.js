@@ -95,7 +95,7 @@ Espo.define('export:views/export-feed/fields/origin-template-name', 'views/field
                 return;
             }
 
-            this.ajaxPostRequest('ExportFeed/action/loadAvailableTemplates', this.model.attributes, {async: false}).then(result => {
+            this.ajaxPostRequest('ExportFeed/loadAvailableTemplates', this.model.attributes, {async: false}).then(result => {
                 if (result) {
                     Object.keys(result).forEach(template => {
                         this.params.options.push(template);
