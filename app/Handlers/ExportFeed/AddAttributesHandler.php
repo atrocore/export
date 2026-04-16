@@ -98,8 +98,12 @@ class AddAttributesHandler extends AbstractHandler
 
         $data = $this->getRequestBody($request);
 
-        if (!property_exists($data, 'attributesIds') || !property_exists($data, 'entityName')) {
-            throw new BadRequest("'entityName' and 'attributesIds' are required.");
+        if (!property_exists($data, 'entityName')) {
+            throw new BadRequest("'entityName' is required.");
+        }
+
+        if (!property_exists($data, 'attributesIds')) {
+            throw new BadRequest("'attributesIds' is required.");
         }
 
         return new BoolResponse(
