@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Export\Handlers\ExportFeed;
 
-use Atro\Core\Exceptions\BadRequest;
-use Atro\Core\Exceptions\Forbidden;
 use Atro\Core\Http\Response\BoolResponse;
 use Atro\Core\Routing\Route;
 use Atro\Handlers\AbstractHandler;
@@ -23,27 +21,40 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
-    path: '/ExportFeed/action/exportChannel',
+    path: '/ExportFeed/{id}/exportChannel',
     methods: [
         'POST',
     ],
     summary: 'Export channel data to file',
     description: 'Triggers an export job for the channel linked to the specified export feed.',
     tag: 'ExportFeed',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => [
-        'id',
-    ], 'properties' => ['id' => [
-        'type' => 'string',
-    ]]]]]],
+    parameters: [
+        [
+            'name'        => 'id',
+            'in'          => 'path',
+            'required'    => true,
+            'description' => 'Export feed record ID',
+            'schema'      => [
+                'type' => 'string',
+            ],
+        ],
+    ],
     responses: [
-        200 => ['description' => 'Export job created', 'content' => ['application/json' => ['schema' => [
-            'type' => 'boolean',
-        ]]]],
-        400 => [
-            'description' => 'Bad request',
+        200 => [
+            'description' => 'Export job created',
+            'content'     => [
+                'application/json' => [
+                    'schema' => [
+                        'type' => 'boolean',
+                    ],
+                ],
+            ],
         ],
         403 => [
-            'description' => 'Forbidden',
+            'description' => 'Access denied',
+        ],
+        404 => [
+            'description' => 'Export feed not found',
         ],
     ],
 )]
@@ -51,16 +62,8 @@ class ExportChannelHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$this->getAcl()->check('ExportFeed', 'read') || !$this->getAcl()->check('Channel', 'read')) {
-            throw new Forbidden();
-        }
+        $id = (string) $request->getAttribute('id');
 
-        $data = $this->getRequestBody($request);
-
-        if (!property_exists($data, 'id')) {
-            throw new BadRequest();
-        }
-
-        return new BoolResponse($this->getRecordService('ExportFeed')->exportChannel((string) $data->id));
+        return new BoolResponse($this->getRecordService('ExportFeed')->exportChannel($id));
     }
 }
