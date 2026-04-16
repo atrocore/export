@@ -22,24 +22,40 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
-    path: '/ExportJob/action/exportAgain',
+    path: '/ExportJob/{id}/exportAgain',
     methods: [
         'POST',
     ],
     summary: 'Retry export job',
     description: 'Retries a failed or canceled export job.',
     tag: 'ExportJob',
-    requestBody: ['required' => true, 'content' => ['application/json' => ['schema' => ['type' => 'object', 'required' => [
-        'id',
-    ], 'properties' => ['id' => [
-        'type' => 'string',
-    ]]]]]],
+    parameters: [
+        [
+            'name'        => 'id',
+            'in'          => 'path',
+            'required'    => true,
+            'description' => 'Export job record ID',
+            'schema'      => [
+                'type' => 'string',
+            ],
+        ],
+    ],
     responses: [
-        200 => ['description' => 'Export job retried', 'content' => ['application/json' => ['schema' => [
-            'type' => 'boolean',
-        ]]]],
-        400 => [
-            'description' => 'id is required',
+        200 => [
+            'description' => 'Export job retried',
+            'content'     => [
+                'application/json' => [
+                    'schema' => [
+                        'type' => 'boolean',
+                    ],
+                ],
+            ],
+        ],
+        403 => [
+            'description' => 'Access denied',
+        ],
+        404 => [
+            'description' => 'Export job not found',
         ],
     ],
 )]
@@ -47,12 +63,8 @@ class ExportAgainHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $data = $this->getRequestBody($request);
+        $id = (string) $request->getAttribute('id');
 
-        if (empty($data->id)) {
-            throw new BadRequest();
-        }
-
-        return new BoolResponse($this->getRecordService('ExportJob')->exportAgain((string) $data->id));
+        return new BoolResponse($this->getRecordService('ExportJob')->exportAgain($id));
     }
 }
