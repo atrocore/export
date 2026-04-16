@@ -102,10 +102,9 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
 
                 let postData = {
                     entityType: this.model.urlRoot,
-                    id: this.model.get('id')
                 };
 
-                this.ajaxPostRequest(`ExportFeed/action/removeAllItems`, postData).then(response => {
+                this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/removeAllItems`, postData).then(response => {
                     this.notify('Removed', 'success');
                     this.refreshPanel();
                 });
