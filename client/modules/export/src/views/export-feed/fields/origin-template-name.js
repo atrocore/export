@@ -77,7 +77,7 @@ Espo.define('export:views/export-feed/fields/origin-template-name', 'views/field
                 return;
             }
 
-            this.ajaxGetRequest('ExportFeed/action/getOriginTemplate', {template: template}).success(res => {
+            this.ajaxGetRequest('ExportFeed/getOriginTemplate', {template: template}).success(res => {
                 if (res.template) {
                     this.model.set('originTemplate', res.template);
                 }
