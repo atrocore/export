@@ -98,8 +98,12 @@ class AddFieldsHandler extends AbstractHandler
 
         $data = $this->getRequestBody($request);
 
-        if (!property_exists($data, 'fields') || !property_exists($data, 'entityName')) {
-            throw new BadRequest("'entityName' and 'fields' are required.");
+        if (!property_exists($data, 'entityName')) {
+            throw new BadRequest("'entityName' is required.");
+        }
+
+        if (!property_exists($data, 'fields')) {
+            throw new BadRequest("'fields' is required.");
         }
 
         return new BoolResponse(
