@@ -107,7 +107,7 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
                     exportFeedId: this.model.get('id')
                 };
                 this.notify(this.translate('duplicate', 'labels', 'ImportFeed'));
-                this.ajaxPostRequest('ImportFeed/action/createFromExport', data).then(response => {
+                this.ajaxPostRequest('ImportFeed/createFromExport', data).then(response => {
                     if (response) {
                         this.notify('Created', 'success');
                         this.getRouter().navigate('#ImportFeed/view/' + response.id, {trigger: false});
