@@ -12,20 +12,25 @@ Espo.define('export:views/export-configurator-item/fields/previous-item', 'views
     Dep => Dep.extend({
 
         setup() {
-            this.params.options = [""];
-            this.translatedOptions = {"": ""};
+            this.params.options = [];
+            this.translatedOptions = {};
 
-            let url = `ExportFeed/${this.model.get('exportFeedId')}/configuratorItems`;
-            if (this.model.get('sheetId')) {
-                url = `Sheet/${this.model.get('sheetId')}/configuratorItems`;
-            }
-
-            this.ajaxGetRequest(url, {
+            const params = {
+                entityName: 'ExportFeed',
+                id: this.model.get('exportFeedId'),
+                link: 'configuratorItems',
                 offset: 0,
                 maxSize: 9999,
                 sortBy: "sortOrder",
                 asc: true
-            }).success(response => {
+            };
+
+            if (this.model.get('sheetId')) {
+                params.entityName = 'Sheet';
+                params.id = this.model.get('sheetId');
+            }
+
+            this.ajaxGetRequest('entityRelation', params).success(response => {
                 if (response.total) {
                     let i = 1;
                     let previousItem = null;
