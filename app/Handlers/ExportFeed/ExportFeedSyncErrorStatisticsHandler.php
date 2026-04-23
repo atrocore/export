@@ -28,7 +28,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     tag: 'ExportFeed',
     responses: [
         200 => [
-            'description' => 'Dashlet data',
+            'description' => 'Export sync error statistics',
             'content'     => [
                 'application/json' => [
                     'schema' => [
