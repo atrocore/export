@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Export\Handlers\Dashlet;
+namespace Export\Handlers\ExportFeed;
 
 use Atro\Core\Http\Response\JsonResponse;
 use Atro\Core\Routing\Route;
@@ -21,11 +21,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 #[Route(
-    path: '/Dashlet/dataSyncErrorsExport',
+    path: '/ExportFeed/syncErrorStatistics',
     methods: ['GET'],
-    summary: 'Get export data sync errors dashlet data',
+    summary: 'Get export sync error statistics',
     description: 'Returns failed export job counts grouped by time interval (1, 7, 28 days).',
-    tag: 'Dashlet',
+    tag: 'ExportFeed',
     responses: [
         200 => [
             'description' => 'Dashlet data',
@@ -74,7 +74,7 @@ use Psr\Http\Server\RequestHandlerInterface;
         ],
     ],
 )]
-class DashletDataSyncErrorsExportHandler extends AbstractHandler
+class ExportFeedSyncErrorStatisticsHandler extends AbstractHandler
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
