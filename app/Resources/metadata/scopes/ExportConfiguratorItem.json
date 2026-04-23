@@ -1,5 +1,5 @@
 {
-  "entity": false,
+  "entity": true,
   "layouts": false,
   "tab": false,
   "acl": false,
@@ -19,5 +19,8 @@
   "notificationDisabled": true,
   "hideFieldTypeFilters": true,
   "emHidden": true,
-  "selectionDisabled": true
+  "selectionDisabled": true,
+  "bookmarkDisabled": true,
+  "actionDisabled": true,
+  "hideLastViewed": true
 }

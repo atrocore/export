@@ -97,7 +97,7 @@ Espo.define('export:views/export-configurator-item/fields/column', 'views/fields
         },
 
         getTranslates(locale, callback) {
-            this.ajaxGetRequest(`I18n`, {locale: locale}).then(responseData => {
+            this.ajaxGetRequest(`i18n`, {locale: locale}).then(responseData => {
                 callback(responseData);
             });
         },

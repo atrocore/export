@@ -172,7 +172,7 @@ class ExportFeed extends Base
                 lcfirst($entityName) . 'Id' => $feed->get('id')
             ];
 
-            if (in_array($type, ['link', 'file', 'linkMultiple'])) {
+            if (in_array($type, ['link', 'file', 'linkMultiple', 'measure'])) {
                 $data['exportBy'] = ['id'];
             }
 
@@ -196,8 +196,8 @@ class ExportFeed extends Base
                 }
             }
 
-            if (!empty($defs['measureId'])) {
-                $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'Unit']));
+            if (!empty($defs['measureId']) && $type !== 'measure') {
+                $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'Unit', 'exportBy' => ['name']]));
                 $this->createExportConfiguratorItem(array_merge($data, [
                     'name'       => null,
                     'type'       => 'script',
