@@ -25,5 +25,6 @@
     "configuratorItemsIds"
   ],
   "hideFieldTypeFilters": true,
-  "selectionDisabled": true
+  "selectionDisabled": true,
+  "valueLockDisabled": true
 }
