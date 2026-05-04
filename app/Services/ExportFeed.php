@@ -880,6 +880,10 @@ class ExportFeed extends Base
 
     public function putAttributesToMetadata(string $exportFeedId, ?array $feedData = null): void
     {
+        if ($feedData) {
+            $feedData = json_decode(json_encode($feedData), true);
+        }
+
         $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
         if (empty($exportFeed)) {
             if ($feedData === null) {
