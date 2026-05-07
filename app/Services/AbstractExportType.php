@@ -193,12 +193,13 @@ abstract class AbstractExportType extends Base
     {
 
         $params = [
-            'sortBy'      => 'id',
-            'asc'         => true,
-            'offset'      => 0,
-            'maxSize'     => 1,
-            'where'       => $this->getWhere(),
-            'withDeleted' => !empty($this->data['feed']['data']['withDeleted']),
+            'sortBy'                => 'id',
+            'asc'                   => true,
+            'offset'                => 0,
+            'maxSize'               => 1,
+            'where'                 => $this->getWhere(),
+            'withDeleted'           => !empty($this->data['feed']['data']['withDeleted']),
+            'calculateScriptFields' => true,
         ];
 
         return $params;
@@ -768,14 +769,15 @@ abstract class AbstractExportType extends Base
     protected function getCollectionFromIds(mixed $entityIds): EntityCollection
     {
         $result = $this->getEntityService()->findEntities([
-            "where"       => [
+            "where"                 => [
                 [
                     "attribute" => "id",
                     "type"      => "in",
                     "value"     => $entityIds
                 ]
             ],
-            "withDeleted" => true
+            "withDeleted"           => true,
+            "calculateScriptFields" => true,
         ]);
 
         return $result['collection'];
