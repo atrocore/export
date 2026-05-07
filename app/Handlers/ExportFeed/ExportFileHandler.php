@@ -39,6 +39,26 @@ use Psr\Http\Server\RequestHandlerInterface;
             ],
         ],
     ],
+    requestBody: [
+        'required' => false,
+        'content'  => [
+            'application/json' => [
+                'schema' => [
+                    'type'       => 'object',
+                    'properties' => [
+                        'ignoreFilter'     => [
+                            'type'        => 'boolean',
+                            'description' => 'If true, the export feed\'s own filters are cleared before export',
+                        ],
+                        'entityFilterData' => [
+                            'type'        => 'object',
+                            'description' => 'Additional filter: either {byWhere: true, where: [...]} or {ids: [...]}',
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
     responses: [
         200 => [
             'description' => 'Export job created',
@@ -64,8 +84,8 @@ class ExportFileHandler extends AbstractHandler
     {
         $id = (string) $request->getAttribute('id');
 
-        $data        = new \stdClass();
-        $data->id    = $id;
+        $data     = $this->getRequestBody($request);
+        $data->id = $id;
 
         return new BoolResponse($this->getRecordService('ExportFeed')->exportFile($data));
     }

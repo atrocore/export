@@ -57,6 +57,10 @@ use Psr\Http\Server\RequestHandlerInterface;
                         'exportAllField'   => [
                             'type' => 'boolean',
                         ],
+                        'fieldDefs'        => [
+                            'type'        => 'object',
+                            'description' => 'Field definitions keyed by field name; if omitted, fetched from entity metadata',
+                        ],
                         'entityFilterData' => [
                             'type' => 'object',
                         ],
