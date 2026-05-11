@@ -59,6 +59,7 @@ use Psr\Http\Server\RequestHandlerInterface;
                         ],
                         'fieldDefs'        => [
                             'type'        => 'object',
+                            'nullable'    => true,
                             'description' => 'Field definitions keyed by field name; if omitted, fetched from entity metadata',
                         ],
                         'entityFilterData' => [
