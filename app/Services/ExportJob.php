@@ -41,10 +41,24 @@ class ExportJob extends Base
 
         parent::putAclMetaForLink($entityFrom, $link, $entity);
 
-        $condition = in_array($entity->get('state'), ['Failed', 'Canceled'])
-            && ($this->getUser()->isAdmin() ?? $this->getAcl()->check($entity, 'edit'));
+        $canEdit = $this->getUser()->isAdmin() || $this->getAcl()->check($entity, 'edit');
 
-        $entity->setMetaPermission('tryAgainExportJob', $condition);
+        $entity->setMetaPermission('cancelExportJob', in_array($entity->get('state'), ['Pending', 'Running']) && $canEdit);
+        $entity->setMetaPermission('tryAgainExportJob', in_array($entity->get('state'), ['Failed', 'Canceled']) && $canEdit);
+    }
+
+    public function cancel(string $id): bool
+    {
+        $entity = $this->getEntity($id);
+
+        if (!in_array($entity->get('state'), ['Pending', 'Running'])) {
+            return false;
+        }
+
+        $entity->set('state', 'Canceled');
+        $this->getEntityManager()->saveEntity($entity);
+
+        return true;
     }
 
     public function exportAgain(string $id): bool

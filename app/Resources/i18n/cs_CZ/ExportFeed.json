@@ -75,6 +75,7 @@
     "allAttributesAlreadyAdded": "Všechny položky atributů již byly přidány."
   },
   "actions": {
+    "cancelExportJob": "Zrušit",
     "tryAgainExportJob": "Znovu exportovat"
   },
   "messages": {

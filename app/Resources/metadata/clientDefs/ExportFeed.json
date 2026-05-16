@@ -67,6 +67,11 @@
         "unlinkRelated": {
           "disabled": true
         },
+        "cancelExportJob": {
+          "url": "ExportJob/{{id}}/cancel",
+          "refresh": false,
+          "sortOrder": 15
+        },
         "tryAgainExportJob": {
           "url": "ExportJob/{{id}}/exportAgain",
           "refresh": false,
