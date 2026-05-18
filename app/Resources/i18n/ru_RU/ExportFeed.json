@@ -66,7 +66,8 @@
     "generateTemplate": "Создайте шаблон"
   },
   "actions": {
-    "tryAgainExportJob": "Повторить попытку"
+    "tryAgainExportJob": "Повторить попытку",
+    "cancelExportJob": "Отмена"
   },
   "messages": {
     "delimitersMustBeDifferent": "Все параметры фида должны иметь уникальные значения.",
