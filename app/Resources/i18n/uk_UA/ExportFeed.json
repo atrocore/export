@@ -66,6 +66,7 @@
     "allAttributesAlreadyAdded": "Всі атрибути вже додано."
   },
   "actions": {
+    "cancelExportJob": "Скасувати",
     "tryAgainExportJob": "Повторити спробу"
   },
   "messages": {

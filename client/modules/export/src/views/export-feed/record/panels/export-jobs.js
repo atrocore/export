@@ -49,25 +49,5 @@ Espo.define('export:views/export-feed/record/panels/export-jobs', 'views/record/
             return true;
         },
 
-        actionCancelExportJob(data) {
-            let model = this.collection.get(data.id);
-
-            this.notify('Saving...');
-            model.set('state', 'Canceled');
-            model.save().then(() => {
-                this.notify('Saved', 'success');
-            });
-        },
-
-        actionTryAgainExportJob(data) {
-            let model = this.collection.get(data.id);
-
-            this.notify('Saving...');
-            model.set('state', 'Pending');
-            model.save().then(() => {
-                this.notify('Saved', 'success');
-            });
-        },
-
     })
 );

@@ -66,6 +66,7 @@
     "allAttributesAlreadyAdded": "Alle Attribute sind bereits hinzugefügt worden."
   },
   "actions": {
+    "cancelExportJob": "Abbrechen",
     "tryAgainExportJob": "Erneut exportieren"
   },
   "messages": {

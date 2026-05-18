@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Export\Services;
 
+use Atro\Core\Exceptions\Forbidden;
+use Atro\Core\Exceptions\NotFound;
 use Atro\Core\Templates\Services\Base;
 use Espo\ORM\Entity;
 use Espo\ORM\Entity as OrmEntity;
@@ -41,15 +43,45 @@ class ExportJob extends Base
 
         parent::putAclMetaForLink($entityFrom, $link, $entity);
 
-        $condition = in_array($entity->get('state'), ['Failed', 'Canceled'])
-            && ($this->getUser()->isAdmin() ?? $this->getAcl()->check($entity, 'edit'));
+        $canEdit = $this->getUser()->isAdmin() || $this->getAcl()->check($entity, 'edit');
 
-        $entity->setMetaPermission('tryAgainExportJob', $condition);
+        $entity->setMetaPermission('cancelExportJob', in_array($entity->get('state'), ['Pending', 'Running']) && $canEdit);
+        $entity->setMetaPermission('tryAgainExportJob', in_array($entity->get('state'), ['Failed', 'Canceled']) && $canEdit);
+    }
+
+    public function cancel(string $id): bool
+    {
+        $entity = $this->getRepository()->get($id);
+
+        if (empty($entity)) {
+            throw new NotFound();
+        }
+
+        if (!$this->getAcl()->check($entity, 'edit')) {
+            throw new Forbidden();
+        }
+
+        if (!in_array($entity->get('state'), ['Pending', 'Running'])) {
+            return false;
+        }
+
+        $entity->set('state', 'Canceled');
+        $this->getEntityManager()->saveEntity($entity);
+
+        return true;
     }
 
     public function exportAgain(string $id): bool
     {
-        $entity  = $this->getEntity($id);
+        $entity = $this->getRepository()->get($id);
+
+        if (empty($entity)) {
+            throw new NotFound();
+        }
+
+        if (!$this->getAcl()->check($entity, 'edit')) {
+            throw new Forbidden();
+        }
 
         if(!in_array($entity->get('state'), ['Failed', 'Canceled'])) {
             return false;
@@ -63,7 +95,15 @@ class ExportJob extends Base
 
     public function resendRequest(string $id): bool
     {
-        $entity  = $this->getEntity($id);
+        $entity = $this->getRepository()->get($id);
+
+        if (empty($entity)) {
+            throw new NotFound();
+        }
+
+        if (!$this->getAcl()->check($entity, 'edit')) {
+            throw new Forbidden();
+        }
 
         if(!in_array($entity->get('state'), ['Failed', 'Canceled'])) {
             return false;
