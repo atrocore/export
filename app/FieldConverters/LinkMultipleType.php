@@ -83,7 +83,7 @@ class LinkMultipleType extends LinkType
         $type = $this->getMetadata()->get(['entityDefs', $entity, 'fields', $field, 'type']);
 
         if (empty($foreignList)) {
-            $links[] = $configuration[$type == 'extensibleMultiEnum' ? 'nullValue' : 'markForNoRelation'];
+            $links[] = $configuration['markForNoRelation'];
         }
 
         $foreignList = array_slice($foreignList, 0, $params['maxSize']);

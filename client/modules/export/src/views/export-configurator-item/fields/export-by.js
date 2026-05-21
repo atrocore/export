@@ -119,7 +119,7 @@ Espo.define('export:views/export-configurator-item/fields/export-by', 'views/fie
                 type = this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'type']);
             }
 
-            return ['link', 'extensibleEnum', 'linkMultiple', 'extensibleMultiEnum', 'file', 'measure'].includes(type) && (this.params.options || []).length;
+            return ['link', 'linkMultiple', 'file', 'measure'].includes(type) && (this.params.options || []).length;
         }
 
     })

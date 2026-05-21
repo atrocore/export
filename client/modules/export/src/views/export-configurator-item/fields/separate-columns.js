@@ -34,7 +34,7 @@ Espo.define('export:views/export-configurator-item/fields/separate-columns', 'vi
 
         checkFieldVisibility() {
             let type = this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'type']);
-            if (this.model.get('type') === 'Field' && ['linkMultiple', 'extensibleMultiEnum'].includes(type)) {
+            if (this.model.get('type') === 'Field' && type === 'linkMultiple') {
                 this.show();
             } else {
                 this.hide();
