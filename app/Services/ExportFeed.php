@@ -202,7 +202,7 @@ class ExportFeed extends Base
                     'name'       => null,
                     'type'       => 'script',
                     'columnType' => 'custom',
-                    'column'     => $languageObj->translate('unit' . ucfirst($field), 'fields', $feedEntity),
+                    'column'     => $languageObj->translate('combined' . ucfirst($field), 'fields', $feedEntity),
                     'script'     => "{{ record['{$field}'] }} {{ record['{$field}UnitName'] }}"
                 ]));
             }
@@ -679,15 +679,15 @@ class ExportFeed extends Base
 
         foreach ($entityDefs as $field => $fieldDefs) {
             if (!empty($fieldDefs['attributeId']) && in_array($fieldDefs['type'] ?? null, ['int', 'float', 'varchar'])
-                && !empty($fieldDefs['unitField'])) {
+                && !empty($fieldDefs['combinedField'])) {
                 // Add field for attribute script
                 $parts = explode(' ', $fieldDefs['label']);
                 array_pop($parts);
-                $entityDefs['unit' . ucfirst($field)] = [
-                    'attributeId'        => $fieldDefs['attributeId'],
-                    'label'              => join(' ', $parts),
-                    'mainField'          => $field,
-                    'attributeUnitField' => true,
+                $entityDefs['combined' . ucfirst($field)] = [
+                    'attributeId'           => $fieldDefs['attributeId'],
+                    'label'                 => join(' ', $parts),
+                    'mainField'             => $field,
+                    'attributeCombinedField' => true,
                 ];
             }
         }
@@ -722,8 +722,8 @@ class ExportFeed extends Base
                 }
             }
 
-            if (!empty($fieldDefs['attributeUnitField']) ||
-                (empty($fieldDefs['attributeId']) && !empty($fieldDefs['unitField']))) {
+            if (!empty($fieldDefs['attributeCombinedField']) ||
+                (empty($fieldDefs['attributeId']) && !empty($fieldDefs['combinedField']))) {
                 $item['type'] = 'script';
                 $mainField = $fieldDefs['mainField'];
                 $item['script'] = "{{ record['{$mainField}'] }} {{ record['{$mainField}UnitName'] }}";
