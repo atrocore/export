@@ -2,9 +2,6 @@
   "getPreviousCategoryId": {
     "handler": "\\Export\\TwigFunction\\PreviousCategoryId"
   },
-  "getExtensibleEnumOption": {
-    "handler": "\\Export\\TwigFunction\\ExtensibleEnumOption"
-  },
   "getEntity": {
     "handler": "\\Export\\TwigFunction\\GetEntity"
   },
