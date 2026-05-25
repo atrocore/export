@@ -32,7 +32,6 @@
   "twig": {
     "functions": {
       "getPreviousCategoryId": "Ruft die ID der vorherigen Kategorie in einer hierarchischen Kategoriestruktur ab",
-      "getExtensibleEnumOption": "Holt einen Optionswert aus einer erweiterbaren Aufzählung",
       "getEntity": "Ruft ein Entitätsobjekt anhand seines Bezeichners ab",
       "getSharedUrl": "Ruft eine gemeinsame URL für eine Datei ab"
     },

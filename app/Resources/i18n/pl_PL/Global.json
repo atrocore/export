@@ -32,7 +32,6 @@
   "twig": {
     "functions": {
       "getPreviousCategoryId": "Pobiera identyfikator poprzedniej kategorii w hierarchicznej strukturze kategorii",
-      "getExtensibleEnumOption": "Pobiera wartość opcji z rozszerzalnego wyliczenia",
       "getEntity": "Pobiera obiekt encji według jego identyfikatora",
       "getSharedUrl": "Pobiera udostępniony adres URL dla pliku"
     },
