@@ -8,7 +8,7 @@
     "ext-libxml": "*",
     "ext-simplexml": "*",
     "ext-curl": "*",
-    "phpoffice/phpspreadsheet": "^1.16.0@stable",
+    "phpoffice/phpspreadsheet": "^2.0@stable",
     "jdorn/sql-formatter": "v1.2.16@stable"
   },
   "conflict": {
