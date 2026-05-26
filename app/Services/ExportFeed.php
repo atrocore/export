@@ -688,7 +688,7 @@ class ExportFeed extends Base
                     'label'                  => join(' ', $parts),
                     'mainField'              => $field,
                     'measureId'              => $fieldDefs['measureId'] ?? null,
-                    'prefixId'               => $fieldDefs['prefixId'] ?? null,
+                    'prefixEnabled'          => $fieldDefs['prefixEnabled'] ?? false,
                     'attributeCombinedField' => true,
                 ];
             }
@@ -728,7 +728,7 @@ class ExportFeed extends Base
                 (empty($fieldDefs['attributeId']) && !empty($fieldDefs['combinedField']))) {
                 $item['type'] = 'script';
                 $mainField    = $fieldDefs['mainField'];
-                $hasPrefix    = !empty($fieldDefs['prefixId']);
+                $hasPrefix    = !empty($fieldDefs['prefixEnabled']);
                 $hasMeasure   = !empty($fieldDefs['measureId']);
 
                 if ($hasPrefix && $hasMeasure) {
