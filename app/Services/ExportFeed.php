@@ -117,7 +117,7 @@ class ExportFeed extends Base
         ];
 
         if (!empty($requestData->ignoreFilter)) {
-            $data['feed']['data']->where = [];
+            $data['feed']['data']->where     = [];
             $data['feed']['data']->whereData = null;
         }
 
@@ -202,7 +202,7 @@ class ExportFeed extends Base
                     'name'       => null,
                     'type'       => 'script',
                     'columnType' => 'custom',
-                    'column'     => $languageObj->translate('unit' . ucfirst($field), 'fields', $feedEntity),
+                    'column'     => $languageObj->translate('combined' . ucfirst($field), 'fields', $feedEntity),
                     'script'     => "{{ record['{$field}'] }} {{ record['{$field}UnitName'] }}"
                 ]));
             }
@@ -244,17 +244,17 @@ class ExportFeed extends Base
 
         foreach ($this->getAttributeFieldConverter()->getAttributesRowsByIds($attributesIds) as $attribute) {
             if (!empty($attribute['channel_name'])) {
-                $attribute['name'] .= ' / '.$attribute['channel_name'];
+                $attribute['name'] .= ' / ' . $attribute['channel_name'];
             }
             $attributesDefs = [];
             $this->getAttributeFieldConverter()->convert($feedEntity, $attribute, $attributesDefs);
             foreach ($attributesDefs as $field => $fieldDefs) {
                 $data = [
-                    'name'                               => $field,
-                    'type'                               => 'Field',
-                    'columnType'                         => 'name',
-                    'entityAttributeId'                  => $attribute['id'],
-                    lcfirst($feed->getEntityName()).'Id' => $feed->get('id'),
+                    'name'                                 => $field,
+                    'type'                                 => 'Field',
+                    'columnType'                           => 'name',
+                    'entityAttributeId'                    => $attribute['id'],
+                    lcfirst($feed->getEntityName()) . 'Id' => $feed->get('id'),
                 ];
 
                 if (in_array($fieldDefs['type'], ['link', 'file'])) {
@@ -308,8 +308,8 @@ class ExportFeed extends Base
 
         $exists = $this->getEntityManager()->getRepository('ExportConfiguratorItem')
             ->where([
-                'type'                    => 'allAttributes',
-                lcfirst($entityName).'Id' => $feed->get('id'),
+                'type'                      => 'allAttributes',
+                lcfirst($entityName) . 'Id' => $feed->get('id'),
             ])
             ->findOne();
 
@@ -318,11 +318,11 @@ class ExportFeed extends Base
         }
 
         $data = [
-            'name'                    => null,
-            'type'                    => 'allAttributes',
-            'columnType'              => 'custom',
-            lcfirst($entityName).'Id' => $feed->get('id'),
-            'channels'                => ['withoutChannel'],
+            'name'                      => null,
+            'type'                      => 'allAttributes',
+            'columnType'                => 'custom',
+            lcfirst($entityName) . 'Id' => $feed->get('id'),
+            'channels'                  => ['withoutChannel'],
         ];
 
         $this->createExportConfiguratorItem($data);
@@ -465,11 +465,11 @@ class ExportFeed extends Base
     {
         if ($sheet->getEntityType() === 'ExportFeed') {
             /** @var ExportFeedEntity $feed */
-            $feed = $sheet;
+            $feed       = $sheet;
             $entityName = $sheet->getFeedField('entity');
         } else {
             /** @var ExportFeedEntity $feed */
-            $feed = $sheet->get('exportFeed');
+            $feed       = $sheet->get('exportFeed');
             $entityName = $sheet->get('entity');
         }
 
@@ -516,7 +516,7 @@ class ExportFeed extends Base
             ];
             if ($feed->get('type') === 'simple') {
                 $row['convertCollectionToString'] = true;
-                $row['convertRelationsToString'] = true;
+                $row['convertRelationsToString']  = true;
             }
 
             if ($item->get('type') === 'Field') {
@@ -533,10 +533,10 @@ class ExportFeed extends Base
     {
         $result = $feed->toArray();
         foreach ($feed->getFeedFields() as $name => $value) {
-            $result[$name] = $value;
+            $result[$name]         = $value;
             $result['data']->$name = $value;
         }
-        $result['decimalMark'] = $result['data']->decimalMark = $feed->getDecimalMark();
+        $result['decimalMark']       = $result['data']->decimalMark = $feed->getDecimalMark();
         $result['thousandSeparator'] = $result['data']->thousandSeparator = $feed->getThousandSeparator();
 
         $result['fileType'] = $feed->get('fileType');
@@ -577,11 +577,11 @@ class ExportFeed extends Base
 
         if (!empty($data['executeNow'])) {
             $data['ownerUserId'] = $this->getUser()->get('id');
-            $data['priority'] = AbstractExportType::PRIORITIES[$priority];
+            $data['priority']    = AbstractExportType::PRIORITIES[$priority];
             $this->getInjection('container')->get(ExportJobCreator::class)->runNow($data);
         } else {
             $data['exportJobCreatorId'] = Util::generateId();
-            $jobEntity = $this->getEntityManager()->getEntity('Job');
+            $jobEntity                  = $this->getEntityManager()->getEntity('Job');
             $jobEntity->set([
                 'name'        => $name,
                 'type'        => 'ExportJobCreator',
@@ -679,15 +679,17 @@ class ExportFeed extends Base
 
         foreach ($entityDefs as $field => $fieldDefs) {
             if (!empty($fieldDefs['attributeId']) && in_array($fieldDefs['type'] ?? null, ['int', 'float', 'varchar'])
-                && !empty($fieldDefs['unitField'])) {
+                && !empty($fieldDefs['combinedField'])) {
                 // Add field for attribute script
                 $parts = explode(' ', $fieldDefs['label']);
                 array_pop($parts);
-                $entityDefs['unit' . ucfirst($field)] = [
-                    'attributeId'        => $fieldDefs['attributeId'],
-                    'label'              => join(' ', $parts),
-                    'mainField'          => $field,
-                    'attributeUnitField' => true,
+                $entityDefs['combined' . ucfirst($field)] = [
+                    'attributeId'            => $fieldDefs['attributeId'],
+                    'label'                  => join(' ', $parts),
+                    'mainField'              => $field,
+                    'measureId'              => $fieldDefs['measureId'] ?? null,
+                    'prefixEnabled'          => $fieldDefs['prefixEnabled'] ?? false,
+                    'attributeCombinedField' => true,
                 ];
             }
         }
@@ -701,9 +703,9 @@ class ExportFeed extends Base
                 continue;
             }
 
-            $item = $baseConfiguration;
-            $item['field'] = $field;
-            $item['id'] = Util::generateId();
+            $item           = $baseConfiguration;
+            $item['field']  = $field;
+            $item['id']     = Util::generateId();
             $item['column'] = $this->getLanguage()->translate($field, 'fields', $scope);
 
             if (in_array($fieldDefs['type'], ['link', 'linkMultiple', 'extensibleEnum', 'extensibleMultiEnum'])) {
@@ -716,21 +718,30 @@ class ExportFeed extends Base
 
             if (!empty($fieldDefs['attributeId'])) {
                 $item['entityAttributeId'] = $fieldDefs['attributeId'];
-                $item['column'] = $fieldDefs['label'];
+                $item['column']            = $fieldDefs['label'];
                 if (!empty($fieldDefs['channelName'])) {
                     $item['column'] = "{$fieldDefs['label']} / {$fieldDefs['channelName']}";
                 }
             }
 
-            if (!empty($fieldDefs['attributeUnitField']) ||
-                (empty($fieldDefs['attributeId']) && !empty($fieldDefs['unitField']))) {
+            if (!empty($fieldDefs['attributeCombinedField']) ||
+                (empty($fieldDefs['attributeId']) && !empty($fieldDefs['combinedField']))) {
                 $item['type'] = 'script';
-                $mainField = $fieldDefs['mainField'];
-                $item['script'] = "{{ record['{$mainField}'] }} {{ record['{$mainField}UnitName'] }}";
+                $mainField    = $fieldDefs['mainField'];
+                $hasPrefix    = !empty($fieldDefs['prefixEnabled']);
+                $hasMeasure   = !empty($fieldDefs['measureId']);
+
+                if ($hasPrefix && $hasMeasure) {
+                    $item['script'] = "{{ record['{$mainField}PrefixName'] }} {{ record['{$mainField}'] }} {{ record['{$mainField}UnitName'] }}";
+                } elseif ($hasPrefix) {
+                    $item['script'] = "{{ record['{$mainField}PrefixName'] }} {{ record['{$mainField}'] }}";
+                } else {
+                    $item['script'] = "{{ record['{$mainField}'] }} {{ record['{$mainField}UnitName'] }}";
+                }
             }
 
             if (in_array($fieldDefs['type'] ?? null, ['rangeInt', 'rangeFloat'])) {
-                $item['type'] = 'script';
+                $item['type']   = 'script';
                 $item['script'] = "{{ record['{$field}From'] }} - {{ record['{$field}To'] }} {{ record['{$field}UnitName'] }}";
             }
 
@@ -817,9 +828,9 @@ class ExportFeed extends Base
         }
 
         foreach ($items as $item) {
-            $data = $item->toArray();
+            $data                         = $item->toArray();
             $data['_duplicatingEntityId'] = $item->get('id');
-            $data['exportFeedId'] = $entity->get('id');
+            $data['exportFeedId']         = $entity->get('id');
 
             unset($data['id']);
             unset($data['createdAt']);
@@ -866,7 +877,7 @@ class ExportFeed extends Base
         ];
 
         $data['offset'] = !empty($offset) ? (int)$offset : 0;
-        $data['limit'] = empty($data['feed']['limit']) ? \PHP_INT_MAX : $data['feed']['limit'];
+        $data['limit']  = empty($data['feed']['limit']) ? \PHP_INT_MAX : $data['feed']['limit'];
 
         $exportService = $this->getExportTypeService($data['feed']['type']);
         $exportService->setData($data);
@@ -890,10 +901,10 @@ class ExportFeed extends Base
                 return;
             }
             $entityName = $feedData['entity'];
-            $language = $this->getInjection('container')->get('language');
+            $language   = $this->getInjection('container')->get('language');
         } else {
-            $entityName = $exportFeed->getFeedField('entity');
-            $language = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
+            $entityName      = $exportFeed->getFeedField('entity');
+            $language        = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
             $currentLocaleId = $this->getUser()->get('localeId');
             $this->getUser()->set('localeId', $exportFeed->get('localeId'));
         }
@@ -912,7 +923,7 @@ class ExportFeed extends Base
                 }
             } else {
                 foreach ($exportFeed->get('sheets') ?? [] as $sheet) {
-                    $items = $this->getPreparedConfiguratorItems($exportFeed, $sheet, $sheet->get('entity'));
+                    $items         = $this->getPreparedConfiguratorItems($exportFeed, $sheet, $sheet->get('entity'));
                     $attributesIds = array_column($items->toArray(), 'entityAttributeId');
                     $attributesIds = array_values(array_unique(array_filter($attributesIds)));
                     if (!empty($attributesIds)) {
@@ -928,7 +939,7 @@ class ExportFeed extends Base
                 $attributesIds = array_column($feedData['data']['configuration'] ?? [], 'entityAttributeId');
                 $attributesIds = array_values(array_unique(array_filter($attributesIds)));
             } else {
-                $items = $this->getPreparedConfiguratorItems($exportFeed, $exportFeed, $entityName);
+                $items         = $this->getPreparedConfiguratorItems($exportFeed, $exportFeed, $entityName);
                 $attributesIds = array_column($items->toArray(), 'entityAttributeId');
                 $attributesIds = array_values(array_unique(array_filter($attributesIds)));
             }
@@ -948,7 +959,7 @@ class ExportFeed extends Base
     {
         $attributesDefs = [];
         if (!empty($attributeRow['channel_name'])) {
-            $attributeRow['name'] = $attributeRow['name'].' / '.$attributeRow['channel_name'];
+            $attributeRow['name'] = $attributeRow['name'] . ' / ' . $attributeRow['channel_name'];
         }
 
         $this
@@ -968,7 +979,7 @@ class ExportFeed extends Base
     {
         $items = $this->getEntityManager()->getRepository('ExportConfiguratorItem')
             ->where([
-                lcfirst($sheet->getEntityName()).'Id' => $sheet->get('id'),
+                lcfirst($sheet->getEntityName()) . 'Id' => $sheet->get('id'),
             ])
             ->order('sortOrder')
             ->find();
