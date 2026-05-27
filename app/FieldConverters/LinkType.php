@@ -35,7 +35,7 @@ class LinkType extends AbstractType
         $type = $metadata['type'] ?? null;
         $isUnit = $type == 'link' && !empty($metadata['unitIdField']);
 
-        if ($type == 'extensibleEnum' || $isUnit) {
+        if ($isUnit) {
             $result[$column] = $configuration['nullValue'];
         }
 
@@ -245,7 +245,7 @@ class LinkType extends AbstractType
                     }
                 }
             }
-        } elseif ($foreignType == 'extensibleEnum' || $foreignType == 'measure') {
+        } elseif ($foreignType == 'measure') {
             $fieldResult[$field] = $foreignConfiguration['nullValue'];
             $fieldName = $field . 'Name';
             if (isset($foreignData[$fieldName])) {
@@ -255,7 +255,7 @@ class LinkType extends AbstractType
                     $fieldResult[$field] = $foreignData[$fieldName];
                 }
             }
-        } elseif ($foreignType == 'extensibleMultiEnum') {
+        } elseif ($foreignType == 'linkMultiple') {
             $fieldResult[$field] = $foreignConfiguration['nullValue'];
             $fieldName = $field . 'Names';
             if (isset($foreignData[$fieldName])) {

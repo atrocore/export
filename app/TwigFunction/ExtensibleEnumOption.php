@@ -18,11 +18,12 @@ class ExtensibleEnumOption extends AbstractTwigFunction
     public function __construct()
     {
         $this->addDependency('serviceFactory');
+        $this->addDependency('metadata');
     }
 
     public function run($extensibleEnumOptionId)
     {
-        if (empty($extensibleEnumOptionId)) {
+        if (empty($extensibleEnumOptionId) || !$this->getInjection('metadata')->get("scopes.ExtensibleEnumOption.type")) {
             return null;
         }
 
@@ -34,4 +35,5 @@ class ExtensibleEnumOption extends AbstractTwigFunction
 
         return $entity;
     }
+
 }

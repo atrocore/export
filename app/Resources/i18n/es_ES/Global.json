@@ -13,7 +13,6 @@
     },
     "functions": {
       "getPreviousCategoryId": "Recupera el ID de la categoría anterior en una estructura jerárquica de categorías",
-      "getExtensibleEnumOption": "Obtiene un valor de opción de un enum extensible",
       "getEntity": "Recupera un objeto entidad por su identificador",
       "getSharedUrl": "Recupera una URL compartida para un archivo"
     }

@@ -32,7 +32,6 @@
   "twig": {
     "functions": {
       "getPreviousCategoryId": "Récupère l'ID de la catégorie précédente dans une structure hiérarchique de catégories",
-      "getExtensibleEnumOption": "Récupère une valeur d'option dans un liste non static",
       "getEntity": "Recherche une entité par son identifiant",
       "getSharedUrl": "Récupère l'URL partagée d'un fichier"
     },

@@ -32,7 +32,6 @@
   "twig": {
     "functions": {
       "getPreviousCategoryId": "Vyhledá ID předchozí kategorie v hierarchické struktuře kategorií.",
-      "getExtensibleEnumOption": "načte hodnotu možnosti z rozšiřitelného výčtu",
       "getEntity": "Vyhledá objekt entity podle jeho identifikátoru",
       "getSharedUrl": "načte sdílenou adresu URL souboru"
     },

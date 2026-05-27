@@ -708,7 +708,7 @@ class ExportFeed extends Base
             $item['id']     = Util::generateId();
             $item['column'] = $this->getLanguage()->translate($field, 'fields', $scope);
 
-            if (in_array($fieldDefs['type'], ['link', 'linkMultiple', 'extensibleEnum', 'extensibleMultiEnum'])) {
+            if (in_array($fieldDefs['type'], ['link', 'linkMultiple'])) {
                 $item['exportBy'] = ['name'];
             }
 

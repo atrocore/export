@@ -32,7 +32,7 @@ Espo.define('export:views/export-configurator-item/fields/sort-field-relation', 
         checkFieldVisibility() {
             let type = this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'type']);
 
-            if (this.model.get('type') === 'Field' && ['linkMultiple', 'extensibleMultiEnum'].includes(type)) {
+            if (this.model.get('type') === 'Field' && type === 'linkMultiple') {
                 this.show();
                 this.setRequired();
             } else {
@@ -45,10 +45,6 @@ Espo.define('export:views/export-configurator-item/fields/sort-field-relation', 
             this.translatedOptions = {'': '', 'id': this.translate('id', 'fields', 'Global')};
 
             let entity = this.getMetadata().get(['entityDefs', this.model.get('entity'), 'links', this.model.get('name'), 'entity']);
-            if (this.getMetadata().get(['entityDefs', this.model.get('entity'), 'fields', this.model.get('name'), 'extensibleEnumId'])) {
-                entity = 'ExtensibleEnumOption';
-            }
-
             if (entity) {
                 let fields = this.getMetadata().get(['entityDefs', entity, 'fields']) || {};
                 let notAllowedType = ['jsonObject', 'linkMultiple'];
