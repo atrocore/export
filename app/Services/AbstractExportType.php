@@ -39,6 +39,8 @@ abstract class AbstractExportType extends Base
 {
     public const TMP_DIR = 'data' . DIRECTORY_SEPARATOR . '.tmp-export';
 
+    protected const ATTRIBUTE_CHUNK_SIZE = 200;
+
     public const PRIORITIES = [
         'Low'     => 50,
         'Normal'  => 100,
@@ -244,21 +246,81 @@ abstract class AbstractExportType extends Base
         return $this->getEntityService()->findEntities($params)['total'] ?? 0;
     }
 
+    /**
+     * @deprecated Use collectAttributeIds() + enrichCollectionWithAttributes() instead.
+     *             Kept for backward compatibility with subclasses that may override it.
+     */
     protected function addAttributesToSelectParams(array &$params): void
     {
+        $params['attributesIds'] = $this->collectAttributeIds();
+    }
+
+    protected function collectAttributeIds(): array
+    {
         $entityName = $this->data['feed']['entity'] ?? null;
-        if (empty($entityName)) {
+        if (empty($entityName) || !$this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
+            return [];
+        }
+
+        $ids = [];
+        foreach ($this->data['feed']['data']['configuration'] ?? [] as $item) {
+            if (!empty($item['entityAttributeId'])) {
+                $ids[$item['entityAttributeId']] = true;
+            }
+        }
+
+        return array_keys($ids);
+    }
+
+    /**
+     * Loads attribute values onto a collection in chunks to avoid generating too many SQL JOINs.
+     *
+     * The first findEntities call for the page uses no attribute JOINs.
+     * Attribute values are then fetched in separate queries, each covering at most
+     * ATTRIBUTE_CHUNK_SIZE attribute IDs, and merged back onto the base entities.
+     */
+    protected function enrichCollectionWithAttributes(EntityCollection $collection, array $attributeIds): void
+    {
+        if (empty($attributeIds) || count($collection) === 0) {
             return;
         }
 
-        if ($this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
-            $attributesIds = [];
-            foreach ($this->data['feed']['data']['configuration'] ?? [] as $item) {
-                if (!empty($item['entityAttributeId'])) {
-                    $attributesIds[$item['entityAttributeId']] = true;
+        $entityIds = [];
+        $entityMap = [];
+        foreach ($collection as $entity) {
+            $id            = $entity->get('id');
+            $entityIds[]   = $id;
+            $entityMap[$id] = $entity;
+        }
+
+        foreach (array_chunk($attributeIds, self::ATTRIBUTE_CHUNK_SIZE) as $chunk) {
+            $chunkResult = $this->getEntityService()->findEntities([
+                'where'        => [['attribute' => 'id', 'type' => 'in', 'value' => $entityIds]],
+                'disableCount' => true,
+                'attributesIds' => $chunk,
+            ]);
+
+            foreach ($chunkResult['collection'] ?? [] as $chunkEntity) {
+                $baseEntity = $entityMap[$chunkEntity->get('id')] ?? null;
+                if ($baseEntity === null) {
+                    continue;
                 }
+
+                foreach ($chunkEntity->entityDefs['fields'] as $key => $defs) {
+                    if (!empty($defs['attributeId']) && in_array($defs['attributeId'], $chunk)) {
+                        $baseEntity->entityDefs['fields'][$key] = $defs;
+                        $baseEntity->set($key, $chunkEntity->get($key));
+                    }
+                }
+
+                $baseEntity->set('attributesDefs', array_merge(
+                    $baseEntity->get('attributesDefs') ?? [],
+                    $chunkEntity->get('attributesDefs') ?? []
+                ));
             }
-            $params['attributesIds'] = array_keys($attributesIds);
+
+            unset($chunkResult);
+            gc_collect_cycles();
         }
     }
 
@@ -274,17 +336,17 @@ abstract class AbstractExportType extends Base
         $params['maxSize'] = $limit;
         $params['subQueryCallbacks'][] = [$this, 'queryCallback'];
 
-        $this->addAttributesToSelectParams($params);
-
         $result = $this->getEntityService()->findEntities($params);
 
-        if (isset($result['collection'])) {
-            $list = [];
-            foreach ($result['collection'] as $entity) {
-                $list[] = array_merge($entity->toArray(), ['_entity' => $entity]);
-            }
-        } else {
-            $list = $result['list'];
+        if (!isset($result['collection'])) {
+            return $result['list'] ?? [];
+        }
+
+        $this->enrichCollectionWithAttributes($result['collection'], $this->collectAttributeIds());
+
+        $list = [];
+        foreach ($result['collection'] as $entity) {
+            $list[] = array_merge($entity->toArray(), ['_entity' => $entity]);
         }
 
         return $list;
@@ -311,8 +373,6 @@ abstract class AbstractExportType extends Base
         $params['disableCount'] = true;
         $params['subQueryCallbacks'][] = [$this, 'queryCallback'];
 
-        $this->addAttributesToSelectParams($params);
-
         if (!empty($this->data['feed']['sortOrderField'])) {
             $params['sortBy'] = $this->data['feed']['sortOrderField'];
             if ($this->getMetadata()->get(['entityDefs', $this->data['feed']['entity'], 'fields', $params['sortBy'], 'type']) === 'link') {
@@ -325,11 +385,13 @@ abstract class AbstractExportType extends Base
         }
 
         $result = $this->getEntityService()->findEntities($params);
-        if (isset($result['collection']) && count($result['collection']) > 0) {
-            return $result['collection'];
+        if (!isset($result['collection']) || count($result['collection']) === 0) {
+            return null;
         }
 
-        return null;
+        $this->enrichCollectionWithAttributes($result['collection'], $this->collectAttributeIds());
+
+        return $result['collection'];
     }
 
     /**
