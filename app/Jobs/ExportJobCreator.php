@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\Jobs;
 
+use Atro\Core\Utils\IdGenerator;
 use Atro\Entities\Job;
 use Atro\Jobs\AbstractJob;
 use Atro\Jobs\JobInterface;
@@ -91,12 +92,12 @@ class ExportJobCreator extends AbstractJob implements JobInterface
 
     protected function pushExportJob(string $jobName, array $data): string
     {
-        $user = $this->getUser();
+        $user = $this->getUser()->get('delegator');
 
         $maxWorkers = $data['feed']['maxWorkers'] ?? null;
 
         $exportJob = $this->getEntityManager()->getEntity('ExportJob');
-        $exportJob->id = Util::generateId();
+        $exportJob->id = IdGenerator::sortableId();
         $exportJob->set('name', $jobName);
         $exportJob->set('exportFeedId', $data['feed']['id']);
         $exportJob->set('start', (new \DateTime())->format('Y-m-d H:i:s'));
