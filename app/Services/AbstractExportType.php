@@ -39,6 +39,8 @@ abstract class AbstractExportType extends Base
 {
     public const TMP_DIR = 'data' . DIRECTORY_SEPARATOR . '.tmp-export';
 
+    protected const ATTRIBUTE_CHUNK_SIZE = 200;
+
     public const PRIORITIES = [
         'Low'     => 50,
         'Normal'  => 100,
@@ -75,7 +77,7 @@ abstract class AbstractExportType extends Base
             ];
 
             if (!empty($data['multilangLocale'])) {
-                $row['field'] = $data['multilangField'];
+                $row['field']    = $data['multilangField'];
                 $row['language'] = $data['multilangLocale'];
             }
 
@@ -90,10 +92,10 @@ abstract class AbstractExportType extends Base
 
             if ($data['type'] === 'linkMultiple') {
                 $row['exportIntoSeparateColumns'] = false;
-                $row['offsetRelation'] = 0;
-                $row['limitRelation'] = 20;
-                $row['sortFieldRelation'] = 'id';
-                $row['sortOrderRelation'] = '1'; // ASC
+                $row['offsetRelation']            = 0;
+                $row['limitRelation']             = 20;
+                $row['sortFieldRelation']         = 'id';
+                $row['sortOrderRelation']         = '1'; // ASC
             }
 
             if ($data['type'] === 'currency') {
@@ -158,14 +160,14 @@ abstract class AbstractExportType extends Base
     {
         $feedData = $this->data['feed']['data'];
 
-        $row['delimiter'] = !empty($feedData['delimiter']) ? $feedData['delimiter'] : ',';
-        $row['emptyValue'] = !empty($feedData['emptyValue']) ? $feedData['emptyValue'] : '';
-        $row['nullValue'] = array_key_exists('nullValue', $feedData) ? $feedData['nullValue'] : 'Null';
-        $row['markForNoRelation'] = array_key_exists('markForNoRelation', $feedData) ? $feedData['markForNoRelation'] : 'Null';
+        $row['delimiter']                 = !empty($feedData['delimiter']) ? $feedData['delimiter'] : ',';
+        $row['emptyValue']                = !empty($feedData['emptyValue']) ? $feedData['emptyValue'] : '';
+        $row['nullValue']                 = array_key_exists('nullValue', $feedData) ? $feedData['nullValue'] : 'Null';
+        $row['markForNoRelation']         = array_key_exists('markForNoRelation', $feedData) ? $feedData['markForNoRelation'] : 'Null';
         $row['fieldDelimiterForRelation'] = !empty($feedData['fieldDelimiterForRelation']) ? $feedData['fieldDelimiterForRelation'] : '|';
-        $row['entity'] = $feedData['entity'];
-        $row['decimalMark'] = $feedData['decimalMark'];
-        $row['thousandSeparator'] = $feedData['thousandSeparator'];
+        $row['entity']                    = $feedData['entity'];
+        $row['decimalMark']               = $feedData['decimalMark'];
+        $row['thousandSeparator']         = $feedData['thousandSeparator'];
 
 
         return $row;
@@ -213,7 +215,7 @@ abstract class AbstractExportType extends Base
 
     protected function prepareSelectParams(): array
     {
-        $params = $this->getSelectParams();
+        $params                = $this->getSelectParams();
         $params['withDeleted'] = !empty($this->data['feed']['data']['withDeleted']);
 
         if (!empty($this->data['feed']['sortOrderField'])) {
@@ -236,27 +238,94 @@ abstract class AbstractExportType extends Base
             return 0;
         }
 
-        $params = $this->prepareSelectParams();
+        $params              = $this->prepareSelectParams();
         $params['totalOnly'] = true;
 
         return $this->getEntityService()->findEntities($params)['total'] ?? 0;
     }
 
-    protected function addAttributesToSelectParams(array &$params): void
+    protected function collectAttributeIds(): array
     {
         $entityName = $this->data['feed']['entity'] ?? null;
-        if (empty($entityName)) {
+        if (empty($entityName) || !$this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
+            return [];
+        }
+
+        $ids = [];
+        foreach ($this->data['feed']['data']['configuration'] ?? [] as $item) {
+            if (!empty($item['entityAttributeId'])) {
+                $ids[$item['entityAttributeId']] = true;
+            }
+        }
+
+        return array_keys($ids);
+    }
+
+    /**
+     * Loads attribute values onto a collection in chunks to avoid generating too many SQL JOINs.
+     * Only called when the number of attribute IDs exceeds ATTRIBUTE_CHUNK_SIZE.
+     *
+     * For each chunk a second findEntities is issued with:
+     *   - WHERE id IN (page entity ids) — no original filters
+     *   - select: ['id']               — suppress re-fetching base columns
+     *   - attributesIds: chunk          — only this batch of attribute JOINs
+     *
+     * Attribute field definitions and values from each chunk entity are then merged
+     * directly onto the matching base entity.
+     */
+    protected function enrichCollectionWithAttributes(EntityCollection $collection, array $attributeIds): void
+    {
+        if (empty($attributeIds) || count($collection) === 0) {
             return;
         }
 
-        if ($this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
-            $attributesIds = [];
-            foreach ($this->data['feed']['data']['configuration'] ?? [] as $item) {
-                if (!empty($item['entityAttributeId'])) {
-                    $attributesIds[$item['entityAttributeId']] = true;
+        $entityIds = [];
+        $entityMap = [];
+        foreach ($collection as $entity) {
+            $id             = $entity->get('id');
+            $entityIds[]    = $id;
+            $entityMap[$id] = $entity;
+        }
+
+        foreach (array_chunk($attributeIds, self::ATTRIBUTE_CHUNK_SIZE) as $chunk) {
+            $chunkResult = $this->getEntityService()->findEntities([
+                'where'         => [['attribute' => 'id', 'type' => 'in', 'value' => $entityIds]],
+                'disableCount'  => true,
+                'attributesIds' => $chunk,
+                'select'        => ['id'],
+            ]);
+
+            foreach ($chunkResult['collection'] ?? [] as $chunkEntity) {
+                $baseEntity = $entityMap[$chunkEntity->get('id')] ?? null;
+                if ($baseEntity === null) {
+                    continue;
                 }
+
+                // Merge field definitions from both registries, set values for each
+                // attribute field found in the chunk entity's fields map.
+                foreach ($chunkEntity->fields as $key => $defs) {
+                    if (empty($defs['attributeId']) || !in_array($defs['attributeId'], $chunk)) {
+                        continue;
+                    }
+                    $baseEntity->fields[$key] = $defs;
+                    $baseEntity->set($key, $chunkEntity->get($key));
+                }
+
+                foreach ($chunkEntity->entityDefs['fields'] as $key => $defs) {
+                    if (empty($defs['attributeId']) || !in_array($defs['attributeId'], $chunk)) {
+                        continue;
+                    }
+                    $baseEntity->entityDefs['fields'][$key] = $chunkEntity->entityDefs['fields'][$key];
+                }
+
+                $baseEntity->set('attributesDefs', array_merge(
+                    $baseEntity->get('attributesDefs') ?? [],
+                    $chunkEntity->get('attributesDefs') ?? []
+                ));
             }
-            $params['attributesIds'] = array_keys($attributesIds);
+
+            unset($chunkResult);
+            gc_collect_cycles();
         }
     }
 
@@ -266,23 +335,31 @@ abstract class AbstractExportType extends Base
             return [];
         }
 
-        $params = $this->prepareSelectParams();
-        $params['disableCount'] = true;
-        $params['offset'] = $offset;
-        $params['maxSize'] = $limit;
+        $params                        = $this->prepareSelectParams();
+        $params['disableCount']        = true;
+        $params['offset']              = $offset;
+        $params['maxSize']             = $limit;
         $params['subQueryCallbacks'][] = [$this, 'queryCallback'];
 
-        $this->addAttributesToSelectParams($params);
+        $attributeIds = $this->collectAttributeIds();
+
+        if (count($attributeIds) <= self::ATTRIBUTE_CHUNK_SIZE && !empty($attributeIds)) {
+            $params['attributesIds'] = $attributeIds;
+        }
 
         $result = $this->getEntityService()->findEntities($params);
 
-        if (isset($result['collection'])) {
-            $list = [];
-            foreach ($result['collection'] as $entity) {
-                $list[] = array_merge($entity->toArray(), ['_entity' => $entity]);
-            }
-        } else {
-            $list = $result['list'];
+        if (!isset($result['collection'])) {
+            return $result['list'] ?? [];
+        }
+
+        if (count($attributeIds) > self::ATTRIBUTE_CHUNK_SIZE) {
+            $this->enrichCollectionWithAttributes($result['collection'], $attributeIds);
+        }
+
+        $list = [];
+        foreach ($result['collection'] as $entity) {
+            $list[] = array_merge($entity->toArray(), ['_entity' => $entity]);
         }
 
         return $list;
@@ -302,14 +379,12 @@ abstract class AbstractExportType extends Base
             $offset = $this->data['offset'];
         }
 
-        $params = $this->getSelectParams();
-        $params['offset'] = $offset;
-        $params['maxSize'] = $this->data['limit'];
-        $params['withDeleted'] = !empty($this->data['feed']['data']['withDeleted']);
-        $params['disableCount'] = true;
+        $params                        = $this->getSelectParams();
+        $params['offset']              = $offset;
+        $params['maxSize']             = $this->data['limit'];
+        $params['withDeleted']         = !empty($this->data['feed']['data']['withDeleted']);
+        $params['disableCount']        = true;
         $params['subQueryCallbacks'][] = [$this, 'queryCallback'];
-
-        $this->addAttributesToSelectParams($params);
 
         if (!empty($this->data['feed']['sortOrderField'])) {
             $params['sortBy'] = $this->data['feed']['sortOrderField'];
@@ -322,12 +397,22 @@ abstract class AbstractExportType extends Base
             }
         }
 
-        $result = $this->getEntityService()->findEntities($params);
-        if (isset($result['collection']) && count($result['collection']) > 0) {
-            return $result['collection'];
+        $attributeIds = $this->collectAttributeIds();
+
+        if (count($attributeIds) <= self::ATTRIBUTE_CHUNK_SIZE && !empty($attributeIds)) {
+            $params['attributesIds'] = $attributeIds;
         }
 
-        return null;
+        $result = $this->getEntityService()->findEntities($params);
+        if (!isset($result['collection']) || count($result['collection']) === 0) {
+            return null;
+        }
+
+        if (count($attributeIds) > self::ATTRIBUTE_CHUNK_SIZE) {
+            $this->enrichCollectionWithAttributes($result['collection'], $attributeIds);
+        }
+
+        return $result['collection'];
     }
 
     /**
@@ -410,15 +495,15 @@ abstract class AbstractExportType extends Base
      */
     protected function createCacheFileByChunks(int $total): array
     {
-        $limit = $this->data['limit'];
-        $offset = $this->data['offset'];
-        $maxWorkers = $this->data['feed']['maxWorkers'] ?? null;
+        $limit       = $this->data['limit'];
+        $offset      = $this->data['offset'];
+        $maxWorkers  = $this->data['feed']['maxWorkers'] ?? null;
         $exportJobId = $this->data['exportJobId'];
 
         $priority = empty($this->data['feed']['priority']) ? 'Normal' : (string)$this->data['feed']['priority'];
-        $jobs = new EntityCollection();
-        $jobIds = [];
-        $i = 1;
+        $jobs     = new EntityCollection();
+        $jobIds   = [];
+        $i        = 1;
 
         while ($offset < $total) {
             if ($maxWorkers !== null && $maxWorkers > 0) {
@@ -429,9 +514,9 @@ abstract class AbstractExportType extends Base
 
             $jobName = $this->data['feed']['name'] . " Chunk #$i";
 
-            $subData = $this->data;
+            $subData             = $this->data;
             $subData['chunkJob'] = true;
-            $subData['offset'] = $offset;
+            $subData['offset']   = $offset;
 
             $jobEntity = $this->getEntityManager()->getEntity('Job');
             $jobEntity->set([
@@ -444,7 +529,7 @@ abstract class AbstractExportType extends Base
 
             $jobs->append($jobEntity);
             $jobIds[] = $jobEntity->get('id');
-            $offset = $offset + $limit;
+            $offset   = $offset + $limit;
             $i++;
         }
 
@@ -458,7 +543,7 @@ abstract class AbstractExportType extends Base
             }
 
             $success = true;
-            $jobs = $this->getEntityManager()->getRepository('Job')->findByIds($jobIds);
+            $jobs    = $this->getEntityManager()->getRepository('Job')->findByIds($jobIds);
             foreach ($jobs as $job) {
                 if ($job->get('status') === 'Failed') {
                     throw new BadRequest($job->get('message'));
@@ -501,7 +586,7 @@ abstract class AbstractExportType extends Base
 
         $file = fopen($res['fullFileName'], 'a');
 
-        $fileNames = [];
+        $fileNames    = [];
         $zipFilesData = [];
         foreach ($jobs as $job) {
             if (empty($job->get('payload')->chunkFileName)) {
@@ -545,10 +630,10 @@ abstract class AbstractExportType extends Base
                 $preparedFileName = $fileName = basename($path);
 
                 if (!empty($zipFileData['fileNameTemplate'])) {
-                    $templateData = $zipFileData['templateData'];
+                    $templateData                  = $zipFileData['templateData'];
                     $templateData['currentNumber'] = $fileNumber;
-                    $templateData['fileName'] = $fileName;
-                    $templateData['entity'] = null;
+                    $templateData['fileName']      = $fileName;
+                    $templateData['entity']        = null;
 
                     $preparedFileName = $this->createZipFileName(
                         $fileName,
@@ -574,7 +659,7 @@ abstract class AbstractExportType extends Base
         $preparedFileName = $fileName;
 
         $parts = explode('.', $fileName);
-        $ext = array_pop($parts);
+        $ext   = array_pop($parts);
 
         $newFileName = $this->getTwig()->renderTemplate($fileNameTemplate, $templateData);
 
@@ -587,7 +672,7 @@ abstract class AbstractExportType extends Base
 
     protected function createCacheFile(): array
     {
-        $limit = $this->data['limit'];
+        $limit  = $this->data['limit'];
         $offset = $this->data['offset'];
 
         $total = $this->getTotal();
