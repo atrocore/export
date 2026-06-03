@@ -186,9 +186,13 @@ class ExportFeed extends Base
                 ]));
                 $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'From']));
                 $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'To']));
-            } else {
-                $this->createExportConfiguratorItem($data);
+                if (!empty($defs['measureId'])) {
+                    $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'Unit', 'exportBy' => ['name']]));
+                }
+                continue;
             }
+
+            $this->createExportConfiguratorItem($data);
 
             if (!empty($this->getConfig()->get('isMultilangActive')) && !empty($defs['isMultilang']) && empty($defs['measureId'])) {
                 foreach ($defs['lingualFields'] ?? [] as $languageField) {
@@ -196,15 +200,29 @@ class ExportFeed extends Base
                 }
             }
 
-            if (!empty($defs['measureId']) && $type !== 'measure') {
-                $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'Unit', 'exportBy' => ['name']]));
-                $this->createExportConfiguratorItem(array_merge($data, [
-                    'name'       => null,
-                    'type'       => 'script',
-                    'columnType' => 'custom',
-                    'column'     => $languageObj->translate('combined' . ucfirst($field), 'fields', $feedEntity),
-                    'script'     => "{{ record['{$field}'] }} {{ record['{$field}UnitName'] }}"
-                ]));
+            if (in_array($type, ['int', 'float', 'varchar'])) {
+                $hasMeasure = !empty($defs['measureId']);
+                $hasPrefix  = !empty($defs['prefixEnabled']);
+
+                if ($hasMeasure) {
+                    $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'Unit', 'exportBy' => ['name']]));
+                }
+
+                if ($hasPrefix) {
+                    $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'Prefix', 'exportBy' => ['name']]));
+                }
+
+                if ($hasMeasure || $hasPrefix) {
+                    $prefix = $hasPrefix ? "{{ record['{$field}PrefixName'] }} " : '';
+                    $unit   = $hasMeasure ? " {{ record['{$field}UnitName'] }}" : '';
+                    $this->createExportConfiguratorItem(array_merge($data, [
+                        'name'       => null,
+                        'type'       => 'script',
+                        'columnType' => 'custom',
+                        'column'     => $languageObj->translate('combined' . ucfirst($field), 'fields', $feedEntity),
+                        'script'     => "{$prefix}{{ record['{$field}'] }}{$unit}"
+                    ]));
+                }
             }
         }
 
@@ -258,7 +276,7 @@ class ExportFeed extends Base
                 ];
 
                 if (in_array($fieldDefs['type'], ['link', 'file'])) {
-                    $data['exportBy'] = !empty($fieldDefs['unitIdField']) ? ['name'] : ['id'];
+                    $data['exportBy'] = (!empty($fieldDefs['unitIdField']) || !empty($fieldDefs['prefixIdField'])) ? ['name'] : ['id'];
                 }
 
                 if (in_array($fieldDefs['type'], ['rangeInt', 'rangeFloat'])) {
@@ -270,16 +288,20 @@ class ExportFeed extends Base
                         'script'     => "{{ record['{$field}From'] }} - {{ record['{$field}To'] }} {{ record['{$field}UnitName'] }}",
                     ]);
                     continue;
-                }
-
-                if (in_array($fieldDefs['type'], ['link']) && !empty($fieldDefs['unitIdField']) && empty($fieldDefs['rangeType'])) {
+                } else if (!empty($fieldDefs['combinedField'])) {
                     $result[] = $data;
+
+                    $hasMeasure = !empty($fieldDefs['measureId']);
+                    $hasPrefix  = !empty($fieldDefs['prefixEnabled']);
+                    $prefix     = $hasPrefix  ? "{{ record['{$field}PrefixName'] }} " : '';
+                    $unit       = $hasMeasure ? " {{ record['{$field}UnitName'] }}"   : '';
+
                     $result[] = array_merge($data, [
                         'name'       => null,
                         'type'       => 'script',
                         'columnType' => 'custom',
-                        'column'     => $attributesDefs[$fieldDefs['mainField']]['detailViewLabel'] ?? $attributesDefs[$fieldDefs['mainField']]['label'],
-                        'script'     => "{{ record['{$fieldDefs['mainField']}'] }} {{ record['{$fieldDefs['mainField']}UnitName'] }}",
+                        'column'     => $fieldDefs['detailViewLabel'] ?? $fieldDefs['label'],
+                        'script'     => "{$prefix}{{ record['{$field}'] }}{$unit}",
                     ]);
                     continue;
                 }
