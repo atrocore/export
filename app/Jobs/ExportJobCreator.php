@@ -17,7 +17,6 @@ use Atro\Core\Utils\IdGenerator;
 use Atro\Entities\Job;
 use Atro\Jobs\AbstractJob;
 use Atro\Jobs\JobInterface;
-use Atro\Core\Utils\Util;
 use Export\Services\ExportFeed;
 
 class ExportJobCreator extends AbstractJob implements JobInterface
@@ -97,7 +96,7 @@ class ExportJobCreator extends AbstractJob implements JobInterface
         $maxWorkers = $data['feed']['maxWorkers'] ?? null;
 
         $exportJob = $this->getEntityManager()->getEntity('ExportJob');
-        $exportJob->id = IdGenerator::sortableId();
+        $exportJob->id = IdGenerator::uuid();
         $exportJob->set('name', $jobName);
         $exportJob->set('exportFeedId', $data['feed']['id']);
         $exportJob->set('start', (new \DateTime())->format('Y-m-d H:i:s'));
@@ -125,7 +124,7 @@ class ExportJobCreator extends AbstractJob implements JobInterface
 
             $jobEntity = $this->getEntityManager()->getEntity('Job');
             $jobEntity->set([
-                'id'          => Util::generateId(),
+                'id'          => IdGenerator::uuid(),
                 'name'        => $qmJobName,
                 'type'        => 'Export',
                 'payload'     => $data,
