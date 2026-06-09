@@ -361,12 +361,11 @@ class ExportTypeSimple extends AbstractExportType
         $data = $this->createCacheFile();
 
         $exportJob->set('count', $data['count']);
-        $exportJob->set('data', array_merge($exportJob->getData(), $data));
 
         // create tmp CSV file
         $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash() . DIRECTORY_SEPARATOR . $input->name;
         $this->createDir($fileName);
-        $this->storeCsvFile($exportJob->getData(), $fileName);
+        $this->storeCsvFile(array_merge($exportJob->getData(), $data), $fileName);
 
         $this->reuploadIfNeeds($input);
 
