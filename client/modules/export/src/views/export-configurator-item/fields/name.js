@@ -27,7 +27,7 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
             });
 
             // select first
-            if (!this.model.get('name') && this.params.options[0]) {
+            if (!this.model.get('name') && this.params.options[0] && this.model.get('type') !== 'allAttributes') {
                 this.model.set('name', this.params.options[0]);
             }
 
