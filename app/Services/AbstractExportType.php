@@ -39,7 +39,7 @@ abstract class AbstractExportType extends Base
 {
     public const TMP_DIR = 'data' . DIRECTORY_SEPARATOR . '.tmp-export';
 
-    protected const MAX_ATTRIBUTE_JOINS = 50;
+    protected const MAX_ATTRIBUTE_SELECTS = 500;
 
     public const PRIORITIES = [
         'Low'     => 50,
@@ -292,7 +292,8 @@ abstract class AbstractExportType extends Base
         if (empty($meta)) {
             $meta = $this->fetchAttributeMeta($attributeIds);
         }
-        foreach ($this->chunkAttributesByJoinCost($attributeIds, $meta) as $chunk) {
+        $langCount = count($this->getConfig()->get('inputLanguageList', []));
+        foreach ($this->chunkAttributesBySelectCost($attributeIds, $meta, $langCount) as $chunk) {
             $chunkResult = $this->getEntityService()->findEntities([
                 'where'         => [['attribute' => 'id', 'type' => 'in', 'value' => $entityIds]],
                 'disableCount'  => true,
@@ -356,53 +357,56 @@ abstract class AbstractExportType extends Base
     }
 
     /**
-     * JOIN cost per attribute type, mirroring the leftJoin calls in each AttributeFieldType::select():
-     *   int/float:      +1 if measure_id set, +1 if prefix_enabled
-     *   varchar:        same but only when !is_multilang
-     *   rangeInt/Float: always +1 (unit join)
-     *   link/file:      always +1 (reference/file join)
-     *   all others:     base 1 only
+     * Number of SELECT columns added per attribute type, mirroring addSelect calls in AttributeFieldType::select():
+     *   int/float:              1 + 2 if measure_id + 2 if prefix_enabled  (max 5)
+     *   varchar non-multilang:  same
+     *   varchar/text multilang: 1 + one per configured language
+     *   rangeInt/Float:         4 (from, to, unitId, unitName)
+     *   link/file:              2 (id, name)
+     *   all others:             1
      */
-    protected static function calcAttributeJoinCost(array $meta): int
+    protected static function calcAttributeSelectCost(array $meta, int $langCount = 0): int
     {
         $type        = $meta['type'] ?? '';
         $hasMeasure  = !empty($meta['measure_id']);
         $hasPrefix   = !empty($meta['prefix_enabled']);
         $isMultilang = !empty($meta['is_multilang']);
 
-        $cost = 1; // base entity_attribute_value join
         switch ($type) {
             case 'int':
             case 'float':
-                if ($hasMeasure) $cost++;
-                if ($hasPrefix)  $cost++;
-                break;
+                return 1 + ($hasMeasure ? 2 : 0) + ($hasPrefix ? 2 : 0);
             case 'varchar':
-                if ($hasMeasure && !$isMultilang) $cost++;
-                if ($hasPrefix  && !$isMultilang) $cost++;
-                break;
+                if ($isMultilang) {
+                    return 1 + $langCount;
+                }
+                return 1 + ($hasMeasure ? 2 : 0) + ($hasPrefix ? 2 : 0);
+            case 'text':
+            case 'markdown':
+            case 'wysiwyg':
+            case 'url':
+                return $isMultilang ? 1 + $langCount : 1;
             case 'rangeInt':
             case 'rangeFloat':
-                $cost++; // always unit join
-                break;
+                return 4;
             case 'link':
             case 'file':
-                $cost++; // reference/file join
-                break;
+                return 2;
+            default:
+                return 1;
         }
-        return $cost;
     }
 
-    protected function chunkAttributesByJoinCost(array $ids, array $meta): array
+    protected function chunkAttributesBySelectCost(array $ids, array $meta, int $langCount = 0): array
     {
         $chunks    = [];
         $chunk     = [];
         $chunkCost = 0;
 
         foreach ($ids as $id) {
-            $cost = self::calcAttributeJoinCost($meta[$id] ?? []);
+            $cost = self::calcAttributeSelectCost($meta[$id] ?? [], $langCount);
 
-            if (!empty($chunk) && $chunkCost + $cost > self::MAX_ATTRIBUTE_JOINS) {
+            if (!empty($chunk) && $chunkCost + $cost > self::MAX_ATTRIBUTE_SELECTS) {
                 $chunks[]  = $chunk;
                 $chunk     = [];
                 $chunkCost = 0;
@@ -436,8 +440,9 @@ abstract class AbstractExportType extends Base
 
         if (!empty($attributeIds)) {
             $attributeMeta = $this->fetchAttributeMeta($attributeIds);
-            $totalCost     = array_sum(array_map(fn($id) => self::calcAttributeJoinCost($attributeMeta[$id] ?? []), $attributeIds));
-            if ($totalCost <= self::MAX_ATTRIBUTE_JOINS) {
+            $langCount     = count($this->getConfig()->get('inputLanguageList', []));
+            $totalCost     = array_sum(array_map(fn($id) => self::calcAttributeSelectCost($attributeMeta[$id] ?? [], $langCount), $attributeIds));
+            if ($totalCost <= self::MAX_ATTRIBUTE_SELECTS) {
                 $params['attributesIds'] = $attributeIds;
                 $attributeIds = [];
             }
@@ -498,8 +503,9 @@ abstract class AbstractExportType extends Base
 
         if (!empty($attributeIds)) {
             $attributeMeta = $this->fetchAttributeMeta($attributeIds);
-            $totalCost     = array_sum(array_map(fn($id) => self::calcAttributeJoinCost($attributeMeta[$id] ?? []), $attributeIds));
-            if ($totalCost <= self::MAX_ATTRIBUTE_JOINS) {
+            $langCount     = count($this->getConfig()->get('inputLanguageList', []));
+            $totalCost     = array_sum(array_map(fn($id) => self::calcAttributeSelectCost($attributeMeta[$id] ?? [], $langCount), $attributeIds));
+            if ($totalCost <= self::MAX_ATTRIBUTE_SELECTS) {
                 $params['attributesIds'] = $attributeIds;
                 $attributeIds = [];
             }
