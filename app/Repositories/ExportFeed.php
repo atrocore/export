@@ -259,14 +259,18 @@ class ExportFeed extends Base
                 ->setParameter('true', true, ParameterType::BOOLEAN)
                 ->fetchAllAssociative();
 
-            $attributeIds = $dbal->createQueryBuilder()
-                ->select('a.id')
-                ->from('attribute', 'a')
-                ->where('a.deleted = :false')
-                ->andWhere('a.entity_id = :entityId')
-                ->setParameter('false', false, ParameterType::BOOLEAN)
-                ->setParameter('entityId', $exportEntity)
-                ->fetchFirstColumn();
+            // get entity attributes if there are any items with entity_attribute_id
+            $hasAttributeItems = !empty(array_filter($items, fn($i) => !empty($i['entity_attribute_id'])));
+            $attributeIds = $hasAttributeItems
+                ? $dbal->createQueryBuilder()
+                    ->select('a.id')
+                    ->from('attribute', 'a')
+                    ->where('a.deleted = :false')
+                    ->andWhere('a.entity_id = :entityId')
+                    ->setParameter('false', false, ParameterType::BOOLEAN)
+                    ->setParameter('entityId', $exportEntity)
+                    ->fetchFirstColumn()
+                : [];
 
             $ids = [];
             foreach ($items as $item) {
