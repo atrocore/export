@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Export\Services;
 
+use Atro\Core\AttributeFieldConverter;
 use Atro\Core\Exceptions\BadRequest;
 use Atro\Core\Container;
 use Atro\Core\Exceptions\Error;
 use Atro\ORM\DB\RDB\Mapper;
-use Atro\Repositories\SavedSearch;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\Core\Services\Base;
 use Atro\Core\Twig\Twig;
@@ -39,7 +39,10 @@ abstract class AbstractExportType extends Base
 {
     public const TMP_DIR = 'data' . DIRECTORY_SEPARATOR . '.tmp-export';
 
+    // Budget for enrichment chunks (base query uses select:['id'], so only attribute columns count).
     protected const MAX_ATTRIBUTE_SELECTS = 500;
+    // Lower budget for the inline case (attributes added to the main entity query which already has entity columns).
+    protected const MAX_ATTRIBUTE_SELECTS_INLINE = 200;
 
     public const PRIORITIES = [
         'Low'     => 50,
@@ -339,15 +342,7 @@ abstract class AbstractExportType extends Base
             return [];
         }
 
-        $conn = $this->getEntityManager()->getConnection();
-        $rows = $conn->createQueryBuilder()
-            ->select('a.id, a.type, a.measure_id, a.prefix_enabled, a.is_multilang')
-            ->from($conn->quoteIdentifier('attribute'), 'a')
-            ->where('a.id IN (:ids)')
-            ->andWhere('a.deleted = :false')
-            ->setParameter('ids', $ids, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
-            ->setParameter('false', false, \Doctrine\DBAL\ParameterType::BOOLEAN)
-            ->fetchAllAssociative();
+        $rows = $this->getContainer()->get(AttributeFieldConverter::class)->getAttributesRowsByIds($ids);
 
         $result = [];
         foreach ($rows as $row) {
@@ -388,10 +383,13 @@ abstract class AbstractExportType extends Base
                 return $isMultilang ? 1 + $langCount : 1;
             case 'rangeInt':
             case 'rangeFloat':
-                return 4;
+                return 2 + ($hasMeasure ? 2 : 0);
             case 'link':
             case 'file':
                 return 2;
+            case 'script':
+                $outputType = $meta['output_type'] ?? 'text';
+                return self::calcAttributeSelectCost(array_merge($meta, ['type' => $outputType]), $langCount);
             default:
                 return 1;
         }
@@ -442,7 +440,7 @@ abstract class AbstractExportType extends Base
             $attributeMeta = $this->fetchAttributeMeta($attributeIds);
             $langCount     = count($this->getConfig()->get('inputLanguageList', []));
             $totalCost     = array_sum(array_map(fn($id) => self::calcAttributeSelectCost($attributeMeta[$id] ?? [], $langCount), $attributeIds));
-            if ($totalCost <= self::MAX_ATTRIBUTE_SELECTS) {
+            if ($totalCost <= self::MAX_ATTRIBUTE_SELECTS_INLINE) {
                 $params['attributesIds'] = $attributeIds;
                 $attributeIds = [];
             }
@@ -505,7 +503,7 @@ abstract class AbstractExportType extends Base
             $attributeMeta = $this->fetchAttributeMeta($attributeIds);
             $langCount     = count($this->getConfig()->get('inputLanguageList', []));
             $totalCost     = array_sum(array_map(fn($id) => self::calcAttributeSelectCost($attributeMeta[$id] ?? [], $langCount), $attributeIds));
-            if ($totalCost <= self::MAX_ATTRIBUTE_SELECTS) {
+            if ($totalCost <= self::MAX_ATTRIBUTE_SELECTS_INLINE) {
                 $params['attributesIds'] = $attributeIds;
                 $attributeIds = [];
             }

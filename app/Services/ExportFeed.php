@@ -275,8 +275,8 @@ class ExportFeed extends Base
                     lcfirst($feed->getEntityName()) . 'Id' => $feed->get('id'),
                 ];
 
-                if (in_array($fieldDefs['type'], ['link', 'file'])) {
-                    $data['exportBy'] = (!empty($fieldDefs['unitIdField']) || !empty($fieldDefs['prefixIdField'])) ? ['name'] : ['id'];
+                if (in_array($fieldDefs['type'], ['link', 'linkMultiple','file'])) {
+                    $data['exportBy'] = [$fieldDefs['foreignName'] ?? 'name'];
                 }
 
                 if (in_array($fieldDefs['type'], ['rangeInt', 'rangeFloat'])) {
@@ -293,8 +293,8 @@ class ExportFeed extends Base
 
                     $hasMeasure = !empty($fieldDefs['measureId']);
                     $hasPrefix  = !empty($fieldDefs['prefixEnabled']);
-                    $prefix     = $hasPrefix  ? "{{ record['{$field}PrefixName'] }} " : '';
-                    $unit       = $hasMeasure ? " {{ record['{$field}UnitName'] }}"   : '';
+                    $prefix     = $hasPrefix ? "{{ record['{$field}PrefixName'] }} " : '';
+                    $unit       = $hasMeasure ? " {{ record['{$field}UnitName'] }}" : '';
 
                     $result[] = array_merge($data, [
                         'name'       => null,
