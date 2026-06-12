@@ -39,7 +39,7 @@ abstract class AbstractExportType extends Base
 {
     public const TMP_DIR = 'data' . DIRECTORY_SEPARATOR . '.tmp-export';
 
-    protected const ATTRIBUTE_CHUNK_SIZE = 200;
+    protected const MAX_ATTRIBUTE_JOINS = 50;
 
     public const PRIORITIES = [
         'Low'     => 50,
@@ -265,17 +265,17 @@ abstract class AbstractExportType extends Base
 
     /**
      * Loads attribute values onto a collection in chunks to avoid generating too many SQL JOINs.
-     * Only called when the number of attribute IDs exceeds ATTRIBUTE_CHUNK_SIZE.
      *
      * For each chunk a second findEntities is issued with:
      *   - WHERE id IN (page entity ids) — no original filters
      *   - select: ['id']               — suppress re-fetching base columns
      *   - attributesIds: chunk          — only this batch of attribute JOINs
      *
-     * Attribute field definitions and values from each chunk entity are then merged
-     * directly onto the matching base entity.
+     * Chunks are sized by total JOIN cost, not a fixed count. Each attribute
+     * contributes at least 1 JOIN (attribute_value table) plus additional JOINs
+     * depending on type, measureId, prefixEnabled, and isMultilang.
      */
-    protected function enrichCollectionWithAttributes(EntityCollection $collection, array $attributeIds): void
+    protected function enrichCollectionWithAttributes(EntityCollection $collection, array $attributeIds, array $meta = []): void
     {
         if (empty($attributeIds) || count($collection) === 0) {
             return;
@@ -289,7 +289,10 @@ abstract class AbstractExportType extends Base
             $entityMap[$id] = $entity;
         }
 
-        foreach (array_chunk($attributeIds, self::ATTRIBUTE_CHUNK_SIZE) as $chunk) {
+        if (empty($meta)) {
+            $meta = $this->fetchAttributeMeta($attributeIds);
+        }
+        foreach ($this->chunkAttributesByJoinCost($attributeIds, $meta) as $chunk) {
             $chunkResult = $this->getEntityService()->findEntities([
                 'where'         => [['attribute' => 'id', 'type' => 'in', 'value' => $entityIds]],
                 'disableCount'  => true,
@@ -303,8 +306,6 @@ abstract class AbstractExportType extends Base
                     continue;
                 }
 
-                // Merge field definitions from both registries, set values for each
-                // attribute field found in the chunk entity's fields map.
                 foreach ($chunkEntity->fields as $key => $defs) {
                     if (empty($defs['attributeId']) || !in_array($defs['attributeId'], $chunk)) {
                         continue;
@@ -331,6 +332,93 @@ abstract class AbstractExportType extends Base
         }
     }
 
+    protected function fetchAttributeMeta(array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        $conn = $this->getEntityManager()->getConnection();
+        $rows = $conn->createQueryBuilder()
+            ->select('a.id, a.type, a.measure_id, a.prefix_enabled, a.is_multilang')
+            ->from($conn->quoteIdentifier('attribute'), 'a')
+            ->where('a.id IN (:ids)')
+            ->andWhere('a.deleted = :false')
+            ->setParameter('ids', $ids, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
+            ->setParameter('false', false, \Doctrine\DBAL\ParameterType::BOOLEAN)
+            ->fetchAllAssociative();
+
+        $result = [];
+        foreach ($rows as $row) {
+            $result[$row['id']] = $row;
+        }
+        return $result;
+    }
+
+    /**
+     * JOIN cost per attribute type, mirroring the leftJoin calls in each AttributeFieldType::select():
+     *   int/float:      +1 if measure_id set, +1 if prefix_enabled
+     *   varchar:        same but only when !is_multilang
+     *   rangeInt/Float: always +1 (unit join)
+     *   link/file:      always +1 (reference/file join)
+     *   all others:     base 1 only
+     */
+    protected static function calcAttributeJoinCost(array $meta): int
+    {
+        $type        = $meta['type'] ?? '';
+        $hasMeasure  = !empty($meta['measure_id']);
+        $hasPrefix   = !empty($meta['prefix_enabled']);
+        $isMultilang = !empty($meta['is_multilang']);
+
+        $cost = 1; // base entity_attribute_value join
+        switch ($type) {
+            case 'int':
+            case 'float':
+                if ($hasMeasure) $cost++;
+                if ($hasPrefix)  $cost++;
+                break;
+            case 'varchar':
+                if ($hasMeasure && !$isMultilang) $cost++;
+                if ($hasPrefix  && !$isMultilang) $cost++;
+                break;
+            case 'rangeInt':
+            case 'rangeFloat':
+                $cost++; // always unit join
+                break;
+            case 'link':
+            case 'file':
+                $cost++; // reference/file join
+                break;
+        }
+        return $cost;
+    }
+
+    protected function chunkAttributesByJoinCost(array $ids, array $meta): array
+    {
+        $chunks    = [];
+        $chunk     = [];
+        $chunkCost = 0;
+
+        foreach ($ids as $id) {
+            $cost = self::calcAttributeJoinCost($meta[$id] ?? []);
+
+            if (!empty($chunk) && $chunkCost + $cost > self::MAX_ATTRIBUTE_JOINS) {
+                $chunks[]  = $chunk;
+                $chunk     = [];
+                $chunkCost = 0;
+            }
+
+            $chunk[]    = $id;
+            $chunkCost += $cost;
+        }
+
+        if (!empty($chunk)) {
+            $chunks[] = $chunk;
+        }
+
+        return $chunks;
+    }
+
     protected function getRecords(int $offset, int $limit): array
     {
         if (!$this->getAcl()->check($this->data['feed']['entity'], 'read')) {
@@ -344,9 +432,15 @@ abstract class AbstractExportType extends Base
         $params['subQueryCallbacks'][] = [$this, 'queryCallback'];
 
         $attributeIds = $this->collectAttributeIds();
+        $attributeMeta = [];
 
-        if (count($attributeIds) <= self::ATTRIBUTE_CHUNK_SIZE && !empty($attributeIds)) {
-            $params['attributesIds'] = $attributeIds;
+        if (!empty($attributeIds)) {
+            $attributeMeta = $this->fetchAttributeMeta($attributeIds);
+            $totalCost     = array_sum(array_map(fn($id) => self::calcAttributeJoinCost($attributeMeta[$id] ?? []), $attributeIds));
+            if ($totalCost <= self::MAX_ATTRIBUTE_JOINS) {
+                $params['attributesIds'] = $attributeIds;
+                $attributeIds = [];
+            }
         }
 
         $result = $this->getEntityService()->findEntities($params);
@@ -355,8 +449,8 @@ abstract class AbstractExportType extends Base
             return $result['list'] ?? [];
         }
 
-        if (count($attributeIds) > self::ATTRIBUTE_CHUNK_SIZE) {
-            $this->enrichCollectionWithAttributes($result['collection'], $attributeIds);
+        if (!empty($attributeIds)) {
+            $this->enrichCollectionWithAttributes($result['collection'], $attributeIds, $attributeMeta);
         }
 
         $list = [];
@@ -400,9 +494,15 @@ abstract class AbstractExportType extends Base
         }
 
         $attributeIds = $this->collectAttributeIds();
+        $attributeMeta = [];
 
-        if (count($attributeIds) <= self::ATTRIBUTE_CHUNK_SIZE && !empty($attributeIds)) {
-            $params['attributesIds'] = $attributeIds;
+        if (!empty($attributeIds)) {
+            $attributeMeta = $this->fetchAttributeMeta($attributeIds);
+            $totalCost     = array_sum(array_map(fn($id) => self::calcAttributeJoinCost($attributeMeta[$id] ?? []), $attributeIds));
+            if ($totalCost <= self::MAX_ATTRIBUTE_JOINS) {
+                $params['attributesIds'] = $attributeIds;
+                $attributeIds = [];
+            }
         }
 
         $result = $this->getEntityService()->findEntities($params);
@@ -410,8 +510,8 @@ abstract class AbstractExportType extends Base
             return null;
         }
 
-        if (count($attributeIds) > self::ATTRIBUTE_CHUNK_SIZE) {
-            $this->enrichCollectionWithAttributes($result['collection'], $attributeIds);
+        if (!empty($attributeIds)) {
+            $this->enrichCollectionWithAttributes($result['collection'], $attributeIds, $attributeMeta);
         }
 
         return $result['collection'];
