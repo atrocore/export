@@ -278,7 +278,7 @@ abstract class AbstractExportType extends Base
      * contributes at least 1 JOIN (attribute_value table) plus additional JOINs
      * depending on type, measureId, prefixEnabled, and isMultilang.
      */
-    protected function enrichCollectionWithAttributes(EntityCollection $collection, array $attributeIds, array $meta = []): void
+    protected function enrichCollectionWithAttributes(EntityCollection $collection, array $attributeIds, array $attributesData = []): void
     {
         if (empty($attributeIds) || count($collection) === 0) {
             return;
@@ -292,11 +292,13 @@ abstract class AbstractExportType extends Base
             $entityMap[$id] = $entity;
         }
 
-        if (empty($meta)) {
-            $meta = $this->fetchAttributeMeta($attributeIds);
+        if (empty($attributesData)) {
+            $attributesData = $this->fetchAttributesData($attributeIds);
         }
-        $langCount = count($this->getConfig()->get('inputLanguageList', []));
-        foreach ($this->chunkAttributesBySelectCost($attributeIds, $meta, $langCount) as $chunk) {
+
+        foreach ($this->chunkAttributesBySelectCost($attributeIds, $attributesData) as $chunk) {
+            $chunkSet = array_flip($chunk);
+
             $chunkResult = $this->getEntityService()->findEntities([
                 'where'         => [['attribute' => 'id', 'type' => 'in', 'value' => $entityIds]],
                 'disableCount'  => true,
@@ -311,7 +313,7 @@ abstract class AbstractExportType extends Base
                 }
 
                 foreach ($chunkEntity->fields as $key => $defs) {
-                    if (empty($defs['attributeId']) || !in_array($defs['attributeId'], $chunk)) {
+                    if (empty($defs['attributeId']) || !isset($chunkSet[$defs['attributeId']])) {
                         continue;
                     }
                     $baseEntity->fields[$key] = $defs;
@@ -319,30 +321,32 @@ abstract class AbstractExportType extends Base
                 }
 
                 foreach ($chunkEntity->entityDefs['fields'] as $key => $defs) {
-                    if (empty($defs['attributeId']) || !in_array($defs['attributeId'], $chunk)) {
+                    if (empty($defs['attributeId']) || !isset($chunkSet[$defs['attributeId']])) {
                         continue;
                     }
-                    $baseEntity->entityDefs['fields'][$key] = $chunkEntity->entityDefs['fields'][$key];
+                    $baseEntity->entityDefs['fields'][$key] = $defs;
                 }
 
-                $baseEntity->set('attributesDefs', array_merge(
-                    $baseEntity->get('attributesDefs') ?? [],
-                    $chunkEntity->get('attributesDefs') ?? []
-                ));
+                // each attribute belongs to one chunk, so keys never collide — += avoids allocating a merged copy
+                $baseEntity->set('attributesDefs', ($baseEntity->get('attributesDefs') ?? []) + ($chunkEntity->get('attributesDefs') ?? []));
+
+                // free large arrays on the chunk entity immediately; the collection still holds the shell
+                $chunkEntity->fields = [];
+                $chunkEntity->entityDefs['fields'] = [];
             }
 
-            unset($chunkResult);
+            unset($chunkResult, $chunkSet);
             gc_collect_cycles();
         }
     }
 
-    protected function fetchAttributeMeta(array $ids): array
+    protected function fetchAttributesData(array $ids): array
     {
         if (empty($ids)) {
             return [];
         }
 
-        $rows = $this->getContainer()->get(AttributeFieldConverter::class)->getAttributesRowsByIds($ids);
+        $rows = $this->getAttributeFieldConverter()->getAttributesRowsByIds($ids);
 
         $result = [];
         foreach ($rows as $row) {
@@ -351,58 +355,26 @@ abstract class AbstractExportType extends Base
         return $result;
     }
 
-    /**
-     * Number of SELECT columns added per attribute type, mirroring addSelect calls in AttributeFieldType::select():
-     *   int/float:              1 + 2 if measure_id + 2 if prefix_enabled  (max 5)
-     *   varchar non-multilang:  same
-     *   varchar/text multilang: 1 + one per configured language
-     *   rangeInt/Float:         4 (from, to, unitId, unitName)
-     *   link/file:              2 (id, name)
-     *   all others:             1
-     */
-    protected static function calcAttributeSelectCost(array $meta, int $langCount = 0): int
+    protected function getAttributeFieldConverter(): AttributeFieldConverter
     {
-        $type        = $meta['type'] ?? '';
-        $hasMeasure  = !empty($meta['measure_id']);
-        $hasPrefix   = !empty($meta['prefix_enabled']);
-        $isMultilang = !empty($meta['is_multilang']);
-
-        switch ($type) {
-            case 'int':
-            case 'float':
-                return 1 + ($hasMeasure ? 2 : 0) + ($hasPrefix ? 2 : 0);
-            case 'varchar':
-                if ($isMultilang) {
-                    return 1 + $langCount;
-                }
-                return 1 + ($hasMeasure ? 2 : 0) + ($hasPrefix ? 2 : 0);
-            case 'text':
-            case 'markdown':
-            case 'wysiwyg':
-            case 'url':
-                return $isMultilang ? 1 + $langCount : 1;
-            case 'rangeInt':
-            case 'rangeFloat':
-                return 2 + ($hasMeasure ? 2 : 0);
-            case 'link':
-            case 'file':
-                return 2;
-            case 'script':
-                $outputType = $meta['output_type'] ?? 'text';
-                return self::calcAttributeSelectCost(array_merge($meta, ['type' => $outputType]), $langCount);
-            default:
-                return 1;
-        }
+        return $this->getContainer()->get(AttributeFieldConverter::class);
     }
 
-    protected function chunkAttributesBySelectCost(array $ids, array $meta, int $langCount = 0): array
+    protected function calcAttributeSelectCost(array $attributesData): int
+    {
+        return $this->getAttributeFieldConverter()
+            ->getFieldType($attributesData['type'] ?? '')
+            ->getSelectCost($attributesData);
+    }
+
+    protected function chunkAttributesBySelectCost(array $ids, array $attributesData): array
     {
         $chunks    = [];
         $chunk     = [];
         $chunkCost = 0;
 
         foreach ($ids as $id) {
-            $cost = self::calcAttributeSelectCost($meta[$id] ?? [], $langCount);
+            $cost = $this->calcAttributeSelectCost($attributesData[$id] ?? []);
 
             if (!empty($chunk) && $chunkCost + $cost > self::MAX_ATTRIBUTE_SELECTS) {
                 $chunks[]  = $chunk;
@@ -437,9 +409,8 @@ abstract class AbstractExportType extends Base
         $attributeMeta = [];
 
         if (!empty($attributeIds)) {
-            $attributeMeta = $this->fetchAttributeMeta($attributeIds);
-            $langCount     = count($this->getConfig()->get('inputLanguageList', []));
-            $totalCost     = array_sum(array_map(fn($id) => self::calcAttributeSelectCost($attributeMeta[$id] ?? [], $langCount), $attributeIds));
+            $attributeMeta = $this->fetchAttributesData($attributeIds);
+            $totalCost     = array_sum(array_map(fn($id) => $this->calcAttributeSelectCost($attributeMeta[$id] ?? []), $attributeIds));
             if ($totalCost <= self::MAX_ATTRIBUTE_SELECTS_INLINE) {
                 $params['attributesIds'] = $attributeIds;
                 $attributeIds = [];
@@ -500,9 +471,8 @@ abstract class AbstractExportType extends Base
         $attributeMeta = [];
 
         if (!empty($attributeIds)) {
-            $attributeMeta = $this->fetchAttributeMeta($attributeIds);
-            $langCount     = count($this->getConfig()->get('inputLanguageList', []));
-            $totalCost     = array_sum(array_map(fn($id) => self::calcAttributeSelectCost($attributeMeta[$id] ?? [], $langCount), $attributeIds));
+            $attributeMeta = $this->fetchAttributesData($attributeIds);
+            $totalCost     = array_sum(array_map(fn($id) => $this->calcAttributeSelectCost($attributeMeta[$id] ?? []), $attributeIds));
             if ($totalCost <= self::MAX_ATTRIBUTE_SELECTS_INLINE) {
                 $params['attributesIds'] = $attributeIds;
                 $attributeIds = [];
