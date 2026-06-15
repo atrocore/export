@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Export\Services;
 
+use Atro\Core\AttributeFieldConverter;
 use Atro\Core\Exceptions\BadRequest;
 use Atro\Core\Container;
 use Atro\Core\Exceptions\Error;
 use Atro\ORM\DB\RDB\Mapper;
-use Atro\Repositories\SavedSearch;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Espo\Core\Services\Base;
 use Atro\Core\Twig\Twig;
@@ -39,7 +39,10 @@ abstract class AbstractExportType extends Base
 {
     public const TMP_DIR = 'data' . DIRECTORY_SEPARATOR . '.tmp-export';
 
-    protected const ATTRIBUTE_CHUNK_SIZE = 200;
+    // Budget for enrichment chunks (base query uses select:['id'], so only attribute columns count).
+    protected const MAX_ATTRIBUTE_SELECTS = 500;
+    // Lower budget for the inline case (attributes added to the main entity query which already has entity columns).
+    protected const MAX_ATTRIBUTE_SELECTS_INLINE = 200;
 
     public const PRIORITIES = [
         'Low'     => 50,
@@ -263,17 +266,17 @@ abstract class AbstractExportType extends Base
 
     /**
      * Loads attribute values onto a collection in chunks to avoid generating too many SQL JOINs.
-     * Only called when the number of attribute IDs exceeds ATTRIBUTE_CHUNK_SIZE.
      *
      * For each chunk a second findEntities is issued with:
      *   - WHERE id IN (page entity ids) — no original filters
      *   - select: ['id']               — suppress re-fetching base columns
      *   - attributesIds: chunk          — only this batch of attribute JOINs
      *
-     * Attribute field definitions and values from each chunk entity are then merged
-     * directly onto the matching base entity.
+     * Chunks are sized by total JOIN cost, not a fixed count. Each attribute
+     * contributes at least 1 JOIN (attribute_value table) plus additional JOINs
+     * depending on type, measureId, prefixEnabled, and isMultilang.
      */
-    protected function enrichCollectionWithAttributes(EntityCollection $collection, array $attributeIds): void
+    protected function enrichCollectionWithAttributes(EntityCollection $collection, array $attributeIds, array $attributesData = []): void
     {
         if (empty($attributeIds) || count($collection) === 0) {
             return;
@@ -287,7 +290,13 @@ abstract class AbstractExportType extends Base
             $entityMap[$id] = $entity;
         }
 
-        foreach (array_chunk($attributeIds, self::ATTRIBUTE_CHUNK_SIZE) as $chunk) {
+        if (empty($attributesData)) {
+            $attributesData = $this->fetchAttributesData($attributeIds);
+        }
+
+        foreach ($this->chunkAttributesBySelectCost($attributeIds, $attributesData) as $chunk) {
+            $chunkSet = array_flip($chunk);
+
             $chunkResult = $this->getEntityService()->findEntities([
                 'where'         => [['attribute' => 'id', 'type' => 'in', 'value' => $entityIds]],
                 'disableCount'  => true,
@@ -301,10 +310,8 @@ abstract class AbstractExportType extends Base
                     continue;
                 }
 
-                // Merge field definitions from both registries, set values for each
-                // attribute field found in the chunk entity's fields map.
                 foreach ($chunkEntity->fields as $key => $defs) {
-                    if (empty($defs['attributeId']) || !in_array($defs['attributeId'], $chunk)) {
+                    if (empty($defs['attributeId']) || !isset($chunkSet[$defs['attributeId']])) {
                         continue;
                     }
                     $baseEntity->fields[$key] = $defs;
@@ -312,21 +319,76 @@ abstract class AbstractExportType extends Base
                 }
 
                 foreach ($chunkEntity->entityDefs['fields'] as $key => $defs) {
-                    if (empty($defs['attributeId']) || !in_array($defs['attributeId'], $chunk)) {
+                    if (empty($defs['attributeId']) || !isset($chunkSet[$defs['attributeId']])) {
                         continue;
                     }
-                    $baseEntity->entityDefs['fields'][$key] = $chunkEntity->entityDefs['fields'][$key];
+                    $baseEntity->entityDefs['fields'][$key] = $defs;
                 }
 
-                $baseEntity->set('attributesDefs', array_merge(
-                    $baseEntity->get('attributesDefs') ?? [],
-                    $chunkEntity->get('attributesDefs') ?? []
-                ));
+                // each attribute belongs to one chunk, so keys never collide — += avoids allocating a merged copy
+                $baseEntity->set('attributesDefs', ($baseEntity->get('attributesDefs') ?? []) + ($chunkEntity->get('attributesDefs') ?? []));
+
+                // free large arrays on the chunk entity immediately; the collection still holds the shell
+                $chunkEntity->fields = [];
+                $chunkEntity->entityDefs['fields'] = [];
             }
 
-            unset($chunkResult);
+            unset($chunkResult, $chunkSet);
             gc_collect_cycles();
         }
+    }
+
+    protected function fetchAttributesData(array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        $rows = $this->getAttributeFieldConverter()->getAttributesRowsByIds($ids);
+
+        $result = [];
+        foreach ($rows as $row) {
+            $result[$row['id']] = $row;
+        }
+        return $result;
+    }
+
+    protected function getAttributeFieldConverter(): AttributeFieldConverter
+    {
+        return $this->getContainer()->get(AttributeFieldConverter::class);
+    }
+
+    protected function calcAttributeSelectCost(array $attributesData): int
+    {
+        return $this->getAttributeFieldConverter()
+            ->getFieldType($attributesData['type'] ?? '')
+            ->getSelectCost($attributesData);
+    }
+
+    protected function chunkAttributesBySelectCost(array $ids, array $attributesData): array
+    {
+        $chunks    = [];
+        $chunk     = [];
+        $chunkCost = 0;
+
+        foreach ($ids as $id) {
+            $cost = $this->calcAttributeSelectCost($attributesData[$id] ?? []);
+
+            if (!empty($chunk) && $chunkCost + $cost > self::MAX_ATTRIBUTE_SELECTS) {
+                $chunks[]  = $chunk;
+                $chunk     = [];
+                $chunkCost = 0;
+            }
+
+            $chunk[]    = $id;
+            $chunkCost += $cost;
+        }
+
+        if (!empty($chunk)) {
+            $chunks[] = $chunk;
+        }
+
+        return $chunks;
     }
 
     protected function getRecords(int $offset, int $limit): array
@@ -342,9 +404,15 @@ abstract class AbstractExportType extends Base
         $params['subQueryCallbacks'][] = [$this, 'queryCallback'];
 
         $attributeIds = $this->collectAttributeIds();
+        $attributeMeta = [];
 
-        if (count($attributeIds) <= self::ATTRIBUTE_CHUNK_SIZE && !empty($attributeIds)) {
-            $params['attributesIds'] = $attributeIds;
+        if (!empty($attributeIds)) {
+            $attributeMeta = $this->fetchAttributesData($attributeIds);
+            $totalCost     = array_sum(array_map(fn($id) => $this->calcAttributeSelectCost($attributeMeta[$id] ?? []), $attributeIds));
+            if ($totalCost <= self::MAX_ATTRIBUTE_SELECTS_INLINE) {
+                $params['attributesIds'] = $attributeIds;
+                $attributeIds = [];
+            }
         }
 
         $result = $this->getEntityService()->findEntities($params);
@@ -353,8 +421,8 @@ abstract class AbstractExportType extends Base
             return $result['list'] ?? [];
         }
 
-        if (count($attributeIds) > self::ATTRIBUTE_CHUNK_SIZE) {
-            $this->enrichCollectionWithAttributes($result['collection'], $attributeIds);
+        if (!empty($attributeIds)) {
+            $this->enrichCollectionWithAttributes($result['collection'], $attributeIds, $attributeMeta);
         }
 
         $list = [];
@@ -398,9 +466,15 @@ abstract class AbstractExportType extends Base
         }
 
         $attributeIds = $this->collectAttributeIds();
+        $attributeMeta = [];
 
-        if (count($attributeIds) <= self::ATTRIBUTE_CHUNK_SIZE && !empty($attributeIds)) {
-            $params['attributesIds'] = $attributeIds;
+        if (!empty($attributeIds)) {
+            $attributeMeta = $this->fetchAttributesData($attributeIds);
+            $totalCost     = array_sum(array_map(fn($id) => $this->calcAttributeSelectCost($attributeMeta[$id] ?? []), $attributeIds));
+            if ($totalCost <= self::MAX_ATTRIBUTE_SELECTS_INLINE) {
+                $params['attributesIds'] = $attributeIds;
+                $attributeIds = [];
+            }
         }
 
         $result = $this->getEntityService()->findEntities($params);
@@ -408,8 +482,8 @@ abstract class AbstractExportType extends Base
             return null;
         }
 
-        if (count($attributeIds) > self::ATTRIBUTE_CHUNK_SIZE) {
-            $this->enrichCollectionWithAttributes($result['collection'], $attributeIds);
+        if (!empty($attributeIds)) {
+            $this->enrichCollectionWithAttributes($result['collection'], $attributeIds, $attributeMeta);
         }
 
         return $result['collection'];
