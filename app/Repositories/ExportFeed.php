@@ -242,61 +242,18 @@ class ExportFeed extends Base
     {
         parent::afterRestore($entity);
 
-        $exportEntity = $entity->getFeedField('entity');
-        $fields = !empty($exportEntity)
-            ? array_keys($this->getMetadata()->get(['entityDefs', $exportEntity, 'fields'], []))
-            : [];
-
         try {
-            $dbal = $this->getDbal();
-
-            $items = $dbal->createQueryBuilder()
-                ->select('t.id, t.name, t.type, t.entity_attribute_id')
-                ->from('export_configurator_item', 't')
-                ->where('t.export_feed_id = :exportFeedId')
-                ->andWhere('t.deleted = :true')
+            $this
+                ->getDbal()
+                ->createQueryBuilder()
+                ->update('export_configurator_item')
+                ->set('deleted', ':false')
+                ->where('export_feed_id = :exportFeedId')
+                ->andWhere('deleted = :true')
                 ->setParameter('exportFeedId', $entity->get('id'))
+                ->setParameter('false', false, ParameterType::BOOLEAN)
                 ->setParameter('true', true, ParameterType::BOOLEAN)
-                ->fetchAllAssociative();
-
-            // get entity attributes if there are any items with entity_attribute_id
-            $hasAttributeItems = !empty(array_filter($items, fn($i) => !empty($i['entity_attribute_id'])));
-            $attributeIds = $hasAttributeItems
-                ? $dbal->createQueryBuilder()
-                    ->select('a.id')
-                    ->from('attribute', 'a')
-                    ->where('a.deleted = :false')
-                    ->andWhere('a.entity_id = :entityId')
-                    ->setParameter('false', false, ParameterType::BOOLEAN)
-                    ->setParameter('entityId', $exportEntity)
-                    ->fetchFirstColumn()
-                : [];
-
-            $ids = [];
-            foreach ($items as $item) {
-                // skip restore for those items that are configured for non-existing attribute or entity field
-                if ($item['type'] === 'Field') {
-                    if (!empty($item['entity_attribute_id'])) {
-                        if (!in_array($item['entity_attribute_id'], $attributeIds)) {
-                            continue;
-                        }
-                    } elseif ($item['name'] !== 'id' && !in_array($item['name'], $fields)) {
-                        continue;
-                    }
-                }
-
-                $ids[] = $item['id'];
-            }
-
-            if (!empty($ids)) {
-                $dbal->createQueryBuilder()
-                    ->update('export_configurator_item')
-                    ->set('deleted', ':false')
-                    ->where('id IN (:ids)')
-                    ->setParameter('ids', $ids, $dbal::PARAM_STR_ARRAY)
-                    ->setParameter('false', false, ParameterType::BOOLEAN)
-                    ->executeQuery();
-            }
+                ->executeQuery();
         } catch (\Throwable $e) {
             $GLOBALS['log']->error('ExportFeed restore error: ' . $e->getMessage());
         }
