@@ -132,6 +132,20 @@ class ExportFeed extends Base
 
     public function removeConfiguratorItems(string $entityType, string $id): void
     {
+        try {
+            $this
+                ->getDbal()
+                ->createQueryBuilder()
+                ->delete('export_configurator_item')
+                ->where('export_feed_id = :exportFeedId')
+                ->andWhere('deleted = :true')
+                ->setParameter('exportFeedId', $id)
+                ->setParameter('true', true, ParameterType::BOOLEAN)
+                ->executeQuery();
+        } catch (\Throwable $e) {
+
+        }
+
         $this->getEntityManager()->getRepository('ExportConfiguratorItem')->where([lcfirst($entityType) . 'Id' => $id])->removeCollection();
     }
 
