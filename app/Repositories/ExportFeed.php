@@ -132,6 +132,20 @@ class ExportFeed extends Base
 
     public function removeConfiguratorItems(string $entityType, string $id): void
     {
+        try {
+            $this
+                ->getDbal()
+                ->createQueryBuilder()
+                ->delete('export_configurator_item')
+                ->where('export_feed_id = :exportFeedId')
+                ->andWhere('deleted = :true')
+                ->setParameter('exportFeedId', $id)
+                ->setParameter('true', true, ParameterType::BOOLEAN)
+                ->executeQuery();
+        } catch (\Throwable $e) {
+
+        }
+
         $this->getEntityManager()->getRepository('ExportConfiguratorItem')->where([lcfirst($entityType) . 'Id' => $id])->removeCollection();
     }
 
@@ -235,6 +249,27 @@ class ExportFeed extends Base
             ->find();
         foreach ($shares as $share) {
             $this->getEntityManager()->removeEntity($share);
+        }
+    }
+
+    protected function afterRestore($entity)
+    {
+        parent::afterRestore($entity);
+
+        try {
+            $this
+                ->getDbal()
+                ->createQueryBuilder()
+                ->update('export_configurator_item')
+                ->set('deleted', ':false')
+                ->where('export_feed_id = :exportFeedId')
+                ->andWhere('deleted = :true')
+                ->setParameter('exportFeedId', $entity->get('id'))
+                ->setParameter('false', false, ParameterType::BOOLEAN)
+                ->setParameter('true', true, ParameterType::BOOLEAN)
+                ->executeQuery();
+        } catch (\Throwable $e) {
+            $GLOBALS['log']->error('ExportFeed restore error: ' . $e->getMessage());
         }
     }
 
