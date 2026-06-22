@@ -109,7 +109,11 @@ class ExportFeed extends Base
                 break;
         }
 
-        $this->getRepository()->removeInvalidConfiguratorItems($exportFeed->get('id'));
+        $this->getRepository()->fixLocaleIfNecessary($exportFeed->get('id'));
+
+        if ($this->hasInvalidConfiguratorItems($exportFeed)) {
+            throw new Exceptions\BadRequest($this->getLanguage()->translate('invalidConfiguratorItems', 'exceptions', 'ExportFeed'));
+        }
 
         $data = [
             'id'   => Util::generateId(),
@@ -414,7 +418,7 @@ class ExportFeed extends Base
 
     public function readEntity(string $id): ?IEntity
     {
-        $this->getRepository()->removeInvalidConfiguratorItems($id);
+        $this->getRepository()->fixLocaleIfNecessary($id);
 
         return parent::readEntity($id);
     }
@@ -422,7 +426,7 @@ class ExportFeed extends Base
     public function findLinkedEntities($id, $link, $params)
     {
         if ($link === 'configuratorItems' && !empty($exportFeed = $this->getEntity($id))) {
-            $this->getRepository()->removeInvalidConfiguratorItems($exportFeed->get('id'));
+            $this->getRepository()->fixLocaleIfNecessary($exportFeed->get('id'));
             $this->putAttributesToMetadata($id);
         }
 
@@ -909,6 +913,26 @@ class ExportFeed extends Base
             "urlColumns" => $exportService->getUrlColumns(),
             "records"    => $exportService->exportEasyCatalogJson(),
         ];
+    }
+
+    protected function hasInvalidConfiguratorItems(ExportFeedEntity $exportFeed): bool
+    {
+        $this->putAttributesToMetadata($exportFeed->get('id'));
+
+        $entityName = $exportFeed->getFeedField('entity');
+        $items      = $this->getPreparedConfiguratorItems($exportFeed, $exportFeed, $entityName);
+
+        foreach ($items as $item) {
+            if (!in_array($item->get('type'), ['Field'])) {
+                continue;
+            }
+            $fieldDefs = $this->getMetadata()->get("entityDefs.$entityName.fields.{$item->get('name')}");
+            if (empty($fieldDefs)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function putAttributesToMetadata(string $exportFeedId, ?array $feedData = null): void
