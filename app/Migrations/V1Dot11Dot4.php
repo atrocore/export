@@ -28,35 +28,22 @@ class V1Dot11Dot4 extends Base
         $conn = $this->getDbal();
 
         $items = $conn->createQueryBuilder()
-            ->select('id', 'name', 'entity_attribute_id')
-            ->from('export_configurator_item')
-            ->where('entity_attribute_id IS NOT NULL')
-            ->andWhere('deleted = :false')
+            ->select('eci.id', 'eci.name', 'eci.entity_attribute_id', 'a.system_name')
+            ->from('export_configurator_item', 'eci')
+            ->innerJoin('eci', 'attribute', 'a', 'a.id = eci.entity_attribute_id')
+            ->where('eci.deleted = :false')
             ->setParameter('false', false, ParameterType::BOOLEAN)
             ->fetchAllAssociative();
 
         foreach ($items as $item) {
             $attributeId = $item['entity_attribute_id'];
-            $name        = $item['name'];
+            $systemName  = $item['system_name'];
 
-            $attribute = $conn->createQueryBuilder()
-                ->select('system_name')
-                ->from('attribute')
-                ->where('id = :id')
-                ->setParameter('id', $attributeId)
-                ->fetchAssociative();
-
-            if (empty($attribute)) {
+            if (empty($systemName) || $systemName === $attributeId || !str_starts_with($item['name'], $attributeId)) {
                 continue;
             }
 
-            $systemName = $attribute['system_name'] ?? null;
-
-            if (empty($systemName) || $systemName === $attributeId || !str_starts_with($name, $attributeId)) {
-                continue;
-            }
-
-            $newName = $systemName . substr($name, strlen($attributeId));
+            $newName = $systemName . substr($item['name'], strlen($attributeId));
 
             $conn->createQueryBuilder()
                 ->update('export_configurator_item')
