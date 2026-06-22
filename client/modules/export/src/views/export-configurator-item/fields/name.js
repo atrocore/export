@@ -53,11 +53,32 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
             return data;
         },
 
+        afterRender() {
+            Dep.prototype.afterRender.call(this);
+
+            if (this.mode === 'list') {
+                const $row = this.$el.closest('tr');
+                if (this.model.get('isInvalid')) {
+                    $row.css('background-color', '#fde8e8');
+                } else {
+                    $row.css('background-color', '');
+                }
+            }
+        },
+
         getValueForDisplay() {
             let name = this.model.get('name');
 
             if (this.mode !== 'list') {
                 return name;
+            }
+
+            if (this.model.get('isInvalid')) {
+                if (this.model.get('entityAttributeId')) {
+                    const systemName = (this.model.get('virtualFields') || {}).systemName || this.model.get('name');
+                    return `${this.translate('notFoundAttribute', 'labels', 'ExportConfiguratorItem')} (${systemName})`;
+                }
+                return `${this.translate('notFoundField', 'labels', 'ExportConfiguratorItem')} (${this.model.get('name')})`;
             }
 
             if (this.model.get('type') === 'Field') {
@@ -94,7 +115,7 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
 
             if (this.model.get('type') === 'allAttributes') {
                 let allChannels = [];
-                this.ajaxGetRequest('Channel', null, {async: false}).success(res => {
+                this.ajaxGetRequest('Channel', null, { async: false }).success(res => {
                     allChannels = res.list || [];
                 });
 
