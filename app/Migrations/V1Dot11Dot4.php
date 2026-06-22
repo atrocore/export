@@ -28,10 +28,10 @@ class V1Dot11Dot4 extends Base
         $conn = $this->getDbal();
 
         $items = $conn->createQueryBuilder()
-            ->select('eci.id', 'eci.name', 'eci.entity_attribute_id')
-            ->from('export_configurator_item', 'eci')
-            ->where('eci.entity_attribute_id IS NOT NULL')
-            ->andWhere('eci.deleted = :false')
+            ->select('id', 'name', 'entity_attribute_id')
+            ->from('export_configurator_item')
+            ->where('entity_attribute_id IS NOT NULL')
+            ->andWhere('deleted = :false')
             ->setParameter('false', false, ParameterType::BOOLEAN)
             ->fetchAllAssociative();
 
@@ -40,9 +40,9 @@ class V1Dot11Dot4 extends Base
             $name        = $item['name'];
 
             $attribute = $conn->createQueryBuilder()
-                ->select('a.system_name')
-                ->from('attribute', 'a')
-                ->where('a.id = :id')
+                ->select('system_name')
+                ->from('attribute')
+                ->where('id = :id')
                 ->setParameter('id', $attributeId)
                 ->fetchAssociative();
 
