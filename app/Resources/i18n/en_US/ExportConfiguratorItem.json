@@ -37,7 +37,9 @@
   },
   "labels": {
     "withoutChannel": "Without Channel",
-    "allAttributes": "All (%s) Attributes"
+    "allAttributes": "All (%s) Attributes",
+    "notFoundAttribute": "Not found attribute",
+    "notFoundField": "Not found field"
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Related data records will be exported as different fields/columns by using for the name the suffix \"_1\", \"_2\" and so on.",

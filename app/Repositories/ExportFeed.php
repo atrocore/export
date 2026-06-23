@@ -68,7 +68,7 @@ class ExportFeed extends Base
         return parent::hasDeletedRecordsToClear();
     }
 
-    public function removeInvalidConfiguratorItems(string $exportFeedId): void
+    public function fixLocaleIfNecessary(string $exportFeedId): void
     {
         $exportFeed = $this->get($exportFeedId);
         if (empty($exportFeed)) {
@@ -104,19 +104,6 @@ class ExportFeed extends Base
                 } catch (\Throwable $e) {
                 }
             }
-        }
-
-        try {
-            $this->getConnection()->createQueryBuilder()
-                ->update('export_configurator_item', 't')
-                ->set('deleted', ':true')
-                ->where('t.export_feed_id = :id')
-                ->andWhere("t.entity_attribute_id is not null and t.entity_attribute_id NOT IN (SELECT a.id FROM {$this->getConnection()->quoteIdentifier('attribute')} a WHERE a.deleted=:false)")
-                ->setParameter('true', true, ParameterType::BOOLEAN)
-                ->setParameter('id', $exportFeed->get('id'))
-                ->setParameter('false', false, ParameterType::BOOLEAN)
-                ->executeQuery();
-        } catch (\Throwable $e) {
         }
     }
 
