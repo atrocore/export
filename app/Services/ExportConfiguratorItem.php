@@ -61,6 +61,10 @@ class ExportConfiguratorItem extends Base
                 $fieldDefs = $this->getMetadata()->get("entityDefs.{$entity->get('entity')}.fields.{$entity->get('name')}");
             }
             $entity->set('fieldDefs', $fieldDefs);
+
+            if (empty($fieldDefs)) {
+                $entity->set('isInvalid', true);
+            }
         }
 
         $entity->set('column', $this->prepareColumnName($entity));
@@ -121,7 +125,7 @@ class ExportConfiguratorItem extends Base
         switch ($entity->get('columnType') ?? 'name') {
             case 'name':
                 $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
-                $column = $this
+                $column     = $this
                     ->getLocalizedLanguage($exportFeed->get('localeId'))
                     ->translate($entity->get('name'), 'fields', $entity->get('entity'));
                 break;
