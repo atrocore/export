@@ -279,8 +279,8 @@ class ExportFeed extends Base
                     lcfirst($feed->getEntityName()) . 'Id' => $feed->get('id'),
                 ];
 
-                if (in_array($fieldDefs['type'], ['link', 'file'])) {
-                    $data['exportBy'] = (!empty($fieldDefs['unitIdField']) || !empty($fieldDefs['prefixIdField'])) ? ['name'] : ['id'];
+                if (in_array($fieldDefs['type'], ['link', 'linkMultiple', 'file'])) {
+                    $data['exportBy'] = [$fieldDefs['foreignName'] ?? 'name'];
                 }
 
                 if (in_array($fieldDefs['type'], ['rangeInt', 'rangeFloat'])) {
