@@ -46,7 +46,16 @@ use Psr\Http\Server\RequestHandlerInterface;
                     'schema' => [
                         'type'  => 'array',
                         'items' => [
-                            'type' => 'object',
+                            'type'       => 'object',
+                            'properties' => [
+                                'template' => [
+                                    'type' => 'string',
+                                    'description' => 'Template loader identifier used as the value when selecting a template.'
+                                ],
+                                'name' => [
+                                    'type' => 'string', 'description' => 'Human-readable template display name shown in the UI.'
+                                ],
+                            ],
                         ],
                     ],
                 ],

@@ -648,7 +648,7 @@ class ExportFeed extends Base
                 $templateClass = $this->getInjection('container')->get($className);
 
                 if ($templateClass->isTemplateCompatible($data)) {
-                    $result[$name] = $templateClass->getName();
+                    $result[] = ['template' => $name, 'name' => $templateClass->getName()];
                 }
             }
         }
