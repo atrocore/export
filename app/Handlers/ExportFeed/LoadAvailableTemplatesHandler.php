@@ -49,11 +49,12 @@ use Psr\Http\Server\RequestHandlerInterface;
                             'type'       => 'object',
                             'properties' => [
                                 'template' => [
-                                    'type' => 'string',
-                                    'description' => 'Template loader identifier used as the value when selecting a template.'
+                                    'type'        => 'string',
+                                    'description' => 'Unique template name to resolve the actual one content to display in the originTemplate field.',
                                 ],
-                                'name' => [
-                                    'type' => 'string', 'description' => 'Human-readable template display name shown in the UI.'
+                                'name'     => [
+                                    'type'        => 'string',
+                                    'description' => 'Human-readable display name of the template.',
                                 ],
                             ],
                         ],
