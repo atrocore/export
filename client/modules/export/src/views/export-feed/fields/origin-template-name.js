@@ -65,7 +65,7 @@ Espo.define('export:views/export-feed/fields/origin-template-name', 'views/field
         afterRender() {
             Dep.prototype.afterRender.call(this);
 
-            if ((this.params.options || []).length > 1) {
+            if ((this.params.options || []).length > 0) {
                 this.show();
             } else {
                 this.hide();
@@ -97,10 +97,15 @@ Espo.define('export:views/export-feed/fields/origin-template-name', 'views/field
 
             this.ajaxPostRequest('ExportFeed/loadAvailableTemplates', this.model.attributes, {async: false}).then(result => {
                 if (result) {
-                    Object.keys(result).forEach(template => {
-                        this.params.options.push(template);
-                        this.translatedOptions[template] = result[template];
+                    this.params.options = [];
+                    this.translatedOptions = {};
+
+                    result.forEach(item => {
+                        this.params.options.push(item.template);
+                        this.translatedOptions[item.template] = item.name;
                     });
+
+                    this.originalOptionList = this.params.options;
 
                     this.reRender();
                 }

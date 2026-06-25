@@ -46,7 +46,17 @@ use Psr\Http\Server\RequestHandlerInterface;
                     'schema' => [
                         'type'  => 'array',
                         'items' => [
-                            'type' => 'object',
+                            'type'       => 'object',
+                            'properties' => [
+                                'template' => [
+                                    'type'        => 'string',
+                                    'description' => 'Unique template name to resolve the actual one content to display in the originTemplate field.',
+                                ],
+                                'name'     => [
+                                    'type'        => 'string',
+                                    'description' => 'Human-readable display name of the template.',
+                                ],
+                            ],
                         ],
                     ],
                 ],
