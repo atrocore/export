@@ -46,13 +46,17 @@ use Psr\Http\Server\RequestHandlerInterface;
                 'schema' => [
                     'type'       => 'object',
                     'properties' => [
-                        'ignoreFilter'     => [
+                        'ignoreFilter'      => [
                             'type'        => 'boolean',
                             'description' => 'If true, the export feed\'s own filters are cleared before export',
                         ],
-                        'entityFilterData' => [
+                        'entityFilterData'  => [
                             'type'        => 'object',
                             'description' => 'Additional filter: either {byWhere: true, where: [...]} or {ids: [...]}',
+                        ],
+                        'contentLanguageId' => [
+                            'type'        => 'string',
+                            'description' => 'Language entity ID. When set, language-neutral multilingual field and attribute values are exported in this language, overriding the feed locale for the duration of this run.',
                         ],
                     ],
                 ],

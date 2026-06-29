@@ -69,6 +69,9 @@ class Export extends AbstractAction
 
         $payload = $this->getTwig()->renderTemplate($payload, $templateData);
         $payload = @json_decode((string)$payload, true);
+        if (!is_array($payload)) {
+            $payload = [];
+        }
 
         if (!empty($input->_relationData)) {
             $payload['relation'] = [
@@ -76,6 +79,10 @@ class Export extends AbstractAction
                 'relationName' => $input->_relationData['relationName'],
                 'foreignId'    => $input->_relationData['foreignId']
             ];
+        }
+
+        if (!empty($action->get('contentLanguageId'))) {
+            $payload['contentLanguageId'] = $action->get('contentLanguageId');
         }
 
         /** @var \Export\Services\ExportFeed $service */

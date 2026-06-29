@@ -18,9 +18,8 @@ use Atro\Core\Container;
 use Atro\Core\EventManager\Manager;
 use Atro\Core\Exceptions;
 use Atro\Core\Templates\Services\Base;
+use Atro\Core\Utils\IdGenerator;
 use Atro\Core\Utils\Language;
-use Atro\ORM\DB\RDB\Mapper;
-use Doctrine\DBAL\ParameterType;
 use Espo\Core\Utils\Json;
 use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
@@ -46,19 +45,25 @@ class ExportFeed extends Base
             return false;
         }
 
+        $decodedPayload    = null;
+        $contentLanguageId = null;
+        if (!empty($payload)) {
+            $decodedPayload = @json_decode($payload, true);
+            if (!empty($decodedPayload)) {
+                $contentLanguageId = $decodedPayload['contentLanguageId'] ?? null;
+            }
+        }
+
         $data = [
-            'id'   => Util::generateId(),
-            'feed' => $this->prepareFeedData($exportFeed)
+            'id'   => IdGenerator::sortableId(),
+            'feed' => $this->prepareFeedData($exportFeed, $contentLanguageId)
         ];
 
-        if (!empty($payload)) {
-            $payload = @json_decode($payload, true);
-            if (!empty($payload)) {
-                foreach ($payload as $key => $value) {
-                    $data['feed']['data']->{$key} = $value;
-                }
+        if (!empty($decodedPayload)) {
+            foreach ($decodedPayload as $key => $value) {
+                $data['feed']['data']->{$key} = $value;
             }
-            $data['executeNow'] = !empty($payload['executeNow']);
+            $data['executeNow'] = !empty($decodedPayload['executeNow']);
         }
 
         if (!empty($priority)) {
@@ -115,9 +120,11 @@ class ExportFeed extends Base
             throw new Exceptions\BadRequest($this->getLanguage()->translate('invalidConfiguratorItems', 'exceptions', 'ExportFeed'));
         }
 
+        $contentLanguageId = $requestData->contentLanguageId ?? null;
+
         $data = [
-            'id'   => Util::generateId(),
-            'feed' => $this->prepareFeedData($exportFeed)
+            'id'   => IdGenerator::sortableId(),
+            'feed' => $this->prepareFeedData($exportFeed, $contentLanguageId)
         ];
 
         if (!empty($requestData->ignoreFilter)) {
@@ -256,7 +263,7 @@ class ExportFeed extends Base
 
     }
 
-    public function prepareConfiguratorItemDataForAttributes(Entity $feed, array $attributesIds): array
+    public function prepareConfiguratorItemDataForAttributes(Entity $feed, array $attributesIds, ?string $contentLanguageCode = null): array
     {
         $result = [];
 
@@ -271,6 +278,20 @@ class ExportFeed extends Base
             $attributesDefs = [];
             $this->getAttributeFieldConverter()->convert($feedEntity, $attribute, $attributesDefs);
             foreach ($attributesDefs as $field => $fieldDefs) {
+                // When content language is set, filter multilingual attribute field variants.
+                // code='' means main language: keep main fields, drop all variants.
+                // code='de_DE' means specific language: drop main fields, keep matching variant only.
+                if ($contentLanguageCode !== null) {
+                    if (!empty($fieldDefs['isMultilang']) && $contentLanguageCode !== '') {
+                        continue;
+                    }
+                    if (!empty($fieldDefs['multilangField'])) {
+                        if (($fieldDefs['multilangLocale'] ?? null) !== $contentLanguageCode) {
+                            continue;
+                        }
+                    }
+                }
+
                 $data = [
                     'name'                                 => $field,
                     'type'                                 => 'Field',
@@ -487,9 +508,9 @@ class ExportFeed extends Base
         }
     }
 
-    public function prepareFeedDataConfiguration(Entity $sheet): array
+    public function prepareFeedDataConfiguration(Entity $sheet, ?string $contentLanguageCode = null, ?string $contentLocaleId = null): array
     {
-        if ($sheet->getEntityType() === 'ExportFeed') {
+        if ($sheet->getEntityName() === 'ExportFeed') {
             /** @var ExportFeedEntity $feed */
             $feed       = $sheet;
             $entityName = $sheet->getFeedField('entity');
@@ -504,11 +525,13 @@ class ExportFeed extends Base
         /** @var \Export\Services\ExportConfiguratorItem $eciService */
         $eciService = $this->getInjection('serviceFactory')->create('ExportConfiguratorItem');
 
-        foreach ($this->getPreparedConfiguratorItems($feed, $sheet, $entityName) as $item) {
+        $effectiveLocaleId = $contentLocaleId ?? $feed->get('localeId');
+
+        foreach ($this->getPreparedConfiguratorItems($feed, $sheet, $entityName, $contentLanguageCode, $effectiveLocaleId) as $item) {
             $row = [
                 'id'                        => $item->get('id'),
                 'columnType'                => $item->get('columnType'),
-                'column'                    => $eciService->prepareColumnName($item),
+                'column'                    => $eciService->prepareColumnName($item, $effectiveLocaleId),
                 'template'                  => $feed->get('template'),
                 'emptyValue'                => $feed->getFeedField('emptyValue'),
                 'nullValue'                 => $feed->getFeedField('nullValue'),
@@ -538,7 +561,7 @@ class ExportFeed extends Base
                 'script'                    => $item->get('script') ?? null,
                 'entityAttributeId'         => $item->get('entityAttributeId') ?? null,
                 'exportStaticListLabel'     => $item->get('exportStaticListLabel'),
-                'localeId'                  => $feed->get('localeId'),
+                'localeId'                  => $effectiveLocaleId,
             ];
             if ($feed->get('type') === 'simple') {
                 $row['convertCollectionToString'] = true;
@@ -546,7 +569,35 @@ class ExportFeed extends Base
             }
 
             if ($item->get('type') === 'Field') {
-                $row['field'] = $item->get('name');
+                $fieldName    = $item->get('name');
+                $row['field'] = $fieldName;
+
+                if (!empty($contentLanguageCode) && !empty($fieldName)) {
+                    // Redirect language-neutral multilingual field to its language-specific variant.
+                    // Language-pinned items (those already with a multilangLocale) are left untouched.
+                    $fieldDefs = $this->getMetadata()->get("entityDefs.$entityName.fields.$fieldName");
+                    if (!empty($fieldDefs['isMultilang'])) {
+                        $row['field'] = $fieldName . ucfirst(Language::languageToField($contentLanguageCode));
+                    }
+
+                    // Redirect language-neutral multilingual fields inside exportBy to their
+                    // language-specific variants. exportBy fields live on the foreign entity.
+                    $exportBy = $item->get('exportBy');
+                    if (!empty($exportBy) && is_array($exportBy)) {
+                        $foreignEntityName = $this->getMetadata()->get("entityDefs.$entityName.links.$fieldName.entity")
+                            ?? $this->getMetadata()->get("entityDefs.$entityName.fields.$fieldName.entity");
+                        if (!empty($foreignEntityName)) {
+                            $suffix          = ucfirst(Language::languageToField($contentLanguageCode));
+                            $row['exportBy'] = array_map(function (string $byField) use ($foreignEntityName, $suffix): string {
+                                $byFieldDefs = $this->getMetadata()->get("entityDefs.$foreignEntityName.fields.$byField");
+                                if (!empty($byFieldDefs['isMultilang'])) {
+                                    return $byField . $suffix;
+                                }
+                                return $byField;
+                            }, $exportBy);
+                        }
+                    }
+                }
             }
 
             $configuration[] = $row;
@@ -555,7 +606,7 @@ class ExportFeed extends Base
         return $configuration;
     }
 
-    public function prepareFeedData(ExportFeedEntity $feed): array
+    public function prepareFeedData(ExportFeedEntity $feed, ?string $contentLanguageId = null): array
     {
         $result = $feed->toArray();
         foreach ($feed->getFeedFields() as $name => $value) {
@@ -566,6 +617,17 @@ class ExportFeed extends Base
         $result['thousandSeparator'] = $result['data']->thousandSeparator = $feed->getThousandSeparator();
 
         $result['fileType'] = $feed->get('fileType');
+
+        $contentLanguageCode = null;
+        $contentLocaleId     = null;
+        if (!empty($contentLanguageId)) {
+            $resolved                            = $this->resolveContentLanguage($contentLanguageId, $feed->get('localeId') ?? '');
+            $contentLanguageCode                 = $resolved['code'];
+            $contentLocaleId                     = $resolved['localeId'];
+            $result['data']->contentLanguageId   = $contentLanguageId;
+            $result['data']->contentLanguageCode = $contentLanguageCode;
+            $result['data']->contentLocaleId     = $contentLocaleId;
+        }
 
         if (!empty($feed->get('hasMultipleSheets'))) {
             $sheets = $this->findLinkedEntities($feed->get('id'), 'sheets', ['maxSize' => \PHP_INT_MAX, 'sortBy' => 'sortOrder']);
@@ -579,17 +641,34 @@ class ExportFeed extends Base
                     'sortOrderField'     => $sheet->get('sortOrderField'),
                     'sortOrderDirection' => $sheet->get('sortOrderDirection'),
                     'data'               => $sheet->get('data'),
-                    'configuration'      => $this->prepareFeedDataConfiguration($sheet)
+                    'configuration'      => $this->prepareFeedDataConfiguration($sheet, $contentLanguageCode, $contentLocaleId)
                 ];
             }
         } else {
-            $result['data']->configuration = Json::decode(Json::encode($this->prepareFeedDataConfiguration($feed)));
+            $result['data']->configuration = Json::decode(Json::encode($this->prepareFeedDataConfiguration($feed, $contentLanguageCode, $contentLocaleId)));
         }
 
         return $this
             ->getEventManager()
             ->dispatch('ExportFeedService', 'prepareFeedData', new Event(['feed' => $feed, 'result' => $result]))
             ->getArgument('result');
+    }
+
+    protected function resolveContentLanguage(string $contentLanguageId, string $fallbackLocaleId): array
+    {
+        $language = $this->getEntityManager()->getEntity('Language', $contentLanguageId);
+        if (empty($language)) {
+            return ['code' => null, 'localeId' => $fallbackLocaleId];
+        }
+
+        $realCode = $language->get('code');
+        $code     = $language->get('role') === 'main' ? '' : $realCode;
+        $locale   = $this->getEntityManager()->getRepository('Locale')->where(['code' => $realCode])->findOne();
+
+        return [
+            'code'     => $code,
+            'localeId' => $locale ? $locale->get('id') : $fallbackLocaleId,
+        ];
     }
 
     public function pushExport(array $data): bool
@@ -1021,7 +1100,7 @@ class ExportFeed extends Base
         }
     }
 
-    protected function getPreparedConfiguratorItems(Entity $feed, Entity $sheet, string $entityName): EntityCollection
+    protected function getPreparedConfiguratorItems(Entity $feed, Entity $sheet, string $entityName, ?string $contentLanguageCode = null, ?string $effectiveLocaleId = null): EntityCollection
     {
         $items = $this->getEntityManager()->getRepository('ExportConfiguratorItem')
             ->where([
@@ -1043,7 +1122,7 @@ class ExportFeed extends Base
                     continue;
                 }
 
-                foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds) as $row) {
+                foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds, $contentLanguageCode) as $row) {
                     $attributeItem = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
                     $attributeItem->set($row);
                     $attributeItem->id = $item->id;
@@ -1064,10 +1143,11 @@ class ExportFeed extends Base
                 ->getRepository('Attribute')
                 ->getAttributesByIds(array_values($attributesIds));
             if (!empty($attributes)) {
-                $language = self::getLocalizedLanguage($this->getInjection('container'), $feed->get('localeId'));
+                $localeId = $effectiveLocaleId ?? $feed->get('localeId');
+                $language = self::getLocalizedLanguage($this->getInjection('container'), $localeId);
 
-                $currentLocaleId = $this->getUser()->get('localeId') ?? $feed->get('localeId');
-                $this->getUser()->set('localeId', $feed->get('localeId'));
+                $currentLocaleId = $this->getUser()->get('localeId') ?? $localeId;
+                $this->getUser()->set('localeId', $localeId);
 
                 foreach ($attributes as $row) {
                     $this->putAttributeToMetadata($entityName, $language, $row);

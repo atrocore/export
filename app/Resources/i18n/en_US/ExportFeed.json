@@ -66,13 +66,16 @@
     "doubleQuote": "Double Quote",
     "singleQuote": "Single Quote",
     "Export": "Export",
+    "DynamicExport": "Dynamic Export",
     "DuplicateAsImport": "Duplicate As Import",
     "Pending": "Pending",
     "Success": "Success",
     "Running": "Running",
     "Failed": "Failed",
     "Canceled": "Canceled",
-    "allAttributesAlreadyAdded": "All attributes item has been already added."
+    "allAttributesAlreadyAdded": "All attributes item has been already added.",
+    "exportParameters": "Export Parameters",
+    "contentLanguage": "Content Language"
   },
   "actions": {
     "cancelExportJob": "Cancel",
@@ -84,7 +87,8 @@
     "noExportFeedSelected": "No ExportFeed selected.",
     "columnAlreadyExist": "A column with such name already exists.",
     "duplicateAsImport": "Are you sure you want to create an import feed from this export feed ?",
-    "noFieldSelected": "No fields selected"
+    "noFieldSelected": "No fields selected",
+    "contentLanguageRequired": "Content Language is required."
   },
   "additionalTranslates": {
     "exportName": "Export: %s",

@@ -42,12 +42,36 @@
           ]
         }
       }
+    },
+    "contentLanguage": {
+      "type": "link",
+      "entity": "Language",
+      "filterDisabled": true,
+      "massUpdateDisabled": true,
+      "importDisabled": true,
+      "dropdown": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "export"
+            }
+          ]
+        }
+      }
     }
   },
   "links": {
     "exportFeed": {
       "type": "belongsTo",
       "entity": "ExportFeed"
+    },
+    "contentLanguage": {
+      "type": "belongsTo",
+      "entity": "Language",
+      "skipOrmDefs": true
     }
   }
 }
