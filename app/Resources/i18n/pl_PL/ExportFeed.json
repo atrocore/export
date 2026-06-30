@@ -72,7 +72,10 @@
     "Running": "Uruchamianie",
     "Failed": "Niepowodzenie",
     "Canceled": "Anulowano",
-    "allAttributesAlreadyAdded": "Wszystkie atrybuty zostały już dodane."
+    "allAttributesAlreadyAdded": "Wszystkie atrybuty zostały już dodane.",
+    "DynamicExport": "Eksport dynamiczny",
+    "selectAllLanguages": "Wybierz (Wszystkie języki)",
+    "exportParameters": "Parametry eksportu"
   },
   "actions": {
     "cancelExportJob": "Anuluj",
@@ -84,7 +87,8 @@
     "noExportFeedSelected": "Nie wybrano przesyłki eksportowej.",
     "columnAlreadyExist": "Kolumna o takiej nazwie już istnieje.",
     "duplicateAsImport": "Czy na pewno chcesz utworzyć przesyłkę importu z tej przesyłki eksportowej?",
-    "noFieldSelected": "Nie wybrano żadnych pól"
+    "noFieldSelected": "Nie wybrano żadnych pól",
+    "contentLanguageRequired": "Język treści jest wymagany."
   },
   "additionalTranslates": {
     "exportName": "Eksport: %s",
