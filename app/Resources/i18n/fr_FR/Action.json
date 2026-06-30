@@ -1,7 +1,8 @@
 {
   "fields": {
     "exportFeed": "Flux d'export",
-    "payload": "Charge utile"
+    "payload": "Charge utile",
+    "contentLanguage": "Langues du contenu"
   },
   "options": {
     "type": {
