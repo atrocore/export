@@ -75,7 +75,8 @@
     "allAttributesAlreadyAdded": "Všechny položky atributů již byly přidány.",
     "DynamicExport": "Dynamický export",
     "selectAllLanguages": "Vybrat (Všechny jazyky)",
-    "exportParameters": "Parametry exportu"
+    "exportParameters": "Parametry exportu",
+    "contentLanguage": "Jazyky obsahu"
   },
   "actions": {
     "cancelExportJob": "Zrušit",
