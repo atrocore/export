@@ -62,6 +62,10 @@ use Psr\Http\Server\RequestHandlerInterface;
                                 'type' => 'string',
                             ],
                         ],
+                        'allLanguages' => [
+                            'type'        => 'boolean',
+                            'description' => 'When true, creates configurator items for all language variants of multilingual attributes. When false (default), only the main language item is created.',
+                        ],
                     ],
                 ],
             ],
@@ -107,7 +111,7 @@ class AddAttributesHandler extends AbstractHandler
         }
 
         return new BoolResponse(
-            $this->getRecordService('ExportFeed')->addAttributes((string) $data->entityName, $id, (array) $data->attributesIds)
+            $this->getRecordService('ExportFeed')->addAttributes((string) $data->entityName, $id, (array) $data->attributesIds, !empty($data->allLanguages))
         );
     }
 }

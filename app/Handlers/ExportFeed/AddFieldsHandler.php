@@ -62,6 +62,10 @@ use Psr\Http\Server\RequestHandlerInterface;
                                 'type' => 'string',
                             ],
                         ],
+                        'allLanguages' => [
+                            'type'        => 'boolean',
+                            'description' => 'When true, creates configurator items for all language variants of multilingual fields. When false (default), only the main language item is created.',
+                        ],
                     ],
                 ],
             ],
@@ -107,7 +111,7 @@ class AddFieldsHandler extends AbstractHandler
         }
 
         return new BoolResponse(
-            $this->getRecordService('ExportFeed')->addFields((string) $data->entityName, $id, (array) $data->fields)
+            $this->getRecordService('ExportFeed')->addFields((string) $data->entityName, $id, (array) $data->fields, !empty($data->allLanguages))
         );
     }
 }

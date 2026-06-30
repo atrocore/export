@@ -74,6 +74,7 @@
     "Failed": "Failed",
     "Canceled": "Canceled",
     "allAttributesAlreadyAdded": "All attributes item has been already added.",
+    "selectAllLanguages": "Select (All Languages)",
     "exportParameters": "Export Parameters",
     "contentLanguage": "Content Language"
   },

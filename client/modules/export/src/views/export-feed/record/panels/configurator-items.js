@@ -112,6 +112,8 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
         },
 
         actionSelectFields() {
+            const isMultilang = this.getConfig().get('isMultilangActive');
+
             this.notify('Loading...');
             this.createView('dialog', 'views/modals/select-records', {
                 scope: 'EntityField',
@@ -127,31 +129,36 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                     fieldsFilter: {
                         entityId: this.model.get('entity')
                     }
-                }
+                },
+                additionalButtons: isMultilang ? [
+                    {
+                        name: 'selectAllLanguages',
+                        label: this.translate('selectAllLanguages', 'labels', 'ExportFeed'),
+                        style: 'primary'
+                    }
+                ] : []
             }, dialog => {
                 dialog.render();
                 this.notify(false);
-                dialog.once('select', models => {
+
+                const doAddFields = (models, allLanguages) => {
                     if (models.massRelate) {
                         models = dialog.collection.models;
                     }
-
-                    let fields = [];
-                    models.forEach(model => {
-                        fields.push(model.get('code'))
-                    });
-
-                    let postData = {
-                        fields: fields,
-                        entityName: this.model.name,
-                    };
-
+                    const fields = models.map(m => m.get('code'));
                     this.notify('Saving...');
-                    this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addFields`, postData).then(() => {
+                    this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addFields`, {
+                        fields,
+                        entityName: this.model.name,
+                        allLanguages
+                    }).then(() => {
                         this.notify('Saved', 'success');
                         this.refreshPanel();
                     });
-                });
+                };
+
+                dialog.once('select', models => doAddFields(models, false));
+                dialog.once('selectAllLanguages', models => doAddFields(models, true));
             });
         },
 
@@ -180,6 +187,7 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
         actionSelectAttributes() {
             const scope = 'Attribute';
             const viewName = this.getMetadata().get(['clientDefs', scope, 'modalViews', 'select']) || 'views/modals/select-records';
+            const isMultilang = this.getConfig().get('isMultilangActive');
 
             this.notify('Loading...');
             this.createView('dialog', viewName, {
@@ -192,31 +200,35 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                     onlyForEntity: this.model.get('entity')
                 },
                 allowSelectAllResult: false,
+                additionalButtons: isMultilang ? [
+                    {
+                        name: 'selectAllLanguages',
+                        label: this.translate('selectAllLanguages', 'labels', 'ExportFeed'),
+                        style: 'primary'
+                    }
+                ] : []
             }, dialog => {
                 dialog.render();
                 this.notify(false);
-                dialog.once('select', models => {
-                    this.notify('Saving...');
 
+                const doAddAttributes = (models, allLanguages) => {
                     if (models.massRelate) {
                         models = dialog.collection.models;
                     }
-
-                    let attributesIds = [];
-                    models.forEach(model => {
-                        attributesIds.push(model.get('id'))
-                    });
-
-                    let postData = {
-                        attributesIds: attributesIds,
-                        entityName: this.model.name
-                    };
-
-                    this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addAttributes`, postData).then(() => {
+                    const attributesIds = models.map(m => m.get('id'));
+                    this.notify('Saving...');
+                    this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addAttributes`, {
+                        attributesIds,
+                        entityName: this.model.name,
+                        allLanguages
+                    }).then(() => {
                         this.notify('Saved', 'success');
                         this.refreshPanel();
                     });
-                });
+                };
+
+                dialog.once('select', models => doAddAttributes(models, false));
+                dialog.once('selectAllLanguages', models => doAddAttributes(models, true));
             });
         },
 
