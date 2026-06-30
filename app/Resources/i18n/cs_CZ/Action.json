@@ -1,7 +1,8 @@
 {
   "fields": {
     "exportFeed": "Exportní kanál",
-    "payload": "Payload (užitečná data)"
+    "payload": "Payload (užitečná data)",
+    "contentLanguage": "Jazyky obsahu"
   },
   "options": {
     "type": {
