@@ -147,7 +147,7 @@ class ExportFeed extends Base
         return $this->pushExport($data);
     }
 
-    public function addFields(string $entityName, string $id, array $fields): bool
+    public function addFields(string $entityName, string $id, array $fields, bool $allLanguages = false): bool
     {
         if (!$this->getAcl()->check('ExportFeed', 'edit')) {
             throw new Exceptions\Forbidden();
@@ -205,7 +205,7 @@ class ExportFeed extends Base
 
             $this->createExportConfiguratorItem($data);
 
-            if (!empty($this->getConfig()->get('isMultilangActive')) && !empty($defs['isMultilang']) && empty($defs['measureId'])) {
+            if ($allLanguages && !empty($this->getConfig()->get('isMultilangActive')) && !empty($defs['isMultilang']) && empty($defs['measureId'])) {
                 foreach ($defs['lingualFields'] ?? [] as $languageField) {
                     $this->createExportConfiguratorItem(array_merge($data, ['name' => $languageField]));
                 }
@@ -240,7 +240,7 @@ class ExportFeed extends Base
         return true;
     }
 
-    public function addAttributes(string $entityName, string $id, array $attributesIds): bool
+    public function addAttributes(string $entityName, string $id, array $attributesIds, bool $allLanguages = false): bool
     {
         if (!$this->getAcl()->check('ExportFeed', 'edit')) {
             throw new Exceptions\Forbidden();
@@ -255,12 +255,14 @@ class ExportFeed extends Base
             return false;
         }
 
-        foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds) as $row) {
+        // null = include all variants; '' = main language only (no lingual variants)
+        $contentLanguageCode = $allLanguages ? null : '';
+
+        foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds, $contentLanguageCode) as $row) {
             $this->createExportConfiguratorItem($row);
         }
 
         return true;
-
     }
 
     public function prepareConfiguratorItemDataForAttributes(Entity $feed, array $attributesIds, ?string $contentLanguageCode = null): array
