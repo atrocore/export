@@ -1,7 +1,8 @@
 {
   "fields": {
     "exportFeed": "Export-Feed",
-    "payload": "Nutzlast"
+    "payload": "Nutzlast",
+    "contentLanguage": "Content-Sprachen"
   },
   "options": {
     "type": {
