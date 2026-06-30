@@ -63,7 +63,11 @@
     "Canceled": "Отменено",
     "DuplicateAsImport": "Дублировать как импорт",
     "allAttributesAlreadyAdded": "Все атрибуты уже добавлены.",
-    "generateTemplate": "Создайте шаблон"
+    "generateTemplate": "Создайте шаблон",
+    "DynamicExport": "Динамический экспорт",
+    "selectAllLanguages": "Выберите (Все языки)",
+    "exportParameters": "Параметры экспорта",
+    "contentLanguage": "Язык текста"
   },
   "actions": {
     "tryAgainExportJob": "Повторить попытку",
@@ -75,7 +79,8 @@
     "columnAlreadyExist": "Колонка с таким названием уже существует.",
     "noFieldSelected": "Поля не выбраны",
     "confirmTemplateGeneration": "Вы уверены, что хотите генерировать Шаблон?",
-    "duplicateAsImport": "Вы уверены, что хотите создать импортный фид из этого экспортного фида?"
+    "duplicateAsImport": "Вы уверены, что хотите создать импортный фид из этого экспортного фида?",
+    "contentLanguageRequired": "Язык контента является обязательным полем."
   },
   "additionalTranslates": {
     "exportName": "Экспорт: %s",
