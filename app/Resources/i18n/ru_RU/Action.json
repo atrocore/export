@@ -1,7 +1,8 @@
 {
   "fields": {
     "exportFeed": "Экспортный фид",
-    "payload": "Параметры"
+    "payload": "Параметры",
+    "contentLanguage": "Язык текста"
   },
   "options": {
     "type": {
