@@ -99,7 +99,8 @@
     "noFieldLabel": "L'étiquette du champ '%s' pour la langue '%s' n'est pas définie.",
     "noAttributeLabel": "L'étiquette de l'attribut \"%s\" pour la langue \"%s\" n'est pas définie.",
     "noConfiguratorItems": "Veuillez créer au moins une règle du configurateur pour pouvoir exécuter ce flux.",
-    "noSheets": "Veuillez créer au moins une feuille pour pouvoir exécuter ce transfert."
+    "noSheets": "Veuillez créer au moins une feuille pour pouvoir exécuter ce transfert.",
+    "exportFeedIsInvalid": "Le flux d'exportation contient des erreurs. Veuillez les corriger avant de continuer."
   },
   "tooltips": {
     "template": "Vous pouvez utiliser la syntaxe du moteur de template <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",

@@ -116,8 +116,8 @@ class ExportFeed extends Base
 
         $this->getRepository()->fixLocaleIfNecessary($exportFeed->get('id'));
 
-        if ($this->hasInvalidConfiguratorItems($exportFeed)) {
-            throw new Exceptions\BadRequest($this->getLanguage()->translate('invalidConfiguratorItems', 'exceptions', 'ExportFeed'));
+        if (!$this->isValid($exportFeed)) {
+            throw new Exceptions\BadRequest($this->getLanguage()->translate('exportFeedIsInvalid', 'exceptions', 'ExportFeed'));
         }
 
         $contentLanguageId = $requestData->contentLanguageId ?? null;
@@ -994,24 +994,35 @@ class ExportFeed extends Base
         ];
     }
 
-    protected function hasInvalidConfiguratorItems(ExportFeedEntity $exportFeed): bool
+    public function isValid(ExportFeedEntity $exportFeed): bool
     {
-        $this->putAttributesToMetadata($exportFeed->get('id'));
+        if (empty($exportFeed->get('localeId')) || empty($this->getEntityManager()->getEntity('Locale', $exportFeed->get('localeId')))) {
+            return false;
+        }
+
+        if (empty($exportFeed->get('folderId')) || empty($this->getEntityManager()->getEntity('Folder', $exportFeed->get('folderId')))) {
+            return false;
+        }
 
         $entityName = $exportFeed->getFeedField('entity');
-        $items      = $this->getPreparedConfiguratorItems($exportFeed, $exportFeed, $entityName);
 
-        foreach ($items as $item) {
+        if (empty($this->getMetadata()->get("scopes.$entityName.type"))) {
+            return false;
+        }
+
+        $this->putAttributesToMetadata($exportFeed->get('id'));
+
+        foreach ($this->getPreparedConfiguratorItems($exportFeed, $exportFeed, $entityName) as $item) {
             if (!in_array($item->get('type'), ['Field'])) {
                 continue;
             }
             $fieldDefs = $this->getMetadata()->get("entityDefs.$entityName.fields.{$item->get('name')}");
             if (empty($fieldDefs)) {
-                return true;
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     public function putAttributesToMetadata(string $exportFeedId, ?array $feedData = null): void

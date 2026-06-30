@@ -99,7 +99,8 @@
     "noFieldLabel": "La etiqueta del campo '%s' para el idioma '%s' no está configurada.",
     "noAttributeLabel": "La etiqueta del atributo '%s' para el idioma '%s' no está fijada.",
     "noConfiguratorItems": "Por favor, cree al menos una regla del configurador para poder ejecutar esta alimentación.",
-    "noSheets": "Por favor, cree al menos una hoja para poder ejecutar esta alimentación."
+    "noSheets": "Por favor, cree al menos una hoja para poder ejecutar esta alimentación.",
+    "exportFeedIsInvalid": "El feed de exportación contiene errores. Por favor, corrígelos antes de continuar."
   },
   "tooltips": {
     "maxWorkers": "Esto determina cuántos trabajadores pueden ejecutar esta alimentación en paralelo.",

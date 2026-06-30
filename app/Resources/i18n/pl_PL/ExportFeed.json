@@ -99,7 +99,8 @@
     "noFieldLabel": "Etykieta dla pola '%s' dla języka '%s' nie jest ustawiona.",
     "noAttributeLabel": "Etykieta dla atrybutu '%s' dla języka '%s' nie jest ustawiona.",
     "noConfiguratorItems": "Proszę utwórz przynajmniej jedną regułę konfiguratora, aby móc wykonać tę przesyłkę.",
-    "noSheets": "Proszę utwórz przynajmniej jedną arkusz, aby móc wykonać tę przesyłkę."
+    "noSheets": "Proszę utwórz przynajmniej jedną arkusz, aby móc wykonać tę przesyłkę.",
+    "exportFeedIsInvalid": "Kanał eksportu zawiera błędy. Proszę je poprawić przed kontynuowaniem."
   },
   "tooltips": {
     "template": "Możesz używać składni silnika szablonów <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",

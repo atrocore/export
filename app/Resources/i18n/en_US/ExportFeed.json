@@ -104,7 +104,7 @@
     "noAttributeLabel": "Label for the attribute '%s' for the language '%s' ist not set.",
     "noConfiguratorItems": "Please create at least one configurator rule to be able to execute this feed.",
     "noSheets": "Please create at least one sheet to be able to execute this feed.",
-    "invalidConfiguratorItems": "Export cannot run: one or more configurator items reference a field/attribute that no longer exists. Please fix or remove the highlighted items."
+    "exportFeedIsInvalid": "Export feed contains errors. Please fix them before proceeding."
   },
   "tooltips": {
     "maxWorkers": "This determines how many workers can execute this feed in parallel.",

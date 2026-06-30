@@ -99,7 +99,8 @@
     "noFieldLabel": "L'etichetta del campo '%s' per la lingua '%s' non è impostata.",
     "noAttributeLabel": "L'etichetta dell'attributo '%s' per la lingua '%s' non è impostata.",
     "noConfiguratorItems": "La preghiamo di creare almeno una regola del configuratore per poter eseguire questo feed.",
-    "noSheets": "La preghiamo di creare almeno un foglio per poter eseguire questa alimentazione."
+    "noSheets": "La preghiamo di creare almeno un foglio per poter eseguire questa alimentazione.",
+    "exportFeedIsInvalid": "Il feed di esportazione contiene errori. Per favore, correggerli prima di procedere."
   },
   "tooltips": {
     "maxWorkers": "Questo determina quanti lavoratori possono eseguire questo feed in parallelo.",

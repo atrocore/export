@@ -99,7 +99,8 @@
     "noFieldLabel": "Label pro pole \"%s\" pro jazyk \"%s\" není nastaven.",
     "noAttributeLabel": "Label pro atribut \"%s\" pro jazyk \"%s\" není nastaven.",
     "noConfiguratorItems": "Vytvořte prosím alespoň jedno pravidlo konfigurátoru, aby bylo možné tento kanál spustit.",
-    "noSheets": "Vytvořte si prosím alespoň jeden list, abyste mohli tento kanál spustit."
+    "noSheets": "Vytvořte si prosím alespoň jeden list, abyste mohli tento kanál spustit.",
+    "exportFeedIsInvalid": "Export feed obsahuje chyby. Opravte je prosím, než budete pokračovat."
   },
   "tooltips": {
     "maxWorkers": "To určuje, kolik pracovníků může tento kanál provádět paralelně.",
