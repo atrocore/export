@@ -121,7 +121,8 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                 allowSelectAllResult: false,
                 boolFilterList: [
                     "fieldsFilter",
-                    "notLingual"
+                    "notLingual",
+                    "exportable"
                 ],
                 boolFilterData: {
                     fieldsFilter: {
