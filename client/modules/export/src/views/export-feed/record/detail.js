@@ -22,6 +22,10 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
                 {
                     "action": "exportNow",
                     "label": this.translate('Export', 'labels', 'ExportFeed')
+                },
+                {
+                    "action": "dynamicExportNow",
+                    "label": this.translate('DynamicExport', 'labels', 'ExportFeed')
                 }
             ];
 
@@ -70,19 +74,12 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
         },
 
         handleExportButtonDisability() {
-            if (this.hasExportNow()) {
-                this.additionalButtons.map(button => {
-                    if (button.action === 'exportNow') {
-                        button.disabled = false;
-                    }
-                });
-            } else {
-                this.additionalButtons.map(button => {
-                    if (button.action === 'exportNow') {
-                        button.disabled = true;
-                    }
-                });
-            }
+            const canExport = this.hasExportNow();
+            this.additionalButtons.map(button => {
+                if (button.action === 'exportNow' || button.action === 'dynamicExportNow') {
+                    button.disabled = !canExport;
+                }
+            });
         },
 
         hasExportNow() {
@@ -98,6 +95,38 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
                 this.notify('Created', 'success');
                 this.model.fetch();
                 $('.action[data-action="refresh"][data-panel="exportJobs"]').click();
+            });
+        },
+
+        actionDynamicExportNow() {
+            if (!this.hasExportNow()) {
+                return;
+            }
+
+            let component = null;
+            const destroy = () => {
+                if (component) {
+                    component.$destroy();
+                    component = null;
+                }
+            };
+
+            component = new Svelte.DynamicExportModal({
+                target: document.body,
+                props: {
+                    onExport: (contentLanguageId) => {
+                        const data = { id: this.model.id };
+                        if (contentLanguageId) {
+                            data.contentLanguageId = contentLanguageId;
+                        }
+                        this.ajaxPostRequest(`ExportFeed/${this.model.id}/exportFile`, data).then(() => {
+                            this.notify('Created', 'success');
+                            this.model.fetch();
+                            $('.action[data-action="refresh"][data-panel="exportJobs"]').click();
+                        });
+                    },
+                    onClose: destroy
+                }
             });
         },
 

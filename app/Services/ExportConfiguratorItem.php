@@ -105,28 +105,32 @@ class ExportConfiguratorItem extends Base
         return parent::isEntityUpdated($entity, $data);
     }
 
-    public function prepareColumnName(Entity $entity): string
+    public function prepareColumnName(Entity $entity, ?string $localeId = null): string
     {
-        return $this->prepareFieldColumnName($entity);
+        return $this->prepareFieldColumnName($entity, $localeId);
     }
 
-    protected function prepareFieldColumnName(Entity $entity): string
+    protected function prepareFieldColumnName(Entity $entity, ?string $localeId = null): string
     {
-        if (!empty($entity->get('sheetId'))) {
-            $sheet = $this->getEntityManager()->getEntity('Sheet', $entity->get('sheetId'));
-            if (empty($sheet)) {
-                throw new NotFound();
-            }
-            $exportFeedId = $sheet->get('exportFeedId');
-        } else {
-            $exportFeedId = $entity->get('exportFeedId');
-        }
-
         switch ($entity->get('columnType') ?? 'name') {
             case 'name':
-                $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
-                $column     = $this
-                    ->getLocalizedLanguage($exportFeed->get('localeId'))
+                if ($localeId !== null) {
+                    $resolvedLocaleId = $localeId;
+                } else {
+                    if (!empty($entity->get('sheetId'))) {
+                        $sheet = $this->getEntityManager()->getEntity('Sheet', $entity->get('sheetId'));
+                        if (empty($sheet)) {
+                            throw new NotFound();
+                        }
+                        $exportFeedId = $sheet->get('exportFeedId');
+                    } else {
+                        $exportFeedId = $entity->get('exportFeedId');
+                    }
+                    $exportFeed       = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
+                    $resolvedLocaleId = $exportFeed->get('localeId');
+                }
+                $column = $this
+                    ->getLocalizedLanguage($resolvedLocaleId)
                     ->translate($entity->get('name'), 'fields', $entity->get('entity'));
                 break;
             case 'custom':

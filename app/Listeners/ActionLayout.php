@@ -22,8 +22,20 @@ class ActionLayout extends AbstractLayoutListener
     {
         $result = $event->getArgument('result');
 
-        if (strpos(json_encode($result[0]['rows']), '"name":"exportFeed"') === false) {
-            $result[0]['rows'][] = [['name' => 'exportFeed'], false];
+        $encoded = json_encode($result[0]['rows']);
+
+        if (strpos($encoded, '"name":"exportFeed"') === false) {
+            $result[0]['rows'][] = [['name' => 'exportFeed'], ['name' => 'contentLanguage']];
+        } else if (strpos($encoded, '"name":"contentLanguage"') === false) {
+            foreach ($result[0]['rows'] as &$row) {
+                foreach ($row as $cell) {
+                    if (is_array($cell) && ($cell['name'] ?? null) === 'exportFeed') {
+                        $row = [['name' => 'exportFeed'], ['name' => 'contentLanguage']];
+                        break;
+                    }
+                }
+            }
+            unset($row);
         }
 
         if (strpos(json_encode($result[0]['rows']), '"name":"payload"') !== false) {
