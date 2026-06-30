@@ -72,7 +72,10 @@
     "Running": "Probíhá",
     "Failed": "Neúspěšný",
     "Canceled": "Zrušeno",
-    "allAttributesAlreadyAdded": "Všechny položky atributů již byly přidány."
+    "allAttributesAlreadyAdded": "Všechny položky atributů již byly přidány.",
+    "DynamicExport": "Dynamický export",
+    "selectAllLanguages": "Vybrat (Všechny jazyky)",
+    "exportParameters": "Parametry exportu"
   },
   "actions": {
     "cancelExportJob": "Zrušit",
@@ -84,7 +87,8 @@
     "noExportFeedSelected": "Není vybrán žádný ExportFeed.",
     "columnAlreadyExist": "Sloupec s takovým názvem již existuje.",
     "duplicateAsImport": "Jste si jisti, že chcete vytvořit importní kanál z tohoto exportního kanálu ?",
-    "noFieldSelected": "Nejsou vybrána žádná pole"
+    "noFieldSelected": "Nejsou vybrána žádná pole",
+    "contentLanguageRequired": "Jazyk obsahu je povinný."
   },
   "additionalTranslates": {
     "exportName": "Export: %s",
