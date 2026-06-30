@@ -63,7 +63,10 @@
     "Running": "Виконується",
     "Failed": "Не виконано",
     "Canceled": "Скасовано",
-    "allAttributesAlreadyAdded": "Всі атрибути вже додано."
+    "allAttributesAlreadyAdded": "Всі атрибути вже додано.",
+    "DynamicExport": "Динамічний експорт",
+    "selectAllLanguages": "Вибрати (Усі мови)",
+    "exportParameters": "Параметри експорту"
   },
   "actions": {
     "cancelExportJob": "Скасувати",
@@ -75,7 +78,8 @@
     "noExportFeedSelected": "Експортний фід не обрано.",
     "columnAlreadyExist": "Колонка з такою назвою вже існує.",
     "duplicateAsImport": "Ви впевнені, що хочете створити канал імпорту з цього каналу експорту?",
-    "noFieldSelected": "Не вибрано жодного поля"
+    "noFieldSelected": "Не вибрано жодного поля",
+    "contentLanguageRequired": "Мова вмісту є обов’язковою."
   },
   "additionalTranslates": {
     "exportName": "Експорт: %s",
