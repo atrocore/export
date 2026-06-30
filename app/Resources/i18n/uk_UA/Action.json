@@ -1,7 +1,8 @@
 {
   "fields": {
     "exportFeed": "Експортний фід",
-    "payload": "Корисне навантаження"
+    "payload": "Корисне навантаження",
+    "contentLanguage": "Мови контенту"
   },
   "options": {
     "type": {
