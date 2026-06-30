@@ -66,7 +66,8 @@
     "allAttributesAlreadyAdded": "Alle Attribute sind bereits hinzugefügt worden.",
     "DynamicExport": "Dynamischer Export",
     "selectAllLanguages": "Wählen Sie „(Alle Sprachen)“ aus",
-    "exportParameters": "Exportparameter"
+    "exportParameters": "Exportparameter",
+    "contentLanguage": "Content-Sprachen"
   },
   "actions": {
     "cancelExportJob": "Abbrechen",
