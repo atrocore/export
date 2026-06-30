@@ -1,7 +1,8 @@
 {
   "fields": {
     "exportFeed": "Eksportuj kanał",
-    "payload": "Ładunek"
+    "payload": "Ładunek",
+    "contentLanguage": "Języki treści"
   },
   "options": {
     "type": {
