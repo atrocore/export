@@ -66,7 +66,8 @@
     "allAttributesAlreadyAdded": "Всі атрибути вже додано.",
     "DynamicExport": "Динамічний експорт",
     "selectAllLanguages": "Вибрати (Усі мови)",
-    "exportParameters": "Параметри експорту"
+    "exportParameters": "Параметри експорту",
+    "contentLanguage": "Мови контенту"
   },
   "actions": {
     "cancelExportJob": "Скасувати",
