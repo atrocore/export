@@ -72,7 +72,10 @@
     "Running": "Correr",
     "Failed": "Fallida",
     "Canceled": "Cancelado",
-    "allAttributesAlreadyAdded": "Ya se han añadido todos los atributos."
+    "allAttributesAlreadyAdded": "Ya se han añadido todos los atributos.",
+    "DynamicExport": "Exportación dinámica",
+    "selectAllLanguages": "Seleccione (Todos los idiomas)",
+    "exportParameters": "Parámetros de exportación"
   },
   "actions": {
     "cancelExportJob": "Cancelar",
@@ -84,7 +87,8 @@
     "noExportFeedSelected": "No se ha seleccionado ExportFeed.",
     "columnAlreadyExist": "Ya existe una columna con ese nombre.",
     "duplicateAsImport": "¿Está seguro de que desea crear un feed de importación a partir de este feed de exportación?",
-    "noFieldSelected": "No hay campos seleccionados"
+    "noFieldSelected": "No hay campos seleccionados",
+    "contentLanguageRequired": "Es obligatorio indicar el idioma del contenido."
   },
   "additionalTranslates": {
     "exportName": "Exportar: %s",
