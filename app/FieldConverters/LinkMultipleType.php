@@ -229,18 +229,6 @@ class LinkMultipleType extends LinkType
             }
         }
 
-        $orderBySql = join(', ', $qb1->getQueryPart('orderBy'));
-        if (!empty($orderBySql)) {
-            $orderBySql = 'ORDER BY ' . $orderBySql;
-            $qb1->resetQueryPart('orderBy');
-        }
-
-        if (Converter::isPgSQL($container->get('connection'))) {
-            $qb1->select("string_agg($mtAlias.id::text, ',' $orderBySql)");
-        } else {
-            $qb1->select("GROUP_CONCAT($mtAlias.id $orderBySql SEPARATOR ',')");
-        }
-
         if (empty($linkDefs['relationName'])) {
             $foreignKey = $mapper->getQueryConverter()->toDb($keySet['foreignKey']);
             $qb1->andWhere("$mtAlias.$foreignKey=mt_alias.id");
@@ -256,7 +244,16 @@ class LinkMultipleType extends LinkType
             $qb1->andWhere("$relTableAlias.$nearColumn=mt_alias.id");
         }
 
-        $innerSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
+        $limitedAlias = 'lim_' . $uniqueHash;
+        $idAlias = $mapper->getQueryConverter()->fieldToAlias('id');
+        $limitedIdsSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
+
+        if (Converter::isPgSQL($container->get('connection'))) {
+            $innerSql = "SELECT string_agg({$limitedAlias}.{$idAlias}::text, ',') FROM ({$limitedIdsSql}) {$limitedAlias}";
+        } else {
+            $innerSql = "SELECT GROUP_CONCAT({$limitedAlias}.{$idAlias} SEPARATOR ',') FROM ({$limitedIdsSql}) {$limitedAlias}";
+        }
+
         $qb->addSelect("({$innerSql}) AS " . static::idToHash($configuration['id']));
 
         foreach ($qb1->getParameters() as $pName => $pValue) {
@@ -286,7 +283,10 @@ class LinkMultipleType extends LinkType
             $ids = $this->parseLinkedIds($record['_entity']->rowData[static::idToHash($configuration['id'])]);
             foreach ($ids as $id) {
                 if ($id && trim($id) !== '') {
-                    $collection->append($this->getMemoryStorage()->get($this->createKey($configuration['id'], $id)));
+                    $foreign = $this->getMemoryStorage()->get($this->createKey($configuration['id'], $id));
+                    if ($foreign !== null) {
+                        $collection->append($foreign);
+                    }
                 }
             }
         }
