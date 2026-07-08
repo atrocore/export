@@ -580,6 +580,8 @@ class ExportFeed extends Base
                     $fieldDefs = $this->getMetadata()->get("entityDefs.$entityName.fields.$fieldName");
                     if (!empty($fieldDefs['isMultilang'])) {
                         $row['field'] = $fieldName . ucfirst(Language::languageToField($contentLanguageCode));
+                        $item->set('name', $row['field']);
+                        $row['column'] = $eciService->prepareColumnName($item, $effectiveLocaleId);
                     }
 
                     // Redirect language-neutral multilingual fields inside exportBy to their
