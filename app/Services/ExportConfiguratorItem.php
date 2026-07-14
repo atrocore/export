@@ -53,7 +53,7 @@ class ExportConfiguratorItem extends Base
             $entity->set('entity', $feed->getFeedField('entity'));
         }
 
-        if ($entity->get('type') === 'Field') {
+        if ($entity->get('type') === 'Field' && $entity->get('name') !== 'id') {
             // prepare field defs
             $fieldDefs = $this->getMetadata()->get("entityDefs.{$entity->get('entity')}.fields.{$entity->get('name')}");
             if (empty($fieldDefs)) {

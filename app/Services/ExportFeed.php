@@ -1020,6 +1020,9 @@ class ExportFeed extends Base
             if (!in_array($item->get('type'), ['Field'])) {
                 continue;
             }
+            if ($item->get('name') === 'id') {
+                continue;
+            }
             $fieldDefs = $this->getMetadata()->get("entityDefs.$entityName.fields.{$item->get('name')}");
             if (empty($fieldDefs)) {
                 return false;
