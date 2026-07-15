@@ -687,6 +687,23 @@
       "type": "link",
       "required": true
     },
+    "contentLanguage": {
+      "type": "link",
+      "dropdown": true,
+      "filterDisabled": true,
+      "massUpdateDisabled": true,
+      "importDisabled": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "fileType"
+            }
+          ]
+        }
+      }
+    },
     "locale": {
       "type": "link",
       "entity": "Locale",
@@ -778,6 +795,11 @@
     "folder": {
       "type": "belongsTo",
       "entity": "Folder"
+    },
+    "contentLanguage": {
+      "type": "belongsTo",
+      "entity": "Language",
+      "skipOrmDefs": true
     }
   },
   "collection": {

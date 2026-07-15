@@ -21,7 +21,8 @@
     "fileNameTemplate": "File Name Template",
     "exportByForListAttribute": "Related Entity Fields for Lists",
     "script": "Script",
-    "exportStaticListLabel": "Export Label"
+    "exportStaticListLabel": "Export Label",
+    "selectedLanguageOnly": "Selected language only"
   },
   "options": {
     "columnType": {

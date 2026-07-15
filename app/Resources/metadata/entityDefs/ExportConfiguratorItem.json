@@ -103,6 +103,21 @@
         }
       }
     },
+    "selectedLanguageOnly": {
+      "type": "bool",
+      "default": false,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "allAttributes"
+            }
+          ]
+        }
+      }
+    },
     "type": {
       "type": "enum",
       "required": true,

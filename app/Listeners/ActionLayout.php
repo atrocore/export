@@ -26,16 +26,29 @@ class ActionLayout extends AbstractLayoutListener
 
         if (strpos($encoded, '"name":"exportFeed"') === false) {
             $result[0]['rows'][] = [['name' => 'exportFeed'], ['name' => 'contentLanguage']];
-        } else if (strpos($encoded, '"name":"contentLanguage"') === false) {
-            foreach ($result[0]['rows'] as &$row) {
-                foreach ($row as $cell) {
-                    if (is_array($cell) && ($cell['name'] ?? null) === 'exportFeed') {
-                        $row = [['name' => 'exportFeed'], ['name' => 'contentLanguage']];
-                        break;
+            $result[0]['rows'][] = [['name' => 'locale'], false];
+        } else {
+            if (strpos($encoded, '"name":"contentLanguage"') === false) {
+                foreach ($result[0]['rows'] as &$row) {
+                    foreach ($row as $cell) {
+                        if (is_array($cell) && ($cell['name'] ?? null) === 'exportFeed') {
+                            $row = [['name' => 'exportFeed'], ['name' => 'contentLanguage']];
+                            break;
+                        }
+                    }
+                }
+                unset($row);
+            }
+            if (strpos(json_encode($result[0]['rows']), '"name":"locale"') === false) {
+                foreach ($result[0]['rows'] as $i => $row) {
+                    foreach ($row as $cell) {
+                        if (is_array($cell) && ($cell['name'] ?? null) === 'contentLanguage') {
+                            array_splice($result[0]['rows'], $i + 1, 0, [[['name' => 'locale'], false]]);
+                            break 2;
+                        }
                     }
                 }
             }
-            unset($row);
         }
 
         if (strpos(json_encode($result[0]['rows']), '"name":"payload"') !== false) {

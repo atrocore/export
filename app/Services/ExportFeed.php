@@ -47,16 +47,18 @@ class ExportFeed extends Base
 
         $decodedPayload    = null;
         $contentLanguageId = null;
+        $localeId          = null;
         if (!empty($payload)) {
             $decodedPayload = @json_decode($payload, true);
             if (!empty($decodedPayload)) {
                 $contentLanguageId = $decodedPayload['contentLanguageId'] ?? null;
+                $localeId          = $decodedPayload['localeId'] ?? null;
             }
         }
 
         $data = [
             'id'   => IdGenerator::sortableId(),
-            'feed' => $this->prepareFeedData($exportFeed, $contentLanguageId)
+            'feed' => $this->prepareFeedData($exportFeed, $contentLanguageId, $localeId)
         ];
 
         if (!empty($decodedPayload)) {
@@ -121,10 +123,11 @@ class ExportFeed extends Base
         }
 
         $contentLanguageId = $requestData->contentLanguageId ?? null;
+        $localeId          = $requestData->localeId ?? null;
 
         $data = [
             'id'   => IdGenerator::sortableId(),
-            'feed' => $this->prepareFeedData($exportFeed, $contentLanguageId)
+            'feed' => $this->prepareFeedData($exportFeed, $contentLanguageId, $localeId)
         ];
 
         if (!empty($requestData->ignoreFilter)) {
@@ -577,8 +580,10 @@ class ExportFeed extends Base
                 if (!empty($contentLanguageCode) && !empty($fieldName)) {
                     // Redirect language-neutral multilingual field to its language-specific variant.
                     // Language-pinned items (those already with a multilangLocale) are left untouched.
+                    // Items generated from allAttributes with selectedLanguageOnly=false already carry
+                    // the correct field name for each language variant and must not be redirected.
                     $fieldDefs = $this->getMetadata()->get("entityDefs.$entityName.fields.$fieldName");
-                    if (!empty($fieldDefs['isMultilang'])) {
+                    if (!empty($fieldDefs['isMultilang']) && !property_exists($item, 'skipLanguageRedirect')) {
                         $row['field'] = $fieldName . ucfirst(Language::languageToField($contentLanguageCode));
                         $item->set('name', $row['field']);
                         $row['column'] = $eciService->prepareColumnName($item, $effectiveLocaleId);
@@ -610,27 +615,44 @@ class ExportFeed extends Base
         return $configuration;
     }
 
-    public function prepareFeedData(ExportFeedEntity $feed, ?string $contentLanguageId = null): array
+    public function prepareFeedData(ExportFeedEntity $feed, ?string $contentLanguageId = null, ?string $localeId = null): array
     {
         $result = $feed->toArray();
         foreach ($feed->getFeedFields() as $name => $value) {
             $result[$name]         = $value;
             $result['data']->$name = $value;
         }
-        $result['decimalMark']       = $result['data']->decimalMark = $feed->getDecimalMark();
-        $result['thousandSeparator'] = $result['data']->thousandSeparator = $feed->getThousandSeparator();
+
+        // Runtime locale overrides the feed's saved locale for formatting and column labels.
+        $effectiveLocaleId = $localeId ?? $feed->get('localeId');
+        if ($effectiveLocaleId !== $feed->get('localeId')) {
+            $localeEntity                = $this->getEntityManager()->getEntity('Locale', $effectiveLocaleId);
+            $result['decimalMark']       = $result['data']->decimalMark = $localeEntity ? ($localeEntity->get('decimalMark') ?? '.') : '.';
+            $result['thousandSeparator'] = $result['data']->thousandSeparator = $localeEntity ? ($localeEntity->get('thousandSeparator') ?? '') : '';
+        } else {
+            $result['decimalMark']       = $result['data']->decimalMark = $feed->getDecimalMark();
+            $result['thousandSeparator'] = $result['data']->thousandSeparator = $feed->getThousandSeparator();
+        }
 
         $result['fileType'] = $feed->get('fileType');
 
+        // Runtime contentLanguageId overrides the saved one on the feed.
+        $effectiveContentLanguageId = $contentLanguageId ?? $feed->get('contentLanguageId');
+
         $contentLanguageCode = null;
         $contentLocaleId     = null;
-        if (!empty($contentLanguageId)) {
-            $resolved                            = $this->resolveContentLanguage($contentLanguageId, $feed->get('localeId') ?? '');
+        if (!empty($effectiveContentLanguageId)) {
+            $resolved                            = $this->resolveContentLanguage($effectiveContentLanguageId, $effectiveLocaleId ?? '');
             $contentLanguageCode                 = $resolved['code'];
             $contentLocaleId                     = $resolved['localeId'];
-            $result['data']->contentLanguageId   = $contentLanguageId;
+            $result['data']->contentLanguageId   = $effectiveContentLanguageId;
             $result['data']->contentLanguageCode = $contentLanguageCode;
             $result['data']->contentLocaleId     = $contentLocaleId;
+        }
+
+        // When no content language resolves a locale but a runtime locale was given, propagate it.
+        if ($contentLocaleId === null && $localeId !== null) {
+            $contentLocaleId = $localeId;
         }
 
         if (!empty($feed->get('hasMultipleSheets'))) {
@@ -1140,11 +1162,15 @@ class ExportFeed extends Base
                     continue;
                 }
 
-                foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds, $contentLanguageCode) as $row) {
+                // When selectedLanguageOnly is false, expand all language variants regardless of contentLanguageCode.
+                $effectiveCode = $item->get('selectedLanguageOnly') ? $contentLanguageCode : null;
+
+                foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds, $effectiveCode) as $row) {
                     $attributeItem = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
                     $attributeItem->set($row);
                     $attributeItem->id = $item->id;
                     $attributeItem->set('entity', $entityName);
+                    $attributeItem->skipLanguageRedirect = true;
                     $collection->append($attributeItem);
                 }
             } else {

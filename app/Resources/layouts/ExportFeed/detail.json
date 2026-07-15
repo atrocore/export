@@ -130,7 +130,9 @@
         {
           "name": "locale"
         },
-        false
+        {
+          "name": "contentLanguage"
+        }
       ],
       [
         {
