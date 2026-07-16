@@ -21,7 +21,8 @@
     "entityAttribute": "Atrybut",
     "script": "Skrypt",
     "channels": "Kanał(y)",
-    "exportStaticListLabel": "Etykieta eksportowa"
+    "exportStaticListLabel": "Etykieta eksportowa",
+    "selectedLanguageOnly": "Tylko wybrany język"
   },
   "options": {
     "columnType": {
@@ -45,6 +46,8 @@
   },
   "labels": {
     "withoutChannel": "Bez kanału",
-    "allAttributes": "Wszystkie (%s) atrybuty"
+    "allAttributes": "Wszystkie (%s) atrybuty",
+    "notFoundField": "Brakujące pole",
+    "notFoundAttribute": "Brak atrybutu"
   }
 }
