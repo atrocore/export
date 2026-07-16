@@ -21,7 +21,8 @@
     "exportByForListAttribute": "Пов’язані поля сутності для списків",
     "script": "Скрипт",
     "exportStaticListLabel": "Експортувати мітку",
-    "entityAttribute": "Атрибут"
+    "entityAttribute": "Атрибут",
+    "selectedLanguageOnly": "Тільки вибрана мова"
   },
   "options": {
     "columnType": {
@@ -45,6 +46,8 @@
   },
   "labels": {
     "withoutChannel": "Без каналу",
-    "allAttributes": "Всі (%) Атрибути"
+    "allAttributes": "Всі (%) Атрибути",
+    "notFoundAttribute": "Атрибут не знайдено",
+    "notFoundField": "Поле не знайдено"
   }
 }
