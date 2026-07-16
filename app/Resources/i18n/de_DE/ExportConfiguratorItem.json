@@ -21,7 +21,8 @@
     "exportByForListAttribute": "Verwandte Entitätsfelder für Listen",
     "script": "Skript",
     "exportStaticListLabel": "Exportbezeichnung",
-    "entityAttribute": "Attribut"
+    "entityAttribute": "Attribut",
+    "selectedLanguageOnly": "Nur die ausgewählte Sprache"
   },
   "options": {
     "columnType": {
@@ -37,7 +38,9 @@
   },
   "labels": {
     "withoutChannel": "Ohne Kanal",
-    "allAttributes": "Alle (%s) Attribute"
+    "allAttributes": "Alle (%s) Attribute",
+    "notFoundAttribute": "Attribut nicht gefunden",
+    "notFoundField": "Feld nicht gefunden"
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Datensätze für verknüpfte Entität werden als separate Felder/Spalten exportiert, indem für den Namen das Suffix „_1“, „_2“ usw. verwendet wird.",
