@@ -21,7 +21,8 @@
     "fileNameTemplate": "Plantilla de nombre de archivo",
     "exportByForListAttribute": "Campos de entidad relacionados para las listas",
     "script": "Guión",
-    "exportStaticListLabel": "Etiqueta de exportación"
+    "exportStaticListLabel": "Etiqueta de exportación",
+    "selectedLanguageOnly": "Solo en el idioma seleccionado"
   },
   "options": {
     "columnType": {
@@ -37,7 +38,9 @@
   },
   "labels": {
     "withoutChannel": "Sin canal",
-    "allAttributes": "Todos (%s) Atributos"
+    "allAttributes": "Todos (%s) Atributos",
+    "notFoundAttribute": "Atributo no encontrado",
+    "notFoundField": "Campo no encontrado"
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Los registros de datos relacionados se exportarán como campos/columnas diferentes utilizando para el nombre el sufijo \"_1\", \"_2\", etc.",
