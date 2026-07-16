@@ -39,7 +39,8 @@
     "fieldList": "Seznam polí",
     "useExistingExportFeed": "Použití stávajícího exportního kanálu",
     "useQuoteForAll": "Pro všechny hodnoty použijte uvozovky",
-    "files": "Soubory"
+    "files": "Soubory",
+    "contentLanguage": "Jazyky obsahu"
   },
   "options": {
     "fileType": {
