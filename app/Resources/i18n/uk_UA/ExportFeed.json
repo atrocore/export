@@ -39,7 +39,8 @@
     "folder": "Папка",
     "replaceExistingFile": "Замінити існуючий файл",
     "locale": "Локаль",
-    "files": "Файли"
+    "files": "Файли",
+    "contentLanguage": "Мови контенту"
   },
   "labels": {
     "generateTemplate": "Згенерувати шаблон",
