@@ -39,7 +39,8 @@
     "fieldList": "Lista de campos",
     "useExistingExportFeed": "Utilizar la alimentación de exportación existente",
     "useQuoteForAll": "Utilice comillas para todos los valores",
-    "files": "Archivos"
+    "files": "Archivos",
+    "contentLanguage": "Lenguas de contenido"
   },
   "options": {
     "fileType": {
