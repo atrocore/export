@@ -39,7 +39,8 @@
     "replaceExistingFile": "Remplacer le fichier existant",
     "locale": "Paramètre régional",
     "folder": "Dossier",
-    "files": "Fichiers"
+    "files": "Fichiers",
+    "contentLanguage": "Langues du contenu"
   },
   "options": {
     "fileType": {
