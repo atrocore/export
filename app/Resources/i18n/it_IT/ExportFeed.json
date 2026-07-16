@@ -39,7 +39,8 @@
     "fieldList": "Elenco dei campi",
     "useExistingExportFeed": "Utilizza il feed di esportazione esistente",
     "useQuoteForAll": "Utilizzi le virgolette per tutti i valori",
-    "files": "File"
+    "files": "File",
+    "contentLanguage": "Lingua del contenuto"
   },
   "options": {
     "fileType": {
