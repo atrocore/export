@@ -21,7 +21,8 @@
     "fileNameTemplate": "Modello di nome del file",
     "exportByForListAttribute": "Campi entità correlati per gli elenchi",
     "script": "Scrittura",
-    "exportStaticListLabel": "Etichetta di esportazione"
+    "exportStaticListLabel": "Etichetta di esportazione",
+    "selectedLanguageOnly": "Solo nella lingua selezionata"
   },
   "options": {
     "columnType": {
@@ -37,7 +38,9 @@
   },
   "labels": {
     "withoutChannel": "Senza canale",
-    "allAttributes": "Tutti (%s) Attributi"
+    "allAttributes": "Tutti (%s) Attributi",
+    "notFoundAttribute": "Attributo non trovato",
+    "notFoundField": "Campo non trovato"
   },
   "tooltips": {
     "exportIntoSeparateColumns": "I record di dati correlati saranno esportati come campi/colonne diversi, utilizzando per il nome il suffisso \"_1\", \"_2\" e così via.",
