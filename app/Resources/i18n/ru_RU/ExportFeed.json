@@ -39,7 +39,8 @@
     "useQuoteForAll": "Используйте кавычки для всех значений",
     "locale": "Локаль",
     "folder": "Папка",
-    "files": "Файлы"
+    "files": "Файлы",
+    "contentLanguage": "Язык текста"
   },
   "labels": {
     "typeToSearch": "Введите для поиска...",
