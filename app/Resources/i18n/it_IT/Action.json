@@ -2,7 +2,8 @@
   "fields": {
     "exportFeed": "Esportazione di mangimi",
     "payload": "Carico utile",
-    "contentLanguage": "Lingua del contenuto"
+    "contentLanguage": "Lingua del contenuto",
+    "locale": "Impostazioni locali"
   },
   "options": {
     "type": {
