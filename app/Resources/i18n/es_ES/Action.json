@@ -2,7 +2,8 @@
   "fields": {
     "exportFeed": "Exportación",
     "payload": "Carga útil",
-    "contentLanguage": "Lenguas de contenido"
+    "contentLanguage": "Lenguas de contenido",
+    "locale": "Localización"
   },
   "options": {
     "type": {
