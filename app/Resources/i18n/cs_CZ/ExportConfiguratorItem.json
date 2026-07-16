@@ -21,7 +21,8 @@
     "fileNameTemplate": "Šablona názvu souboru",
     "exportByForListAttribute": "Související pole entit pro seznamy",
     "script": "Skript",
-    "exportStaticListLabel": "Exportní štítek"
+    "exportStaticListLabel": "Exportní štítek",
+    "selectedLanguageOnly": "Pouze vybraný jazyk"
   },
   "options": {
     "columnType": {
@@ -37,7 +38,9 @@
   },
   "labels": {
     "withoutChannel": "Bez kanálu",
-    "allAttributes": "Všechny (%s) Atributy"
+    "allAttributes": "Všechny (%s) Atributy",
+    "notFoundAttribute": "Atribut nebyl nalezen",
+    "notFoundField": "Pole nenalezeno"
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Související datové záznamy budou exportovány jako různá pole/sloupce s použitím přípony \"_1\", \"_2\" atd..",
