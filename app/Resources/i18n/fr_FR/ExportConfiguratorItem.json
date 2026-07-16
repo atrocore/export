@@ -21,7 +21,8 @@
     "script": "Script",
     "entityAttribute": "Attribut",
     "channels": "Canaux",
-    "exportStaticListLabel": "Libellé de l'export"
+    "exportStaticListLabel": "Libellé de l'export",
+    "selectedLanguageOnly": "Uniquement la langue sélectionnée"
   },
   "options": {
     "columnType": {
@@ -45,6 +46,8 @@
   },
   "labels": {
     "withoutChannel": "Sans canal",
-    "allAttributes": "Tous (%s) Attributs"
+    "allAttributes": "Tous (%s) Attributs",
+    "notFoundAttribute": "Attribut introuvable",
+    "notFoundField": "Champ introuvable"
   }
 }
