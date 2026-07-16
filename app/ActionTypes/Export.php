@@ -85,6 +85,10 @@ class Export extends AbstractAction
             $payload['contentLanguageId'] = $action->get('contentLanguageId');
         }
 
+        if (!empty($action->get('localeId'))) {
+            $payload['localeId'] = $action->get('localeId');
+        }
+
         /** @var \Export\Services\ExportFeed $service */
         $service = $this->getServiceFactory()->create('ExportFeed');
 

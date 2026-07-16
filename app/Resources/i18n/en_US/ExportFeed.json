@@ -37,6 +37,7 @@
     "fileNameMask": "File Name Mask",
     "exportAllField": "Export All fields",
     "fieldList": "Field List",
+    "contentLanguage": "Content Language",
     "useExistingExportFeed": "Use existing export feed",
     "useQuoteForAll": "Use quotes for all values",
     "files": "Files"

@@ -2,6 +2,7 @@
   "fields": {
     "exportFeed": "Export Feed",
     "contentLanguage": "Content Language",
+    "locale": "Locale",
     "payload": "Payload"
   },
   "options": {

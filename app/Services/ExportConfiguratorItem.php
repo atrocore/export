@@ -35,7 +35,8 @@ class ExportConfiguratorItem extends Base
             'entityAttributeId',
             'fixedValue',
             'zip',
-            'virtualFields'
+            'virtualFields',
+            'selectedLanguageOnly'
         ];
 
     public function prepareEntityForOutput(Entity $entity)

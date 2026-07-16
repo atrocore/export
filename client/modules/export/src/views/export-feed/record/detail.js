@@ -114,10 +114,13 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
             component = new Svelte.DynamicExportModal({
                 target: document.body,
                 props: {
-                    onExport: (contentLanguageId) => {
+                    onExport: (contentLanguageId, localeId) => {
                         const data = { id: this.model.id };
                         if (contentLanguageId) {
                             data.contentLanguageId = contentLanguageId;
+                        }
+                        if (localeId) {
+                            data.localeId = localeId;
                         }
                         this.ajaxPostRequest(`ExportFeed/${this.model.id}/exportFile`, data).then(() => {
                             this.notify('Created', 'success');
