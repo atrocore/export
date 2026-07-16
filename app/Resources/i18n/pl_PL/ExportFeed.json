@@ -39,7 +39,8 @@
     "useQuoteForAll": "Proszę używać cudzysłowów dla wszystkich wartości",
     "locale": "Lokalizacja",
     "folder": "Folder",
-    "files": "Pliki"
+    "files": "Pliki",
+    "contentLanguage": "Języki treści"
   },
   "options": {
     "fileType": {
