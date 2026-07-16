@@ -21,7 +21,8 @@
     "channels": "Канал(ы)",
     "exportByForListAttribute": "Связанные поля сущности для списков",
     "entityAttribute": "Атрибут",
-    "exportStaticListLabel": "Экспортная этикетка"
+    "exportStaticListLabel": "Экспортная этикетка",
+    "selectedLanguageOnly": "Только выбранный язык"
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Записи данных для свяанных сущностей будут экспортированы как отдельные поля/столбцы, с использованием для имени суффикса \"_1\", \"_2\"и т. д.",
@@ -45,6 +46,8 @@
   },
   "labels": {
     "withoutChannel": "Без канала",
-    "allAttributes": "Все (%s) Атрибуты"
+    "allAttributes": "Все (%s) Атрибуты",
+    "notFoundAttribute": "Атрибут не найден",
+    "notFoundField": "Поле не найдено"
   }
 }
