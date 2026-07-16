@@ -2,7 +2,8 @@
   "fields": {
     "exportFeed": "Export-Feed",
     "payload": "Nutzlast",
-    "contentLanguage": "Content-Sprachen"
+    "contentLanguage": "Content-Sprachen",
+    "locale": "Gebietsschema"
   },
   "options": {
     "type": {
