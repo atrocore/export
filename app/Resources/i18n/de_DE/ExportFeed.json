@@ -39,7 +39,8 @@
     "useQuoteForAll": "Anführungszeichen für alle Werte verwenden",
     "files": "Dateien",
     "maxWorkers": "Maximale Worker-Anzahl",
-    "locale": "Gebietsschema"
+    "locale": "Gebietsschema",
+    "contentLanguage": "Content-Sprachen"
   },
   "labels": {
     "generateTemplate": "Vorlage generieren",
