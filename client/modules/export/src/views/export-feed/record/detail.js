@@ -18,25 +18,6 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
         setup() {
             Dep.prototype.setup.call(this);
 
-            this.additionalButtons = [
-                {
-                    "action": "exportNow",
-                    "label": this.translate('Export', 'labels', 'ExportFeed')
-                },
-                {
-                    "action": "dynamicExportNow",
-                    "label": this.translate('DynamicExport', 'labels', 'ExportFeed')
-                }
-            ];
-
-            // Check if import module is installed
-            if (this.getMetadata().get('scopes.ImportFeed.type')) {
-                this.additionalButtons.push({
-                    "action": "duplicateAsImport",
-                    "label": this.translate('DuplicateAsImport', 'labels', 'ExportFeed')
-                })
-            }
-
             this.listenTo(this.model, 'after:save after:inlineEditSave', () => {
                 this.handleExportButtonDisability();
             });
@@ -61,6 +42,30 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
                     this.model.set('data', data);
                 }
             });
+        },
+
+        setupActionItems() {
+            Dep.prototype.setupActionItems.call(this);
+
+            this.additionalButtons.push(
+                {
+                    "action": "exportNow",
+                    "label": this.translate('Export', 'labels', 'ExportFeed')
+                },
+                {
+                    "action": "dynamicExportNow",
+                    "label": this.translate('DynamicExport', 'labels', 'ExportFeed')
+                }
+            );
+
+            if (this.getMetadata().get('scopes.ImportFeed.type')) {
+                this.additionalButtons.push({
+                    "action": "duplicateAsImport",
+                    "label": this.translate('DuplicateAsImport', 'labels', 'ExportFeed')
+                });
+            }
+
+            this.handleExportButtonDisability();
         },
 
         afterRender() {
