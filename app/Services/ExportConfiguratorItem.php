@@ -21,6 +21,8 @@ use Espo\ORM\Entity;
 
 class ExportConfiguratorItem extends Base
 {
+    private array $translationsCache = [];
+
     protected $mandatorySelectAttributeList
         = [
             'exportFeedId',
@@ -130,9 +132,7 @@ class ExportConfiguratorItem extends Base
                     $exportFeed       = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
                     $resolvedLocaleId = $exportFeed->get('localeId');
                 }
-                $column = $this
-                    ->getLocalizedLanguage($resolvedLocaleId)
-                    ->translate($entity->get('name'), 'fields', $entity->get('entity'));
+                $column = $this->translateFieldColumnName($resolvedLocaleId, $entity->get('entity'), $entity->get('name'));
                 break;
             case 'custom':
                 $column = (string)$entity->get('column');
@@ -142,6 +142,16 @@ class ExportConfiguratorItem extends Base
         }
 
         return $column;
+    }
+
+    protected function translateFieldColumnName(string $localeId, string $entity, string $field): string
+    {
+        if (!isset($this->translationsCache[$localeId])) {
+            $this->translationsCache[$localeId] = $this->getLocalizedLanguage($localeId)->getAll();
+        }
+
+        return $this->translationsCache[$localeId][$entity]['fields'][$field]
+            ?? $this->getLocalizedLanguage($localeId)->translate($field, 'fields', $entity);
     }
 
     protected function getLocalizedLanguage(string $locale): Language
