@@ -286,7 +286,10 @@ class LinkMultipleType extends LinkType
             $ids = $this->parseLinkedIds($record['_entity']->rowData[static::idToHash($configuration['id'])]);
             foreach ($ids as $id) {
                 if ($id && trim($id) !== '') {
-                    $collection->append($this->getMemoryStorage()->get($this->createKey($configuration['id'], $id)));
+                    $foreign = $this->getMemoryStorage()->get($this->createKey($configuration['id'], $id));
+                    if ($foreign !== null) {
+                        $collection->append($foreign);
+                    }
                 }
             }
         }
