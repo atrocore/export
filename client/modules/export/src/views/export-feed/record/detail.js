@@ -9,7 +9,7 @@
  */
 
 Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'export:views/export-feed/record/panels/entity-filter-result'],
-(Dep, EntityFilter) => Dep.extend({
+    (Dep, EntityFilter) => Dep.extend({
 
         bottomView: 'export:views/export-feed/record/detail-bottom',
 
@@ -17,10 +17,6 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
 
         setup() {
             Dep.prototype.setup.call(this);
-
-            this.listenTo(this.model, 'after:save after:inlineEditSave', () => {
-                this.handleExportButtonDisability();
-            });
 
             this.getStorage().set('mode', 'ExportFeed', null);
 
@@ -47,14 +43,18 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
         setupActionItems() {
             Dep.prototype.setupActionItems.call(this);
 
+            const canExport = this.hasExportNow();
+
             this.additionalButtons.push(
                 {
                     "action": "exportNow",
-                    "label": this.translate('Export', 'labels', 'ExportFeed')
+                    "label": this.translate('Export', 'labels', 'ExportFeed'),
+                    "disabled": !canExport
                 },
                 {
                     "action": "dynamicExportNow",
-                    "label": this.translate('DynamicExport', 'labels', 'ExportFeed')
+                    "label": this.translate('DynamicExport', 'labels', 'ExportFeed'),
+                    "disabled": !canExport
                 }
             );
 
@@ -64,27 +64,10 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
                     "label": this.translate('DuplicateAsImport', 'labels', 'ExportFeed')
                 });
             }
-
-            this.handleExportButtonDisability();
-        },
-
-        afterRender() {
-            Dep.prototype.afterRender.call(this);
-
-            this.handleExportButtonDisability();
         },
 
         actionOpenSearchFilter() {
             EntityFilter.prototype.actionOpenSearchFilter.call(this);
-        },
-
-        handleExportButtonDisability() {
-            const canExport = this.hasExportNow();
-            this.additionalButtons.map(button => {
-                if (button.action === 'exportNow' || button.action === 'dynamicExportNow') {
-                    button.disabled = !canExport;
-                }
-            });
         },
 
         hasExportNow() {
@@ -96,7 +79,7 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
                 return;
             }
 
-            this.ajaxPostRequest(`ExportFeed/${this.model.id}/exportFile`, {id: this.model.id}).then(response => {
+            this.ajaxPostRequest(`ExportFeed/${this.model.id}/exportFile`, { id: this.model.id }).then(response => {
                 this.notify('Created', 'success');
                 this.model.fetch();
                 $('.action[data-action="refresh"][data-panel="exportJobs"]').click();
@@ -147,7 +130,7 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
                 this.ajaxPostRequest('ImportFeed/createFromExport', data).then(response => {
                     if (response) {
                         this.notify('Created', 'success');
-                        this.getRouter().navigate('#ImportFeed/view/' + response.id, {trigger: false});
+                        this.getRouter().navigate('#ImportFeed/view/' + response.id, { trigger: false });
                         this.getRouter().dispatch('ImportFeed', 'view', {
                             id: response.id,
                         })
@@ -177,7 +160,7 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
         },
 
         cancelEdit() {
-            this.model.set(this.initialModel, {silent: true});
+            this.model.set(this.initialModel, { silent: true });
             this.model.trigger('cancel:export-feed-edit');
 
             Dep.prototype.cancelEdit.call(this);
