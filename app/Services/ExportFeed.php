@@ -258,6 +258,49 @@ class ExportFeed extends Base
             return false;
         }
 
+        $attributes = $this->getAttributeFieldConverter()->getAttributesRowsByIds($attributesIds);
+
+        $existingIds = [];
+        foreach ($attributes as $attribute) {
+            $existingIds[] = $attribute['id'];
+            if (!empty($attribute['system_name'])) {
+                $existingIds[] = $attribute['system_name'];
+            }
+        }
+
+        $notFound = [];
+        foreach ($attributesIds as $attributeId) {
+            if (!in_array($attributeId, $existingIds, true)) {
+                $notFound[] = $attributeId;
+            }
+        }
+
+        if (!empty($notFound)) {
+            throw new Exceptions\BadRequest(sprintf("Attributes do not exist: '%s'.", implode("', '", $notFound)));
+        }
+
+        $feedEntityName = $feed->get('entity') ?? $feed->getFeedField('entity');
+
+        $attributesEntityName = $this->getMetadata()->get("scopes.$feedEntityName.primaryEntityId") ?? $feedEntityName;
+
+        $foreign = [];
+        foreach ($attributes as $attribute) {
+            if ($attribute['entity_id'] !== $attributesEntityName) {
+                $foreign[] = sprintf(
+                    "'%s' (%s) belongs to '%s'",
+                    $attribute['name'],
+                    $attribute['system_name'] ?: $attribute['id'],
+                    (string) $attribute['entity_id']
+                );
+            }
+        }
+
+        if (!empty($foreign)) {
+            throw new Exceptions\BadRequest(
+                sprintf("Attributes cannot be added to a '%s' export feed: %s.", (string) $feedEntityName, implode(', ', $foreign))
+            );
+        }
+
         // null = include all variants; '' = main language only (no lingual variants)
         $contentLanguageCode = $allLanguages ? null : '';
 
