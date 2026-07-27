@@ -4,6 +4,7 @@
       "__APPEND__",
       {
         "url": "#ExportFeed",
+        "scope": "ExportFeed",
         "label": "exportFeed",
         "description": "exportFeed",
         "icon": "ph ph-export",
