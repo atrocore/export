@@ -3,5 +3,8 @@
   "acl": "export:acl/export-configurator-item",
   "modalViews": {
     "edit": "export:views/export-configurator-item/modals/edit"
-  }
+  },
+  "quickActions": [
+    "quickRemove"
+  ]
 }

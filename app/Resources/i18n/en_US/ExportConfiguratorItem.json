@@ -7,7 +7,6 @@
     "entityAttribute": "Attribute",
     "exportBy": "Related Entity Fields",
     "channels": "Channel(s)",
-    "remove": "Remove",
     "exportIntoSeparateColumns": "Separate",
     "type": "Type",
     "mask": "Mask",
