@@ -1,9 +1,7 @@
 {
   "fields": {
-    "name": {
-      "type": "varchar",
-      "required": true,
-      "trim": true
+    "number": {
+      "type": "autoincrement"
     },
     "trial": {
       "type": "int",
@@ -137,16 +135,10 @@
     }
   },
   "collection": {
-    "sortBy": "sortOrder",
+    "sortBy": "id",
     "asc": false
   },
   "indexes": {
-    "name": {
-      "columns": [
-        "name",
-        "deleted"
-      ]
-    },
     "state": {
       "columns": [
         "state",

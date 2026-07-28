@@ -1,5 +1,6 @@
 {
   "fields": {
+    "number": "Číslo",
     "exportFeed": "Exportní kanál",
     "file": "Exportovaný soubor",
     "state": "Stát",

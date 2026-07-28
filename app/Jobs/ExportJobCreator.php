@@ -97,7 +97,6 @@ class ExportJobCreator extends AbstractJob implements JobInterface
 
         $exportJob = $this->getEntityManager()->getEntity('ExportJob');
         $exportJob->id = IdGenerator::uuid();
-        $exportJob->set('name', $jobName);
         $exportJob->set('exportFeedId', $data['feed']['id']);
         $exportJob->set('start', (new \DateTime())->format('Y-m-d H:i:s'));
         $exportJob->set('ownerUserId', $user->get('id'));

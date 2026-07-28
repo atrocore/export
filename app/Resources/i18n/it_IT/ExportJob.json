@@ -1,5 +1,6 @@
 {
   "fields": {
+    "number": "Numero",
     "exportFeed": "Esportazione di mangimi",
     "file": "File esportato",
     "state": "Stato",
