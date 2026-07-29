@@ -442,11 +442,11 @@ class ExportFeed extends Base
         }
     }
 
-    public function readEntity(string $id): ?IEntity
+    public function readEntity(string $id, ?string $withRelationships = null): ?IEntity
     {
         $this->getRepository()->fixLocaleIfNecessary($id);
 
-        return parent::readEntity($id);
+        return parent::readEntity($id, $withRelationships);
     }
 
     public function findLinkedEntities($id, $link, $params)
