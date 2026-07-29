@@ -58,8 +58,10 @@ use Psr\Http\Server\RequestHandlerInterface;
                         'attributesIds' => [
                             'type'        => 'array',
                             'description' => 'List of attribute IDs to add',
+                            'minItems'    => 1,
                             'items'       => [
-                                'type' => 'string',
+                                'type'      => 'string',
+                                'minLength' => 1,
                             ],
                         ],
                         'allLanguages' => [
@@ -83,7 +85,7 @@ use Psr\Http\Server\RequestHandlerInterface;
             ],
         ],
         400 => [
-            'description' => 'entityName or attributesIds is required',
+            'description' => 'entityName or attributesIds is missing, attributesIds contains an empty value or an ID of a non-existing attribute, or an attribute does not belong to the entity of the export feed',
         ],
         403 => [
             'description' => 'Access denied',

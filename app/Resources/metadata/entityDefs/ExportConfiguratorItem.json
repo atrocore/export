@@ -187,11 +187,6 @@
       "type": "varchar",
       "notStorable": true
     },
-    "remove": {
-      "type": "varchar",
-      "notStorable": true,
-      "view": "export:views/export-configurator-item/fields/remove"
-    },
     "searchFilter": {
       "type": "jsonObject"
     },
