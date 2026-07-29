@@ -1,5 +1,6 @@
 {
   "fields": {
+    "number": "Numéro",
     "exportFeed": "Flux d'export",
     "file": "Fichier exporté",
     "state": "État",

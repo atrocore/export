@@ -1,5 +1,6 @@
 {
   "fields": {
+    "number": "Número",
     "exportFeed": "Exportación",
     "file": "Archivo exportado",
     "state": "Estado",

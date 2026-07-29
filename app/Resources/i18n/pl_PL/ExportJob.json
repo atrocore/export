@@ -1,5 +1,6 @@
 {
   "fields": {
+    "number": "Numer",
     "exportFeed": "Eksportuj kanał",
     "file": "Eksportowany plik",
     "state": "Stan",
