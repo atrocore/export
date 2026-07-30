@@ -28,13 +28,6 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
                 this.reRender();
             });
 
-            if(!this.defs.hideShowFullList && !this.getPreferences().get('hideShowFullList')) {
-                this.actionList.push({
-                    label: 'showFullList',
-                    action: 'showFullList'
-                });
-            }
-
             let iconHtml = this.getHelper().getScopeColorIconHtml(this.scope);
             if (iconHtml) {
                 if (this.defs.label) {
@@ -44,14 +37,23 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
                 }
             }
 
-            this.additionalBoolFilterList = this.options.additionalBoolFilterList ?? this.additionalBoolFilterList ?? [];
-            this.boolFilterData = this.options.boolFilterData ?? this.boolFilterData ?? {};
+            if (this.getAcl().check(this.scope, 'read')) {
+                if(!this.defs.hideShowFullList && !this.getPreferences().get('hideShowFullList')) {
+                    this.actionList.push({
+                        label: 'showFullList',
+                        action: 'showFullList'
+                    });
+                }
 
-            if(!this.additionalBoolFilterList.includes('unexported')) {
-                this.additionalBoolFilterList.push('unexported');
+                this.additionalBoolFilterList = this.options.additionalBoolFilterList ?? this.additionalBoolFilterList ?? [];
+                this.boolFilterData = this.options.boolFilterData ?? this.boolFilterData ?? {};
+
+                if(!this.additionalBoolFilterList.includes('unexported')) {
+                    this.additionalBoolFilterList.push('unexported');
+                }
+
+                this.boolFilterData['unexported'] = () => this.model.get('lastTime');
             }
-
-            this.boolFilterData['unexported'] = () => this.model.get('lastTime')
         },
 
         getLayoutRelatedScope() {
@@ -71,13 +73,15 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
         afterRender() {
             Dep.prototype.afterRender.call(this);
 
+            if (this.getAcl().check(this.scope, 'read')) {
+                $('.panel-entityFilterResult button[data-action="openSearchFilter"]').html(this.getFilterButtonHtml());
+            }
+
             if (this.panelVisible()) {
                 this.$el.parent().show();
             } else {
                 this.$el.parent().hide();
             }
-
-            $('.panel-entityFilterResult button[data-action="openSearchFilter"]').html(this.getFilterButtonHtml());
         },
 
         actionOpenSearchFilter(data) {
