@@ -1097,13 +1097,14 @@ class ExportFeed extends Base
         return true;
     }
 
-    public function putAttributesToMetadata(string $exportFeedId, ?array $feedData = null): void
+    public function putAttributesToMetadata(?string $exportFeedId, ?array $feedData = null): void
     {
         if ($feedData) {
             $feedData = json_decode(json_encode($feedData), true);
         }
 
-        $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
+        $exportFeed = !empty($exportFeedId) ? $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId) : null;
+
         if (empty($exportFeed)) {
             if ($feedData === null) {
                 return;
