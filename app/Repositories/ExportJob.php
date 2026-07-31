@@ -41,24 +41,19 @@ class ExportJob extends Base
 
     protected function beforeSave(Entity $entity, array $options = [])
     {
-        if ($entity->isNew()) {
-            $last = $this->select(['sortOrder'])->where(['exportFeedId' => $entity->get('exportFeedId')])->order('sortOrder', 'DESC')->findOne();
-            $entity->set('sortOrder', empty($last) ? 0 : $last->get('sortOrder') + 10);
-        } else {
-            if ($entity->isAttributeChanged('state')) {
-                if ($entity->get('state') === 'Canceled' && !in_array($entity->getFetched('state'), ['Pending', 'Running'])) {
+        if (!$entity->isNew() && $entity->isAttributeChanged('state')) {
+            if ($entity->get('state') === 'Canceled' && !in_array($entity->getFetched('state'), ['Pending', 'Running'])) {
+                throw new BadRequest($this->getInjection('language')->translate('wrongJobState', 'exceptions', 'ExportJob'));
+            }
+            if ($entity->get('state') === 'Pending') {
+                if ($entity->getFetched('state') === 'Running') {
                     throw new BadRequest($this->getInjection('language')->translate('wrongJobState', 'exceptions', 'ExportJob'));
                 }
-                if ($entity->get('state') === 'Pending') {
-                    if ($entity->getFetched('state') === 'Running') {
-                        throw new BadRequest($this->getInjection('language')->translate('wrongJobState', 'exceptions', 'ExportJob'));
-                    }
-                    $qmJob = $this->getExportJob($entity);
-                    if (empty($qmJob)) {
-                        throw new BadRequest($this->getInjection('language')->translate('notExecutableJob', 'exceptions', 'ExportJob'));
-                    }
-                    $entity->set('start', (new \DateTime())->format('Y-m-d H:i:s'));
+                $qmJob = $this->getExportJob($entity);
+                if (empty($qmJob)) {
+                    throw new BadRequest($this->getInjection('language')->translate('notExecutableJob', 'exceptions', 'ExportJob'));
                 }
+                $entity->set('start', (new \DateTime())->format('Y-m-d H:i:s'));
             }
         }
 
