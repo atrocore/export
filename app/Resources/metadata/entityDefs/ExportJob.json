@@ -78,10 +78,6 @@
       "type": "datetime",
       "readOnly": true
     },
-    "sortOrder": {
-      "type": "int",
-      "readOnly": true
-    },
     "count": {
       "type": "int",
       "default": 0,
