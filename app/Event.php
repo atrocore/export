@@ -20,7 +20,7 @@ class Event extends AfterInstallAfterDelete
     {
         $this->addNavigationItems(['ExportFeed']);
 
-        (new FailedExportTemplateSeeder($this->getContainer()->get('config'), $this->getContainer()->get('connection')))->run();
+        (new FailedExportTemplateSeeder($this->getContainer()->get('config'), $this->getContainer()->get('dbal')))->run();
     }
 
     public function afterDelete(): void
