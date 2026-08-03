@@ -253,7 +253,7 @@ class LinkMultipleType extends LinkType
             $limitedIdsSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
             $innerSql = "SELECT string_agg({$limitedAlias}.{$idAlias}::text, ',') FROM ({$limitedIdsSql}) {$limitedAlias}";
         } else {
-            $windowOrderBy = join(', ', $qb1->getQueryPart('orderBy'));
+            $windowOrderBy = implode(', ', $qb1->getQueryPart('orderBy'));
             if (empty($windowOrderBy)) {
                 $windowOrderBy = "$mtAlias.id ASC";
             }
