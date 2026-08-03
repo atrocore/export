@@ -12,6 +12,7 @@
 namespace Export;
 
 use Atro\Core\ModuleManager\AfterInstallAfterDelete;
+use Atro\Core\Utils\Config;
 use Export\Seeders\FailedExportTemplateSeeder;
 
 class Event extends AfterInstallAfterDelete
@@ -20,11 +21,21 @@ class Event extends AfterInstallAfterDelete
     {
         $this->addNavigationItems(['ExportFeed']);
 
-        (new FailedExportTemplateSeeder($this->getContainer()->get('config'), $this->getContainer()->get('dbal')))->run();
+        (new FailedExportTemplateSeeder($this->getConfig(), $this->getDbal()))->run();
     }
 
     public function afterDelete(): void
     {
         $this->removeNavigationItems(['ExportFeed']);
+    }
+
+    protected function getConfig(): Config
+    {
+        return $this->getContainer()->get('config');
+    }
+
+    protected function getDbal(): \Doctrine\DBAL\Connection
+    {
+        return $this->getContainer()->get('dbal');
     }
 }
