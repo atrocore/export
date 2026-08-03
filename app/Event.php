@@ -12,13 +12,15 @@
 namespace Export;
 
 use Atro\Core\ModuleManager\AfterInstallAfterDelete;
-use Espo\Core\Utils\Config;
+use Export\Seeders\FailedExportTemplateSeeder;
 
 class Event extends AfterInstallAfterDelete
 {
     public function afterInstall(): void
     {
         $this->addNavigationItems(['ExportFeed']);
+
+        (new FailedExportTemplateSeeder($this->getContainer()->get('config'), $this->getContainer()->get('connection')))->run();
     }
 
     public function afterDelete(): void
