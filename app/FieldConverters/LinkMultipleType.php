@@ -229,21 +229,9 @@ class LinkMultipleType extends LinkType
             }
         }
 
-        $orderBySql = join(', ', $qb1->getQueryPart('orderBy'));
-        if (!empty($orderBySql)) {
-            $orderBySql = 'ORDER BY ' . $orderBySql;
-            $qb1->resetQueryPart('orderBy');
-        }
-
-        if (Converter::isPgSQL($container->get('connection'))) {
-            $qb1->select("string_agg($mtAlias.id::text, ',' $orderBySql)");
-        } else {
-            $qb1->select("GROUP_CONCAT($mtAlias.id $orderBySql SEPARATOR ',')");
-        }
-
         if (empty($linkDefs['relationName'])) {
             $foreignKey = $mapper->getQueryConverter()->toDb($keySet['foreignKey']);
-            $qb1->andWhere("$mtAlias.$foreignKey=mt_alias.id");
+            $partitionExpr = "$mtAlias.$foreignKey";
         } else {
             $nearColumn = $mapper->getQueryConverter()->toDb($keySet['nearKey']);
             $distantColumn = $mapper->getQueryConverter()->toDb($keySet['distantKey']);
@@ -253,10 +241,47 @@ class LinkMultipleType extends LinkType
 
             $qb1->join($mtAlias, $relTable, $relTableAlias, "$mtAlias.id=$relTableAlias.$distantColumn AND $relTableAlias.deleted=:false");
             $qb1->setParameter('false', false, ParameterType::BOOLEAN);
-            $qb1->andWhere("$relTableAlias.$nearColumn=mt_alias.id");
+            $partitionExpr = "$relTableAlias.$nearColumn";
         }
 
-        $innerSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
+        $connection = $container->get('connection');
+        $limitedAlias = 'lim_' . $uniqueHash;
+        $idAlias = $mapper->getQueryConverter()->fieldToAlias('id');
+
+        if (Converter::isPgSQL($connection)) {
+            $qb1->andWhere("$partitionExpr=mt_alias.id");
+            $limitedIdsSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
+            $innerSql = "SELECT string_agg({$limitedAlias}.{$idAlias}::text, ',') FROM ({$limitedIdsSql}) {$limitedAlias}";
+        } else {
+            $windowOrderBy = join(', ', $qb1->getQueryPart('orderBy'));
+            if (empty($windowOrderBy)) {
+                $windowOrderBy = "$mtAlias.id ASC";
+            }
+            $qb1->resetQueryPart('orderBy');
+            $qb1->setFirstResult(0);
+            $qb1->setMaxResults(null);
+
+            $qb1->addSelect("$partitionExpr AS rn_parent");
+            $qb1->addSelect("ROW_NUMBER() OVER (PARTITION BY $partitionExpr ORDER BY $windowOrderBy) AS rn_num");
+
+            $offset = (int)($configuration['offsetRelation'] ?? 0);
+            $limit = (int)($configuration['limitRelation'] ?? 5);
+
+            $rankedSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
+
+            $wrapQb = $connection->createQueryBuilder()
+                ->select("GROUP_CONCAT({$limitedAlias}.{$idAlias} ORDER BY {$limitedAlias}.rn_num SEPARATOR ',')")
+                ->from("({$rankedSql})", $limitedAlias)
+                ->where("{$limitedAlias}.rn_parent={$mtAlias}.id")
+                ->andWhere("{$limitedAlias}.rn_num<=" . ($offset + $limit));
+
+            if ($offset > 0) {
+                $wrapQb->andWhere("{$limitedAlias}.rn_num>{$offset}");
+            }
+
+            $innerSql = $wrapQb->getSQL();
+        }
+
         $qb->addSelect("({$innerSql}) AS " . static::idToHash($configuration['id']));
 
         foreach ($qb1->getParameters() as $pName => $pValue) {
