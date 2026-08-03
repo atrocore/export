@@ -16,6 +16,7 @@
   "disabled": false,
   "streamDisabled": true,
   "type": "Base",
+  "nameField": "number",
   "module": "Export",
   "object": true,
   "hasAssignedUser": true,
