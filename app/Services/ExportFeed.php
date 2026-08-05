@@ -1104,6 +1104,7 @@ class ExportFeed extends Base
         }
 
         $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
+
         if (empty($exportFeed)) {
             if ($feedData === null) {
                 return;

@@ -45,7 +45,7 @@ class ExportChunk extends AbstractJob implements JobInterface
 
         // put attributes to metadata as fields
         if (!empty($entityName) && $this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
-            $exportFeedService->putAttributesToMetadata($exportJob->get('exportFeedId'), $data['feed']);
+            $exportFeedService->putAttributesToMetadata($exportJob->get('exportFeedId') ?? $data['feed']['id'], $data['feed']);
         }
 
         $res = $typeService->createCacheChunk();

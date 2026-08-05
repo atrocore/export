@@ -81,8 +81,10 @@ class ExportJob extends Base
             }
 
             // update last status
-            $this->getEntityManager()->getRepository('ExportFeed')
-                ->updateLastStatus($entity->get('exportFeedId'), $entity->get('state'));
+            if (!empty($entity->get('exportFeedId'))) {
+                $this->getEntityManager()->getRepository('ExportFeed')
+                    ->updateLastStatus($entity->get('exportFeedId'), $entity->get('state'));
+            }
         }
 
         if (!empty($feed = $entity->get('exportFeed'))) {
