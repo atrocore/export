@@ -5,7 +5,8 @@
   },
   "options": {
     "type": {
-      "export": "Eksportuj kanał"
+      "export": "Eksportuj kanał",
+      "reExportFailedJob": "Ponów nieudane zadanie eksportu"
     }
   },
   "twigVariables": {

@@ -5,7 +5,8 @@
   },
   "options": {
     "type": {
-      "export": "Exportación"
+      "export": "Exportación",
+      "reExportFailedJob": "Reexportar trabajo fallido"
     }
   },
   "twigVariables": {

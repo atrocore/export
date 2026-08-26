@@ -1,3 +1,4 @@
 {
-  "export": "\\Export\\ActionTypes\\Export"
+  "export": "\\Export\\ActionTypes\\Export",
+  "reExportFailedJob": "\\Export\\ActionTypes\\ReExportFailedJob"
 }

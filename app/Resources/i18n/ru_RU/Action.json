@@ -5,7 +5,8 @@
   },
   "options": {
     "type": {
-      "export": "Экспортный фид"
+      "export": "Экспортный фид",
+      "reExportFailedJob": "Повторить неудавшийся экспорт"
     }
   },
   "twigVariables": {

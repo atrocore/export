@@ -5,7 +5,8 @@
   },
   "options": {
     "type": {
-      "export": "Esportazione di mangimi"
+      "export": "Esportazione di mangimi",
+      "reExportFailedJob": "Riesporta lavoro non riuscito"
     }
   },
   "twigVariables": {
