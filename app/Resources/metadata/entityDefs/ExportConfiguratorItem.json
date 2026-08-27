@@ -5,7 +5,13 @@
       "view": "export:views/export-configurator-item/fields/zip"
     },
     "fileNameTemplate": {
-      "type": "wysiwyg",
+      "type": "code",
+      "engine": "Twig",
+      "variables": [
+        "currentNumber",
+        "fileName",
+        "entity"
+      ],
       "view": "export:views/export-configurator-item/fields/file-name-template",
       "notStorable": true,
       "filterDisabled": true
@@ -140,8 +146,12 @@
       }
     },
     "script": {
-      "type": "text",
-      "view": "views/fields/script",
+      "type": "code",
+      "engine": "Twig",
+      "variables": [
+        "record",
+        "configuration"
+      ],
       "default": "{{ configuration.type }}\n{{ record.id }} {{ record.name }}",
       "conditionalProperties": {
         "visible": {

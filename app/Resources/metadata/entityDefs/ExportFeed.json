@@ -558,13 +558,18 @@
       }
     },
     "originTemplate": {
-      "type": "text",
+      "type": "code",
       "rowsMax": 20,
       "useDisabledTextareaInViewMode": true,
       "notStorable": true,
       "readOnly": true,
       "filterDisabled": true,
-      "view": "views/fields/script",
+      "engine": "Twig",
+      "variables": [
+        "entities",
+        "config",
+        "feedData"
+      ],
       "conditionalProperties": {
         "visible": {
           "conditionGroup": [
@@ -586,13 +591,14 @@
       }
     },
     "template": {
-      "type": "text",
+      "type": "code",
+      "engine": "Twig",
       "useDisabledTextareaInViewMode": true,
       "rowsMax": 20,
       "required": false,
       "tooltip": true,
       "view": "export:views/export-feed/fields/template",
-      "twigVariables": [
+      "variables": [
         "entities"
       ],
       "conditionalProperties": {
@@ -728,9 +734,9 @@
       }
     },
     "fileNameMask": {
-      "type": "wysiwyg",
-      "view": "views/fields/script",
-      "twigVariables": [
+      "type": "code",
+      "engine": "Twig",
+      "variables": [
         "feed",
         "filename",
         "interation"
