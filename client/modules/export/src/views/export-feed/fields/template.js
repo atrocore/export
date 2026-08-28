@@ -32,7 +32,6 @@ Espo.define('export:views/export-feed/fields/template', 'views/fields/script', D
 
         setupParams() {
             this.params.isExport = true;
-            this.params.engine = 'Twig';
             if (['json', 'xml', 'sql'].includes(this.model.get('fileType'))) {
                 this.params.language = this.model.get('fileType')
             }
