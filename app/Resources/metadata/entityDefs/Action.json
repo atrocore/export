@@ -1,15 +1,15 @@
 {
   "fields": {
     "payload": {
-      "type": "wysiwyg",
-      "view": "views/fields/script",
+      "type": "code",
+      "engine": "Twig",
       "notStorable": true,
       "virtualField": true,
       "filterDisabled": true,
       "massUpdateDisabled": true,
       "importDisabled": true,
       "useDisabledTextareaInViewMode": true,
-      "twigVariables": [
+      "variables": [
         "sourceEntities",
         "sourceEntitiesIds",
         "entity"
