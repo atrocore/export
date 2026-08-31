@@ -83,7 +83,7 @@ class ExportJob extends Base
             throw new Forbidden();
         }
 
-        if(!in_array($entity->get('state'), ['Failed', 'Canceled'])) {
+        if (!in_array($entity->get('state'), ['Failed', 'Canceled'])) {
             return false;
         }
 
@@ -95,9 +95,10 @@ class ExportJob extends Base
 
     public function resendRequest(string $id): bool
     {
-        $entity = $this->getRepository()->get($id);
+        $entity     = $this->getRepository()->get($id);
+        $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $entity->get('exportFeedId'));
 
-        if (empty($entity)) {
+        if (empty($entity) || empty($exportFeed)) {
             throw new NotFound();
         }
 
@@ -105,7 +106,11 @@ class ExportJob extends Base
             throw new Forbidden();
         }
 
-        if(!in_array($entity->get('state'), ['Failed', 'Canceled'])) {
+        if ($exportFeed->get('type') !== 'httpPro') {
+            return false;
+        }
+
+        if (!in_array($entity->get('state'), ['Failed', 'Canceled'])) {
             return false;
         }
 

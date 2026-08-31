@@ -5,7 +5,8 @@
   },
   "options": {
     "type": {
-      "export": "Export-Feed"
+      "export": "Export-Feed",
+      "reExportFailedJob": "Fehlgeschlagenen Export erneut ausführen"
     }
   },
   "twigVariables": {

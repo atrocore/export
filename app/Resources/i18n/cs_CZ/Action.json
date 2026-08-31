@@ -5,7 +5,8 @@
   },
   "options": {
     "type": {
-      "export": "Exportní kanál"
+      "export": "Exportní kanál",
+      "reExportFailedJob": "Znovu exportovat neúspěšnou úlohu"
     }
   },
   "twigVariables": {
