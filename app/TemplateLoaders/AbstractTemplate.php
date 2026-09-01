@@ -16,7 +16,7 @@ namespace Export\TemplateLoaders;
 use Atro\Core\KeyValueStorages\StorageInterface;
 use Atro\Core\Container;
 use Espo\Core\Injectable;
-use Espo\Core\Utils\Config;
+use Atro\Core\Utils\Config;
 use Espo\Core\Utils\Metadata;
 
 abstract class AbstractTemplate extends Injectable
