@@ -16,6 +16,7 @@ namespace Export\Services;
 use Atro\Core\AttributeFieldConverter;
 use Atro\Core\Exceptions\BadRequest;
 use Atro\Core\Container;
+use Atro\Services\Settings;
 use Atro\Core\Exceptions\Error;
 use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -903,6 +904,11 @@ abstract class AbstractExportType extends Base
     protected function getLanguage(string $locale): Language
     {
         return new Language($this->getContainer(), $locale);
+    }
+
+    protected function getSettingsService(): Settings
+    {
+        return $this->getContainer()->get('serviceFactory')->create('Settings');
     }
 
     protected function getContainer(): Container
