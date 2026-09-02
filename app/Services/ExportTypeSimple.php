@@ -79,7 +79,7 @@ class ExportTypeSimple extends AbstractExportType
 
     public function renderTemplateContents(string $template, array $templateData, ?string $loaderName = null): string
     {
-        $templateData['config'] = $this->getConfig()->getData();
+        $templateData['config'] = $this->getSettingsService()->getScriptConfig();
         $templateData['feedData'] = $this->data['feed'];
 
         $templateLoader = $this->getTemplateClassLoader($loaderName);
