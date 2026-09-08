@@ -1,8 +1,6 @@
 {
   "fields": {
     "name": "Feld",
-    "column": "Spaltenname",
-    "columnType": "Spaltenbezeichnung",
     "exportFeed": "Export-Feed",
     "exportBy": "Verwandte Entitätsfelder",
     "channels": "Kanal(e)",
@@ -20,18 +18,20 @@
     "exportByForListAttribute": "Verwandte Entitätsfelder für Listen",
     "script": "Skript",
     "exportStaticListLabel": "Exportbezeichnung",
-    "entityAttribute": "Attribut"
+    "entityAttribute": "Attribut",
+    "headerText": "Spaltenname",
+    "headerProperty": "Spaltenbezeichnung"
   },
   "options": {
-    "columnType": {
-      "name": "Name",
-      "custom": "Benutzerdefinierter Name"
-    },
     "type": {
       "Field": "Feld",
       "allAttributes": "Alle Attribute",
       "Fixed value": "Fester Wert",
       "script": "Skript"
+    },
+    "headerProperty": {
+      "name": "Name",
+      "custom": "Benutzerdefinierter Name"
     }
   },
   "labels": {
@@ -40,7 +40,7 @@
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Datensätze für verknüpfte Entität werden als separate Felder/Spalten exportiert, indem für den Namen das Suffix „_1“, „_2“ usw. verwendet wird.",
-    "column": "Sie können verknüpfte Entitätsfelder im Spaltennamen verwenden. Verwenden Sie den Feldnamen in der Datenbank als Variable, zB {{name}}. Checkbox „Separate Columns“ sollte aktiviert sein."
+    "headerText": "Sie können verknüpfte Entitätsfelder im Spaltennamen verwenden. Verwenden Sie den Feldnamen in der Datenbank als Variable, zB {{name}}. Checkbox „Separate Columns“ sollte aktiviert sein."
   },
   "exceptions": {
     "noSuchAttribute": "Das Attribut mit dem Code '%s' existiert nicht.",

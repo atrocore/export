@@ -53,6 +53,28 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                 this.reRender();
             });
 
+            this.listenTo(this.model, 'sync after:save after:inlineEditSave', () => {
+                if (!['csv', 'xlsx'].includes(this.model.get('fileType'))) {
+                    return
+                }
+
+                const hash = JSON.stringify(this.defs.layout)
+                this.setupListLayout();
+
+                if (hash === JSON.stringify(this.defs.layout)) {
+                    return;
+                }
+
+                const listView = this.getView('list')
+                if (listView) {
+                    listView.listLayout = this.defs.layout
+                    listView._internalLayout = null
+                    listView.getInternalLayout(() => {
+                        this.actionRefresh()
+                    })
+                }
+            });
+
             this.listenTo(this.collection, 'update', () => {
                 this.collection.forEach(model => {
                     if (model.get('entityAttributeId') && model.get('fieldDefs')) {
@@ -75,8 +97,28 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
             }
         },
 
+        setupListLayout() {
+            const numberOfHeaders = this.model.get('numberOfHeaders') || 1;
+
+            let layout = [];
+            this.ajaxGetRequest('Layout/list', { entityName: 'ExportConfiguratorItem' }, { async: false }).success(res => {
+                layout = res.layout || [];
+            });
+
+            layout = layout.filter(cell => !/^headerText\d+$/.test(cell.name));
+
+            for (let k = 1; k <= numberOfHeaders; k++) {
+                layout.push({
+                    name: 'headerText' + k,
+                    customLabel: numberOfHeaders === 1 ? 'Header' : ('Header ' + k),
+                });
+            }
+
+            this.defs.layout = layout;
+        },
+
         panelVisible() {
-            if (this.model.name === 'Sheet'){
+            if (this.model.name === 'Sheet') {
                 return true;
             }
 

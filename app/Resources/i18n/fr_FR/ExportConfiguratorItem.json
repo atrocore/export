@@ -1,8 +1,6 @@
 {
   "fields": {
     "name": "Champ",
-    "column": "Nom de la colonne",
-    "columnType": "Étiquette de la colonne",
     "exportFeed": "Flux d'export",
     "exportBy": "Champs de l’entité associée",
     "exportIntoSeparateColumns": "Séparer",
@@ -20,23 +18,25 @@
     "script": "Script",
     "entityAttribute": "Attribut",
     "channels": "Canaux",
-    "exportStaticListLabel": "Libellé de l'export"
+    "exportStaticListLabel": "Libellé de l'export",
+    "headerText": "Nom de la colonne",
+    "headerProperty": "Étiquette de la colonne"
   },
   "options": {
-    "columnType": {
-      "name": "Nom",
-      "custom": "Nom personnalisé"
-    },
     "type": {
       "Field": "Champ",
       "Fixed value": "Valeur fixe",
       "script": "Script",
       "allAttributes": "Tous les attributs"
+    },
+    "headerProperty": {
+      "name": "Nom",
+      "custom": "Nom personnalisé"
     }
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Les enregistrements de données associés seront exportés sous forme de champs/colonnes distincts, en utilisant pour le nom le suffixe “_1”, “_2”, et ainsi de suite.",
-    "column": "Vous pouvez utiliser des champs d'entités connexes dans le nom de la colonne. Utilisez le nom du champ dans la base de données comme variable, par exemple {{nom}}. La case à cocher \"Séparer les colonnes\" doit être activée."
+    "headerText": "Vous pouvez utiliser des champs d'entités connexes dans le nom de la colonne. Utilisez le nom du champ dans la base de données comme variable, par exemple {{nom}}. La case à cocher \"Séparer les colonnes\" doit être activée."
   },
   "exceptions": {
     "noSuchAttribute": "L'attribut portant le code \"%s\" n'existe pas.",

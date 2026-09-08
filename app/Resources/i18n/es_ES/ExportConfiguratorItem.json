@@ -1,8 +1,6 @@
 {
   "fields": {
     "name": "Campo",
-    "column": "Nombre de la columna",
-    "columnType": "Etiqueta de columna",
     "exportFeed": "Exportación",
     "entityAttribute": "Atributo",
     "exportBy": "Campos de entidad relacionados",
@@ -20,18 +18,20 @@
     "fileNameTemplate": "Plantilla de nombre de archivo",
     "exportByForListAttribute": "Campos de entidad relacionados para las listas",
     "script": "Guión",
-    "exportStaticListLabel": "Etiqueta de exportación"
+    "exportStaticListLabel": "Etiqueta de exportación",
+    "headerText": "Nombre de la columna",
+    "headerProperty": "Etiqueta de columna"
   },
   "options": {
-    "columnType": {
-      "name": "Nombre",
-      "custom": "Nombre personalizado"
-    },
     "type": {
       "Field": "Campo",
       "allAttributes": "Todos los atributos",
       "Fixed value": "Valor fijo",
       "script": "Guión"
+    },
+    "headerProperty": {
+      "name": "Nombre",
+      "custom": "Nombre personalizado"
     }
   },
   "labels": {
@@ -40,7 +40,7 @@
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Los registros de datos relacionados se exportarán como campos/columnas diferentes utilizando para el nombre el sufijo \"_1\", \"_2\", etc.",
-    "column": "Puede utilizar campos de entidad relacionados en el nombre de la columna. Utilice el nombre del campo en la base de datos como variable, por ejemplo {{nombre}}. Active la casilla \"Separar columnas\"."
+    "headerText": "Puede utilizar campos de entidad relacionados en el nombre de la columna. Utilice el nombre del campo en la base de datos como variable, por ejemplo {{nombre}}. Active la casilla \"Separar columnas\"."
   },
   "exceptions": {
     "noSuchAttribute": "El atributo con tal código '%s' no existe.",

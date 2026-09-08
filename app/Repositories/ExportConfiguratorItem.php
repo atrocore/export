@@ -19,6 +19,30 @@ use Espo\ORM\Entity;
 
 class ExportConfiguratorItem extends Base
 {
+    public function get($id = null)
+    {
+        $entity = parent::get($id);
+        if (!empty($entity)) {
+            $this->setDataFields($entity);
+        }
+
+        return $entity;
+    }
+
+    /**
+     * headerText1/headerProperty1, fileNameTemplate, exportStaticListLabel, ... are notStorable/
+     * dataField fields (see Export\Entities\ExportConfiguratorItem) - re-set() every value already
+     * packed into the `data` json column so it lands in valuesContainer, otherwise Entity::has()
+     * returns false for it and Entity::toArray() silently drops it from output (see
+     * Atro\Repositories\Connection for the same pattern).
+     */
+    public function setDataFields(Entity $entity): void
+    {
+        foreach ($entity->getDataFields() as $name => $value) {
+            $entity->set($name, $value);
+        }
+    }
+
     protected function beforeSave(Entity $entity, array $options = [])
     {
         if ($entity->isNew() && !$entity->has('previousItem')) {

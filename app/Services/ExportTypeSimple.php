@@ -365,7 +365,7 @@ class ExportTypeSimple extends AbstractExportType
         // create tmp CSV file
         $fileName = self::TMP_DIR . DIRECTORY_SEPARATOR . $this->data['exportJobId'] . DIRECTORY_SEPARATOR . Util::generateUniqueHash() . DIRECTORY_SEPARATOR . $input->name;
         $this->createDir($fileName);
-        $this->storeCsvFile(array_merge($exportJob->getData(), $data), $fileName);
+        $this->storeCsvFile(array_merge($exportJob->getData(), $data), $fileName, $this->data['feed']['data']['configuration'] ?? []);
 
         $this->reuploadIfNeeds($input);
 
@@ -482,7 +482,7 @@ class ExportTypeSimple extends AbstractExportType
             $pathParts[] = Util::generateUniqueHash() . '.csv';
             $csvFileName = implode('/', $pathParts);
 
-            $this->storeCsvFile($data, $csvFileName);
+            $this->storeCsvFile($data, $csvFileName, $sheet['configuration'] ?? []);
 
             // prepare CSV reader
             $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
@@ -500,10 +500,7 @@ class ExportTypeSimple extends AbstractExportType
 
             $entityDefs = $metadata->get(['entityDefs', $sheet['entity']]);
             $workSheet = $spreadsheet->getSheet($k);
-            $startRow = 1;
-            if ($sheet['data']['isFileHeaderRow']) {
-                $startRow = 2;
-            }
+            $startRow = 1 + (int)($sheet['data']['numberOfHeaders'] ?? 1);
 
             // skip empty worksheets
             if ($startRow <= $workSheet->getHighestRow()) {
@@ -694,7 +691,7 @@ class ExportTypeSimple extends AbstractExportType
         return $result;
     }
 
-    protected function storeCsvFile(array $data, string $fileName): void
+    protected function storeCsvFile(array $data, string $fileName, array $configuration = []): void
     {
         $columns = $this->prepareColumns($data);
 
@@ -706,9 +703,17 @@ class ExportTypeSimple extends AbstractExportType
 
         $fp = fopen($fileName, "w");
 
-        // prepare header
-        if ($this->data['feed']['isFileHeaderRow']) {
-            $headerRow = array_column($columns, 'name');
+        $numberOfHeaders = (int)($this->data['feed']['numberOfHeaders'] ?? 1);
+        for ($headerIndex = 0; $headerIndex < $numberOfHeaders; $headerIndex++) {
+            if ($headerIndex === $numberOfHeaders - 1) {
+                $headerRow = array_column($columns, 'name');
+            } else {
+                $headerRow = [];
+                foreach (array_values($columns) as $position => $column) {
+                    $headerRow[] = $configuration[$position]['headers'][$headerIndex] ?? '';
+                }
+            }
+
             if ($useQuoteForAllValue) {
                 $enclosedRow = array_map(fn($value) => $enclosure . $value . $enclosure, $headerRow);
                 fwrite($fp, implode($delimiter, $enclosedRow) . "\n");

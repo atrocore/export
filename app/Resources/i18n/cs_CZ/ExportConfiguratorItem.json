@@ -1,8 +1,6 @@
 {
   "fields": {
     "name": "Pole",
-    "column": "Název sloupce",
-    "columnType": "Označení sloupce",
     "exportFeed": "Exportní kanál",
     "entityAttribute": "Atribut",
     "exportBy": "Související pole entit",
@@ -20,18 +18,20 @@
     "fileNameTemplate": "Šablona názvu souboru",
     "exportByForListAttribute": "Související pole entit pro seznamy",
     "script": "Skript",
-    "exportStaticListLabel": "Exportní štítek"
+    "exportStaticListLabel": "Exportní štítek",
+    "headerText": "Název sloupce",
+    "headerProperty": "Označení sloupce"
   },
   "options": {
-    "columnType": {
-      "name": "Jméno",
-      "custom": "Vlastní název"
-    },
     "type": {
       "Field": "Pole",
       "allAttributes": "Všechny atributy",
       "Fixed value": "Pevná hodnota",
       "script": "Skript"
+    },
+    "headerProperty": {
+      "name": "Jméno",
+      "custom": "Vlastní název"
     }
   },
   "labels": {
@@ -40,7 +40,7 @@
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Související datové záznamy budou exportovány jako různá pole/sloupce s použitím přípony \"_1\", \"_2\" atd..",
-    "column": "V názvu sloupce můžete použít pole souvisejících entit. Název pole v databázi použijte jako proměnnou, např. {{jméno}}. Mělo by být aktivováno zaškrtávací políčko \"Oddělit sloupce\"."
+    "headerText": "V názvu sloupce můžete použít pole souvisejících entit. Název pole v databázi použijte jako proměnnou, např. {{jméno}}. Mělo by být aktivováno zaškrtávací políčko \"Oddělit sloupce\"."
   },
   "exceptions": {
     "noSuchAttribute": "Atribut s takovým kódem '%s' neexistuje.",

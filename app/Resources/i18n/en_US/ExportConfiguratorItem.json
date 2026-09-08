@@ -1,8 +1,6 @@
 {
   "fields": {
     "name": "Field",
-    "column": "Column Name",
-    "columnType": "Column Label",
     "exportFeed": "Export Feed",
     "entityAttribute": "Attribute",
     "exportBy": "Related Entity Fields",
@@ -21,18 +19,20 @@
     "exportByForListAttribute": "Related Entity Fields for Lists",
     "script": "Script",
     "exportStaticListLabel": "Export Label",
-    "selectedLanguageOnly": "Selected language only"
+    "selectedLanguageOnly": "Selected language only",
+    "headerText": "Column Name",
+    "headerProperty": "Column Label"
   },
   "options": {
-    "columnType": {
-      "name": "Name",
-      "custom": "Custom Name"
-    },
     "type": {
       "Field": "Field",
       "allAttributes": "All Attributes",
       "Fixed value": "Fixed value",
       "script": "Script"
+    },
+    "headerProperty": {
+      "name": "Name",
+      "custom": "Custom Name"
     }
   },
   "labels": {
@@ -43,7 +43,7 @@
   },
   "tooltips": {
     "exportIntoSeparateColumns": "Related data records will be exported as different fields/columns by using for the name the suffix \"_1\", \"_2\" and so on.",
-    "column": "You can use related entity fields in the column name. Use the field name in the database as a variable, eg {{name}}. Checkbox \"Separate Columns\" should be activated."
+    "headerText": "You can use related entity fields in the column name. Use the field name in the database as a variable, eg {{name}}. Checkbox \"Separate Columns\" should be activated."
   },
   "exceptions": {
     "noSuchAttribute": "The attribute with such code '%s' does not exist.",

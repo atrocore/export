@@ -107,11 +107,11 @@
       "type": "varchar",
       "view": "export:views/export-feed/fields/file-type"
     },
-    "isFileHeaderRow": {
-      "type": "bool",
-      "notStorable": true,
-      "dataField": true,
-      "default": true,
+    "numberOfHeaders": {
+      "type": "int",
+      "default": 1,
+      "min": 0,
+      "max": 10,
       "filterDisabled": true,
       "conditionalProperties": {
         "visible": {
