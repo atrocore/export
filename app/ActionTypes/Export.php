@@ -26,6 +26,10 @@ class Export extends AbstractAction
 
     public function executeNow(Entity $action, \stdClass $input): bool
     {
+        if (empty($action->get('exportFeedId'))) {
+            return false;
+        }
+
         $payload = empty($action->get('payload')) ? '' : (string)$action->get('payload');
         $templateData = [];
 
@@ -91,9 +95,6 @@ class Export extends AbstractAction
 
         /** @var \Export\Services\ExportFeed $service */
         $service = $this->getServiceFactory()->create('ExportFeed');
-        if (empty($action->get('exportFeedId'))) {
-            return false;
-        }
 
         $exportFeed = $service->getEntity($action->get('exportFeedId'));
         if (empty($exportFeed) || empty($exportFeed->get('isActive'))) {
