@@ -91,7 +91,6 @@ class Export extends AbstractAction
 
         /** @var \Export\Services\ExportFeed $service */
         $service = $this->getServiceFactory()->create('ExportFeed');
-
         if (empty($action->get('exportFeedId'))) {
             return false;
         }
