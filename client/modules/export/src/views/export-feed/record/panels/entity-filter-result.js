@@ -14,46 +14,52 @@ Espo.define('export:views/export-feed/record/panels/entity-filter-result', 'view
         readOnly: true,
 
         setup() {
-            this.scope = this.model.get('entity');
-            this.url = this.model.get('entity');
+            this.wait(true);
 
-            this.model.defs.links.entityFilterResult = {
-                entity: this.scope,
-                type: "hasMany"
-            }
+            this.onModelReady(() => {
+                this.scope = this.model.get('entity');
+                this.url = this.model.get('entity');
 
-            Dep.prototype.setup.call(this);
+                this.model.defs.links.entityFilterResult = {
+                    entity: this.scope,
+                    type: "hasMany"
+                }
 
-            this.listenTo(this.model, 'change:fileType', () => {
-                this.reRender();
+                Dep.prototype.setup.call(this);
+
+                this.listenTo(this.model, 'change:fileType', () => {
+                    this.reRender();
+                });
+
+                let iconHtml = this.getHelper().getScopeColorIconHtml(this.scope);
+                if (iconHtml) {
+                    if (this.defs.label) {
+                        this.titleHtml = iconHtml + this.translate(this.defs.label, 'labels', 'ExportFeed');
+                    } else {
+                        this.titleHtml = iconHtml + this.title;
+                    }
+                }
+
+                if (this.getAcl().check(this.scope, 'read')) {
+                    if(!this.defs.hideShowFullList && !this.getPreferences().get('hideShowFullList')) {
+                        this.actionList.push({
+                            label: 'showFullList',
+                            action: 'showFullList'
+                        });
+                    }
+
+                    this.additionalBoolFilterList = this.options.additionalBoolFilterList ?? this.additionalBoolFilterList ?? [];
+                    this.boolFilterData = this.options.boolFilterData ?? this.boolFilterData ?? {};
+
+                    if(!this.additionalBoolFilterList.includes('unexported')) {
+                        this.additionalBoolFilterList.push('unexported');
+                    }
+
+                    this.boolFilterData['unexported'] = () => this.model.get('lastTime');
+                }
+
+                this.wait(false);
             });
-
-            let iconHtml = this.getHelper().getScopeColorIconHtml(this.scope);
-            if (iconHtml) {
-                if (this.defs.label) {
-                    this.titleHtml = iconHtml + this.translate(this.defs.label, 'labels', 'ExportFeed');
-                } else {
-                    this.titleHtml = iconHtml + this.title;
-                }
-            }
-
-            if (this.getAcl().check(this.scope, 'read')) {
-                if(!this.defs.hideShowFullList && !this.getPreferences().get('hideShowFullList')) {
-                    this.actionList.push({
-                        label: 'showFullList',
-                        action: 'showFullList'
-                    });
-                }
-
-                this.additionalBoolFilterList = this.options.additionalBoolFilterList ?? this.additionalBoolFilterList ?? [];
-                this.boolFilterData = this.options.boolFilterData ?? this.boolFilterData ?? {};
-
-                if(!this.additionalBoolFilterList.includes('unexported')) {
-                    this.additionalBoolFilterList.push('unexported');
-                }
-
-                this.boolFilterData['unexported'] = () => this.model.get('lastTime');
-            }
         },
 
         getLayoutRelatedScope() {
