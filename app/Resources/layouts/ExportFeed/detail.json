@@ -61,7 +61,7 @@
           "inlineEditDisabled": true
         },
         {
-          "name": "isFileHeaderRow"
+          "name": "numberOfHeaders"
         }
       ],
       [

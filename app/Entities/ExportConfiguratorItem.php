@@ -14,55 +14,55 @@ declare(strict_types=1);
 namespace Export\Entities;
 
 use Atro\Core\Templates\Entities\Base;
+use Espo\Core\Utils\Json;
 
 class ExportConfiguratorItem extends Base
 {
     protected $entityType = "ExportConfiguratorItem";
 
-    public function _hasFileNameTemplate(): bool
+    public function get($name, $params = [])
     {
-        return true;
-    }
-
-    public function _hasExportStaticListLabel(): bool
-    {
-        return true;
-    }
-
-    public function _getFileNameTemplate()
-    {
-        return $this->getVirtualField('fileNameTemplate');
-    }
-
-    public function _setFileNameTemplate(?string $fileNameTemplate): void
-    {
-        $this->setVirtualField('fileNameTemplate', $fileNameTemplate);
-    }
-
-    public function _getExportStaticListLabel(): ?bool {
-        return !empty($this->getVirtualField('exportStaticListLabel'));
-    }
-
-    public function _setExportStaticListLabel(?bool $exportStaticListLabel): void
-    {
-        $this->setVirtualField('exportStaticListLabel', $exportStaticListLabel);
-    }
-
-    public function getVirtualField(string $name)
-    {
-        if ($this->get('virtualFields') !== null && property_exists($this->get('virtualFields'), $name)) {
-            return $this->get('virtualFields')->$name;
+        if (!empty($this->getAttributeParam($name, 'dataField'))) {
+            return $this->getDataField($name);
         }
 
-        return null;
+        return parent::get($name, $params);
     }
 
-    public function setVirtualField(string $name, $value): void
+    public function setDataField(string $name, $value): void
     {
-        if (empty($this->get('virtualFields'))) {
-            $this->set('virtualFields', new \stdClass());
+        $data = $this->getDataFields();
+        $data[$name] = $value;
+
+        $this->valuesContainer[$name] = $value;
+        $this->set('data', $data);
+    }
+
+    public function getDataField(string $name)
+    {
+        $data = $this->getDataFields();
+
+        return $data[$name] ?? null;
+    }
+
+    public function getDataFields(): array
+    {
+        if (!empty($data = $this->get('data'))) {
+            $data = Json::decode(Json::encode($data), true);
+            if (!empty($data) && is_array($data)) {
+                return $data;
+            }
         }
 
-        $this->get('virtualFields')->$name = $value;
+        return [];
+    }
+
+    protected function setFieldValue(string $field, $value): void
+    {
+        if (!empty($this->getAttributeParam($field, 'dataField'))) {
+            $this->setDataField($field, $value);
+        }
+
+        parent::setFieldValue($field, $value);
     }
 }

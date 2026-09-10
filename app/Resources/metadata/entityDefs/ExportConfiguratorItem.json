@@ -14,6 +14,7 @@
       ],
       "view": "export:views/export-configurator-item/fields/file-name-template",
       "notStorable": true,
+      "dataField": true,
       "filterDisabled": true
     },
     "name": {
@@ -53,23 +54,28 @@
         }
       }
     },
-    "column": {
-      "type": "varchar",
-      "view": "export:views/export-configurator-item/fields/column",
-      "tooltip": true
+    "data": {
+      "type": "jsonObject",
+      "layoutDetailDisabled": true,
+      "layoutListDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "filterDisabled": true
+    },
+    "exportFeedNumberOfHeaders": {
+      "type": "int",
+      "notStorable": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "massUpdateDisabled": true,
+      "filterDisabled": true,
+      "exportDisabled": true,
+      "importDisabled": true,
+      "emHidden": true
     },
     "sortOrder": {
       "type": "int"
-    },
-    "columnType": {
-      "type": "enum",
-      "required": true,
-      "view": "export:views/export-configurator-item/fields/column-type",
-      "options": [
-        "custom",
-        "name"
-      ],
-      "default": "custom"
     },
     "exportIntoSeparateColumns": {
       "type": "bool",
@@ -271,22 +277,11 @@
       "textFilterDisabled": true,
       "emHidden": true
     },
-    "virtualFields": {
-      "type": "jsonObject",
-      "layoutListDisabled": true,
-      "layoutListSmallDisabled": true,
-      "layoutDetailDisabled": true,
-      "layoutDetailSmallDisabled": true,
-      "massUpdateDisabled": true,
-      "filterDisabled": true,
-      "exportDisabled": true,
-      "importDisabled": true,
-      "emHidden": true
-    },
     "exportStaticListLabel": {
       "type": "bool",
       "view": "export:views/export-configurator-item/fields/export-static-list-label",
       "notStorable": true,
+      "dataField": true,
       "filterDisabled": true
     }
   },

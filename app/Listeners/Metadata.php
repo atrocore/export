@@ -15,6 +15,8 @@ namespace Export\Listeners;
 
 use Atro\Core\EventManager\Event;
 use Atro\Listeners\AbstractMetadataListener;
+use Doctrine\DBAL\ParameterType;
+use Export\Repositories\ExportFeed;
 
 class Metadata extends AbstractMetadataListener
 {
@@ -135,6 +137,103 @@ class Metadata extends AbstractMetadataListener
             ];
         }
 
+        $this->prepareHeaderFields($data);
+
         $event->setArgument('data', $data);
+    }
+
+    /**
+     * One headerText{k}/headerProperty{k} field pair per header row, for k = 1..(the largest
+     * "Number of Headers" configured on any ExportFeed) - see Export\Repositories\ExportFeed,
+     * which clears the metadata cache when a feed's value exceeds scopes.ExportFeed.maxNumberOfHeaders,
+     * so these fields get regenerated (with the new max) on the next request.
+     */
+    protected function prepareHeaderFields(array &$data): void
+    {
+        $max = $this->computeMaxNumberOfHeaders();
+
+        $data['scopes']['ExportFeed']['maxNumberOfHeaders'] = $max;
+
+        $options = $this->computeHeaderPropertyOptions($data);
+
+        for ($k = 1; $k <= $max; $k++) {
+            $visible = [
+                'conditionGroup' => [
+                    ['type' => 'greaterThanOrEquals', 'attribute' => 'exportFeedNumberOfHeaders', 'value' => $k],
+                ],
+            ];
+
+            $data['entityDefs']['ExportConfiguratorItem']['fields']["headerText$k"] = [
+                'type'                  => 'varchar',
+                'notStorable'           => true,
+                'dataField'             => true,
+                'tooltip'               => true,
+                'view'                  => 'export:views/export-configurator-item/fields/header-text',
+                'conditionalProperties' => [
+                    // headerText{k} (the literal custom-text input) is only meaningful for 'custom' -
+                    // allAttributes items never allow 'custom' (see header-property.js), so hide it there.
+                    'visible'  => [
+                        'conditionGroup' => array_merge($visible['conditionGroup'], [
+                            ['type' => 'notEquals', 'attribute' => 'type', 'value' => 'allAttributes'],
+                        ]),
+                    ],
+                    'readOnly' => [
+                        'conditionGroup' => [
+                            ['type' => 'notEquals', 'attribute' => "headerProperty$k", 'value' => 'custom'],
+                        ],
+                    ],
+                ],
+            ];
+
+            $data['entityDefs']['ExportConfiguratorItem']['fields']["headerProperty$k"] = [
+                'type'                  => 'enum',
+                'required'              => true,
+                'notStorable'           => true,
+                'dataField'             => true,
+                'view'                  => 'export:views/export-configurator-item/fields/header-property',
+                'options'               => $options,
+                'default'               => 'custom',
+                'conditionalProperties' => ['visible' => $visible],
+            ];
+        }
+    }
+
+     protected function computeHeaderPropertyOptions(array $data): array
+    {
+        $options = ['id','custom', 'name', 'code', 'tooltipText'];
+
+        $attributePropertyTypes = ['varchar', 'text', 'enum', 'link', 'linkMultiple'];
+        foreach ($data['entityDefs']['Attribute']['fields'] ?? [] as $field => $defs) {
+            if (empty($defs['notStorable']) && in_array($defs['type'] ?? null, $attributePropertyTypes, true)) {
+                $options[] = $field;
+            }
+        }
+
+        return array_values(array_unique($options));
+    }
+
+     protected function computeMaxNumberOfHeaders(): int
+    {
+        $cached = $this->getDataManager()->getCacheData(ExportFeed::MAX_NUMBER_OF_HEADERS_CACHE_KEY);
+        if (is_int($cached) && $cached >= 1) {
+            return $cached;
+        }
+
+        try {
+            $max = (int)$this->getDbal()->createQueryBuilder()
+                ->select('MAX(number_of_headers)')
+                ->from('export_feed')
+                ->where('deleted = :false')
+                ->setParameter('false', false, ParameterType::BOOLEAN)
+                ->fetchOne();
+        } catch (\Throwable $e) {
+            $max = 1;
+        }
+
+        $max = max(1, $max);
+
+        $this->getDataManager()->setCacheData(ExportFeed::MAX_NUMBER_OF_HEADERS_CACHE_KEY, $max);
+
+        return $max;
     }
 }

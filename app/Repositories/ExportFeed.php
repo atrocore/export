@@ -24,6 +24,8 @@ use Export\Services\AbstractExportType;
 
 class ExportFeed extends Base
 {
+    public const MAX_NUMBER_OF_HEADERS_CACHE_KEY = 'exportMaxNumberOfHeaders';
+
     public function updateLastTime(string $exportFeedId, \DateTime $lastTime): void
     {
         $qb = $this->getConnection()->createQueryBuilder()
@@ -52,7 +54,7 @@ class ExportFeed extends Base
 
     public function updateLastStatus(string $exportFeedId, string $lastStatus): void
     {
-        $this->getConnection()->createQueryBuilder()
+        $this->getDbal()->createQueryBuilder()
             ->update('export_feed')
             ->set('last_status', ':lastStatus')
             ->where('id=:id')
@@ -223,6 +225,8 @@ class ExportFeed extends Base
         if ($entity->isAttributeChanged('lastTime') && !empty($entity->get('lastTime'))) {
             $this->updateLastTime($entity->get('id'), new \DateTime($entity->get('lastTime')));
         }
+
+        $this->clearMaxNumberOfHeadersCacheIfNeeded($entity);
     }
 
     protected function beforeRemove(Entity $entity, array $options = [])
@@ -236,6 +240,42 @@ class ExportFeed extends Base
             ->find();
         foreach ($shares as $share) {
             $this->getEntityManager()->removeEntity($share);
+        }
+    }
+
+    protected function afterRemove(Entity $entity, array $options = [])
+    {
+        parent::afterRemove($entity, $options);
+
+        $currentMax = (int)($this->getInjection('dataManager')->getCacheData(self::MAX_NUMBER_OF_HEADERS_CACHE_KEY) ?? 1);
+        if ((int)($entity->get('numberOfHeaders') ?? 1) < $currentMax) {
+            return;
+        }
+
+        $newMax = (int)$this->getDbal()->createQueryBuilder()
+            ->select('MAX(number_of_headers)')
+            ->from('export_feed')
+            ->where('deleted = :false')
+            ->setParameter('false', false, ParameterType::BOOLEAN)
+            ->fetchOne();
+        $newMax = max(1, $newMax);
+
+        if ($newMax !== $currentMax) {
+            $this->getInjection('dataManager')->clearCache();
+        }
+    }
+
+    protected function clearMaxNumberOfHeadersCacheIfNeeded(Entity $entity): void
+    {
+        $numberOfHeaders = (int)($entity->get('numberOfHeaders') ?? 1);
+        if ($numberOfHeaders < 1) {
+            return;
+        }
+
+        $currentMax = (int)($this->getInjection('dataManager')->getCacheData(self::MAX_NUMBER_OF_HEADERS_CACHE_KEY) ?? 1);
+
+        if ($numberOfHeaders > $currentMax) {
+            $this->getInjection('dataManager')->clearCache();
         }
     }
 
@@ -265,6 +305,7 @@ class ExportFeed extends Base
         parent::init();
 
         $this->addDependency('language');
+        $this->addDependency('dataManager');
     }
 
     protected function setFeedFieldsToDataJson(Entity $entity): void

@@ -13,7 +13,7 @@
     "lastStatus": "Last status",
     "lastTime": "Last Run",
     "fileType": "Format",
-    "isFileHeaderRow": "Header Row",
+    "numberOfHeaders": "Number of Headers",
     "csvFieldDelimiter": "Field Delimiter",
     "csvTextQualifier": "Text Qualifier",
     "field": "Field",
@@ -85,6 +85,7 @@
   },
   "messages": {
     "confirmTemplateGeneration": "Are you sure you want to generate Template?",
+    "confirmNumberOfHeadersChange": "Changing the number of headers may add or remove header rows and their configuration on every configurator item. Continue?",
     "delimitersMustBeDifferent": "All feed parameters should have unique values.",
     "noExportFeedSelected": "No ExportFeed selected.",
     "columnAlreadyExist": "A column with such name already exists.",

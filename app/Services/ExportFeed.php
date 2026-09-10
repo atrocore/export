@@ -167,6 +167,8 @@ class ExportFeed extends Base
 
         $exportFeed = $entityName === 'ExportFeed' ? $feed : $feed->get('exportFeed');
 
+        $numberOfHeaders = (int)($exportFeed->get('numberOfHeaders') ?? 1);
+
         $languageObj = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
 
         $feedEntity = $feed->get('entity') ?? $feed->getFeedField('entity');
@@ -179,12 +181,11 @@ class ExportFeed extends Base
                 continue;
             }
 
-            $data = [
+            $data = array_merge([
                 'name'                      => $field,
                 'type'                      => 'Field',
-                'columnType'                => 'name',
                 lcfirst($entityName) . 'Id' => $feed->get('id')
-            ];
+            ], $this->buildAllHeadersData($numberOfHeaders, 'name'));
 
             if (in_array($type, ['link', 'file', 'linkMultiple', 'measure'])) {
                 $data['exportBy'] = ['id'];
@@ -192,12 +193,10 @@ class ExportFeed extends Base
 
             if (in_array($type, ['rangeInt', 'rangeFloat'])) {
                 $this->createExportConfiguratorItem(array_merge($data, [
-                    'name'       => null,
-                    'type'       => 'script',
-                    'columnType' => 'custom',
-                    'column'     => $languageObj->translate($field, 'fields', $feedEntity),
-                    'script'     => "{{ record['{$field}From'] }} - {{ record['{$field}To'] }} {{ record['{$field}UnitName'] }}"
-                ]));
+                    'name'   => null,
+                    'type'   => 'script',
+                    'script' => "{{ record['{$field}From'] }} - {{ record['{$field}To'] }} {{ record['{$field}UnitName'] }}"
+                ], $this->buildAllHeadersData($numberOfHeaders, 'custom', $languageObj->translate($field, 'fields', $feedEntity))));
                 $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'From']));
                 $this->createExportConfiguratorItem(array_merge($data, ['name' => $field . 'To']));
                 if (!empty($defs['measureId'])) {
@@ -230,12 +229,10 @@ class ExportFeed extends Base
                     $prefix = $hasPrefix ? "{{ record['{$field}PrefixName'] }} " : '';
                     $unit   = $hasMeasure ? " {{ record['{$field}UnitName'] }}" : '';
                     $this->createExportConfiguratorItem(array_merge($data, [
-                        'name'       => null,
-                        'type'       => 'script',
-                        'columnType' => 'custom',
-                        'column'     => $languageObj->translate('combined' . ucfirst($field), 'fields', $feedEntity),
-                        'script'     => "{$prefix}{{ record['{$field}'] }}{$unit}"
-                    ]));
+                        'name'   => null,
+                        'type'   => 'script',
+                        'script' => "{$prefix}{{ record['{$field}'] }}{$unit}"
+                    ], $this->buildAllHeadersData($numberOfHeaders, 'custom', $languageObj->translate('combined' . ucfirst($field), 'fields', $feedEntity))));
                 }
             }
         }
@@ -290,14 +287,14 @@ class ExportFeed extends Base
                     "'%s' (%s) belongs to '%s'",
                     $attribute['name'],
                     $attribute['system_name'] ?: $attribute['id'],
-                    (string) $attribute['entity_id']
+                    (string)$attribute['entity_id']
                 );
             }
         }
 
         if (!empty($foreign)) {
             throw new Exceptions\BadRequest(
-                sprintf("Attributes cannot be added to a '%s' export feed: %s.", (string) $feedEntityName, implode(', ', $foreign))
+                sprintf("Attributes cannot be added to a '%s' export feed: %s.", (string)$feedEntityName, implode(', ', $foreign))
             );
         }
 
@@ -311,9 +308,18 @@ class ExportFeed extends Base
         return true;
     }
 
-    public function prepareConfiguratorItemDataForAttributes(Entity $feed, array $attributesIds, ?string $contentLanguageCode = null): array
+    /**
+     * $headerOverride replaces the default per-header 'name' seeding (see buildAllHeadersData()) -
+     * used when expanding an existing 'allAttributes' item (getPreparedConfiguratorItems()), so each
+     * expanded attribute carries THAT item's own configured header choice (e.g. 'systemName') rather
+     * than always defaulting to 'name'.
+     */
+    public function prepareConfiguratorItemDataForAttributes(Entity $feed, array $attributesIds, ?string $contentLanguageCode = null, ?array $headerOverride = null): array
     {
         $result = [];
+
+        $numberOfHeaders = $this->getNumberOfHeaders($feed, $feed->getEntityName());
+        $headerData      = $headerOverride ?? $this->buildAllHeadersData($numberOfHeaders, 'name');
 
         $feedEntityName = $feed->get('entity') ?? $feed->getFeedField('entity');
 
@@ -340,26 +346,31 @@ class ExportFeed extends Base
                     }
                 }
 
-                $data = [
+                $data = array_merge([
                     'name'                                 => $field,
                     'type'                                 => 'Field',
-                    'columnType'                           => 'name',
                     'entityAttributeId'                    => $attribute['id'],
                     lcfirst($feed->getEntityName()) . 'Id' => $feed->get('id'),
-                ];
+                ], $headerData);
 
                 if (in_array($fieldDefs['type'], ['link', 'linkMultiple', 'file'])) {
                     $data['exportBy'] = [$fieldDefs['foreignName'] ?? 'name'];
                 }
 
                 if (in_array($fieldDefs['type'], ['rangeInt', 'rangeFloat'])) {
+                    for ($k = 1; $k <= $numberOfHeaders; $k++) {
+                        if ($data["headerProperty$k"] === 'name') {
+                            $data["headerProperty$k"] = 'custom';
+                            $data["headerText$k"]     = $fieldDefs['detailViewLabel'] ?? $fieldDefs['label'];
+                        }
+                    }
+
                     $result[] = array_merge($data, [
-                        'name'       => null,
-                        'type'       => 'script',
-                        'columnType' => 'custom',
-                        'column'     => $fieldDefs['label'],
-                        'script'     => "{{ record['{$field}From'] }} - {{ record['{$field}To'] }} {{ record['{$field}UnitName'] }}",
+                        'name'   => null,
+                        'type'   => 'script',
+                        'script' => "{{ record['{$field}From'] }} - {{ record['{$field}To'] }} {{ record['{$field}UnitName'] }}",
                     ]);
+
                     continue;
                 } else if (!empty($fieldDefs['combinedField'])) {
                     $result[] = $data;
@@ -369,12 +380,17 @@ class ExportFeed extends Base
                     $prefix     = $hasPrefix ? "{{ record['{$field}PrefixName'] }} " : '';
                     $unit       = $hasMeasure ? " {{ record['{$field}UnitName'] }}" : '';
 
+                    for ($k = 1; $k <= $numberOfHeaders; $k++) {
+                        if ($data["headerProperty$k"] === 'name') {
+                            $data["headerProperty$k"] = 'custom';
+                            $data["headerText$k"]     = $fieldDefs['detailViewLabel'] ?? $fieldDefs['label'];
+                        }
+                    }
+
                     $result[] = array_merge($data, [
-                        'name'       => null,
-                        'type'       => 'script',
-                        'columnType' => 'custom',
-                        'column'     => $fieldDefs['detailViewLabel'] ?? $fieldDefs['label'],
-                        'script'     => "{$prefix}{{ record['{$field}'] }}{$unit}",
+                        'name'   => null,
+                        'type'   => 'script',
+                        'script' => "{$prefix}{{ record['{$field}'] }}{$unit}",
                     ]);
                     continue;
                 }
@@ -412,13 +428,12 @@ class ExportFeed extends Base
             throw new Exceptions\BadRequest($this->getLanguage()->translate('allAttributesAlreadyAdded', 'labels', 'ExportFeed'));
         }
 
-        $data = [
+        $data = array_merge([
             'name'                      => null,
             'type'                      => 'allAttributes',
-            'columnType'                => 'custom',
             lcfirst($entityName) . 'Id' => $feed->get('id'),
             'channels'                  => ['withoutChannel'],
-        ];
+        ], $this->buildAllHeadersData($this->getNumberOfHeaders($feed, $entityName), 'name'));
 
         $this->createExportConfiguratorItem($data);
 
@@ -436,12 +451,10 @@ class ExportFeed extends Base
             return false;
         }
 
-        $this->createExportConfiguratorItem([
+        $this->createExportConfiguratorItem(array_merge([
             'type'                      => 'Fixed value',
-            'columnType'                => 'custom',
-            'column'                    => 'Fixed value',
             lcfirst($entityName) . 'Id' => $feed->get('id')
-        ]);
+        ], $this->buildAllHeadersData($this->getNumberOfHeaders($feed, $entityName), 'custom', 'Fixed value')));
 
         return true;
     }
@@ -457,13 +470,11 @@ class ExportFeed extends Base
             return false;
         }
 
-        $this->createExportConfiguratorItem([
+        $this->createExportConfiguratorItem(array_merge([
             'type'                      => 'script',
-            'columnType'                => 'custom',
-            'column'                    => 'Script',
             'script'                    => '{{ configuration.type }} {{ record.id }} {{ record.name }}',
             lcfirst($entityName) . 'Id' => $feed->get('id')
-        ]);
+        ], $this->buildAllHeadersData($this->getNumberOfHeaders($feed, $entityName), 'custom', 'Script')));
 
         return true;
     }
@@ -483,6 +494,38 @@ class ExportFeed extends Base
             $this->getEntityManager()->saveEntity($item);
         } catch (Exceptions\NotUnique $e) {
         }
+    }
+
+    /**
+     * Resolves the ExportFeed whose numberOfHeaders governs $feed's headers - $feed itself when
+     * it already is the ExportFeed, or its parent feed when it's a Sheet (numberOfHeaders only
+     * exists on ExportFeed - see Resources/metadata/entityDefs/ExportFeed.json).
+     */
+    protected function getNumberOfHeaders(Entity $feed, string $entityName): int
+    {
+        $exportFeed = $entityName === 'ExportFeed' ? $feed : $feed->get('exportFeed');
+
+        return (int)($exportFeed->get('numberOfHeaders') ?? 1);
+    }
+
+    /**
+     * Builds headerProperty1..headerPropertyN (and, when $headerTextValue is given, headerText1..
+     * headerTextN) so that addFields()/addAttributes()/addAllAttributes()/addFixed()/addScript()
+     * seed the SAME default across every configured header row, not just header 1 - matching what
+     * prepareColumnNameForIndex() would otherwise only fall back to at export/display time for the
+     * un-seeded rows.
+     */
+    protected function buildAllHeadersData(int $numberOfHeaders, string $headerProperty, ?string $headerTextValue = null): array
+    {
+        $data = [];
+        for ($k = 1; $k <= $numberOfHeaders; $k++) {
+            $data["headerProperty$k"] = $headerProperty;
+            if ($headerTextValue !== null) {
+                $data["headerText$k"] = $headerTextValue;
+            }
+        }
+
+        return $data;
     }
 
     public function readEntity(string $id, ?string $withRelationships = null): ?IEntity
@@ -574,12 +617,19 @@ class ExportFeed extends Base
         $eciService = $this->getInjection('serviceFactory')->create('ExportConfiguratorItem');
 
         $effectiveLocaleId = $contentLocaleId ?? $feed->get('localeId');
+        $numberOfHeaders   = (int)($feed->get('numberOfHeaders') ?? 1);
 
         foreach ($this->getPreparedConfiguratorItems($feed, $sheet, $entityName, $contentLanguageCode, $effectiveLocaleId) as $item) {
+            $columnNames = $eciService->prepareColumnNames($item, $numberOfHeaders, $effectiveLocaleId);
+
             $row = [
                 'id'                        => $item->get('id'),
-                'columnType'                => $item->get('columnType'),
-                'column'                    => $eciService->prepareColumnName($item, $effectiveLocaleId),
+                'columnType'                => $item->get('headerProperty1'),
+                // 'column' is the correlation key Convertor::convert()/AbstractExportType key every
+                // record's per-column value and the cache file by - the LAST configured header (not
+                // the first), since it's the one closest to the actual data.
+                'column'                    => end($columnNames) ?: '',
+                'headers'                   => $columnNames,
                 'template'                  => $feed->get('template'),
                 'emptyValue'                => $feed->getFeedField('emptyValue'),
                 'nullValue'                 => $feed->getFeedField('nullValue'),
@@ -629,7 +679,9 @@ class ExportFeed extends Base
                     if (!empty($fieldDefs['isMultilang']) && !property_exists($item, 'skipLanguageRedirect')) {
                         $row['field'] = $fieldName . ucfirst(Language::languageToField($contentLanguageCode));
                         $item->set('name', $row['field']);
-                        $row['column'] = $eciService->prepareColumnName($item, $effectiveLocaleId);
+                        $columnNames    = $eciService->prepareColumnNames($item, $numberOfHeaders, $effectiveLocaleId);
+                        $row['column']  = end($columnNames) ?: '';
+                        $row['headers'] = $columnNames;
                     }
 
                     // Redirect language-neutral multilingual fields inside exportBy to their
@@ -931,7 +983,7 @@ class ExportFeed extends Base
                 'separateJob'               => false,
                 'type'                      => 'simple',
                 'fileType'                  => $requestData->fileType,
-                'isFileHeaderRow'           => true,
+                'numberOfHeaders'           => 1,
                 'csvFieldDelimiter'         => ';',
                 'csvTextQualifier'          => 'doubleQuote',
                 'entity'                    => $scope,
@@ -948,7 +1000,7 @@ class ExportFeed extends Base
                     'where'                     => [],
                     'whereData'                 => [],
                     'whereScope'                => $scope,
-                    'isFileHeaderRow'           => true,
+                    'numberOfHeaders'           => 1,
                     'csvFieldDelimiter'         => ';',
                     'csvTextQualifier'          => 'doubleQuote',
                     'entity'                    => $scope,
@@ -1025,7 +1077,7 @@ class ExportFeed extends Base
 
         $hasIdColumn = false;
         foreach ($exportFeed->configuratorItems as $configuratorItem) {
-            if ($configuratorItem->get('column') == 'ID' || ($configuratorItem->get('name') == 'id' && empty($configuratorItem->get('column')))) {
+            if ($configuratorItem->get('headerText1') == 'ID' || ($configuratorItem->get('name') == 'id' && empty($configuratorItem->get('headerText1')))) {
                 $hasIdColumn = true;
                 break;
             }
@@ -1193,6 +1245,8 @@ class ExportFeed extends Base
             ->order('sortOrder')
             ->find();
 
+        $numberOfHeaders = $this->getNumberOfHeaders($feed, $feed->getEntityName());
+
         $collection = new EntityCollection([], 'ExportConfiguratorItem');
         foreach ($items as $item) {
             if ($item->get('type') === 'allAttributes') {
@@ -1209,7 +1263,17 @@ class ExportFeed extends Base
                 // When selectedLanguageOnly is false, expand all language variants regardless of contentLanguageCode.
                 $effectiveCode = $item->get('selectedLanguageOnly') ? $contentLanguageCode : null;
 
-                foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds, $effectiveCode) as $row) {
+                // Propagate THIS allAttributes item's own header configuration (e.g. headerProperty1
+                // = 'systemName') onto every attribute it expands into, instead of defaulting to 'name'.
+                $headerOverride = [];
+                for ($k = 1; $k <= $numberOfHeaders; $k++) {
+                    $headerOverride["headerProperty$k"] = $item->get("headerProperty$k") ?? 'name';
+                    if ($headerOverride["headerProperty$k"] === 'custom') {
+                        $headerOverride["headerText$k"] = $item->get("headerText$k");
+                    }
+                }
+
+                foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds, $effectiveCode, $headerOverride) as $row) {
                     $attributeItem = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
                     $attributeItem->set($row);
                     $attributeItem->id = $item->id;

@@ -29,7 +29,7 @@ class ExportConfiguratorItem extends Base
             'sheetId',
             'entity',
             'type',
-            'columnType',
+            'data',
             'exportBy',
             'channels',
             'exportIntoSeparateColumns',
@@ -37,13 +37,14 @@ class ExportConfiguratorItem extends Base
             'entityAttributeId',
             'fixedValue',
             'zip',
-            'virtualFields',
             'selectedLanguageOnly'
         ];
 
     public function prepareEntityForOutput(Entity $entity)
     {
         parent::prepareEntityForOutput($entity);
+
+        $this->getRepository()->setDataFields($entity);
 
         if (empty($feed = $entity->get('exportFeed')) && empty($sheet = $entity->get('sheet'))) {
             return;
@@ -70,11 +71,14 @@ class ExportConfiguratorItem extends Base
             }
         }
 
-        $entity->set('column', $this->prepareColumnName($entity));
+        $numberOfHeaders = (int)($feed->get('numberOfHeaders') ?? 1);
+        $entity->set('exportFeedNumberOfHeaders', $numberOfHeaders);
+        foreach ($this->prepareColumnNames($entity, $numberOfHeaders) as $index => $columnName) {
+            $entity->set('headerText' . ($index + 1), $columnName);
+        }
+
         $entity->set('exportFeedData', $feed->toArray());
         $entity->set('editable', $this->getAcl()->check($feed, 'edit'));
-
-        $entity->set('fileNameTemplate', $entity->getVirtualField('fileNameTemplate'));
 
         if ($entity->get('type') === 'allAttributes') {
             $attributesIds = $this->getEntityManager()->getRepository('Attribute')
@@ -108,50 +112,123 @@ class ExportConfiguratorItem extends Base
         return parent::isEntityUpdated($entity, $data);
     }
 
-    public function prepareColumnName(Entity $entity, ?string $localeId = null): string
+    public function prepareColumnNames(Entity $entity, int $numberOfHeaders, ?string $localeId = null): array
     {
-        return $this->prepareFieldColumnName($entity, $localeId);
-    }
-
-    protected function prepareFieldColumnName(Entity $entity, ?string $localeId = null): string
-    {
-        switch ($entity->get('columnType') ?? 'name') {
-            case 'name':
-                if ($localeId !== null) {
-                    $resolvedLocaleId = $localeId;
-                } else {
-                    if (!empty($entity->get('sheetId'))) {
-                        $sheet = $this->getEntityManager()->getEntity('Sheet', $entity->get('sheetId'));
-                        if (empty($sheet)) {
-                            throw new NotFound();
-                        }
-                        $exportFeedId = $sheet->get('exportFeedId');
-                    } else {
-                        $exportFeedId = $entity->get('exportFeedId');
-                    }
-                    $exportFeed       = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
-                    $resolvedLocaleId = $exportFeed->get('localeId');
-                }
-                $column = $this->translateFieldColumnName($resolvedLocaleId, $entity->get('entity'), $entity->get('name'));
-                break;
-            case 'custom':
-                $column = (string)$entity->get('column');
-                break;
-            default:
-                $column = '-';
+        $result = [];
+        for ($k = 1; $k <= $numberOfHeaders; $k++) {
+            $result[] = $this->prepareColumnNameForIndex($entity, $k, $localeId);
         }
 
-        return $column;
+        return $result;
     }
 
-    protected function translateFieldColumnName(string $localeId, string $entity, string $field): string
+    protected function prepareColumnNameForIndex(Entity $entity, int $index, ?string $localeId): string
+    {
+        $columnType = $entity->get('headerProperty' . $index) ?? 'name';
+
+        if ($columnType === 'custom') {
+            return (string)$entity->get('headerText' . $index);
+        }
+
+        if ($entity->get('type') === 'allAttributes') {
+            return '';
+        }
+
+        $localeId = $this->resolveLocaleId($entity, $localeId);
+
+        switch ($columnType) {
+            case 'name':
+                if (!empty($entity->get('name'))){
+                    return $this->translateFieldColumnName($localeId, $entity->get('entity'), $entity->get('name'));
+                }
+            case 'code':
+                return (string)$entity->get('name');
+            default:
+                return !empty($entity->get('entityAttributeId'))
+                    ? $this->resolveAttributePropertyColumnName($entity->get('entityAttributeId'), $columnType)
+                    : $this->resolveEntityFieldPropertyColumnName($entity->get('entity'), $entity->get('name'), $columnType);
+        }
+    }
+
+    /**
+     * Resolves an arbitrary Attribute-entity property (anything beyond name/code) as header text.
+     * link/linkMultiple properties resolve to the foreign record's name(s), matching the default
+     * exportBy=['name'] behavior FieldConverters\LinkType/LinkMultipleType already use for exporting
+     * attribute VALUES of those types.
+     */
+    protected function resolveAttributePropertyColumnName(string $attributeId, string $property): string
+    {
+        $attribute = $this->getEntityManager()->getEntity('Attribute', $attributeId);
+        if (empty($attribute) || !$attribute->hasAttribute($property)) {
+            return '';
+        }
+
+        $fieldType = $this->getMetadata()->get("entityDefs.Attribute.fields.$property.type");
+
+        if ($fieldType === 'linkMultiple') {
+            $names = [];
+            foreach ($attribute->get($property) ?? [] as $related) {
+                $names[] = (string)$related->get('name');
+            }
+
+            return implode(', ', $names);
+        }
+
+        if ($fieldType === 'link') {
+            $related = $attribute->get($property);
+
+            return $related === null ? '' : (string)$related->get('name');
+        }
+
+        return (string)$attribute->get($property);
+    }
+
+    /**
+     * Resolves an arbitrary EntityField property (anything beyond name/code, e.g. type/pattern/
+     * default/defaultUnit/foreignCode) as header text for a plain Field item (no entityAttributeId).
+     * Reuses Atro\Repositories\EntityField's own item-preparation (via its generic get($id) with the
+     * "{entity}_{field}" composite id it expects) instead of re-deriving each property's resolution -
+     * e.g. foreignCode is computed there from the field's LINK defs, not its own field defs.
+     */
+    protected function resolveEntityFieldPropertyColumnName(string $entityType, string $fieldName, string $property): string
+    {
+        $entityField = $this->getEntityManager()->getRepository('EntityField')->get("{$entityType}_{$fieldName}");
+        if (empty($entityField) || !$entityField->hasAttribute($property)) {
+            return '';
+        }
+
+        return (string)$entityField->get($property);
+    }
+
+    protected function resolveLocaleId(Entity $entity, ?string $localeId): string
+    {
+        if ($localeId !== null) {
+            return $localeId;
+        }
+
+        if (!empty($entity->get('sheetId'))) {
+            $sheet = $this->getEntityManager()->getEntity('Sheet', $entity->get('sheetId'));
+            if (empty($sheet)) {
+                throw new NotFound();
+            }
+            $exportFeedId = $sheet->get('exportFeedId');
+        } else {
+            $exportFeedId = $entity->get('exportFeedId');
+        }
+
+        $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
+
+        return $exportFeed->get('localeId');
+    }
+
+    protected function translateFieldColumnName(string $localeId, string $entity, string $field, string $category = 'fields'): string
     {
         if (!isset($this->translationsCache[$localeId])) {
             $this->translationsCache[$localeId] = $this->getLocalizedLanguage($localeId)->getAll();
         }
 
-        return $this->translationsCache[$localeId][$entity]['fields'][$field]
-            ?? $this->getLocalizedLanguage($localeId)->translate($field, 'fields', $entity);
+        return $this->translationsCache[$localeId][$entity][$category][$field]
+            ?? $this->getLocalizedLanguage($localeId)->translate($field, $category, $entity);
     }
 
     protected function getLocalizedLanguage(string $locale): Language

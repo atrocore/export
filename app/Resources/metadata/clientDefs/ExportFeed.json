@@ -12,6 +12,9 @@
     "fullFormDisabled": true
   },
   "iconClass": "export",
+  "confirm": {
+    "numberOfHeaders": "ExportFeed.messages.confirmNumberOfHeadersChange"
+  },
   "views": {
     "detail": "export:views/export-feed/detail"
   },
