@@ -15,7 +15,7 @@ namespace Export\Migrations;
 
 use Atro\Core\Migration\Base;
 
-class V1Dot11Dot12 extends Base
+class V1Dot11Dot13 extends Base
 {
     public function getMigrationDateTime(): ?\DateTime
     {
@@ -45,7 +45,7 @@ class V1Dot11Dot12 extends Base
 
             $exportFeedId = $data['field']['exportFeedId'] ?? null;
 
-            unset($data['field']['exportFeedId'], $data['field']['exportFeedName']);
+            unset($data['field']['exportFeedId']);
 
             $qb = $this->getDbal()->createQueryBuilder()
                 ->update($this->getDbal()->quoteIdentifier('action'))
