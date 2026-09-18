@@ -1276,7 +1276,7 @@ class ExportFeed extends Base
                 foreach ($this->prepareConfiguratorItemDataForAttributes($feed, $attributesIds, $effectiveCode, $headerOverride) as $row) {
                     $attributeItem = $this->getEntityManager()->getRepository('ExportConfiguratorItem')->get();
                     $attributeItem->set($row);
-                    $attributeItem->id = $item->id;
+                    $attributeItem->id = IdGenerator::unsortableId();
                     $attributeItem->set('entity', $entityName);
                     $attributeItem->skipLanguageRedirect = true;
                     $collection->append($attributeItem);
