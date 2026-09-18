@@ -32,7 +32,7 @@ class LinkMultipleType extends LinkType
 
     public function convertToString(array &$result, array $record, array $configuration): void
     {
-        $field = $configuration['field'];
+        $field  = $configuration['field'];
         $column = $configuration['column'];
         $entity = $configuration['entity'];
 
@@ -42,17 +42,17 @@ class LinkMultipleType extends LinkType
 
         $params = [];
         if (!empty($sortBy)) {
-            $asc = $this->convertor->getMetadata()->get(['clientDefs', $entity, 'relationshipPanels', $field, 'asc'], true);
+            $asc              = $this->convertor->getMetadata()->get(['clientDefs', $entity, 'relationshipPanels', $field, 'asc'], true);
             $params['sortBy'] = $sortBy;
-            $params['asc'] = !empty($asc);
+            $params['asc']    = !empty($asc);
         }
 
         if (!empty($configuration['sortFieldRelation'])) {
             $params['sortBy'] = $configuration['sortFieldRelation'];
-            $params['asc'] = $configuration['sortOrderRelation'] !== 'DESC';
+            $params['asc']    = $configuration['sortOrderRelation'] !== 'DESC';
         }
 
-        $params['offset'] = empty($configuration['offsetRelation']) ? 0 : (int)$configuration['offsetRelation'];
+        $params['offset']  = empty($configuration['offsetRelation']) ? 0 : (int)$configuration['offsetRelation'];
         $params['maxSize'] = empty($configuration['limitRelation']) ? 20 : (int)$configuration['limitRelation'];
 
 
@@ -80,7 +80,7 @@ class LinkMultipleType extends LinkType
         }
 
         $links = [];
-        $type = $this->getMetadata()->get(['entityDefs', $entity, 'fields', $field, 'type']);
+        $type  = $this->getMetadata()->get(['entityDefs', $entity, 'fields', $field, 'type']);
 
         if (empty($foreignList)) {
             $links[] = $configuration['markForNoRelation'];
@@ -94,7 +94,7 @@ class LinkMultipleType extends LinkType
             $fieldResult = [];
             foreach ($exportBy as $v) {
                 if ($configuration['zip']) {
-                    $foreign = $foreignData['_entity'] ?? $this->convertor->getEntity($foreignEntity, $foreignData['id']);
+                    $foreign                    = $foreignData['_entity'] ?? $this->convertor->getEntity($foreignEntity, $foreignData['id']);
                     $result['__fileEntities'][] = $foreign;
                 }
 
@@ -132,7 +132,7 @@ class LinkMultipleType extends LinkType
             if (!empty($configuration['limitRelation']) && is_int($configuration['limitRelation'])) {
                 while ($k < ($configuration['limitRelation'] - 1)) {
                     $k++;
-                    $columnName = $column . '_' . ($k + 1);
+                    $columnName          = $column . '_' . ($k + 1);
                     $result[$columnName] = $configuration['markForNoRelation'];
                 }
             }
@@ -164,21 +164,8 @@ class LinkMultipleType extends LinkType
 
     public function queryCallback(Container $container, QueryBuilder $qb, Mapper $mapper, array $configuration): void
     {
-        // for attribute
+        // skip for attribute
         if (!empty($configuration['entityAttributeId'])) {
-            $tableName = Util::toUnderScore(lcfirst($configuration['entity']));
-            $avTable = "{$tableName}_attribute_value";
-            $entityIdColumn = "{$tableName}_id";
-
-            $mtAlias = $mapper->getQueryConverter()->getMainTableAlias();
-            $paramName = 'eaid_' . IdGenerator::unsortableId();
-
-            $innerSql = "(SELECT av.json_value FROM {$avTable} av WHERE av.{$entityIdColumn}={$mtAlias}.id AND av.attribute_id=:{$paramName} AND av.deleted=:false LIMIT 1)";
-
-            $qb->addSelect("{$innerSql} AS " . static::idToHash($configuration['id']));
-            $qb->setParameter($paramName, $configuration['entityAttributeId']);
-            $qb->setParameter('false', false, ParameterType::BOOLEAN);
-
             return;
         }
 
@@ -211,18 +198,18 @@ class LinkMultipleType extends LinkType
         $sp['select'] = ['id'];
 
         $entity = $this->convertor->getEntityManager()->getEntity($linkDefs['entity']);
-        $qb1 = $mapper->createSelectQueryBuilder($entity, $sp, true);
+        $qb1    = $mapper->createSelectQueryBuilder($entity, $sp, true);
 
 
         if (!empty($sp['orderBy']) && strpos($sp['orderBy'], '.')) {
             $orderByParts = explode('.', $sp['orderBy'], 2);
             if (!empty($orderByEntity = $this->getMetadata()->get(['entityDefs', $linkDefs['entity'], 'links', $orderByParts[0], 'entity']))) {
-                $joinTable = $mapper->getQueryConverter()->toDb($orderByEntity);
+                $joinTable  = $mapper->getQueryConverter()->toDb($orderByEntity);
                 $joinColumn = $mapper->getQueryConverter()->toDb($orderByParts[0] . 'Id');
 
-                $orderByHash = Util::generateUniqueHash();
+                $orderByHash     = Util::generateUniqueHash();
                 $orderByParts[0] = $orderByHash;
-                $orderBy = $mapper->getQueryConverter()->toDb(implode('.', $orderByParts));
+                $orderBy         = $mapper->getQueryConverter()->toDb(implode('.', $orderByParts));
 
                 $qb1->leftJoin($mtAlias, $joinTable, $orderByHash, "$mtAlias.$joinColumn = $orderByHash.id");
                 $qb1->orderBy($orderBy, $sp['order'] ?? 'ASC');
@@ -230,13 +217,13 @@ class LinkMultipleType extends LinkType
         }
 
         if (empty($linkDefs['relationName'])) {
-            $foreignKey = $mapper->getQueryConverter()->toDb($keySet['foreignKey']);
+            $foreignKey    = $mapper->getQueryConverter()->toDb($keySet['foreignKey']);
             $partitionExpr = "$mtAlias.$foreignKey";
         } else {
-            $nearColumn = $mapper->getQueryConverter()->toDb($keySet['nearKey']);
+            $nearColumn    = $mapper->getQueryConverter()->toDb($keySet['nearKey']);
             $distantColumn = $mapper->getQueryConverter()->toDb($keySet['distantKey']);
 
-            $relTable = $mapper->getQueryConverter()->toDb($linkDefs['relationName']);
+            $relTable      = $mapper->getQueryConverter()->toDb($linkDefs['relationName']);
             $relTableAlias = $uniqueHash . '_r';
 
             $qb1->join($mtAlias, $relTable, $relTableAlias, "$mtAlias.id=$relTableAlias.$distantColumn AND $relTableAlias.deleted=:false");
@@ -244,14 +231,14 @@ class LinkMultipleType extends LinkType
             $partitionExpr = "$relTableAlias.$nearColumn";
         }
 
-        $connection = $container->get('connection');
+        $connection   = $container->get('connection');
         $limitedAlias = 'lim_' . $uniqueHash;
-        $idAlias = $mapper->getQueryConverter()->fieldToAlias('id');
+        $idAlias      = $mapper->getQueryConverter()->fieldToAlias('id');
 
         if (Converter::isPgSQL($connection)) {
             $qb1->andWhere("$partitionExpr=mt_alias.id");
             $limitedIdsSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
-            $innerSql = "SELECT string_agg({$limitedAlias}.{$idAlias}::text, ',') FROM ({$limitedIdsSql}) {$limitedAlias}";
+            $innerSql      = "SELECT string_agg({$limitedAlias}.{$idAlias}::text, ',') FROM ({$limitedIdsSql}) {$limitedAlias}";
         } else {
             $windowOrderBy = implode(', ', $qb1->getQueryPart('orderBy'));
             if (empty($windowOrderBy)) {
@@ -265,7 +252,7 @@ class LinkMultipleType extends LinkType
             $qb1->addSelect("ROW_NUMBER() OVER (PARTITION BY $partitionExpr ORDER BY $windowOrderBy) AS rn_num");
 
             $offset = (int)($configuration['offsetRelation'] ?? 0);
-            $limit = (int)($configuration['limitRelation'] ?? 5);
+            $limit  = (int)($configuration['limitRelation'] ?? 5);
 
             $rankedSql = str_replace([$mtAlias, 'mt_alias'], ['a_' . $uniqueHash, $mtAlias], $qb1->getSQL());
 
@@ -307,26 +294,37 @@ class LinkMultipleType extends LinkType
 
         $collection = new EntityCollection([], $relEntityType);
 
-        if (!empty($record['_entity']->rowData[static::idToHash($configuration['id'])])) {
-            $ids = $this->parseLinkedIds($record['_entity']->rowData[static::idToHash($configuration['id'])]);
-            foreach ($ids as $id) {
-                if ($id && trim($id) !== '') {
-                    $foreign = $this->getMemoryStorage()->get($this->createKey($configuration['id'], $id));
-                    if ($foreign !== null) {
-                        $collection->append($foreign);
-                    }
+        foreach ($this->getIdList($record, $configuration) as $id) {
+            if ($id && trim($id) !== '') {
+                $foreign = $this->getMemoryStorage()->get($this->createKey($configuration['id'], $id));
+                if ($foreign !== null) {
+                    $collection->append($foreign);
                 }
             }
         }
 
-
         return ['collection' => $collection];
+    }
+
+    protected function getIdList(array $record, array $configuration): array
+    {
+        if (!empty($configuration['entityAttributeId'])) {
+            $field = $configuration['field'] . 'Ids';
+
+            return $record[$field] ?? [];
+        }
+
+        if (!empty($record['_entity']->rowData[static::idToHash($configuration['id'])])) {
+            return $this->parseLinkedIds($record['_entity']->rowData[static::idToHash($configuration['id'])]);
+        }
+
+        return [];
     }
 
     protected function loadToMemory(string $relEntityType, array $configuration): void
     {
         $checkNumber = $this->getMemoryStorage()->get('linkMultipleTypeNumber');
-        $offset = $this->getMemoryStorage()->get('exportRecordsPartOffset');
+        $offset      = $this->getMemoryStorage()->get('exportRecordsPartOffset');
         if (!empty($this->getMemoryStorage()->get("{$configuration['id']}_ids")) && $checkNumber === $offset) {
             return;
         }
@@ -335,11 +333,9 @@ class LinkMultipleType extends LinkType
 
         $ids = [];
         foreach ($this->getMemoryStorage()->get('exportRecordsPart') ?? [] as $record) {
-            if (!empty($record['_entity']->rowData[static::idToHash($configuration['id'])])) {
-                foreach ($this->parseLinkedIds($record['_entity']->rowData[static::idToHash($configuration['id'])]) as $id) {
-                    if ($id && trim($id) !== '' && !in_array($id, $ids)) {
-                        $ids[] = $id;
-                    }
+            foreach ($this->getIdList($record, $configuration) as $id) {
+                if ($id && trim($id) !== '' && !in_array($id, $ids)) {
+                    $ids[] = $id;
                 }
             }
         }
