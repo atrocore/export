@@ -500,7 +500,7 @@ class ExportTypeSimple extends AbstractExportType
 
             $entityDefs = $metadata->get(['entityDefs', $sheet['entity']]);
             $workSheet = $spreadsheet->getSheet($k);
-            $startRow = 1 + (int)($sheet['data']['numberOfHeaders'] ?? 1);
+            $startRow = 1 + (int)($sheet['data']['numberOfHeaders'] ?? 0);
 
             // skip empty worksheets
             if ($startRow <= $workSheet->getHighestRow()) {
@@ -703,7 +703,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $fp = fopen($fileName, "w");
 
-        $numberOfHeaders = (int)($this->data['feed']['numberOfHeaders'] ?? 1);
+        $numberOfHeaders = (int)($this->data['feed']['numberOfHeaders'] ?? 0);
         for ($headerIndex = 0; $headerIndex < $numberOfHeaders; $headerIndex++) {
             if ($headerIndex === $numberOfHeaders - 1) {
                 $headerRow = array_column($columns, 'name');

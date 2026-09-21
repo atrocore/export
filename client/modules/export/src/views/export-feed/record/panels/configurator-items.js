@@ -98,7 +98,7 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
         },
 
         setupListLayout() {
-            const numberOfHeaders = this.model.get('numberOfHeaders') || 1;
+            const numberOfHeaders = this.model.get('numberOfHeaders') || 0;
 
             let layout = [];
             this.ajaxGetRequest('Layout/list', { entityName: 'ExportConfiguratorItem' }, { async: false }).success(res => {

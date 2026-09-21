@@ -71,7 +71,7 @@ class ExportConfiguratorItem extends Base
             }
         }
 
-        $numberOfHeaders = (int)($feed->get('numberOfHeaders') ?? 1);
+        $numberOfHeaders = (int)($feed->get('numberOfHeaders') ?? 0);
         $entity->set('exportFeedNumberOfHeaders', $numberOfHeaders);
         foreach ($this->prepareColumnNames($entity, $numberOfHeaders) as $index => $columnName) {
             $entity->set('headerText' . ($index + 1), $columnName);
@@ -124,7 +124,10 @@ class ExportConfiguratorItem extends Base
 
     protected function prepareColumnNameForIndex(Entity $entity, int $index, ?string $localeId): string
     {
-        $columnType = $entity->get('headerProperty' . $index) ?? 'name';
+        $columnType = $entity->get('headerProperty' . $index);
+        if (empty($columnType)) {
+            $columnType = in_array($entity->get('type'), ['script', 'Fixed value'], true) ? 'custom' : 'name';
+        }
 
         if ($columnType === 'custom') {
             return (string)$entity->get('headerText' . $index);
@@ -138,7 +141,7 @@ class ExportConfiguratorItem extends Base
 
         switch ($columnType) {
             case 'name':
-                if (!empty($entity->get('name'))){
+                if (!empty($entity->get('name'))) {
                     return $this->translateFieldColumnName($localeId, $entity->get('entity'), $entity->get('name'));
                 }
             case 'code':
@@ -175,9 +178,11 @@ class ExportConfiguratorItem extends Base
         }
 
         if ($fieldType === 'link') {
-            $related = $attribute->get($property);
-
-            return $related === null ? '' : (string)$related->get('name');
+            $entityType = $this->getMetadata()->get("entityDefs.Attribute.links.$property.entity") ?? $this->getMetadata()->get("entityDefs.Attribute.fields.$property.entity");
+            if (!empty($entityType) && !empty($attribute->get($property . 'Id'))) {
+                $related = $this->getEntityManager()->getEntity($entityType, $attribute->get($property . 'Id'));
+                return (string)$related?->get('name');
+            }
         }
 
         return (string)$attribute->get($property);

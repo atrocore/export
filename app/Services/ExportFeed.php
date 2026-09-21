@@ -167,7 +167,7 @@ class ExportFeed extends Base
 
         $exportFeed = $entityName === 'ExportFeed' ? $feed : $feed->get('exportFeed');
 
-        $numberOfHeaders = (int)($exportFeed->get('numberOfHeaders') ?? 1);
+        $numberOfHeaders = (int)($exportFeed->get('numberOfHeaders') ?? 0);
 
         $languageObj = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
 
@@ -505,7 +505,7 @@ class ExportFeed extends Base
     {
         $exportFeed = $entityName === 'ExportFeed' ? $feed : $feed->get('exportFeed');
 
-        return (int)($exportFeed->get('numberOfHeaders') ?? 1);
+        return (int)($exportFeed->get('numberOfHeaders') ?? 0);
     }
 
     /**
@@ -617,7 +617,7 @@ class ExportFeed extends Base
         $eciService = $this->getInjection('serviceFactory')->create('ExportConfiguratorItem');
 
         $effectiveLocaleId = $contentLocaleId ?? $feed->get('localeId');
-        $numberOfHeaders   = (int)($feed->get('numberOfHeaders') ?? 1);
+        $numberOfHeaders   = (int)($feed->get('numberOfHeaders') ?? 0);
 
         foreach ($this->getPreparedConfiguratorItems($feed, $sheet, $entityName, $contentLanguageCode, $effectiveLocaleId) as $item) {
             $columnNames = $eciService->prepareColumnNames($item, $numberOfHeaders, $effectiveLocaleId);
@@ -1164,10 +1164,11 @@ class ExportFeed extends Base
             $entityName = $feedData['entity'];
             $language   = $this->getInjection('container')->get('language');
         } else {
-            $entityName      = $exportFeed->getFeedField('entity');
-            $language        = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
-            $currentLocaleId = $this->getUser()->get('localeId');
-            $this->getUser()->set('localeId', $exportFeed->get('localeId'));
+            $entityName           = $exportFeed->getFeedField('entity');
+            $language             = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
+            $hadLocaleIdOverride  = array_key_exists('localeId', $GLOBALS);
+            $previousLocaleId     = $GLOBALS['localeId'] ?? null;
+            $GLOBALS['localeId']  = $exportFeed->get('localeId');
         }
 
         if (!empty($exportFeed) && !empty($exportFeed->get('hasMultipleSheets'))) {
@@ -1211,8 +1212,12 @@ class ExportFeed extends Base
             }
         }
 
-        if (isset($currentLocaleId)) {
-            $this->getUser()->set('localeId', $currentLocaleId);
+        if (isset($hadLocaleIdOverride)) {
+            if ($hadLocaleIdOverride) {
+                $GLOBALS['localeId'] = $previousLocaleId;
+            } else {
+                unset($GLOBALS['localeId']);
+            }
         }
     }
 
@@ -1298,14 +1303,19 @@ class ExportFeed extends Base
                 $localeId = $effectiveLocaleId ?? $feed->get('localeId');
                 $language = self::getLocalizedLanguage($this->getInjection('container'), $localeId);
 
-                $currentLocaleId = $this->getUser()->get('localeId') ?? $localeId;
-                $this->getUser()->set('localeId', $localeId);
+                $hadLocaleIdOverride = array_key_exists('localeId', $GLOBALS);
+                $previousLocaleId    = $GLOBALS['localeId'] ?? null;
+                $GLOBALS['localeId'] = $localeId;
 
                 foreach ($attributes as $row) {
                     $this->putAttributeToMetadata($entityName, $language, $row);
                 }
 
-                $this->getUser()->set('localeId', $currentLocaleId);
+                if ($hadLocaleIdOverride) {
+                    $GLOBALS['localeId'] = $previousLocaleId;
+                } else {
+                    unset($GLOBALS['localeId']);
+                }
             }
         }
 

@@ -35,6 +35,10 @@ Espo.define('export:views/export-configurator-item/fields/header-property', 'vie
             init: function () {
                 Dep.prototype.init.call(this);
 
+                this.onModelReady(() => {
+                    this.setDefaultValue();
+                });
+
                 this.listenTo(this.model, 'change:name', () => {
                     this.reRender();
                 });
@@ -45,12 +49,28 @@ Espo.define('export:views/export-configurator-item/fields/header-property', 'vie
                     }
                     this.reRender();
                 })
+                
             },
 
             setup: function () {
                 this.setupHeaderOptions();
 
                 Dep.prototype.setup.call(this);
+            },
+
+            // mirrors ExportConfiguratorItem::prepareColumnNameForIndex()'s fallback on the PHP
+            // side (used when the value was never set, e.g. items created before this field
+            // existed) - Fixed value/script items default to 'custom' since they have no
+            // field/attribute to resolve a name from, everything else defaults to 'name'.
+            setDefaultValue: function () {
+                if (this.model.get(this.name)) {
+                    return;
+                }
+
+                const type = this.model.get('type');
+                const isCustomDefault = type === 'Fixed value' || type === 'script';
+
+                this.model.set(this.name, isCustomDefault ? 'custom' : 'name');
             },
 
             // Per-item-type option set - the allowed values depend on the item's type/
