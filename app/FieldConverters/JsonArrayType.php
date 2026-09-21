@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Export\FieldConverters;
 
-class ArrayType extends AbstractType
+class JsonArrayType extends AbstractType
 {
     public function convertToString(array &$result, array $record, array $configuration): void
     {
@@ -24,13 +24,16 @@ class ArrayType extends AbstractType
         $delimiter = $configuration['delimiter'];
 
         $result[$column] = $nullValue;
+
         if (isset($record[$field])) {
             if (empty($record[$field])) {
                 $result[$column] = $record[$field] === null ? $nullValue : $emptyValue;
-            } else {
-                if (is_array($record[$field])) {
-                    $result[$column] = implode($delimiter, $record[$field]);
-                }
+            } elseif (is_array($record[$field])) {
+                $values = array_map(
+                    fn($value) => is_scalar($value) ? (string)$value : (string)@json_encode($value),
+                    $record[$field]
+                );
+                $result[$column] = implode($delimiter, $values);
             }
         }
     }
