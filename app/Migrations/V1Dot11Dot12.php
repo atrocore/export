@@ -115,16 +115,20 @@ class V1Dot11Dot12 extends Base
         $columnIdentifier = $this->getDbal()->quoteIdentifier('column');
 
         $items = $this->getDbal()->createQueryBuilder()
-            ->select("id, $columnIdentifier, column_type")
+            ->select("id, $columnIdentifier, column_type, type")
             ->from('export_configurator_item')
             ->where('deleted = :false')
             ->setParameter('false', false, ParameterType::BOOLEAN)
             ->fetchAllAssociative();
 
         foreach ($items as $item) {
+            // allAttributes items can't use 'custom' (one label can't apply to every expanded
+            // attribute column - see export:views/export-configurator-item/fields/header-property.js)
+            $headerProperty = $item['type'] === 'allAttributes' ? 'name' : ($item['column_type'] ?? 'custom');
+
             $data = [
                 'headerText1'     => $item['column'],
-                'headerProperty1' => $item['column_type'] ?? 'custom',
+                'headerProperty1' => $headerProperty,
             ];
 
             $this->getDbal()->createQueryBuilder()

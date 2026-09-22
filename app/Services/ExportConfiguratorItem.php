@@ -130,7 +130,13 @@ class ExportConfiguratorItem extends Base
         }
 
         if ($columnType === 'custom') {
-            return (string)$entity->get('headerText' . $index);
+            $headerText = $entity->get('headerText' . $index);
+            if ($headerText === null && in_array($entity->get('type'), ['script', 'Fixed value'], true)) {
+                $headerText = $entity->get('type') === 'script' ? 'Script' : 'Fixed Value';
+                $entity->set('headerText' . $index, $headerText);
+            }
+
+            return (string)$headerText;
         }
 
         if ($entity->get('type') === 'allAttributes') {

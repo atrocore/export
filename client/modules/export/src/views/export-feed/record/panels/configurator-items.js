@@ -58,19 +58,27 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                     return
                 }
 
-                const hash = JSON.stringify(this.defs.layout)
+                const hash = this._layoutHash;
                 this.setupListLayout();
 
-                if (hash === JSON.stringify(this.defs.layout)) {
+                if (hash === this._layoutHash) {
                     return;
                 }
 
-                const listView = this.getView('list')
-                if (listView) {
+                const cb = () => {
+                    const listView = this.getView('list')
                     listView.listLayout = this.defs.layout
                     listView._internalLayout = null
                     listView.getInternalLayout(() => {
                         this.actionRefresh()
+                    })
+                }
+
+                if (this.getView('list')) {
+                    cb()
+                } else {
+                    this.once('after:render', () => {
+                        cb()
                     })
                 }
             });
@@ -115,6 +123,7 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
             }
 
             this.defs.layout = layout;
+            this._layoutHash = JSON.stringify({ layout, localeId: numberOfHeaders > 0 ? this.model.get('localeId') : null });
         },
 
         panelVisible() {
