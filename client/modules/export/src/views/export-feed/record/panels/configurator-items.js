@@ -65,12 +65,20 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                     return;
                 }
 
-                const listView = this.getView('list')
-                if (listView) {
+                const cb = () => {
+                    const listView = this.getView('list')
                     listView.listLayout = this.defs.layout
                     listView._internalLayout = null
                     listView.getInternalLayout(() => {
                         this.actionRefresh()
+                    })
+                }
+
+                if (this.getView('list')) {
+                    cb()
+                } else {
+                    this.once('after:render', () => {
+                        cb()
                     })
                 }
             });

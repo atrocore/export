@@ -735,19 +735,12 @@ class ExportFeed extends Base
         $effectiveContentLanguageId = $contentLanguageId ?? $feed->get('contentLanguageId');
 
         $contentLanguageCode = null;
-        $contentLocaleId     = null;
+        $contentLocaleId     = $effectiveLocaleId;
         if (!empty($effectiveContentLanguageId)) {
-            $resolved                            = $this->resolveContentLanguage($effectiveContentLanguageId, $effectiveLocaleId ?? '');
-            $contentLanguageCode                 = $resolved['code'];
-            $contentLocaleId                     = $resolved['localeId'];
+            $contentLanguageCode                 = $this->resolveContentLanguageCode($effectiveContentLanguageId);
             $result['data']->contentLanguageId   = $effectiveContentLanguageId;
             $result['data']->contentLanguageCode = $contentLanguageCode;
             $result['data']->contentLocaleId     = $contentLocaleId;
-        }
-
-        // When no content language resolves a locale but a runtime locale was given, propagate it.
-        if ($contentLocaleId === null && $localeId !== null) {
-            $contentLocaleId = $localeId;
         }
 
         if (!empty($feed->get('hasMultipleSheets'))) {
@@ -775,21 +768,14 @@ class ExportFeed extends Base
             ->getArgument('result');
     }
 
-    protected function resolveContentLanguage(string $contentLanguageId, string $fallbackLocaleId): array
+    protected function resolveContentLanguageCode(string $contentLanguageId): ?string
     {
         $language = $this->getEntityManager()->getEntity('Language', $contentLanguageId);
         if (empty($language)) {
-            return ['code' => null, 'localeId' => $fallbackLocaleId];
+            return null;
         }
 
-        $realCode = $language->get('code');
-        $code     = $language->get('role') === 'main' ? '' : $realCode;
-        $locale   = $this->getEntityManager()->getRepository('Locale')->where(['code' => $realCode])->findOne();
-
-        return [
-            'code'     => $code,
-            'localeId' => $locale ? $locale->get('id') : $fallbackLocaleId,
-        ];
+        return $language->get('role') === 'main' ? '' : $language->get('code');
     }
 
     public function pushExport(array $data): bool
