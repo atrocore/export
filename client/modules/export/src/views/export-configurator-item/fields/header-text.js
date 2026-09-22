@@ -31,7 +31,7 @@ Espo.define('export:views/export-configurator-item/fields/header-text', 'views/f
         afterRender() {
             Dep.prototype.afterRender.call(this);
 
-            if(this.mode === 'list') {
+            if (this.mode === 'list') {
                 this.setReadOnly();
             }
         },
@@ -46,6 +46,11 @@ Espo.define('export:views/export-configurator-item/fields/header-text', 'views/f
 
         prepareFieldValue() {
             const headerProperty = this.model.get(this.getHeaderPropertyFieldName());
+
+            if (headerProperty === 'custom') {
+                this.prepareCustomValue();
+                return;
+            }
 
             if (this.model.get('entityAttributeId')) {
                 this.prepareAttributeValue(headerProperty);
@@ -69,6 +74,17 @@ Espo.define('export:views/export-configurator-item/fields/header-text', 'views/f
             }
         },
 
+        // 'custom' is free text the user edits - only seed it once, when still empty (e.g. right
+        // after switching a row to 'custom'), with the item's own name as a sensible starting
+        // point. Never overwrite it afterward - unlike the other branches, which recompute on
+        // every relevant model change.
+        prepareCustomValue() {
+            const value = this.model.get('data')?.[this.name];
+            if (value) {
+                this.model.set(this.name, value);
+            }
+        },
+
         // name/tooltipText resolve to translated text (the field's label / tooltip, respectively),
         // in the FEED's own configured locale rather than the current user's UI language - matches
         // ExportConfiguratorItem::translateFieldColumnName() server-side.
@@ -77,7 +93,7 @@ Espo.define('export:views/export-configurator-item/fields/header-text', 'views/f
             let originField = this.model.get('name');
             if (!this.model.get('exportFeedData')) {
                 const exportFeedId = this.model.get('_entityFrom').exportFeedId;
-                this.ajaxGetRequest(`ExportFeed/${exportFeedId}`, {}, {async: false}).success(res => {
+                this.ajaxGetRequest(`ExportFeed/${exportFeedId}`, {}, { async: false }).success(res => {
                     localeId = res.localeId;
                 })
             } else {
@@ -117,7 +133,9 @@ Espo.define('export:views/export-configurator-item/fields/header-text', 'views/f
         // so it's resolved by fetching the Attribute record itself - mirroring
         // ExportConfiguratorItem::resolveAttributePropertyColumnName() server-side.
         prepareAttributeValue(headerProperty) {
-            if (!headerProperty || headerProperty === 'custom') {
+            // 'custom' is intercepted earlier, in prepareFieldValue() - this only sees the
+            // remaining resolvable properties, plus possibly empty/not-yet-set.
+            if (!headerProperty) {
                 return;
             }
 
@@ -129,7 +147,7 @@ Espo.define('export:views/export-configurator-item/fields/header-text', 'views/f
             const attributeId = this.model.get('entityAttributeId');
             const propertyType = this.getMetadata().get(`entityDefs.Attribute.fields.${headerProperty}.type`);
 
-            this.ajaxGetRequest(`Attribute/${attributeId}`, {}, {async: false}).success(res => {
+            this.ajaxGetRequest(`Attribute/${attributeId}`, {}, { async: false }).success(res => {
                 let value = res[headerProperty];
 
                 if (propertyType === 'link') {
@@ -143,7 +161,7 @@ Espo.define('export:views/export-configurator-item/fields/header-text', 'views/f
         },
 
         getTranslates(locale, callback) {
-            this.ajaxGetRequest(`i18n`, {locale: locale}).then(responseData => {
+            this.ajaxGetRequest(`i18n`, { locale: locale }).then(responseData => {
                 callback(responseData);
             });
         },

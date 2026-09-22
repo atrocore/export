@@ -248,7 +248,7 @@ class ExportFeed extends Base
         parent::afterRemove($entity, $options);
 
         $currentMax = (int)($this->getInjection('dataManager')->getCacheData(self::MAX_NUMBER_OF_HEADERS_CACHE_KEY) ?? 1);
-        if ((int)($entity->get('numberOfHeaders') ?? 1) < $currentMax) {
+        if ((int)($entity->get('numberOfHeaders') ?? 0) < $currentMax) {
             return;
         }
 
@@ -267,7 +267,7 @@ class ExportFeed extends Base
 
     protected function clearMaxNumberOfHeadersCacheIfNeeded(Entity $entity): void
     {
-        $numberOfHeaders = (int)($entity->get('numberOfHeaders') ?? 1);
+        $numberOfHeaders = (int)($entity->get('numberOfHeaders') ?? 0);
         if ($numberOfHeaders < 1) {
             return;
         }
