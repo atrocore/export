@@ -58,10 +58,10 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                     return
                 }
 
-                const hash = JSON.stringify(this.defs.layout)
+                const hash = this._layoutHash;
                 this.setupListLayout();
 
-                if (hash === JSON.stringify(this.defs.layout)) {
+                if (hash === this._layoutHash) {
                     return;
                 }
 
@@ -123,6 +123,7 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
             }
 
             this.defs.layout = layout;
+            this._layoutHash = JSON.stringify({ layout, localeId: numberOfHeaders > 0 ? this.model.get('localeId') : null });
         },
 
         panelVisible() {
