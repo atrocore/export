@@ -16,7 +16,7 @@ namespace Export\Migrations;
 use Atro\Core\Migration\Base;
 use Doctrine\DBAL\ParameterType;
 
-class V1Dot11Dot12 extends Base
+class V1Dot12Dot0 extends Base
 {
     public function getMigrationDateTime(): ?\DateTime
     {
