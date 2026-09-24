@@ -115,6 +115,15 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
 
             layout = layout.filter(cell => !/^headerText\d+$/.test(cell.name));
 
+            layout.unshift({
+                widthPx: '40',
+                align: 'center',
+                notSortable: true,
+                customLabel: '',
+                name: 'draggableIcon',
+                view: 'views/fields/draggable-list-icon'
+            })
+
             for (let k = 1; k <= numberOfHeaders; k++) {
                 layout.push({
                     name: 'headerText' + k,
@@ -123,7 +132,10 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
             }
 
             this.defs.layout = layout;
-            this._layoutHash = JSON.stringify({ layout, localeId: numberOfHeaders > 0 ? this.model.get('localeId') : null });
+            this._layoutHash = JSON.stringify({
+                layout,
+                localeId: numberOfHeaders > 0 ? this.model.get('localeId') : null
+            });
         },
 
         panelVisible() {

@@ -19,6 +19,7 @@ use Atro\Core\Exceptions\BadRequest;
 use Atro\Core\Templates\Repositories\Base;
 use Espo\Core\Utils\Json;
 use Espo\ORM\Entity;
+use Espo\ORM\EntityCollection;
 use Export\Entities\ExportFeed as ExportFeedEntity;
 use Export\Services\AbstractExportType;
 
@@ -227,6 +228,73 @@ class ExportFeed extends Base
         }
 
         $this->clearMaxNumberOfHeadersCacheIfNeeded($entity);
+        $this->fillMissingHeaderProperties($entity);
+    }
+
+    /**
+     * Raising Number of Headers exposes new, required headerProperty{k} fields on every existing
+     * configurator item. Left null, they'd block saving that item even though nothing about it
+     * actually changed, so default them here the same way column-name resolution already does:
+     * 'custom' for Fixed value/script items (no field/attribute to name a header after), 'name'
+     * otherwise. A 'custom' default also fills the matching headerText{k}, since that's the actual
+     * header content and would otherwise stay blank.
+     */
+    protected function fillMissingHeaderProperties(Entity $entity): void
+    {
+        if (!$entity->isAttributeChanged('numberOfHeaders')) {
+            return;
+        }
+
+        $numberOfHeaders = (int)($entity->get('numberOfHeaders') ?? 0);
+        if ($numberOfHeaders < 1) {
+            return;
+        }
+
+        $this->fillMissingHeaderPropertiesForItems(
+            $this->getEntityManager()->getRepository('ExportConfiguratorItem')->where(['exportFeedId' => $entity->get('id')])->find(),
+            $numberOfHeaders
+        );
+
+        if (!empty($entity->get('hasMultipleSheets'))) {
+            foreach ($this->getEntityManager()->getRepository('Sheet')->where(['exportFeedId' => $entity->get('id')])->find() as $sheet) {
+                $this->fillMissingHeaderPropertiesForItems(
+                    $this->getEntityManager()->getRepository('ExportConfiguratorItem')->where(['sheetId' => $sheet->get('id')])->find(),
+                    $numberOfHeaders
+                );
+            }
+        }
+    }
+
+    protected function fillMissingHeaderPropertiesForItems(EntityCollection $items, int $numberOfHeaders): void
+    {
+        foreach ($items as $item) {
+            $data = $item->getDataFields();
+
+            $changed = false;
+            for ($k = 1; $k <= $numberOfHeaders; $k++) {
+                if (!empty($data['headerProperty' . $k])) {
+                    continue;
+                }
+
+                $isScriptOrFixed = in_array($item->get('type'), ['script', 'Fixed value'], true);
+                $data['headerProperty' . $k] = $isScriptOrFixed ? 'custom' : 'name';
+
+                if ($isScriptOrFixed && empty($data['headerText' . $k])) {
+                    $data['headerText' . $k] = $item->get('type') === 'script' ? 'Script' : 'Fixed Value';
+                }
+
+                $changed = true;
+            }
+
+            if ($changed) {
+                $item->set('data', $data);
+                try {
+                    $this->getEntityManager()->saveEntity($item);
+                } catch (\Throwable) {
+                    // one item's failure shouldn't stop the rest of the feed's items from being filled in
+                }
+            }
+        }
     }
 
     protected function beforeRemove(Entity $entity, array $options = [])
