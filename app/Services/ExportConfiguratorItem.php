@@ -16,12 +16,10 @@ namespace Export\Services;
 use Atro\Core\Exceptions\NotFound;
 use Atro\Core\Templates\Services\Base;
 use Atro\Core\Utils\Language;
-use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
 
 class ExportConfiguratorItem extends Base
 {
-    private array $translationsCache = [];
 
     protected $mandatorySelectAttributeList
         = [
@@ -234,12 +232,7 @@ class ExportConfiguratorItem extends Base
 
     protected function translateFieldColumnName(string $localeId, string $entity, string $field, string $category = 'fields'): string
     {
-        if (!isset($this->translationsCache[$localeId])) {
-            $this->translationsCache[$localeId] = $this->getLocalizedLanguage($localeId)->getAll();
-        }
-
-        return $this->translationsCache[$localeId][$entity][$category][$field]
-            ?? $this->getLocalizedLanguage($localeId)->translate($field, $category, $entity);
+        return $this->getLocalizedLanguage($localeId)->translate($field, $category, $entity);
     }
 
     protected function getLocalizedLanguage(string $locale): Language
