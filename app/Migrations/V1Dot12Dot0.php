@@ -111,6 +111,11 @@ class V1Dot12Dot0 extends Base
      */
     protected function migrateColumnToDataField(): void
     {
+        // a re-run (or an install whose schema already dropped it) has nothing left to migrate
+        if (!$this->getCurrentSchema()->getTable('export_configurator_item')->hasColumn('column')) {
+            return;
+        }
+
         // "column" is a borderline-reserved word in both dialects - quote it defensively
         $columnIdentifier = $this->getDbal()->quoteIdentifier('column');
 
