@@ -37,7 +37,7 @@ class V1Dot12Dot0 extends Base
     protected function addColumns(): void
     {
         $fromSchema = $this->getCurrentSchema();
-        $toSchema = clone $fromSchema;
+        $toSchema   = clone $fromSchema;
 
         if (!$toSchema->getTable('export_feed')->hasColumn('number_of_headers')) {
             $this->addColumn($toSchema, 'export_feed', 'number_of_headers', ['type' => 'int', 'default' => 1]);
@@ -54,7 +54,7 @@ class V1Dot12Dot0 extends Base
     protected function dropColumns(): void
     {
         $fromSchema = $this->getCurrentSchema();
-        $toSchema = clone $fromSchema;
+        $toSchema   = clone $fromSchema;
 
         $table = $toSchema->getTable('export_configurator_item');
         foreach (['column', 'column_type', 'virtual_fields'] as $columnName) {
@@ -111,8 +111,8 @@ class V1Dot12Dot0 extends Base
      */
     protected function migrateColumnToDataField(): void
     {
-        // a re-run (or an install whose schema already dropped it) has nothing left to migrate
-        if (!$this->getCurrentSchema()->getTable('export_configurator_item')->hasColumn('column')) {
+        $table = $this->getCurrentSchema()->getTable('export_configurator_item');
+        if (!$table->hasColumn('column') || !$table->hasColumn('column_type')) {
             return;
         }
 
@@ -154,6 +154,11 @@ class V1Dot12Dot0 extends Base
      */
     protected function migrateVirtualFieldsToDataField(): void
     {
+        // a re-run (or an install whose schema already dropped it) has nothing left to migrate
+        if (!$this->getCurrentSchema()->getTable('export_configurator_item')->hasColumn('virtual_fields')) {
+            return;
+        }
+
         $items = $this->getDbal()->createQueryBuilder()
             ->select('id, virtual_fields, data')
             ->from('export_configurator_item')
