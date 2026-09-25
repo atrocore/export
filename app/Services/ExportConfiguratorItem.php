@@ -154,7 +154,7 @@ class ExportConfiguratorItem extends Base
                 return (string)$entity->get('name');
             default:
                 return !empty($entity->get('entityAttributeId'))
-                    ? $this->resolveAttributePropertyColumnName($entity->get('entityAttributeId'), $columnType)
+                    ? $this->resolveAttributePropertyColumnName($entity->get('entityAttributeId'), $columnType, $localeId)
                     : $this->resolveEntityFieldPropertyColumnName($entity->get('entity'), $entity->get('name'), $columnType);
         }
     }
@@ -163,9 +163,11 @@ class ExportConfiguratorItem extends Base
      * Resolves an arbitrary Attribute-entity property (anything beyond name/code) as header text.
      * link/linkMultiple properties resolve to the foreign record's name(s), matching the default
      * exportBy=['name'] behavior FieldConverters\LinkType/LinkMultipleType already use for exporting
-     * attribute VALUES of those types.
+     * attribute VALUES of those types. The field actually read - the related record's "name" for
+     * link/linkMultiple, or $property itself otherwise - is localized to $localeId when it's
+     * multilang, the same way the main "Name" header source already is.
      */
-    protected function resolveAttributePropertyColumnName(string $attributeId, string $property): string
+    protected function resolveAttributePropertyColumnName(string $attributeId, string $property, string $localeId): string
     {
         $attribute = $this->getEntityManager()->getEntity('Attribute', $attributeId);
         if (empty($attribute) || !$attribute->hasAttribute($property)) {
@@ -177,7 +179,7 @@ class ExportConfiguratorItem extends Base
         if ($fieldType === 'linkMultiple') {
             $names = [];
             foreach ($attribute->get($property) ?? [] as $related) {
-                $names[] = (string)$related->get('name');
+                $names[] = (string)$this->getLocalizedValue($related, $localeId, 'name');
             }
 
             return implode(', ', $names);
@@ -187,11 +189,55 @@ class ExportConfiguratorItem extends Base
             $entityType = $this->getMetadata()->get("entityDefs.Attribute.links.$property.entity") ?? $this->getMetadata()->get("entityDefs.Attribute.fields.$property.entity");
             if (!empty($entityType) && !empty($attribute->get($property . 'Id'))) {
                 $related = $this->getEntityManager()->getEntity($entityType, $attribute->get($property . 'Id'));
-                return (string)$related?->get('name');
+                return $related === null ? '' : (string)$this->getLocalizedValue($related, $localeId, 'name');
             }
         }
 
-        return (string)$attribute->get($property);
+        return (string)$this->getLocalizedValue($attribute, $localeId, $property);
+    }
+
+    /**
+     * Reads $fieldName off $entity, localized to $localeId when it's multilang there - falling
+     * back to the base (unlocalized) value when the localized one is empty, e.g. no translation
+     * was ever entered for that particular record.
+     */
+    protected function getLocalizedValue(Entity $entity, string $localeId, string $fieldName)
+    {
+        $localizedFieldName = $this->resolveLocalizedFieldName($localeId, $entity->getEntityName(), $fieldName);
+
+        $value = $entity->get($localizedFieldName);
+
+        return empty($value) ? $entity->get($fieldName) : $value;
+    }
+
+    /**
+     * Resolves the locale-specific column name (e.g. "nameBg") for $fieldName on $scope, when
+     * $localeId corresponds to a real, active input language and the field is itself multilang
+     * there - same naming convention the multilang field types use when generating those columns.
+     * Falls back to $fieldName unchanged otherwise (no matching/active language, or the field
+     * isn't multilang).
+     */
+    protected function resolveLocalizedFieldName(string $localeId, string $scope, string $fieldName): string
+    {
+        if (empty($this->getMetadata()->get("entityDefs.$scope.fields.$fieldName.isMultilang"))) {
+            return $fieldName;
+        }
+
+        $locale = $this->getEntityManager()->getEntity('Locale', $localeId);
+        if (empty($locale) || empty($locale->get('languageCode'))) {
+            return $fieldName;
+        }
+
+        $languageCode = $locale->get('languageCode');
+        if (strtolower($languageCode) === strtolower((string)$this->getConfig()->get('mainLanguage'))) {
+            return $fieldName;
+        }
+
+        if (!in_array($languageCode, $this->getConfig()->get('inputLanguageList') ?? [], true)) {
+            return $fieldName;
+        }
+
+        return $fieldName . ucfirst(Util::toCamelCase(strtolower($languageCode)));
     }
 
     /**

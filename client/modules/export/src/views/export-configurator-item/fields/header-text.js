@@ -10,6 +10,11 @@
 
 Espo.define('export:views/export-configurator-item/fields/header-text', 'views/fields/varchar', function (Dep) {
 
+    // Shared across every header-text field instance (one per header row, per item) - several
+    // rows of the same item, or several items using the same attribute, would otherwise each
+    // re-fetch the identical Attribute record.
+    const attributeCache = {};
+
     return Dep.extend({
         init: function () {
             Dep.prototype.init.call(this);
@@ -85,20 +90,88 @@ Espo.define('export:views/export-configurator-item/fields/header-text', 'views/f
             }
         },
 
+        // The feed's own configured locale, not the current user's UI language.
+        getExportFeedLocaleId() {
+            if (this.model.get('exportFeedData')) {
+                return this.model.get('exportFeedData').localeId;
+            }
+
+            let localeId = null;
+            const exportFeedId = this.model.get('_entityFrom').exportFeedId;
+            this.ajaxGetRequest(`ExportFeed/${exportFeedId}`, {}, { async: false }).success(res => {
+                localeId = res.localeId;
+            })
+
+            return localeId;
+        },
+
+        // Mirrors ExportConfiguratorItem::resolveLocalizedFieldName() server-side: the locale-
+        // specific column name (e.g. "nameDeDe") for $fieldName on $scope, when $localeId maps to
+        // a real, active input language and the field is itself multilang there. Falls back to
+        // $fieldName unchanged otherwise.
+        getLocalizedFieldName(localeId, scope, fieldName) {
+            if (!localeId || !this.getMetadata().get(`entityDefs.${scope}.fields.${fieldName}.isMultilang`)) {
+                return fieldName;
+            }
+
+            let languageCode = null;
+            $.each(this.getConfig().get('referenceData')?.Locale ?? {}, (key, locale) => {
+                if (locale.id === localeId) {
+                    languageCode = locale.languageCode;
+                }
+            });
+
+            if (!languageCode) {
+                return fieldName;
+            }
+
+            const mainLanguage = this.getConfig().get('mainLanguage') || '';
+            if (languageCode.toLowerCase() === mainLanguage.toLowerCase()) {
+                return fieldName;
+            }
+
+            const inputLanguageList = this.getConfig().get('inputLanguageList') || [];
+            if (!inputLanguageList.includes(languageCode)) {
+                return fieldName;
+            }
+
+            const suffix = languageCode.toLowerCase().split('_').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
+
+            return fieldName + suffix;
+        },
+
+        getAttribute(attributeId) {
+            if (!attributeCache[attributeId]) {
+                this.ajaxGetRequest(`Attribute/${attributeId}`, {}, { async: false }).success(res => {
+                    attributeCache[attributeId] = res;
+                });
+            }
+
+            return attributeCache[attributeId];
+        },
+
+        // Fetches the related record directly and reads its (localized) field - the Attribute
+        // response's own "{property}Name" virtual field is resolved using the current request's
+        // locale, not the export feed's configured one, so it can't be read off that same response.
+        // Falls back to the base (unlocalized) value when the localized one is empty, e.g. no
+        // translation was ever entered for that particular record.
+        getLocalizedRelatedValue(entityType, id, fieldName, localeId) {
+            const localizedFieldName = this.getLocalizedFieldName(localeId, entityType, fieldName);
+
+            let value = null;
+            this.ajaxGetRequest(`${entityType}/${id}`, {}, { async: false }).success(res => {
+                value = res[localizedFieldName] || res[fieldName];
+            });
+
+            return value;
+        },
+
         // name/tooltipText resolve to translated text (the field's label / tooltip, respectively),
         // in the FEED's own configured locale rather than the current user's UI language - matches
         // ExportConfiguratorItem::translateFieldColumnName() server-side.
         prepareTranslatedFieldValue(category) {
-            let localeId = null;
             let originField = this.model.get('name');
-            if (!this.model.get('exportFeedData')) {
-                const exportFeedId = this.model.get('_entityFrom').exportFeedId;
-                this.ajaxGetRequest(`ExportFeed/${exportFeedId}`, {}, { async: false }).success(res => {
-                    localeId = res.localeId;
-                })
-            } else {
-                localeId = this.model.get('exportFeedData').localeId;
-            }
+            const localeId = this.getExportFeedLocaleId();
 
             this.getTranslates(localeId, translates => {
                 let columnName = originField;
@@ -146,18 +219,34 @@ Espo.define('export:views/export-configurator-item/fields/header-text', 'views/f
 
             const attributeId = this.model.get('entityAttributeId');
             const propertyType = this.getMetadata().get(`entityDefs.Attribute.fields.${headerProperty}.type`);
+            const localeId = this.getExportFeedLocaleId();
 
-            this.ajaxGetRequest(`Attribute/${attributeId}`, {}, { async: false }).success(res => {
-                let value = res[headerProperty];
+            const res = this.getAttribute(attributeId);
+            if (!res) {
+                return;
+            }
 
-                if (propertyType === 'link') {
+            let value = res[headerProperty];
+
+            if (propertyType === 'link') {
+                const relatedEntityType = this.getMetadata().get(`entityDefs.Attribute.links.${headerProperty}.entity`)
+                    || this.getMetadata().get(`entityDefs.Attribute.fields.${headerProperty}.entity`);
+                const relatedId = res[headerProperty + 'Id'];
+
+                value = relatedId && relatedEntityType
+                    ? this.getLocalizedRelatedValue(relatedEntityType, relatedId, 'name', localeId)
+                    : null;
+                if (!value) {
                     value = res[headerProperty + 'Name'];
-                } else if (propertyType === 'linkMultiple') {
-                    value = Object.values(res[headerProperty + 'Names'] || {}).join(', ');
                 }
+            } else if (propertyType === 'linkMultiple') {
+                value = Object.values(res[headerProperty + 'Names'] || {}).join(', ');
+            } else {
+                const localizedField = this.getLocalizedFieldName(localeId, 'Attribute', headerProperty);
+                value = res[localizedField] || res[headerProperty];
+            }
 
-                this.model.set(this.name, value || '');
-            });
+            this.model.set(this.name, value || '');
         },
 
         getTranslates(locale, callback) {
