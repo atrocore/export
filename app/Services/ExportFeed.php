@@ -1056,8 +1056,10 @@ class ExportFeed extends Base
 
     public function verifyFeedByCode(string $code)
     {
+        // a code that doesn't exist and one the current user can't read must look identical -
+        // otherwise the response itself lets a caller enumerate which codes are valid
         $exportFeed = $this->getRepository()->where(['code' => $code])->findOne();
-        if (empty($exportFeed)) {
+        if (empty($exportFeed) || !$this->getAcl()->check($exportFeed, 'read')) {
             return 'Export Feed code is invalid';
         }
 
@@ -1081,6 +1083,9 @@ class ExportFeed extends Base
         $exportFeed = $this->getRepository()->where(['code' => $exportFeedCode])->findOne();
         if (empty($exportFeed)) {
             throw new Exceptions\NotFound();
+        }
+        if (!$this->getAcl()->check($exportFeed, 'read')) {
+            throw new Exceptions\Forbidden();
         }
         $data = [
             'id'                => Util::generateId(),
