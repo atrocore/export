@@ -80,7 +80,10 @@ use Psr\Http\Server\RequestHandlerInterface;
             'description' => 'code is required',
         ],
         403 => [
-            'description' => 'Access denied',
+            'description' => 'The current user does not have read access to the export feed.',
+        ],
+        404 => [
+            'description' => 'No export feed matches the given code.',
         ],
     ],
 )]
