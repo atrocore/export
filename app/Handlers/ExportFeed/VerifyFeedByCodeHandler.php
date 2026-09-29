@@ -41,20 +41,23 @@ use Psr\Http\Server\RequestHandlerInterface;
     ],
     responses: [
         200 => [
-            'description' => 'Verification result',
+            'description' => 'A human-readable status message: the code does not match any export feed, the current user does not have access to it, or the feed is (or is not) correctly configured with an ID column.',
             'content'     => [
                 'application/json' => [
                     'schema' => [
-                        'type' => 'object',
+                        'type'       => 'object',
+                        'properties' => [
+                            'message' => [
+                                'type'        => 'string',
+                                'description' => 'One of: an invalid-code message, a no-access message, or the feed\'s configuration status.',
+                            ],
+                        ],
                     ],
                 ],
             ],
         ],
         400 => [
             'description' => "'code' is required",
-        ],
-        403 => [
-            'description' => 'Access denied',
         ],
     ],
 )]
