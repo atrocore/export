@@ -81,7 +81,8 @@
           "sortOrder": 10
         }
       },
-      "layout": "listInExportFeed"
+      "layout": "listInExportFeed",
+      "sortBy": "number"
     },
     "entityFilterResult": {
       "dynamicActionDisabled": true,
