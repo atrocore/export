@@ -27,6 +27,8 @@ use Export\TemplateLoaders\AbstractTemplate;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class ExportTypeSimple extends AbstractExportType
 {
@@ -533,6 +535,16 @@ class ExportTypeSimple extends AbstractExportType
                                             if (preg_match("/^[\d\W]+$/", (string)$cell->getValue())) {
                                                 $this->processXlsxNumericCell($cell, $decimalMark, $thousandSeparator);
                                             }
+                                        }
+                                    } else if (in_array($cellType, ['date', 'datetime'])) {
+                                        $isDate = $cellType === 'date';
+                                        foreach ($column->getCellIterator($startRow) as $cell) {
+                                            $dateTime = \DateTime::createFromFormat($isDate ? '!Y-m-d' : 'Y-m-d H:i:s', (string)$cell->getValue());
+                                            if ($dateTime === false) {
+                                                continue;
+                                            }
+                                            $cell->setValueExplicit(Date::PHPToExcel($dateTime), DataType::TYPE_NUMERIC);
+                                            $cell->getStyle()->getNumberFormat()->setBuiltInFormatCode($isDate ? NumberFormat::SHORT_DATE_INDEX : NumberFormat::DATE_TIME_INDEX);
                                         }
                                     } else {
                                         if ($cellType == 'int' && $thousandSeparator) {
