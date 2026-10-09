@@ -30,6 +30,7 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                         label: 'addAllAttributes',
                         action: 'addAllAttributes'
                     },
+                    ...this.getVirtualFieldsActionList(),
                     {
                         label: 'addFixed',
                         action: 'addFixed'
@@ -146,7 +147,36 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
             return !(this.model.get('hasMultipleSheets')) && ['csv', 'xlsx'].includes(this.model.get('fileType'));
         },
 
+        /**
+         * The items adding columns of virtual fields, as modules describe them for an entity in
+         * clientDefs.<entity>.exportConfiguratorItemsActions. Only the items of the entity of the feed are shown.
+         */
+        getVirtualFieldsActionList() {
+            const result = [];
+            const clientDefs = this.getMetadata().get('clientDefs') || {};
+
+            for (const entity in clientDefs) {
+                const actions = clientDefs[entity].exportConfiguratorItemsActions || {};
+                for (const key in actions) {
+                    result.push({
+                        label: actions[key].label,
+                        action: 'addVirtualFields',
+                        data: {
+                            entity: entity,
+                            key: key
+                        }
+                    });
+                }
+            }
+
+            return result;
+        },
+
         prepareActionsVisibility() {
+            const $virtualFieldsActions = $('.action[data-action=addVirtualFields][data-panel=configuratorItems]');
+            $virtualFieldsActions.parent().hide();
+            $virtualFieldsActions.filter(`[data-entity="${this.model.get('entity')}"]`).parent().show();
+
             const $selectAttributes = $('.action[data-action=selectAttributes][data-panel=configuratorItems]');
             const $addAllAttributes = $('.action[data-action=addAllAttributes][data-panel=configuratorItems]');
 
@@ -294,6 +324,49 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                 dialog.once('select', models => doAddAttributes(models, false));
                 dialog.once('selectAllLanguages', models => doAddAttributes(models, true));
             });
+        },
+
+        actionAddVirtualFields(data) {
+            const defs = this.getMetadata().get(['clientDefs', data.entity, 'exportConfiguratorItemsActions', data.key]);
+            if (!defs || data.entity !== this.model.get('entity')) {
+                return;
+            }
+
+            this.notify('Loading...');
+            this.createView('dialog', defs.view, {
+                entityName: data.entity
+            }, this.onVirtualFieldsDialogCreated.bind(this));
+        },
+
+        onVirtualFieldsDialogCreated(dialog) {
+            dialog.render();
+            this.notify(false);
+            dialog.once('add', this.addVirtualFields, this);
+        },
+
+        /**
+         * The dialog gives the items selected, each named after a virtual field.
+         */
+        addVirtualFields(items) {
+            const fields = [];
+            for (const item of items) {
+                fields.push(item.name);
+            }
+
+            if (!fields.length) {
+                return;
+            }
+
+            this.notify('Saving...');
+            this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addVirtualFields`, {
+                fields: fields,
+                entityName: this.model.name
+            }).success(this.onVirtualFieldsAdded.bind(this));
+        },
+
+        onVirtualFieldsAdded() {
+            this.notify('Saved', 'success');
+            this.refreshPanel();
         },
 
         actionAddAllAttributes() {

@@ -240,6 +240,52 @@ class ExportFeed extends Base
         return true;
     }
 
+    /**
+     * Adds columns of virtual fields - values a module gives a record on request, described in
+     * scopes.<entity>.exportVirtualFields - the same way as columns of fields.
+     */
+    public function addVirtualFields(string $entityName, string $id, array $fields): bool
+    {
+        if (!$this->getAcl()->check('ExportFeed', 'edit')) {
+            throw new Exceptions\Forbidden();
+        }
+
+        if (!in_array($entityName, ['ExportFeed', 'Sheet'])) {
+            throw new Exceptions\BadRequest('Wrong entity name');
+        }
+
+        $feed = $this->getEntityManager()->getRepository($entityName)->get($id);
+        if (empty($feed)) {
+            return false;
+        }
+
+        $feedEntity = $feed->get('entity') ?? $feed->getFeedField('entity');
+        $virtualFields = $this->getMetadata()->get(['scopes', $feedEntity, 'exportVirtualFields'], []);
+
+        $notFound = [];
+        foreach ($fields as $field) {
+            if (!isset($virtualFields[$field])) {
+                $notFound[] = $field;
+            }
+        }
+
+        if (!empty($notFound)) {
+            throw new Exceptions\BadRequest(sprintf("Fields cannot be added to a '%s' export feed: '%s'.", (string)$feedEntity, implode("', '", $notFound)));
+        }
+
+        $numberOfHeaders = $this->getNumberOfHeaders($feed, $entityName);
+
+        foreach ($fields as $field) {
+            $this->createExportConfiguratorItem(array_merge([
+                'name'                      => $field,
+                'type'                      => 'Field',
+                lcfirst($entityName) . 'Id' => $feed->get('id')
+            ], $this->buildAllHeadersData($numberOfHeaders, 'name')));
+        }
+
+        return true;
+    }
+
     public function addAttributes(string $entityName, string $id, array $attributesIds, bool $allLanguages = false): bool
     {
         if (!$this->getAcl()->check('ExportFeed', 'edit')) {
@@ -1132,7 +1178,9 @@ class ExportFeed extends Base
             if ($item->get('name') === 'id') {
                 continue;
             }
-            $fieldDefs = $this->getMetadata()->get("entityDefs.$entityName.fields.{$item->get('name')}");
+            // a virtual field is not a field of the entity, a module describes it for the export
+            $fieldDefs = $this->getMetadata()->get("entityDefs.$entityName.fields.{$item->get('name')}")
+                ?? $this->getMetadata()->get(['scopes', $entityName, 'exportVirtualFields', $item->get('name')]);
             if (empty($fieldDefs)) {
                 return false;
             }

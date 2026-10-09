@@ -16,14 +16,14 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
         setup() {
             let entity = this.model.get('entity');
             let fields = this.getFieldsList(entity);
-            let sortedFields = Object.keys(fields).sort((v1, v2) => (this.translate(v1, 'fields', entity) || '').localeCompare(this.translate(v2, 'fields', entity)));
+            let sortedFields = Object.keys(fields).sort((v1, v2) => (this.translateField(v1, entity) || '').localeCompare(this.translateField(v2, entity)));
 
             this.params.options = [];
             this.translatedOptions = {};
 
             sortedFields.forEach(field => {
                 this.params.options.push(field);
-                this.translatedOptions[field] = this.translate(field, 'fields', entity);
+                this.translatedOptions[field] = this.translateField(field, entity);
             });
 
             // select first
@@ -82,7 +82,7 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
             }
 
             if (this.model.get('type') === 'Field') {
-                name = this.translate(name, 'fields', this.model.get('entity'));
+                name = this.translateField(name, this.model.get('entity'));
             }
 
             if (this.model.get('type') === 'allAttributes') {
@@ -184,6 +184,27 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
             return translations.join(', ');
         },
 
+        /**
+         * A virtual field - a value a module gives a record on request - is not a field of the entity, it has its label
+         * in its defs.
+         */
+        translateField(field, entity) {
+            const virtualFieldDefs = this.getVirtualFieldDefs(field, entity);
+            if (virtualFieldDefs) {
+                return virtualFieldDefs.label || field;
+            }
+
+            return this.translate(field, 'fields', entity);
+        },
+
+        getVirtualFieldDefs(field, entity) {
+            if (this.getMetadata().get(['entityDefs', entity, 'fields', field])) {
+                return null;
+            }
+
+            return this.getMetadata().get(['scopes', entity, 'exportVirtualFields', field]) || null;
+        },
+
         getFieldsList(entity) {
             let result = {
                 id: {
@@ -205,6 +226,13 @@ Espo.define('export:views/export-configurator-item/fields/name', 'views/fields/e
                         result[name] = fields[name];
                     }
                 });
+
+                const virtualFields = this.getMetadata().get(['scopes', entity, 'exportVirtualFields']) || {};
+                for (const name in virtualFields) {
+                    if (!result[name]) {
+                        result[name] = virtualFields[name];
+                    }
+                }
             }
 
             return result;
