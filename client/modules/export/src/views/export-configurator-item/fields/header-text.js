@@ -62,6 +62,14 @@ Espo.define('export:views/export-configurator-item/fields/header-text', 'views/f
                 return;
             }
 
+            // a virtual field - a value a module gives a record on request - has its label in its defs, matches
+            // ExportConfiguratorItem::prepareColumnNameForIndex() server-side
+            const virtualFieldDefs = this.getVirtualFieldDefs();
+            if (virtualFieldDefs && headerProperty === 'name') {
+                this.model.set(this.name, virtualFieldDefs.label || this.model.get('name'));
+                return;
+            }
+
             // 'code' is the field's own raw code - no translation/ajax lookup needed, unlike
             // 'name' below or any other EntityField property (prepareEntityFieldPropertyValue()).
             if (headerProperty === 'code') {
@@ -77,6 +85,16 @@ Espo.define('export:views/export-configurator-item/fields/header-text', 'views/f
             if (headerProperty) {
                 this.prepareEntityFieldPropertyValue(headerProperty);
             }
+        },
+
+        getVirtualFieldDefs() {
+            const entity = this.model.get('entity');
+            const field = this.model.get('name');
+            if (!field || this.getMetadata().get(['entityDefs', entity, 'fields', field])) {
+                return null;
+            }
+
+            return this.getMetadata().get(['scopes', entity, 'exportVirtualFields', field]) || null;
         },
 
         // 'custom' is free text the user edits - only seed it once, when still empty (e.g. right

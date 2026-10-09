@@ -59,6 +59,9 @@ class ExportConfiguratorItem extends Base
             // prepare field defs
             $fieldDefs = $this->getMetadata()->get("entityDefs.{$entity->get('entity')}.fields.{$entity->get('name')}");
             if (empty($fieldDefs)) {
+                $fieldDefs = $this->getVirtualFieldDefs($entity->get('entity'), (string)$entity->get('name'));
+            }
+            if (empty($fieldDefs)) {
                 $this->getServiceFactory()->create('ExportFeed')->putAttributesToMetadata($feed->get('id'));
                 $fieldDefs = $this->getMetadata()->get("entityDefs.{$entity->get('entity')}.fields.{$entity->get('name')}");
             }
@@ -145,6 +148,10 @@ class ExportConfiguratorItem extends Base
 
         switch ($columnType) {
             case 'name':
+                $virtualFieldDefs = $this->getVirtualFieldDefs($entity->get('entity'), (string)$entity->get('name'));
+                if (!empty($virtualFieldDefs)) {
+                    return (string)($virtualFieldDefs['label'] ?? $entity->get('name'));
+                }
                 if (!empty($entity->get('name'))) {
                     return $this->translateFieldColumnName($localeId, $entity->get('entity'), $entity->get('name'));
                 }
@@ -274,6 +281,19 @@ class ExportConfiguratorItem extends Base
         $exportFeed = $this->getEntityManager()->getEntity('ExportFeed', $exportFeedId);
 
         return $exportFeed->get('localeId');
+    }
+
+    /**
+     * The defs of a virtual field of the entity - a value a module gives a record on request, not a field of the entity
+     * - described in scopes.<entity>.exportVirtualFields. Null for any other field.
+     */
+    public function getVirtualFieldDefs(?string $entityName, string $field): ?array
+    {
+        if (empty($entityName) || $field === '' || $this->getMetadata()->get(['entityDefs', $entityName, 'fields', $field])) {
+            return null;
+        }
+
+        return $this->getMetadata()->get(['scopes', $entityName, 'exportVirtualFields', $field]);
     }
 
     protected function translateFieldColumnName(string $localeId, string $entity, string $field, string $category = 'fields'): string

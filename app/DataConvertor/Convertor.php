@@ -148,7 +148,9 @@ class Convertor
             return 'varchar';
         }
 
-        $fieldDefs = $this->getMetadata()->get(['entityDefs', $entityName, 'fields', $field]);
+        // a virtual field is not a field of the entity, a module describes it for the export
+        $fieldDefs = $this->getMetadata()->get(['entityDefs', $entityName, 'fields', $field])
+            ?? $this->getMetadata()->get(['scopes', $entityName, 'exportVirtualFields', $field]);
         $type = $fieldDefs['type'] ?? 'varchar';
 
         if ($type === 'link' && !empty($fieldDefs['entity']) && $fieldDefs['entity'] === 'Unit') {

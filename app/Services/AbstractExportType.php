@@ -416,6 +416,8 @@ abstract class AbstractExportType extends Base
             }
         }
 
+        $this->putVirtualFieldsRequestData($params);
+
         $result = $this->getEntityService()->findEntities($params);
 
         if (!isset($result['collection'])) {
@@ -477,6 +479,8 @@ abstract class AbstractExportType extends Base
                 $attributeIds = [];
             }
         }
+
+        $this->putVirtualFieldsRequestData($params);
 
         $result = $this->getEntityService()->findEntities($params);
         if (!isset($result['collection']) || count($result['collection']) === 0) {
@@ -930,7 +934,7 @@ abstract class AbstractExportType extends Base
 
     protected function getCollectionFromIds(mixed $entityIds): EntityCollection
     {
-        $result = $this->getEntityService()->findEntities([
+        $params = [
             "where"                 => [
                 [
                     "attribute" => "id",
@@ -940,9 +944,32 @@ abstract class AbstractExportType extends Base
             ],
             "withDeleted"           => true,
             "calculateScriptFields" => true,
-        ]);
+        ];
 
-        return $result['collection'];
+        $this->putVirtualFieldsRequestData($params);
+
+        return $this->getEntityService()->findEntities($params)['collection'];
+    }
+
+    /**
+     * A virtual field of the entity - described by a module in scopes.<entity>.exportVirtualFields - gets its value
+     * only when the select asks for it, by the parameters given in its requestData. The values the fields of the
+     * configuration give for the same parameter are collected into a list.
+     */
+    protected function putVirtualFieldsRequestData(array &$params): void
+    {
+        $virtualFields = $this->getMetadata()->get(['scopes', $this->data['feed']['entity'] ?? '', 'exportVirtualFields'], []);
+        if (empty($virtualFields)) {
+            return;
+        }
+
+        foreach ($this->data['feed']['data']['configuration'] ?? [] as $item) {
+            foreach ($virtualFields[$item['field'] ?? '']['requestData'] ?? [] as $key => $value) {
+                if (!in_array($value, $params[$key] ?? [], true)) {
+                    $params[$key][] = $value;
+                }
+            }
+        }
     }
 
     protected function getWhere(): array
