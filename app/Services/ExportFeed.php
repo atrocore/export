@@ -966,6 +966,10 @@ class ExportFeed extends Base
             $item['id']     = Util::generateId();
             $item['column'] = $this->getLanguage()->translate($field, 'fields', $scope);
 
+            if (!empty($this->getMetadata()->get(['scopes', $scope, 'exportVirtualFields', $field]))) {
+                $item['column'] = $fieldDefs['label'];
+            }
+
             if (in_array($fieldDefs['type'], ['link', 'linkMultiple'])) {
                 $item['exportBy'] = ['name'];
             }
