@@ -299,7 +299,11 @@ abstract class AbstractExportType extends Base
             $chunkSet = array_flip($chunk);
 
             $chunkResult = $this->getEntityService()->findEntities([
-                'where'         => [['attribute' => 'id', 'type' => 'in', 'value' => $entityIds]],
+                'where'         => [
+                    ['attribute' => 'id', 'type' => 'in', 'value' => $entityIds],
+                    ['type' => 'bool', 'value' => ['withArchived']],
+                ],
+                'withDeleted'   => !empty($this->data['feed']['data']['withDeleted']),
                 'disableCount'  => true,
                 'attributesIds' => $chunk,
                 'select'        => ['id'],
@@ -940,6 +944,10 @@ abstract class AbstractExportType extends Base
                     "attribute" => "id",
                     "type"      => "in",
                     "value"     => $entityIds
+                ],
+                [
+                    "type"  => "bool",
+                    "value" => ["withArchived"]
                 ]
             ],
             "withDeleted"           => true,
