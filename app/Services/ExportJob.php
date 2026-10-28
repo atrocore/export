@@ -45,8 +45,8 @@ class ExportJob extends Base
 
         $canEdit = $this->getUser()->isAdmin() || $this->getAcl()->check($entity, 'edit');
 
-        $entity->setMetaPermission('cancelExportJob', in_array($entity->get('state'), ['Pending', 'Running']) && $canEdit);
-        $entity->setMetaPermission('tryAgainExportJob', in_array($entity->get('state'), ['Failed', 'Canceled']) && $canEdit);
+        $entity->setAvailableAction('cancelExportJob', in_array($entity->get('state'), ['Pending', 'Running']) && $canEdit);
+        $entity->setAvailableAction('tryAgainExportJob', in_array($entity->get('state'), ['Failed', 'Canceled']) && $canEdit);
     }
 
     public function cancel(string $id): bool
