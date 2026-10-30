@@ -2,12 +2,16 @@
   "scopeNames": {
     "ExportFeed": "Eksportuj kanał",
     "ExportConfiguratorItem": "Konfigurator",
-    "ExportJob": "Realizacja eksportu"
+    "ExportJob": "Realizacja eksportu",
+    "ActionTypeExport": "Akcja: Eksportuj kanał",
+    "ActionTypeReExportFailedJob": "Akcja: Ponów nieudane zadanie eksportu"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Eksportuj kanały",
     "ExportConfiguratorItem": "Konfigurator",
-    "ExportJob": "Wykonanie eksportu"
+    "ExportJob": "Wykonanie eksportu",
+    "ActionTypeExport": "Akcja: Eksportuj kanał",
+    "ActionTypeReExportFailedJob": "Akcja: Ponów nieudane zadanie eksportu"
   },
   "labels": {
     "Generate": "Generuj",
