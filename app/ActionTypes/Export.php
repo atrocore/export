@@ -44,11 +44,11 @@ class Export extends AbstractAction
     {
         $action = $execution->get('action');
 
-        if (empty($action->get('exportFeedId'))) {
+        if (empty($action->getSubtype()?->get('exportFeedId'))) {
             return ActionResultDTO::skipped('The export feed is not selected.');
         }
 
-        $payload = empty($action->get('payload')) ? '' : (string)$action->get('payload');
+        $payload = empty($action->getSubtype()?->get('payload')) ? '' : (string)$action->getSubtype()?->get('payload');
         $templateData = [];
 
         if (!empty($action->get('sourceEntity'))) {
@@ -103,18 +103,18 @@ class Export extends AbstractAction
             ];
         }
 
-        if (!empty($action->get('contentLanguageId'))) {
-            $payload['contentLanguageId'] = $action->get('contentLanguageId');
+        if (!empty($action->getSubtype()?->get('contentLanguageId'))) {
+            $payload['contentLanguageId'] = $action->getSubtype()?->get('contentLanguageId');
         }
 
-        if (!empty($action->get('localeId'))) {
-            $payload['localeId'] = $action->get('localeId');
+        if (!empty($action->getSubtype()?->get('localeId'))) {
+            $payload['localeId'] = $action->getSubtype()?->get('localeId');
         }
 
         /** @var \Export\Services\ExportFeed $service */
         $service = $this->getServiceFactory()->create('ExportFeed');
 
-        $exportFeed = $service->getEntity($action->get('exportFeedId'));
+        $exportFeed = $service->getEntity($action->getSubtype()?->get('exportFeedId'));
         if (empty($exportFeed) || empty($exportFeed->get('isActive'))) {
             return ActionResultDTO::skipped('The export feed is not active.');
         }

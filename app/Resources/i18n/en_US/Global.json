@@ -2,12 +2,16 @@
   "scopeNames": {
     "ExportFeed": "Export Feed",
     "ExportConfiguratorItem": "Configurator",
-    "ExportJob": "Export Execution"
+    "ExportJob": "Export Execution",
+    "ActionTypeExport": "Action: Export Feed",
+    "ActionTypeReExportFailedJob": "Action: Re-export failed job"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Export Feeds",
     "ExportConfiguratorItem": "Configurator",
-    "ExportJob": "Export Executions"
+    "ExportJob": "Export Executions",
+    "ActionTypeExport": "Action: Export Feed",
+    "ActionTypeReExportFailedJob": "Action: Re-export failed job"
   },
   "labels": {
     "Generate": "Generate",

@@ -1,0 +1,61 @@
+{
+  "fields": {
+    "exportFeed": {
+      "type": "link",
+      "view": "export:views/action/fields/export-feed",
+      "entity": "ExportFeed",
+      "filterDisabled": true,
+      "massUpdateDisabled": true,
+      "importDisabled": true,
+      "required": true
+    },
+    "contentLanguage": {
+      "type": "link",
+      "entity": "Language",
+      "filterDisabled": true,
+      "massUpdateDisabled": true,
+      "importDisabled": true,
+      "dropdown": true,
+      "view": "views/fields/link-dropdown",
+      "ignoreViewForSearch": true
+    },
+    "locale": {
+      "type": "link",
+      "filterDisabled": true,
+      "massUpdateDisabled": true,
+      "importDisabled": true,
+      "dropdown": true,
+      "view": "views/fields/link-dropdown",
+      "ignoreViewForSearch": true
+    },
+    "payload": {
+      "type": "code",
+      "engine": "Twig",
+      "variables": [
+        "sourceEntities",
+        "sourceEntitiesIds",
+        "entity"
+      ],
+      "filterDisabled": true,
+      "massUpdateDisabled": true,
+      "importDisabled": true,
+      "useDisabledTextareaInViewMode": true
+    }
+  },
+  "links": {
+    "exportFeed": {
+      "type": "belongsTo",
+      "entity": "ExportFeed"
+    },
+    "contentLanguage": {
+      "type": "belongsTo",
+      "entity": "Language",
+      "skipOrmDefs": true
+    },
+    "locale": {
+      "type": "belongsTo",
+      "entity": "Locale",
+      "skipOrmDefs": true
+    }
+  }
+}

@@ -2,12 +2,16 @@
   "scopeNames": {
     "ExportFeed": "Exportní kanál",
     "ExportConfiguratorItem": "Konfigurátor",
-    "ExportJob": "Provedení exportu"
+    "ExportJob": "Provedení exportu",
+    "ActionTypeExport": "Akce: Exportní kanál",
+    "ActionTypeReExportFailedJob": "Akce: Znovu exportovat neúspěšnou úlohu"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Exportní kanály",
     "ExportConfiguratorItem": "Konfigurátor",
-    "ExportJob": "Provádění exportu"
+    "ExportJob": "Provádění exportu",
+    "ActionTypeExport": "Akce: Exportní kanál",
+    "ActionTypeReExportFailedJob": "Akce: Znovu exportovat neúspěšnou úlohu"
   },
   "labels": {
     "Generate": "Generovat",

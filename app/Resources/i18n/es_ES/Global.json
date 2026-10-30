@@ -2,7 +2,9 @@
   "scopeNames": {
     "ExportFeed": "Exportación",
     "ExportConfiguratorItem": "Configurador",
-    "ExportJob": "Ejecución de exportaciones"
+    "ExportJob": "Ejecución de exportaciones",
+    "ActionTypeExport": "Acción: Exportación",
+    "ActionTypeReExportFailedJob": "Acción: Reexportar trabajo fallido"
   },
   "twig": {
     "filters": {
@@ -20,7 +22,9 @@
   "scopeNamesPlural": {
     "ExportFeed": "Exportación",
     "ExportConfiguratorItem": "Configurador",
-    "ExportJob": "Ejecuciones de exportación"
+    "ExportJob": "Ejecuciones de exportación",
+    "ActionTypeExport": "Acción: Exportación",
+    "ActionTypeReExportFailedJob": "Acción: Reexportar trabajo fallido"
   },
   "labels": {
     "tryAgain": "Exportar de nuevo",

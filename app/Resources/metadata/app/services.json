@@ -1,4 +1,6 @@
 {
   "ExportTypeSimple": "\\Export\\Services\\ExportTypeSimple",
-  "DataSyncErrorsExportDashlet": "\\Export\\Services\\DataSyncErrorsExportDashlet"
+  "DataSyncErrorsExportDashlet": "\\Export\\Services\\DataSyncErrorsExportDashlet",
+  "ActionTypeExport": "\\Atro\\Services\\ActionSubtype",
+  "ActionTypeReExportFailedJob": "\\Atro\\Services\\ActionSubtype"
 }
