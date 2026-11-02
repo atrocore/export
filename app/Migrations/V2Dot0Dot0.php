@@ -19,7 +19,7 @@ use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Schema\Schema;
 use Ramsey\Uuid\Uuid;
 
-class V1Dot16Dot0 extends Base
+class V2Dot0Dot0 extends Base
 {
     public function getMigrationDateTime(): ?\DateTime
     {
@@ -29,6 +29,125 @@ class V1Dot16Dot0 extends Base
     public function up(): void
     {
         $this->migrateAction();
+        $this->migrateExportFeed();
+    }
+
+    /**
+     * The export feed types are subtypes of ExportFeed now. The settings of the file format and the entity, stored in
+     * the "data" field before, are columns of the export feed. The settings of the type are moved to the table of the
+     * subtype, the subtypes of the other modules are created by their migrations.
+     */
+    protected function migrateExportFeed(): void
+    {
+        $formatColumns = [
+            'entity' => ['entity', 'type' => 'string', 'length' => 255, 'default' => 'Product'],
+            'csvFieldDelimiter' => ['csv_field_delimiter', 'type' => 'string', 'length' => 255, 'default' => ';'],
+            'csvTextQualifier' => ['csv_text_qualifier', 'type' => 'string', 'length' => 255, 'default' => 'doubleQuote'],
+            'convertCollectionToString' => ['convert_collection_to_string', 'type' => 'boolean', 'notnull' => true, 'default' => true],
+            'delimiter' => ['delimiter', 'type' => 'string', 'length' => 255, 'default' => '~'],
+            'convertRelationsToString' => ['convert_relations_to_string', 'type' => 'boolean', 'notnull' => true, 'default' => true],
+            'fieldDelimiterForRelation' => ['field_delimiter_for_relation', 'type' => 'string', 'length' => 255, 'default' => '|'],
+            'emptyValue' => ['empty_value', 'type' => 'string', 'length' => 255, 'default' => ''],
+            'nullValue' => ['null_value', 'type' => 'string', 'length' => 255, 'default' => 'Null'],
+            'markForNoRelation' => ['mark_for_no_relation', 'type' => 'string', 'length' => 255, 'default' => 'Null'],
+            'markForUnlinkedAttribute' => ['mark_for_unlinked_attribute', 'type' => 'string', 'length' => 255, 'default' => 'N/A'],
+            'exportByMaxDepth' => ['export_by_max_depth', 'type' => 'string', 'length' => 255, 'default' => '1'],
+        ];
+
+        $subtypes = [
+            'simple' => [
+                'fileNameMask' => ['file_name_mask', 'type' => 'text', 'source' => 'column'],
+            ],
+        ];
+
+        $fromSchema = $this->getCurrentSchema();
+        if (!$fromSchema->hasTable('export_feed')) {
+            return;
+        }
+
+        $toSchema = clone $fromSchema;
+
+        $table = $toSchema->getTable('export_feed');
+        foreach ($formatColumns as $options) {
+            $column = array_shift($options);
+            $type = $options['type'];
+            unset($options['type']);
+            if (!$table->hasColumn($column)) {
+                $table->addColumn($column, $type, array_merge(['notnull' => false], $options));
+            }
+        }
+
+        foreach ($subtypes as $type => $columns) {
+            $this->createSubtypeTable($toSchema, 'export_feed', $type, $columns);
+        }
+
+        foreach ($this->schemasDiffToSql($fromSchema, $toSchema) as $sql) {
+            $this->getDbal()->executeStatement($sql);
+        }
+
+        $records = $this->getDbal()->createQueryBuilder()
+            ->select('*')
+            ->from('export_feed')
+            ->fetchAllAssociative();
+
+        foreach ($records as $record) {
+            $this->updateFormatColumns($record, $formatColumns);
+
+            if (isset($subtypes[$record['type']])) {
+                $columns = $subtypes[$record['type']];
+                $this->insertSubtypeRecord('export_feed', $record['type'], $record['id'], $columns, $this->getFeedSettings($record, $columns));
+            }
+        }
+    }
+
+    /**
+     * The settings of the file format were stored in the "feedFields" of the "data" field.
+     */
+    protected function updateFormatColumns(array $record, array $formatColumns): void
+    {
+        $data = @json_decode((string)($record['data'] ?? ''), true);
+        $feedFields = is_array($data['feedFields'] ?? null) ? $data['feedFields'] : [];
+
+        $qb = $this->getDbal()->createQueryBuilder()
+            ->update('export_feed')
+            ->where('id = :id')
+            ->setParameter('id', $record['id']);
+
+        $hasValues = false;
+        foreach ($formatColumns as $field => $options) {
+            if (!array_key_exists($field, $feedFields) || $feedFields[$field] === null) {
+                continue;
+            }
+
+            $qb->set($this->getDbal()->quoteIdentifier($options[0]), ":$field");
+            if ($options['type'] === 'boolean') {
+                $qb->setParameter($field, !empty($feedFields[$field]), ParameterType::BOOLEAN);
+            } else {
+                $qb->setParameter($field, (string)$feedFields[$field]);
+            }
+            $hasValues = true;
+        }
+
+        if ($hasValues) {
+            $qb->executeStatement();
+        }
+    }
+
+    /**
+     * The settings of an export feed type: a setting was stored in a column of the export feed table or in the
+     * "feedFields" of the "data" field.
+     */
+    protected function getFeedSettings(array $record, array $columns): array
+    {
+        $data = @json_decode((string)($record['data'] ?? ''), true);
+        $feedFields = is_array($data['feedFields'] ?? null) ? $data['feedFields'] : [];
+
+        $settings = [];
+        foreach ($columns as $field => $options) {
+            $settings[$field] = $options['source'] === 'data' ? ($feedFields[$field] ?? null) : ($record[$options[0]] ?? null);
+        }
+
+        return $settings;
     }
 
     /**

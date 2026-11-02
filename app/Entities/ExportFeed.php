@@ -14,13 +14,10 @@ declare(strict_types=1);
 namespace Export\Entities;
 
 use Atro\Core\Templates\Entities\Base;
-use Espo\Core\Utils\Json;
 use Espo\ORM\Entity;
 
 class ExportFeed extends Base
 {
-    public const DATA_FIELD = 'feedFields';
-
     protected $entityType = "ExportFeed";
 
     public function getLocale(): ?Entity
@@ -36,45 +33,5 @@ class ExportFeed extends Base
     public function getThousandSeparator(): string
     {
         return $this->getLocale()->get('thousandSeparator') ?? '';
-    }
-
-    public function setFeedField(string $name, $value): void
-    {
-        $data = [];
-        if (!empty($this->get('data'))) {
-            $data = Json::decode(Json::encode($this->get('data')), true);
-        }
-
-        $data[self::DATA_FIELD][$name] = $value;
-
-        $this->set('data', $data);
-    }
-
-    public function getFeedField(string $name)
-    {
-        // For backward compatibility
-        if ($name === 'httpConnectionId') {
-            return $this->get('connectionId');
-        }
-
-        $data = $this->getFeedFields();
-
-        if (!isset($data[$name])) {
-            return null;
-        }
-
-        return $data[$name];
-    }
-
-    public function getFeedFields(): array
-    {
-        if (!empty($data = $this->get('data'))) {
-            $data = Json::decode(Json::encode($data), true);
-            if (!empty($data[self::DATA_FIELD]) && is_array($data[self::DATA_FIELD])) {
-                return $data[self::DATA_FIELD];
-            }
-        }
-
-        return [];
     }
 }

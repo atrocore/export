@@ -189,15 +189,26 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
             }
         },
 
+        /**
+         * The items belong to the export feed or to the sheet. An export feed is shown via its subtype record.
+         */
+        getOwnerName() {
+            return this.getMetadata().get(['scopes', this.model.name, 'supertypeId']) || this.model.name;
+        },
+
+        getOwnerId() {
+            return this.model.get('supertypeId') || this.model.id;
+        },
+
         actionRemoveAllItems() {
             this.confirm(this.translate('removeAllItemsConfirmation', 'labels', 'ExportFeed'), () => {
                 this.notify('Removing...');
 
                 let postData = {
-                    entityType: this.model.urlRoot,
+                    entityType: this.getOwnerName(),
                 };
 
-                this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/removeAllItems`, postData).then(response => {
+                this.ajaxPostRequest(`ExportFeed/${this.getOwnerId()}/removeAllItems`, postData).then(response => {
                     this.notify('Removed', 'success');
                     this.refreshPanel();
                 });
@@ -241,9 +252,9 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                     }
                     const fields = models.map(m => m.get('code'));
                     this.notify('Saving...');
-                    this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addFields`, {
+                    this.ajaxPostRequest(`ExportFeed/${this.getOwnerId()}/addFields`, {
                         fields,
-                        entityName: this.model.name,
+                        entityName: this.getOwnerName(),
                         allLanguages
                     }).then(() => {
                         this.notify('Saved', 'success');
@@ -259,9 +270,9 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
         actionAddFixed() {
             this.notify('Saving...');
             let postData = {
-                entityName: this.model.name,
+                entityName: this.getOwnerName(),
             };
-            this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addFixed`, postData).then(() => {
+            this.ajaxPostRequest(`ExportFeed/${this.getOwnerId()}/addFixed`, postData).then(() => {
                 this.notify('Saved', 'success');
                 this.refreshPanel();
             });
@@ -270,9 +281,9 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
         actionAddScript() {
             this.notify('Saving...');
             let postData = {
-                entityName: this.model.name,
+                entityName: this.getOwnerName(),
             };
-            this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addScript`, postData).then(() => {
+            this.ajaxPostRequest(`ExportFeed/${this.getOwnerId()}/addScript`, postData).then(() => {
                 this.notify('Saved', 'success');
                 this.refreshPanel();
             });
@@ -311,9 +322,9 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
                     }
                     const attributesIds = models.map(m => m.get('id'));
                     this.notify('Saving...');
-                    this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addAttributes`, {
+                    this.ajaxPostRequest(`ExportFeed/${this.getOwnerId()}/addAttributes`, {
                         attributesIds,
-                        entityName: this.model.name,
+                        entityName: this.getOwnerName(),
                         allLanguages
                     }).then(() => {
                         this.notify('Saved', 'success');
@@ -358,9 +369,9 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
             }
 
             this.notify('Saving...');
-            this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addVirtualFields`, {
+            this.ajaxPostRequest(`ExportFeed/${this.getOwnerId()}/addVirtualFields`, {
                 fields: fields,
-                entityName: this.model.name
+                entityName: this.getOwnerName()
             }).success(this.onVirtualFieldsAdded.bind(this));
         },
 
@@ -371,8 +382,8 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
 
         actionAddAllAttributes() {
             this.notify('Saving...');
-            this.ajaxPostRequest(`ExportFeed/${this.model.get('id')}/addAllAttributes`, {
-                entityName: this.model.name
+            this.ajaxPostRequest(`ExportFeed/${this.getOwnerId()}/addAllAttributes`, {
+                entityName: this.getOwnerName()
             }).success(() => {
                 this.notify('Saved', 'success');
                 this.refreshPanel();

@@ -17,7 +17,6 @@ use Atro\Core\Utils\Util;
 use Doctrine\DBAL\ParameterType;
 use Atro\Core\Exceptions\BadRequest;
 use Atro\Core\Templates\Repositories\Base;
-use Espo\Core\Utils\Json;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
 use Export\Entities\ExportFeed as ExportFeedEntity;
@@ -110,16 +109,6 @@ class ExportFeed extends Base
         }
     }
 
-    public function getIdsByExportEntity(string $exportEntity): array
-    {
-        $feeds = $this
-            ->select(['id'])
-            ->where(['data*' => '%\"entity\":\"' . $exportEntity . '\"%'])
-            ->find();
-
-        return array_column($feeds->toArray(), 'id');
-    }
-
     public function removeConfiguratorItems(string $entityType, string $id): void
     {
         try {
@@ -162,10 +151,6 @@ class ExportFeed extends Base
 
     protected function beforeSave(Entity $entity, array $options = [])
     {
-        $fetchedEntity = $entity->getFeedField('entity');
-
-        $this->setFeedFieldsToDataJson($entity);
-
         if (empty($options['skipAll'])) {
             $this->isDelimiterValid($entity);
         }
@@ -197,7 +182,7 @@ class ExportFeed extends Base
             $entity->set('convertRelationsToString', true);
 
             // remove configurator items on Entity change
-            if (!$entity->isNew() && $entity->has('entity') && $fetchedEntity !== $entity->get('entity')) {
+            if (!$entity->isNew() && $entity->isAttributeChanged('entity')) {
                 $this->removeConfiguratorItems('ExportFeed', $entity->get('id'));
             }
         }
@@ -376,37 +361,17 @@ class ExportFeed extends Base
         $this->addDependency('dataManager');
     }
 
-    protected function setFeedFieldsToDataJson(Entity $entity): void
-    {
-        $data = !empty($data = $entity->get('data')) ? Json::decode(Json::encode($data), true) : [];
-
-        foreach ($this->getMetadata()->get(['entityDefs', 'ExportFeed', 'fields'], []) as $field => $row) {
-            if (empty($row['notStorable']) || empty($row['dataField'])) {
-                continue 1;
-            }
-            if ($entity->has($field)) {
-                $data[ExportFeedEntity::DATA_FIELD][$field] = $entity->get($field);
-            }
-        }
-
-        if (isset($data['configuration'])) {
-            unset($data['configuration']);
-        }
-
-        $entity->set('data', Json::decode(Json::encode($data)));
-    }
-
     protected function isDelimiterValid(ExportFeedEntity $entity): void
     {
         $delimiters = [
-            (string)$entity->getFeedField('delimiter'),
+            (string)$entity->get('delimiter'),
             $entity->getDecimalMark(),
             $entity->getThousandSeparator(),
-            (string)$entity->getFeedField('fieldDelimiterForRelation'),
+            (string)$entity->get('fieldDelimiterForRelation'),
         ];
 
         if ($entity->get('fileType') == 'csv') {
-            $delimiters[] = (string)$entity->getFeedField('csvFieldDelimiter');
+            $delimiters[] = (string)$entity->get('csvFieldDelimiter');
         }
 
         if (count(array_unique($delimiters)) !== count($delimiters)) {

@@ -39,9 +39,9 @@ class ExportFeed extends Base
 
         if (!empty($params['exportEntity'])) {
             $params['where'][] = [
-                'type'      => 'in',
-                'attribute' => 'id',
-                'value'     => $this->getRepository()->getIdsByExportEntity((string)$params['exportEntity'])
+                'type'      => 'equals',
+                'attribute' => 'entity',
+                'value'     => (string)$params['exportEntity']
             ];
         }
 

@@ -32,6 +32,24 @@ use Export\Entities\ExportFeed as ExportFeedEntity;
 
 class ExportFeed extends Base
 {
+    /**
+     * The settings of the file format, the export types read them from the feed data as well.
+     */
+    public const FORMAT_FIELDS = [
+        'entity',
+        'csvFieldDelimiter',
+        'csvTextQualifier',
+        'convertCollectionToString',
+        'delimiter',
+        'convertRelationsToString',
+        'fieldDelimiterForRelation',
+        'emptyValue',
+        'nullValue',
+        'markForNoRelation',
+        'markForUnlinkedAttribute',
+        'exportByMaxDepth',
+    ];
+
     protected static array $languages = [];
 
     public function runExport(string $feedId, string $payload = null, ?string $priority = null): bool
@@ -171,7 +189,7 @@ class ExportFeed extends Base
 
         $languageObj = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
 
-        $feedEntity = $feed->get('entity') ?? $feed->getFeedField('entity');
+        $feedEntity = $feed->get('entity');
 
         foreach ($fields as $field) {
             $defs = $this->getMetadata()->get("entityDefs.{$feedEntity}.fields.{$field}");
@@ -259,7 +277,7 @@ class ExportFeed extends Base
             return false;
         }
 
-        $feedEntity = $feed->get('entity') ?? $feed->getFeedField('entity');
+        $feedEntity = $feed->get('entity');
         $virtualFields = $this->getMetadata()->get(['scopes', $feedEntity, 'exportVirtualFields'], []);
 
         $notFound = [];
@@ -322,7 +340,7 @@ class ExportFeed extends Base
             throw new Exceptions\BadRequest(sprintf("Attributes do not exist: '%s'.", implode("', '", $notFound)));
         }
 
-        $feedEntityName = $feed->get('entity') ?? $feed->getFeedField('entity');
+        $feedEntityName = $feed->get('entity');
 
         $attributesEntityName = $this->getMetadata()->get("scopes.$feedEntityName.primaryEntityId") ?? $feedEntityName;
 
@@ -367,7 +385,7 @@ class ExportFeed extends Base
         $numberOfHeaders = $this->getNumberOfHeaders($feed, $feed->getEntityName());
         $headerData      = $headerOverride ?? $this->buildAllHeadersData($numberOfHeaders, 'name');
 
-        $feedEntityName = $feed->get('entity') ?? $feed->getFeedField('entity');
+        $feedEntityName = $feed->get('entity');
 
         $feedEntity = $this->getEntityManager()->getRepository($feedEntityName)->get();
 
@@ -595,12 +613,6 @@ class ExportFeed extends Base
     {
         parent::prepareEntityForOutput($entity);
 
-        foreach ($entity->getFeedFields() as $name => $value) {
-            if (!in_array($name, ['fileType'])) {
-                $entity->set($name, $value);
-            }
-        }
-
         if ($entity->get('type') === 'simple') {
             $entity->set('convertCollectionToString', true);
             $entity->set('convertRelationsToString', true);
@@ -634,23 +646,12 @@ class ExportFeed extends Base
         $this->addDependency('user');
     }
 
-    protected function beforeUpdateEntity(Entity $entity, $data)
-    {
-        parent::beforeUpdateEntity($entity, $data);
-
-        foreach ($entity->getFeedFields() as $name => $value) {
-            if (!$entity->has($name)) {
-                $entity->set($name, $value);
-            }
-        }
-    }
-
     public function prepareFeedDataConfiguration(Entity $sheet, ?string $contentLanguageCode = null, ?string $contentLocaleId = null): array
     {
         if ($sheet->getEntityName() === 'ExportFeed') {
             /** @var ExportFeedEntity $feed */
             $feed       = $sheet;
-            $entityName = $sheet->getFeedField('entity');
+            $entityName = $sheet->get('entity');
         } else {
             /** @var ExportFeedEntity $feed */
             $feed       = $sheet->get('exportFeed');
@@ -677,15 +678,15 @@ class ExportFeed extends Base
                 'column'                    => end($columnNames) ?: '',
                 'headers'                   => $columnNames,
                 'template'                  => $feed->get('template'),
-                'emptyValue'                => $feed->getFeedField('emptyValue'),
-                'nullValue'                 => $feed->getFeedField('nullValue'),
-                'markForNoRelation'         => $feed->getFeedField('markForNoRelation'),
-                'markForUnlinkedAttribute'  => $feed->getFeedField('markForUnlinkedAttribute'),
+                'emptyValue'                => $feed->get('emptyValue'),
+                'nullValue'                 => $feed->get('nullValue'),
+                'markForNoRelation'         => $feed->get('markForNoRelation'),
+                'markForUnlinkedAttribute'  => $feed->get('markForUnlinkedAttribute'),
                 'thousandSeparator'         => $feed->getThousandSeparator(),
                 'decimalMark'               => $feed->getDecimalMark(),
-                'fieldDelimiterForRelation' => $feed->getFeedField('fieldDelimiterForRelation'),
-                'convertCollectionToString' => !empty($feed->getFeedField('convertCollectionToString')),
-                'convertRelationsToString'  => !empty($feed->getFeedField('convertRelationsToString')),
+                'fieldDelimiterForRelation' => $feed->get('fieldDelimiterForRelation'),
+                'convertCollectionToString' => !empty($feed->get('convertCollectionToString')),
+                'convertRelationsToString'  => !empty($feed->get('convertRelationsToString')),
                 'exportIntoSeparateColumns' => $item->get('exportIntoSeparateColumns'),
                 'exportBy'                  => $item->get('exportBy'),
                 'mask'                      => $item->get('mask'),
@@ -759,7 +760,7 @@ class ExportFeed extends Base
     public function prepareFeedData(ExportFeedEntity $feed, ?string $contentLanguageId = null, ?string $localeId = null): array
     {
         $result = $feed->toArray();
-        foreach ($feed->getFeedFields() as $name => $value) {
+        foreach ($this->getFeedSettings($feed) as $name => $value) {
             $result[$name]         = $value;
             $result['data']->$name = $value;
         }
@@ -812,6 +813,34 @@ class ExportFeed extends Base
             ->getEventManager()
             ->dispatch('ExportFeedService', 'prepareFeedData', new Event(['feed' => $feed, 'result' => $result]))
             ->getArgument('result');
+    }
+
+    /**
+     * The settings of the feed that the export types read from the feed data: the settings of the file format and
+     * the settings of the type of the feed.
+     */
+    protected function getFeedSettings(ExportFeedEntity $feed): array
+    {
+        $settings = [];
+        foreach (self::FORMAT_FIELDS as $field) {
+            $settings[$field] = $feed->get($field);
+        }
+
+        $subtypeRecord = $feed->getSubtype();
+        if (empty($subtypeRecord)) {
+            return $settings;
+        }
+
+        foreach ($this->getMetadata()->get(['entityDefs', $subtypeRecord->getEntityName(), 'fields'], []) as $field => $defs) {
+            if (empty($defs['type']) || !empty($defs['supertypeField']) || !empty($defs['notStorable']) || $field === 'supertype') {
+                continue;
+            }
+
+            $attribute = in_array($defs['type'], ['link', 'file']) ? $field . 'Id' : $field;
+            $settings[$attribute] = $subtypeRecord->get($attribute);
+        }
+
+        return $settings;
     }
 
     protected function resolveContentLanguageCode(string $contentLanguageId): ?string
@@ -1167,7 +1196,7 @@ class ExportFeed extends Base
             return false;
         }
 
-        $entityName = $exportFeed->getFeedField('entity');
+        $entityName = $exportFeed->get('entity');
 
         if (empty($this->getMetadata()->get("scopes.$entityName.type"))) {
             return false;
@@ -1208,7 +1237,7 @@ class ExportFeed extends Base
             $entityName = $feedData['entity'];
             $language   = $this->getInjection('container')->get('language');
         } else {
-            $entityName           = $exportFeed->getFeedField('entity');
+            $entityName           = $exportFeed->get('entity');
             $language             = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
             $hadLocaleIdOverride  = array_key_exists('localeId', $GLOBALS);
             $previousLocaleId     = $GLOBALS['localeId'] ?? null;

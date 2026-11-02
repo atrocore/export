@@ -52,7 +52,7 @@ class ExportConfiguratorItem extends Base
             $entity->set('entity', $sheet->get('entity'));
             $feed = $sheet->get('exportFeed');
         } else {
-            $entity->set('entity', $feed->getFeedField('entity'));
+            $entity->set('entity', $feed->get('entity'));
         }
 
         if ($entity->get('type') === 'Field' && $entity->get('name') !== 'id') {

@@ -20,6 +20,26 @@ use Export\Repositories\ExportFeed;
 
 class Metadata extends AbstractMetadataListener
 {
+    /**
+     * The fields of the export feed are changed before the subtypes get them.
+     */
+    public function loadData(Event $event): void
+    {
+        $data = $event->getArgument('data');
+
+        foreach ($data['app']['exportTypes'] ?? [] as $type => $typeData) {
+            if (!empty($typeData['fileTypeRequired'])) {
+                $data['entityDefs']['ExportFeed']['fields']['fileType']['conditionalProperties']['required']['conditionGroup'][0]['type'] = 'in';
+                $data['entityDefs']['ExportFeed']['fields']['fileType']['conditionalProperties']['required']['conditionGroup'][0]['attribute'] = 'type';
+                $data['entityDefs']['ExportFeed']['fields']['fileType']['conditionalProperties']['required']['conditionGroup'][0]['value'][] = $type;
+            }
+        }
+
+        $this->prepareSubtypeClientDefs($data);
+
+        $event->setArgument('data', $data);
+    }
+
     public function modify(Event $event): void
     {
         $data = $event->getArgument('data');
@@ -78,62 +98,32 @@ class Metadata extends AbstractMetadataListener
             $data['entityDefs']['ScheduledJob']['fields']['maximumDaysForJobExist']['conditionalProperties']['visible']['conditionGroup'][0]['value'][] = 'ExportJobRemove';
         }
 
-        foreach ($data['app']['exportTypes'] ?? [] as $type => $typeData) {
-            $data['entityDefs']['ExportFeed']['fields']['type']['options'][] = $type;
-            if (!empty($typeData['default'])) {
-                $data['entityDefs']['ExportFeed']['fields']['type']['default'] = $type;
-            }
-            if (!empty($typeData['fileTypeRequired'])) {
-                $data['entityDefs']['ExportFeed']['fields']['fileType']['conditionalProperties']['required']['conditionGroup'][0]['type'] = 'in';
-                $data['entityDefs']['ExportFeed']['fields']['fileType']['conditionalProperties']['required']['conditionGroup'][0]['attribute'] = 'type';
-                $data['entityDefs']['ExportFeed']['fields']['fileType']['conditionalProperties']['required']['conditionGroup'][0]['value'][] = $type;
-            }
-        }
-
-
-        // add connection if configured
-        if (!empty($data['scopes']['ExportFeed']['connectionTypes'])) {
-            $data['entityDefs']['ExportFeed']['fields']['connection'] = [
-                'type'                  => 'link',
-                'view'                  => 'export:views/export-feed/fields/connection',
-                'conditionalProperties' => [
-                    'visible'  => [
-                        'conditionGroup' => [
-                            [
-                                'type'      => 'in',
-                                'attribute' => 'type',
-                                'value'     => array_keys($data['scopes']['ExportFeed']['connectionTypes'])
-                            ]
-                        ]
-                    ],
-                    'required' => [
-                        'conditionGroup' => [
-                            [
-                                'type'      => 'in',
-                                'attribute' => 'type',
-                                'value'     => []
-                            ]
-                        ]
-                    ]
-                ]
-            ];
-
-            $data['entityDefs']['ExportFeed']['links']['connection'] = [
-                'type'    => 'belongsTo',
-                'entity'  => 'Connection',
-                'foreign' => 'exportFeeds'
-            ];
-
-            $data['entityDefs']['Connection']['links']['exportFeeds'] = [
-                'type'    => 'hasMany',
-                'entity'  => 'ExportFeed',
-                'foreign' => 'connection'
-            ];
-        }
-
         $this->prepareHeaderFields($data);
 
         $event->setArgument('data', $data);
+    }
+
+    /**
+     * A record of an export feed is shown via its subtype record with the views and the panels of the export feed.
+     */
+    protected function prepareSubtypeClientDefs(array &$data): void
+    {
+        $clientDefs = $data['clientDefs']['ExportFeed'] ?? [];
+
+        foreach ($data['scopes'] ?? [] as $scope => $scopeDefs) {
+            if (($scopeDefs['type'] ?? null) !== 'Subtype' || ($scopeDefs['supertypeId'] ?? null) !== 'ExportFeed') {
+                continue;
+            }
+
+            foreach (['iconClass', 'confirm', 'bottomPanels'] as $key) {
+                if (isset($clientDefs[$key])) {
+                    $data['clientDefs'][$scope][$key] ??= $clientDefs[$key];
+                }
+            }
+
+            $data['clientDefs'][$scope]['views']['detail'] ??= $clientDefs['views']['detail'];
+            $data['clientDefs'][$scope]['recordViews']['detail'] ??= $clientDefs['recordViews']['detail'];
+        }
     }
 
     /**
