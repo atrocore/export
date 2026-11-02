@@ -2,12 +2,16 @@
   "scopeNames": {
     "ExportFeed": "Flux d'export",
     "ExportConfiguratorItem": "Configurateur",
-    "ExportJob": "Exécution d'export"
+    "ExportJob": "Exécution d'export",
+    "ActionTypeExport": "Action: Flux d'export",
+    "ActionTypeReExportFailedJob": "Action: Réexporter la tâche échouée"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Flux d'exports",
     "ExportConfiguratorItem": "Configurateur",
-    "ExportJob": "Exécutions d'export"
+    "ExportJob": "Exécutions d'export",
+    "ActionTypeExport": "Action: Flux d'export",
+    "ActionTypeReExportFailedJob": "Action: Réexporter la tâche échouée"
   },
   "labels": {
     "Generate": "Générer",

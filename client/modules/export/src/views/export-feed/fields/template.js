@@ -63,7 +63,7 @@ Espo.define('export:views/export-feed/fields/template', 'views/fields/script', D
                     confirmText: this.translate('Apply')
                 }, () => {
                     this.prepareJsonTemplate();
-                    this.ajaxPutRequest(`ExportFeed/${this.model.get('id')}`, {template: this.model.get('template')}).then(() => {
+                    this.ajaxPutRequest(`ExportFeed/${this.model.get('supertypeId') || this.model.get('id')}`, {template: this.model.get('template')}).then(() => {
                         this.notify('Saved', 'success');
                     });
                 });

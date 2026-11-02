@@ -2,12 +2,16 @@
   "scopeNames": {
     "ExportFeed": "Экспортный фид",
     "ExportJob": "Выполнение экспорта",
-    "ExportConfiguratorItem": "Конфигуратор"
+    "ExportConfiguratorItem": "Конфигуратор",
+    "ActionTypeExport": "Действие: Экспортный фид",
+    "ActionTypeReExportFailedJob": "Действие: Повторить неудавшийся экспорт"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Экспортные фиды",
     "ExportJob": "Экспортные операции",
-    "ExportConfiguratorItem": "Конфигуратор"
+    "ExportConfiguratorItem": "Конфигуратор",
+    "ActionTypeExport": "Действие: Экспортный фид",
+    "ActionTypeReExportFailedJob": "Действие: Повторить неудавшийся экспорт"
   },
   "labels": {
     "Generate": "Сгенерировать",

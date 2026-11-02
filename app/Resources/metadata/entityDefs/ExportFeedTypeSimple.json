@@ -1,0 +1,13 @@
+{
+  "fields": {
+    "fileNameMask": {
+      "type": "code",
+      "engine": "Twig",
+      "variables": [
+        "feed",
+        "filename",
+        "interation"
+      ]
+    }
+  }
+}

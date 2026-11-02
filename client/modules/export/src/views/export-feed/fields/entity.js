@@ -26,7 +26,7 @@ Espo.define('export:views/export-feed/fields/entity', 'views/fields/enum', funct
 
         getEntitiesList() {
             let scopes = this.getMetadata().get('scopes') || {};
-            return Object.keys(scopes).filter(scope => scopes[scope].entity && !scopes[scope].emHidden).sort((v1, v2) => this.translate(v1, 'scopeNamesPlural').localeCompare(this.translate(v2, 'scopeNamesPlural')));
+            return Object.keys(scopes).filter(scope => scopes[scope].entity && (!scopes[scope].emHidden || scopes[scope].type === 'Subtype')).sort((v1, v2) => this.translate(v1, 'scopeNamesPlural').localeCompare(this.translate(v2, 'scopeNamesPlural')));
         },
 
     })

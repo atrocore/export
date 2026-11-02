@@ -87,17 +87,7 @@
     },
     "type": {
       "type": "enum",
-      "required": true,
-      "conditionalProperties": {
-        "protected": {
-          "conditionGroup": [
-            {
-              "type": "isNotEmpty",
-              "attribute": "id"
-            }
-          ]
-        }
-      }
+      "required": true
     },
     "isActive": {
       "notNull": true,
@@ -136,8 +126,6 @@
         "\\t"
       ],
       "default": ";",
-      "notStorable": true,
-      "dataField": true,
       "view": "export:views/export-feed/fields/field-delimiter",
       "filterDisabled": true,
       "conditionalProperties": {
@@ -168,8 +156,6 @@
         "singleQuote"
       ],
       "default": "doubleQuote",
-      "notStorable": true,
-      "dataField": true,
       "filterDisabled": true,
       "conditionalProperties": {
         "visible": {
@@ -195,8 +181,6 @@
     "entity": {
       "type": "varchar",
       "required": false,
-      "notStorable": true,
-      "dataField": true,
       "view": "export:views/export-feed/fields/entity",
       "filterDisabled": true,
       "default": "Product",
@@ -213,9 +197,7 @@
     },
     "convertCollectionToString": {
       "type": "bool",
-      "notStorable": true,
       "default": true,
-      "dataField": true,
       "tooltip": true,
       "filterDisabled": true,
       "conditionalProperties": {
@@ -246,8 +228,6 @@
     },
     "delimiter": {
       "type": "varchar",
-      "notStorable": true,
-      "dataField": true,
       "required": false,
       "default": "~",
       "filterDisabled": true,
@@ -288,9 +268,7 @@
     },
     "convertRelationsToString": {
       "type": "bool",
-      "notStorable": true,
       "default": true,
-      "dataField": true,
       "tooltip": true,
       "filterDisabled": true,
       "conditionalProperties": {
@@ -321,8 +299,6 @@
     },
     "fieldDelimiterForRelation": {
       "type": "varchar",
-      "notStorable": true,
-      "dataField": true,
       "required": false,
       "default": "|",
       "filterDisabled": true,
@@ -363,8 +339,6 @@
     },
     "emptyValue": {
       "type": "varchar",
-      "notStorable": true,
-      "dataField": true,
       "required": false,
       "default": "",
       "filterDisabled": true,
@@ -394,8 +368,6 @@
     },
     "nullValue": {
       "type": "varchar",
-      "notStorable": true,
-      "dataField": true,
       "required": false,
       "default": "Null",
       "filterDisabled": true,
@@ -425,8 +397,6 @@
     },
     "markForNoRelation": {
       "type": "varchar",
-      "notStorable": true,
-      "dataField": true,
       "required": false,
       "default": "Null",
       "filterDisabled": true,
@@ -448,8 +418,6 @@
     },
     "markForUnlinkedAttribute": {
       "type": "varchar",
-      "notStorable": true,
-      "dataField": true,
       "required": false,
       "default": "N/A",
       "filterDisabled": true,
@@ -655,8 +623,6 @@
       "required": false,
       "filterDisabled": true,
       "default": "1",
-      "notStorable": true,
-      "dataField": true,
       "tooltip": true,
       "options": [
         "1",
@@ -728,28 +694,6 @@
             {
               "type": "isNotEmpty",
               "attribute": "fileType"
-            }
-          ]
-        }
-      }
-    },
-    "fileNameMask": {
-      "type": "code",
-      "engine": "Twig",
-      "variables": [
-        "feed",
-        "filename",
-        "interation"
-      ],
-      "conditionalProperties": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "simple"
-              ]
             }
           ]
         }

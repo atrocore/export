@@ -2,12 +2,16 @@
   "scopeNames": {
     "ExportFeed": "Esportazione di mangimi",
     "ExportConfiguratorItem": "Configuratore",
-    "ExportJob": "Esecuzione dell'esportazione"
+    "ExportJob": "Esecuzione dell'esportazione",
+    "ActionTypeExport": "Azione: Esportazione di mangimi",
+    "ActionTypeReExportFailedJob": "Azione: Riesporta lavoro non riuscito"
   },
   "scopeNamesPlural": {
     "ExportFeed": "Esportazione di feed",
     "ExportConfiguratorItem": "Configuratore",
-    "ExportJob": "Esecuzioni di esportazione"
+    "ExportJob": "Esecuzioni di esportazione",
+    "ActionTypeExport": "Azione: Esportazione di mangimi",
+    "ActionTypeReExportFailedJob": "Azione: Riesporta lavoro non riuscito"
   },
   "labels": {
     "removeAllItems": "Rimuovi tutto",

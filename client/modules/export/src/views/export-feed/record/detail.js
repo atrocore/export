@@ -8,7 +8,7 @@
  * @license    GPLv3 (https://www.gnu.org/licenses/)
  */
 
-Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'export:views/export-feed/record/panels/entity-filter-result'],
+Espo.define('export:views/export-feed/record/detail', ['views/subtype/record/detail', 'export:views/export-feed/record/panels/entity-filter-result'],
     (Dep, EntityFilter) => Dep.extend({
 
         bottomView: 'export:views/export-feed/record/detail-bottom',
@@ -70,6 +70,13 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
             EntityFilter.prototype.actionOpenSearchFilter.call(this);
         },
 
+        /**
+         * The record is shown via its subtype record, the actions of the export feed need the id of the feed.
+         */
+        getExportFeedId() {
+            return this.model.get('supertypeId') || this.model.id;
+        },
+
         hasExportNow() {
             return this.model.get('isActive') && this.getAcl().check('ExportJob', 'create');
         },
@@ -79,7 +86,7 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
                 return;
             }
 
-            this.ajaxPostRequest(`ExportFeed/${this.model.id}/exportFile`, { id: this.model.id }).then(response => {
+            this.ajaxPostRequest(`ExportFeed/${this.getExportFeedId()}/exportFile`, { id: this.getExportFeedId() }).then(response => {
                 this.notify('Created', 'success');
                 this.model.fetch();
                 $('.action[data-action="refresh"][data-panel="exportJobs"]').click();
@@ -103,14 +110,14 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
                 target: document.body,
                 props: {
                     onExport: (contentLanguageId, localeId) => {
-                        const data = { id: this.model.id };
+                        const data = { id: this.getExportFeedId() };
                         if (contentLanguageId) {
                             data.contentLanguageId = contentLanguageId;
                         }
                         if (localeId) {
                             data.localeId = localeId;
                         }
-                        this.ajaxPostRequest(`ExportFeed/${this.model.id}/exportFile`, data).then(() => {
+                        this.ajaxPostRequest(`ExportFeed/${this.getExportFeedId()}/exportFile`, data).then(() => {
                             this.notify('Created', 'success');
                             this.model.fetch();
                             $('.action[data-action="refresh"][data-panel="exportJobs"]').click();
@@ -124,7 +131,7 @@ Espo.define('export:views/export-feed/record/detail', ['views/record/detail', 'e
         actionDuplicateAsImport() {
             this.confirm(this.translate('duplicateAsImport', 'messages', 'ExportFeed'), () => {
                 const data = {
-                    exportFeedId: this.model.get('id')
+                    exportFeedId: this.getExportFeedId()
                 };
                 this.notify(this.translate('duplicate', 'labels', 'ImportFeed'));
                 this.ajaxPostRequest('ImportFeed/createFromExport', data).then(response => {

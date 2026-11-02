@@ -8,7 +8,7 @@
  * @license    GPLv3 (https://www.gnu.org/licenses/)
  */
 
-Espo.define('export:views/export-feed/detail', 'views/detail',
+Espo.define('export:views/export-feed/detail', 'views/subtype/detail',
     Dep => {
 
         return Dep.extend({

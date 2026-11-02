@@ -160,8 +160,9 @@ Espo.define('export:views/export-configurator-item/fields/header-text', 'views/f
 
         getAttribute(attributeId) {
             if (!attributeCache[attributeId]) {
-                this.ajaxGetRequest(`Attribute/${attributeId}`, {}, { async: false }).success(res => {
-                    attributeCache[attributeId] = res;
+                // the settings of the attribute type are the fields of its subtype record
+                Espo.Ajax.getRequest(`Attribute/${attributeId}`, {}, {async: false, metaContext: 'subtype'}).then(res => {
+                    attributeCache[attributeId] = (res._meta && res._meta.subtype && res._meta.subtype.data) || res;
                 });
             }
 
