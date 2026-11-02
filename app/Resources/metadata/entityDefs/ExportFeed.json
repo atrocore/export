@@ -85,10 +85,6 @@
       "readOnly": true,
       "view": "views/fields/user"
     },
-    "type": {
-      "type": "enum",
-      "required": true
-    },
     "isActive": {
       "notNull": true,
       "type": "bool"
