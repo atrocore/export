@@ -66,7 +66,16 @@ class ExportFeed extends Base
 
     public function hasDeletedRecordsToClear(): bool
     {
-        Util::removeDir(AbstractExportType::TMP_DIR);
+        $runningJob = $this->getEntityManager()->getRepository('Job')
+            ->where([
+                'status' => 'Running',
+                'type'   => 'Export',
+            ])
+            ->findOne();
+
+        if (empty($runningJob)) {
+            Util::removeDir(AbstractExportType::TMP_DIR);
+        }
 
         return parent::hasDeletedRecordsToClear();
     }
