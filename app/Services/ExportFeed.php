@@ -760,6 +760,8 @@ class ExportFeed extends Base
     public function prepareFeedData(ExportFeedEntity $feed, ?string $contentLanguageId = null, ?string $localeId = null): array
     {
         $result = $feed->toArray();
+        // a new export feed has no data yet, the export types read the settings from it
+        $result['data'] = (object)($result['data'] ?? []);
         foreach ($this->getFeedSettings($feed) as $name => $value) {
             $result[$name]         = $value;
             $result['data']->$name = $value;
