@@ -1,10 +1,4 @@
 {
-  "fieldTypes": {
-    "exportLink": "Odkaz na export"
-  },
-  "fields": {
-    "dataUrl": "Datová URL adresa"
-  },
   "labels": {
     "exportFeed": "Exportní kanály"
   },

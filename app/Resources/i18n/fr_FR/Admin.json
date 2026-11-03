@@ -1,10 +1,4 @@
 {
-  "fieldTypes": {
-    "exportLink": "Lien d'export"
-  },
-  "fields": {
-    "dataUrl": "Url des données"
-  },
   "labels": {
     "exportFeed": "Flux d'exports"
   },

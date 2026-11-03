@@ -1,10 +1,4 @@
 {
-  "fieldTypes": {
-    "exportLink": "Ссылка для экспорта"
-  },
-  "fields": {
-    "dataUrl": "URL данных"
-  },
   "labels": {
     "exportFeed": "Экспортный фид"
   },
