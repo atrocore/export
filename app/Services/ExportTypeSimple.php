@@ -165,6 +165,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $this->reuploadIfNeeds($input);
 
+        $input->_generated = true;
         $fileId = $this->getService('File')->createFileViaContents($input, '');
 
         return $this->getEntityManager()->getRepository('File')->get($fileId);
@@ -201,6 +202,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $this->reuploadIfNeeds($input);
 
+        $input->_generated = true;
         $fileId = $this->getService('File')->createFileViaContents($input, $contents);
 
         return $this->getEntityManager()->getRepository('File')->get($fileId);
@@ -233,6 +235,7 @@ class ExportTypeSimple extends AbstractExportType
         $this->reuploadIfNeeds($input);
 
         $contents = empty($contents) ? " " : $contents;
+        $input->_generated = true;
         $fileId = $this->getService('File')->createFileViaContents($input, $contents);
 
         return $this->getEntityManager()->getRepository('File')->get($fileId);
@@ -258,6 +261,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $this->reuploadIfNeeds($input);
 
+        $input->_generated = true;
         $fileId = $this->getService('File')->createFileViaContents($input, $contents);
 
         $file = $this->getEntityManager()->getRepository('File')->get($fileId);
@@ -371,6 +375,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $this->reuploadIfNeeds($input);
 
+        $input->_generated = true;
         $fileId = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
 
         // delete tmp file
@@ -580,6 +585,7 @@ class ExportTypeSimple extends AbstractExportType
 
         $this->reuploadIfNeeds($input);
 
+        $input->_generated = true;
         $fileId = $this->getService('File')->moveLocalFileToFileEntity($input, $fileName);
 
         // delete tmp file
@@ -647,6 +653,7 @@ class ExportTypeSimple extends AbstractExportType
 
             $this->getEntityManager()->removeEntity($file);
 
+            $input->_generated = true;
             $fileId = $this->getService('File')->moveLocalFileToFileEntity($input, $this->zipFileName);
 
             //  delete tmp zip file
