@@ -69,7 +69,7 @@ abstract class AbstractExportType extends Base
         foreach ($allFields as $field => $data) {
             if (!empty($data['exportDisabled']) || !empty($data['disabled'])
                 || in_array(
-                    $data['type'], ['linkParent', 'currencyConverted', 'available-currency', 'file', 'attachmentMultiple']
+                    $data['type'], ['linkParent', 'currencyConverted', 'file', 'attachmentMultiple']
                 )) {
                 continue 1;
             }

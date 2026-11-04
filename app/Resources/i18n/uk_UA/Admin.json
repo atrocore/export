@@ -1,10 +1,4 @@
 {
-  "fieldTypes": {
-    "exportLink": "Посилання для експорту"
-  },
-  "fields": {
-    "dataUrl": "URL даних"
-  },
   "labels": {
     "exportFeed": "Експортний фід"
   },
