@@ -38,12 +38,6 @@
       "select": false,
       "canClose": false,
       "hideShowFullList": true,
-      "dragDrop": {
-        "isActive": true,
-        "maxSize": 20
-      },
-      "sortBy": "sortOrder",
-      "asc": true,
       "view": "export:views/export-feed/record/panels/configurator-items",
       "actions": {
         "unlinkRelated": {
