@@ -723,6 +723,7 @@
       "entity": "User"
     },
     "configuratorItems": {
+      "sortField": "sortOrder",
       "type": "hasMany",
       "foreign": "exportFeed",
       "entity": "ExportConfiguratorItem",

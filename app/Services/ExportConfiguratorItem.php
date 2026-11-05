@@ -93,26 +93,6 @@ class ExportConfiguratorItem extends Base
         }
     }
 
-    public function updateEntity(string $id, \stdClass $data): bool
-    {
-        if (property_exists($data, '_previousItemId') && property_exists($data, '_itemId')) {
-            $data->previousItem = $data->_previousItemId;
-            unset($data->_previousItemId);
-            unset($data->_itemId);
-        }
-
-        return parent::updateEntity($id, $data);
-    }
-
-    protected function isEntityUpdated(Entity $entity, \stdClass $data): bool
-    {
-        if (property_exists($data, 'sortOrder')) {
-            return true;
-        }
-
-        return parent::isEntityUpdated($entity, $data);
-    }
-
     public function prepareColumnNames(Entity $entity, int $numberOfHeaders, ?string $localeId = null): array
     {
         $result = [];
