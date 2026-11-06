@@ -45,5 +45,10 @@
       "escapeDoubleQuote": "Échappe les guillemets doubles d'une chaîne en ajoutant des barres obliques inverses (\" devient \\\")",
       "backslashNToBr": "Convertit les caractères de retour à la ligne (\\n) en balises de retour à la ligne HTML (<br>)"
     }
+  },
+  "subtypeDescriptions": {
+    "ActionTypeExport": "Exécute un flux d'export.",
+    "ActionTypeReExportFailedJob": "Relance une tâche d'export échouée.",
+    "ExportFeedTypeSimple": "Exporte des données dans un fichier téléchargeable."
   }
 }

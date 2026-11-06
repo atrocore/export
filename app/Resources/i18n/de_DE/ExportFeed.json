@@ -118,6 +118,9 @@
       "csv": "CSV",
       "json": "JSON",
       "xml": "XML"
+    },
+    "type": {
+      "simple": "Datei"
     }
   },
   "twigVariables": {

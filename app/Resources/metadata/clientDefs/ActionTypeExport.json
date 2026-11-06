@@ -1,5 +1,5 @@
 {
-  "iconClass": "person-simple-run",
+  "iconClass": "export",
   "recordViews": {
     "detail": "views/action/record/detail"
   }
