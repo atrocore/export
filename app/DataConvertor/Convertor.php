@@ -20,9 +20,9 @@ use Atro\Core\Utils\Config;
 use Atro\Core\Utils\Language;
 use Atro\Core\Utils\Metadata;
 use Espo\ORM\EntityManager;
-use Atro\Services\Record;
 use Export\FieldConverters\AbstractType;
 use Export\Services\ExportFeed;
+use Atro\Core\Services\AbstractRecordService;
 
 class Convertor
 {
@@ -86,7 +86,6 @@ class Convertor
             $fieldConverter->convertToString($result, $record, $configuration);
         }
 
-
         return $result;
     }
 
@@ -110,7 +109,7 @@ class Convertor
         return $this->container->get('config');
     }
 
-    public function getService(string $serviceName): Record
+    public function getService(string $serviceName): AbstractRecordService
     {
         return $this->container->get('serviceFactory')->create($serviceName);
     }

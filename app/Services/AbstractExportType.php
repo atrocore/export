@@ -32,9 +32,9 @@ use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
 use Espo\ORM\EntityManager;
 use Espo\ORM\IEntity;
-use Atro\Services\Record;
 use Export\DataConvertor\Convertor;
 use Export\Entities\ExportJob;
+use Atro\Core\Services\AbstractRecordService;
 
 abstract class AbstractExportType extends AbstractService
 {
@@ -93,7 +93,6 @@ abstract class AbstractExportType extends AbstractService
                 $row['exportBy'] = ['id'];
             }
 
-
             if ($data['type'] === 'linkMultiple') {
                 $row['exportIntoSeparateColumns'] = false;
                 $row['offsetRelation']            = 0;
@@ -140,7 +139,6 @@ abstract class AbstractExportType extends AbstractService
 
         $fileName .= '_' . date('YmdHis');
 
-
         if (!empty($this->data['feed']['fileNameMask'])) {
             $data = [
                 'feed'     => $this->data['feed'],
@@ -155,7 +153,6 @@ abstract class AbstractExportType extends AbstractService
                 $fileName = $newFileName;
             }
         }
-
 
         return $fileName . '.' . $extension;
     }
@@ -172,7 +169,6 @@ abstract class AbstractExportType extends AbstractService
         $row['entity']                    = $feedData['entity'];
         $row['decimalMark']               = $feedData['decimalMark'];
         $row['thousandSeparator']         = $feedData['thousandSeparator'];
-
 
         return $row;
     }
@@ -846,7 +842,6 @@ abstract class AbstractExportType extends AbstractService
         return $res;
     }
 
-
     public function getZipTmpDir(): string
     {
         return \Atro\Jobs\MassDownload::ZIP_TMP_DIR . DIRECTORY_SEPARATOR . 'export' . DIRECTORY_SEPARATOR . $this->data['exportJobId'];
@@ -882,12 +877,12 @@ abstract class AbstractExportType extends AbstractService
         return $this->getContainer()->get('entityManager');
     }
 
-    protected function getService(string $serviceName): Record
+    protected function getService(string $serviceName): AbstractRecordService
     {
         return $this->getContainer()->get('serviceFactory')->create($serviceName);
     }
 
-    protected function getEntityService(): Record
+    protected function getEntityService(): AbstractRecordService
     {
         $service = $this->getService($this->data['feed']['entity']);
 
