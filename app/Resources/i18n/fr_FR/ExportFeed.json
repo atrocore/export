@@ -48,6 +48,9 @@
       "json": "JSON",
       "xml": "XML",
       "sql": "SQL"
+    },
+    "type": {
+      "simple": "Fichier"
     }
   },
   "labels": {
