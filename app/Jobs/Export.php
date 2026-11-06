@@ -18,7 +18,7 @@ use Atro\Jobs\AbstractJob;
 use Atro\Jobs\JobInterface;
 use Atro\Core\Exceptions\BadRequest;
 use Export\Core\Exceptions\NothingToExport;
-use Export\Services\AbstractExportType;
+use Export\Core\ExportTypes\AbstractExportType;
 
 class Export extends AbstractJob implements JobInterface
 {
@@ -49,7 +49,7 @@ class Export extends AbstractJob implements JobInterface
                 $exportFeedService->putAttributesToMetadata($exportJob->get('exportFeedId') ?? $data['feed']['id'], $data['feed']);
             }
 
-            $typeService = $exportFeedService->getExportTypeService($data['feed']['type']);
+            $typeService = $exportFeedService->getExportType($data['feed']['type']);
             try {
                 $file = $typeService->export($data, $exportJob);
             } catch (NothingToExport $e) {

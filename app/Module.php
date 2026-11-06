@@ -33,7 +33,7 @@ class Module extends AbstractModule
 
     public static function afterUpdate(): void
     {
-        Util::removeDir(\Export\Services\AbstractExportType::TMP_DIR);
+        Util::removeDir(\Export\Core\ExportTypes\AbstractExportType::TMP_DIR);
     }
 
     public function getEntityTypeHandlerExcludes(): array

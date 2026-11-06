@@ -16,7 +16,7 @@ namespace Export\Repositories;
 use Atro\Core\Exceptions\BadRequest;
 use Atro\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
-use Export\Services\AbstractExportType;
+use Export\Core\ExportTypes\AbstractExportType;
 
 class ExportJob extends Base
 {

@@ -20,7 +20,7 @@ use Atro\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
 use Export\Entities\ExportFeed as ExportFeedEntity;
-use Export\Services\AbstractExportType;
+use Export\Core\ExportTypes\AbstractExportType;
 
 class ExportFeed extends Base
 {

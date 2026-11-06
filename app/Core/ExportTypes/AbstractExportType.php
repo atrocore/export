@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Export\Services;
+namespace Export\Core\ExportTypes;
 
 use Atro\Core\AttributeFieldConverter;
 use Atro\Core\Exceptions\BadRequest;
@@ -20,7 +20,6 @@ use Atro\Services\Settings;
 use Atro\Core\Exceptions\Error;
 use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Atro\Core\Services\AbstractService;
 use Atro\Core\Twig\Twig;
 use Atro\Core\Utils\Config;
 use Espo\Core\Utils\Json;
@@ -35,8 +34,11 @@ use Espo\ORM\IEntity;
 use Export\DataConvertor\Convertor;
 use Export\Entities\ExportJob;
 use Atro\Core\Services\AbstractRecordService;
+use Atro\Entities\User;
+use Atro\Core\KeyValueStorages\StorageInterface;
+use Psr\Container\ContainerInterface;
 
-abstract class AbstractExportType extends AbstractService
+abstract class AbstractExportType
 {
     public const TMP_DIR = 'data' . DIRECTORY_SEPARATOR . '.tmp-export';
 
@@ -58,6 +60,10 @@ abstract class AbstractExportType extends AbstractService
 
     protected ?\ZipArchive $zipArchive = null;
     protected $zipFileName = null;
+
+    public function __construct(protected readonly ContainerInterface $container)
+    {
+    }
 
     public static function getAllFieldsConfiguration(string $scope, Metadata $metadata, Language $language): array
     {
@@ -916,19 +922,12 @@ abstract class AbstractExportType extends AbstractService
 
     protected function getContainer(): Container
     {
-        return $this->getInjection('container');
+        return $this->container;
     }
 
     protected function getTwig(): Twig
     {
         return $this->getContainer()->get('twig');
-    }
-
-    protected function init()
-    {
-        parent::init();
-
-        $this->addDependency('container');
     }
 
     protected function getCollectionFromIds(mixed $entityIds): EntityCollection
@@ -992,5 +991,15 @@ abstract class AbstractExportType extends AbstractService
                 'payload*' => '%"exportJobId":"' . $exportJobId . '"%',
             ])
             ->count();
+    }
+
+    protected function getUser(): User
+    {
+        return $this->container->get('user');
+    }
+
+    protected function getMemoryStorage(): StorageInterface
+    {
+        return $this->container->get('memoryStorage');
     }
 }

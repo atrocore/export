@@ -16,7 +16,7 @@ namespace Export\Jobs;
 use Atro\Entities\Job;
 use Atro\Jobs\AbstractJob;
 use Atro\Jobs\JobInterface;
-use Export\Services\AbstractExportType;
+use Export\Core\ExportTypes\AbstractExportType;
 
 class ExportChunk extends AbstractJob implements JobInterface
 {
@@ -41,7 +41,7 @@ class ExportChunk extends AbstractJob implements JobInterface
         $exportFeedService = $this->getServiceFactory()->create('ExportFeed');
 
         /** @var AbstractExportType $typeService */
-        $typeService = $exportFeedService->getExportTypeService($data['feed']['type'], $data);
+        $typeService = $exportFeedService->getExportType($data['feed']['type'], $data);
 
         // put attributes to metadata as fields
         if (!empty($entityName) && $this->getMetadata()->get("scopes.$entityName.hasAttribute")) {
