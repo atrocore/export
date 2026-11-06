@@ -25,14 +25,14 @@ use Atro\Core\Twig\Twig;
 use Atro\Core\Utils\Config;
 use Espo\Core\Utils\Json;
 use Atro\Core\Utils\Language;
-use Espo\Core\Utils\Metadata;
+use Atro\Core\Utils\Metadata;
 use Atro\Core\Utils\Util;
 use Atro\Entities\File;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
 use Espo\ORM\EntityManager;
 use Espo\ORM\IEntity;
-use Espo\Services\Record;
+use Atro\Services\Record;
 use Export\DataConvertor\Convertor;
 use Export\Entities\ExportJob;
 

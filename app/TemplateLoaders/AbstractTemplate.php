@@ -17,7 +17,7 @@ use Atro\Core\KeyValueStorages\StorageInterface;
 use Atro\Core\Container;
 use Espo\Core\Injectable;
 use Atro\Core\Utils\Config;
-use Espo\Core\Utils\Metadata;
+use Atro\Core\Utils\Metadata;
 
 abstract class AbstractTemplate extends Injectable
 {

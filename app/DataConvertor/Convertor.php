@@ -20,7 +20,7 @@ use Atro\Core\Utils\Config;
 use Atro\Core\Utils\Language;
 use Atro\Core\Utils\Metadata;
 use Espo\ORM\EntityManager;
-use Espo\Services\Record;
+use Atro\Services\Record;
 use Export\FieldConverters\AbstractType;
 use Export\Services\ExportFeed;
 

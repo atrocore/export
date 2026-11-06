@@ -184,7 +184,7 @@ class LinkMultipleType extends LinkType
         $entity = $this->convertor->getEntityManager()->getEntity($configuration['entity']);
         $keySet = $mapper->getKeys($entity, $configuration['field']);
 
-        /** @var \Espo\Core\SelectManagers\Base $selectManager */
+        /** @var \Atro\Core\SelectManagers\Base $selectManager */
         $selectManager = $container->get('selectManagerFactory')->create($linkDefs['entity']);
 
         $sp = $selectManager->getSelectParams([
