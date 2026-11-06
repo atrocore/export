@@ -20,7 +20,7 @@ use Atro\Services\Settings;
 use Atro\Core\Exceptions\Error;
 use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Espo\Core\Services\Base;
+use Atro\Core\Services\AbstractService;
 use Atro\Core\Twig\Twig;
 use Atro\Core\Utils\Config;
 use Espo\Core\Utils\Json;
@@ -36,7 +36,7 @@ use Espo\Services\Record;
 use Export\DataConvertor\Convertor;
 use Export\Entities\ExportJob;
 
-abstract class AbstractExportType extends Base
+abstract class AbstractExportType extends AbstractService
 {
     public const TMP_DIR = 'data' . DIRECTORY_SEPARATOR . '.tmp-export';
 
