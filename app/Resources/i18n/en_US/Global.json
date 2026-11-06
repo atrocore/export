@@ -47,5 +47,10 @@
       "escapeDoubleQuote": "Escapes double quotes in a string by adding backslashes (\" becomes \\\")",
       "backslashNToBr": "Converts newline characters (\\n) to HTML line break tags (<br>)"
     }
+  },
+  "subtypeDescriptions": {
+    "ActionTypeExport": "Runs an export feed.",
+    "ActionTypeReExportFailedJob": "Runs a failed export job again.",
+    "ExportFeedTypeSimple": "Exports data to a file that can be downloaded."
   }
 }

@@ -45,5 +45,10 @@
       "escapeDoubleQuote": "Maskiert doppelte Anführungszeichen in einer Zeichenfolge durch das Hinzufügen von Backslashes (\" wird zu \\\")",
       "backslashNToBr": "Konvertiert Zeilenumbruchzeichen (\\n) in HTML-Zeilenumbruch-Tags (<br>)"
     }
+  },
+  "subtypeDescriptions": {
+    "ActionTypeExport": "Führt einen Export-Feed aus.",
+    "ActionTypeReExportFailedJob": "Führt einen fehlgeschlagenen Export-Job erneut aus.",
+    "ExportFeedTypeSimple": "Exportiert Daten in eine Datei, die heruntergeladen werden kann."
   }
 }
