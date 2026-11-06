@@ -12,7 +12,7 @@
 namespace Export\Migrations;
 
 use Atro\Core\Migration\Base;
-use Espo\Core\Exceptions\Error;
+use Atro\Core\Exceptions\Error;
 
 class V1Dot7Dot64 extends Base
 {

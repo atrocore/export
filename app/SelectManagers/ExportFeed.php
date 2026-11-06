@@ -11,7 +11,7 @@
 
 namespace Export\SelectManagers;
 
-use Espo\Core\SelectManagers\Base;
+use Atro\Core\SelectManagers\Base;
 
 /**
  * Class ExportFeed

@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Export\Services;
+namespace Export\Core\ExportTypes;
 
 use Atro\Core\AttributeFieldConverter;
 use Atro\Core\Exceptions\BadRequest;
@@ -20,23 +20,25 @@ use Atro\Services\Settings;
 use Atro\Core\Exceptions\Error;
 use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Espo\Core\Services\Base;
 use Atro\Core\Twig\Twig;
 use Atro\Core\Utils\Config;
 use Espo\Core\Utils\Json;
 use Atro\Core\Utils\Language;
-use Espo\Core\Utils\Metadata;
+use Atro\Core\Utils\Metadata;
 use Atro\Core\Utils\Util;
 use Atro\Entities\File;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
 use Espo\ORM\EntityManager;
 use Espo\ORM\IEntity;
-use Espo\Services\Record;
 use Export\DataConvertor\Convertor;
 use Export\Entities\ExportJob;
+use Atro\Core\Services\AbstractRecordService;
+use Atro\Entities\User;
+use Atro\Core\KeyValueStorages\StorageInterface;
+use Psr\Container\ContainerInterface;
 
-abstract class AbstractExportType extends Base
+abstract class AbstractExportType
 {
     public const TMP_DIR = 'data' . DIRECTORY_SEPARATOR . '.tmp-export';
 
@@ -58,6 +60,10 @@ abstract class AbstractExportType extends Base
 
     protected ?\ZipArchive $zipArchive = null;
     protected $zipFileName = null;
+
+    public function __construct(protected readonly ContainerInterface $container)
+    {
+    }
 
     public static function getAllFieldsConfiguration(string $scope, Metadata $metadata, Language $language): array
     {
@@ -92,7 +98,6 @@ abstract class AbstractExportType extends Base
             if (in_array($data['type'], ['link', 'linkMultiple'])) {
                 $row['exportBy'] = ['id'];
             }
-
 
             if ($data['type'] === 'linkMultiple') {
                 $row['exportIntoSeparateColumns'] = false;
@@ -140,7 +145,6 @@ abstract class AbstractExportType extends Base
 
         $fileName .= '_' . date('YmdHis');
 
-
         if (!empty($this->data['feed']['fileNameMask'])) {
             $data = [
                 'feed'     => $this->data['feed'],
@@ -155,7 +159,6 @@ abstract class AbstractExportType extends Base
                 $fileName = $newFileName;
             }
         }
-
 
         return $fileName . '.' . $extension;
     }
@@ -172,7 +175,6 @@ abstract class AbstractExportType extends Base
         $row['entity']                    = $feedData['entity'];
         $row['decimalMark']               = $feedData['decimalMark'];
         $row['thousandSeparator']         = $feedData['thousandSeparator'];
-
 
         return $row;
     }
@@ -846,7 +848,6 @@ abstract class AbstractExportType extends Base
         return $res;
     }
 
-
     public function getZipTmpDir(): string
     {
         return \Atro\Jobs\MassDownload::ZIP_TMP_DIR . DIRECTORY_SEPARATOR . 'export' . DIRECTORY_SEPARATOR . $this->data['exportJobId'];
@@ -882,12 +883,12 @@ abstract class AbstractExportType extends Base
         return $this->getContainer()->get('entityManager');
     }
 
-    protected function getService(string $serviceName): Record
+    protected function getService(string $serviceName): AbstractRecordService
     {
         return $this->getContainer()->get('serviceFactory')->create($serviceName);
     }
 
-    protected function getEntityService(): Record
+    protected function getEntityService(): AbstractRecordService
     {
         $service = $this->getService($this->data['feed']['entity']);
 
@@ -921,19 +922,12 @@ abstract class AbstractExportType extends Base
 
     protected function getContainer(): Container
     {
-        return $this->getInjection('container');
+        return $this->container;
     }
 
     protected function getTwig(): Twig
     {
         return $this->getContainer()->get('twig');
-    }
-
-    protected function init()
-    {
-        parent::init();
-
-        $this->addDependency('container');
     }
 
     protected function getCollectionFromIds(mixed $entityIds): EntityCollection
@@ -997,5 +991,15 @@ abstract class AbstractExportType extends Base
                 'payload*' => '%"exportJobId":"' . $exportJobId . '"%',
             ])
             ->count();
+    }
+
+    protected function getUser(): User
+    {
+        return $this->container->get('user');
+    }
+
+    protected function getMemoryStorage(): StorageInterface
+    {
+        return $this->container->get('memoryStorage');
     }
 }

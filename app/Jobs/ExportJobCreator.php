@@ -39,7 +39,7 @@ class ExportJobCreator extends AbstractJob implements JobInterface
             $data['feed']['originTemplate'] = $this->getExportFeedService()->getOriginTemplate($data['feed']['originTemplateName']);
         }
 
-        $count = $this->getExportFeedService()->getExportTypeService($data['feed']['type'], $data)->getTotal();
+        $count = $this->getExportFeedService()->getExportType($data['feed']['type'], $data)->getTotal();
 
         if (!empty($data['feed']['separateJob']) && !empty($count)) {
             $i = 1;

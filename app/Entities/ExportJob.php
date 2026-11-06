@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Export\Entities;
 
-use Espo\Core\Templates\Entities\Base;
+use Atro\Core\Templates\Entities\Base;
 use Espo\Core\Utils\Json;
 
 class ExportJob extends Base

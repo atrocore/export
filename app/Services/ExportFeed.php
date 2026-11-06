@@ -29,6 +29,7 @@ use Espo\ORM\IEntity;
 use Export\Jobs\ExportJobCreator;
 use Export\TemplateLoaders\AbstractTemplate;
 use Export\Entities\ExportFeed as ExportFeedEntity;
+use Export\Core\ExportTypes\AbstractExportType;
 
 class ExportFeed extends Base
 {
@@ -626,9 +627,17 @@ class ExportFeed extends Base
         }
     }
 
-    public function getExportTypeService(string $type, array $data = null): AbstractExportType
+    /**
+     * The export type of the feed: the class set as className in app.exportTypes.<type>.
+     */
+    public function getExportType(string $type, ?array $data = null): AbstractExportType
     {
-        $res = $this->getInjection('serviceFactory')->create('ExportType' . ucfirst($type));
+        $className = $this->getMetadata()->get(['app', 'exportTypes', $type, 'className']);
+        if (empty($className) || !is_a($className, AbstractExportType::class, true)) {
+            throw new Exceptions\BadRequest("No such export type '$type'.");
+        }
+
+        $res = $this->getEntityManager()->getContainer()->get($className);
         if ($data) {
             $res->setData($data);
         }
@@ -1178,7 +1187,7 @@ class ExportFeed extends Base
         $data['offset'] = !empty($offset) ? (int)$offset : 0;
         $data['limit']  = empty($data['feed']['limit']) ? \PHP_INT_MAX : $data['feed']['limit'];
 
-        $exportService = $this->getExportTypeService($data['feed']['type']);
+        $exportService = $this->getExportType($data['feed']['type']);
         $exportService->setData($data);
 
         return [

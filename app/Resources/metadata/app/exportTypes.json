@@ -1,5 +1,6 @@
 {
   "simple": {
+    "className": "\\Export\\ExportTypes\\Simple",
     "default": true,
     "fileTypeRequired": true,
     "fileTypes": [

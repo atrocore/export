@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Export\Migrations;
 
-use Espo\Core\Exceptions\Error;
+use Atro\Core\Exceptions\Error;
 use Atro\Core\Migration\Base;
 
 class V1Dot6Dot0 extends Base

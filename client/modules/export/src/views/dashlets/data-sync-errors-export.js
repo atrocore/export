@@ -13,7 +13,6 @@ Espo.define('export:views/dashlets/data-sync-errors-export', 'views/dashlets/abs
 
         _template: '<div class="list-container">{{{list}}}</div>',
 
-        collectionUrl: 'ExportFeed/syncErrorStatistics',
 
         actionRefresh: function () {
             this.collection.fetch();
@@ -23,7 +22,7 @@ Espo.define('export:views/dashlets/data-sync-errors-export', 'views/dashlets/abs
             this.getCollectionFactory().create('DataSyncErrorsExportDashlet', function (collection) {
                 this.collection = collection;
 
-                collection.url = this.collectionUrl;
+                collection.url = this.getDataUrl();
                 collection.maxSize = this.getOption('displayRecords');
 
                 this.listenToOnce(collection, 'sync', function () {

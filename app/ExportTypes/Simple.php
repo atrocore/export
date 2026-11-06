@@ -11,14 +11,14 @@
 
 declare(strict_types=1);
 
-namespace Export\Services;
+namespace Export\ExportTypes;
 
 use Atro\Core\EventManager\Event;
 use Atro\Core\EventManager\Manager;
 use Atro\Entities\Folder;
 use Atro\Core\Exceptions\Error;
 use Atro\Core\Exceptions\Exception;
-use Espo\Core\Utils\Util;
+use Atro\Core\Utils\Util;
 use Atro\Entities\File;
 use Espo\ORM\EntityCollection;
 use Export\Core\Exceptions\NothingToExport;
@@ -29,8 +29,9 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Export\Core\ExportTypes\AbstractExportType;
 
-class ExportTypeSimple extends AbstractExportType
+class Simple extends AbstractExportType
 {
     protected $fullCollection = null;
 
@@ -68,7 +69,7 @@ class ExportTypeSimple extends AbstractExportType
             $templateClassName = $this->getMetadata()->get(['app', 'templateLoaders', $templateLoaderName]);
 
             if (!empty($templateClassName) && is_a($templateClassName, AbstractTemplate::class, true)) {
-                $templateClass = $this->getInjection('container')->get($templateClassName);
+                $templateClass = $this->container->get($templateClassName);
 
                 if ($templateClass->isTemplateCompatible($this->data['feed'])) {
                     return $templateClass;
@@ -76,7 +77,7 @@ class ExportTypeSimple extends AbstractExportType
             }
         }
 
-        return $this->getInjection('container')->get($className);
+        return $this->container->get($className);
     }
 
     public function renderTemplateContents(string $template, array $templateData, ?string $loaderName = null): string

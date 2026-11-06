@@ -1,5 +1,6 @@
 {
     "view": "export:views/dashlets/data-sync-errors-export",
+    "className": "\\Export\\Dashlets\\DataSyncErrorsExport",
     "options": {
         "fields": {
             "title": {

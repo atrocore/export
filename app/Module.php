@@ -16,7 +16,7 @@ namespace Export;
 use Atro\Core\EntityTypeHandlers\CreateHandler;
 use Atro\Core\EntityTypeHandlers\ListHandler;
 use Atro\Core\ModuleManager\AbstractModule;
-use Espo\Core\Utils\Util;
+use Atro\Core\Utils\Util;
 
 /**
  * Class Module
@@ -33,7 +33,7 @@ class Module extends AbstractModule
 
     public static function afterUpdate(): void
     {
-        Util::removeDir(\Export\Services\AbstractExportType::TMP_DIR);
+        Util::removeDir(\Export\Core\ExportTypes\AbstractExportType::TMP_DIR);
     }
 
     public function getEntityTypeHandlerExcludes(): array
