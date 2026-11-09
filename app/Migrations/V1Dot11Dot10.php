@@ -14,10 +14,11 @@ declare(strict_types=1);
 namespace Export\Migrations;
 
 use Atro\Core\Migration\Base;
-use Export\Seeders\FailedExportTemplateSeeder;
 
 class V1Dot11Dot10 extends Base
 {
+    private const REFERENCE_DATA_DIR = 'data/reference-data';
+
     public function getMigrationDateTime(): ?\DateTime
     {
         return new \DateTime('2026-08-03 18:00:00');
@@ -25,6 +26,93 @@ class V1Dot11Dot10 extends Base
 
     public function up(): void
     {
-        (new FailedExportTemplateSeeder($this->getConfig(), $this->getDbal()))->run();
+        $this->createFailedExportTemplate();
+    }
+
+    private function createFailedExportTemplate(): void
+    {
+        $filePath = self::REFERENCE_DATA_DIR . DIRECTORY_SEPARATOR . 'EmailTemplate.json';
+
+        $templates = file_exists($filePath) ? (json_decode(file_get_contents($filePath), true) ?? []) : [];
+
+        $templateData = $this->getDefaultTemplateData();
+        if (isset($templates[$templateData['code']])) {
+            return;
+        }
+
+        $templates[$templateData['code']] = $templateData;
+
+        @mkdir(self::REFERENCE_DATA_DIR);
+        @file_put_contents($filePath, json_encode($templates));
+    }
+
+    private function getDefaultTemplateData(): array
+    {
+        return [
+            'id'    => 'failedExportExecutions',
+            'name'  => 'Failed Export Executions',
+            'code'  => 'failed_export_executions',
+            'subject' => 'Failed Export Executions',
+            'isHtml' => true,
+            'createdAt' => date('Y-m-d H:i:s'),
+            'body' => "<style>
+    * {
+        font-family: sans-serif;
+    }
+
+    table, th, td {
+        border: 1px solid #999;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        text-align: center;
+        padding: 15px;
+    }
+
+    th:first-of-type, 
+    td:first-of-type {
+        text-align: left;
+    }
+</style>
+
+<h1>Failed Export Executions</h1>
+
+{% set jobs = findEntities('ExportJob', {'state': 'Failed', 'exportFeedId!=': 'no-such-id', 'createdAt>=': 'now' | date_modify('-1 days') | date('Y-m-d H:i:s')}) %}
+
+{% set feeds = {} %}
+{% set feedNames = {} %}
+{% set total = 0 %}
+{% for job in jobs %}
+    {% set feeds = feeds|merge({(job.exportFeedId): (feeds[job.exportFeedId] ?? 0) + 1}) %}
+    {% set total = total + 1 %}
+{% endfor %}
+
+<br/>
+
+<table>
+    <thead>
+        <tr>
+            <th>Feed</th>
+            <th>Failed</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for feedId, count in feeds %}
+        {% set feed = findEntityById('ExportFeed', feedId) %}
+        <tr>
+            <td><a href=\"{{ config.siteUrl }}/#ExportFeed/view/{{ feedId }}\">{{ feed.name ?? feedId }}</a></td>
+            <td><b>{{ count }}</b></td>
+        </tr>
+    {% endfor %}
+    {% if total > 0 %}
+        <tr>
+            <td><b>Total</b></td>
+            <td><b>{{ total }}</b></td>
+        </tr>
+    {% endif %}
+</table>
+    ",
+        ];
     }
 }
