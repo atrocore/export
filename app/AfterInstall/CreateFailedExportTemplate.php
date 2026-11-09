@@ -11,13 +11,21 @@
 
 declare(strict_types=1);
 
-namespace Export\Seeders;
+namespace Export\AfterInstall;
 
+use Atro\Core\ModuleManager\AfterInstallInterface;
 use Atro\Core\Templates\Repositories\ReferenceData;
-use Atro\Seeders\AbstractSeeder;
 
-class FailedExportTemplateSeeder extends AbstractSeeder
+/**
+ * Creates the email template that lists the failed export executions.
+ */
+class CreateFailedExportTemplate implements AfterInstallInterface
 {
+    public static function getSortOrder(): int
+    {
+        return 20;
+    }
+
     public function run(): void
     {
         $filePath = ReferenceData::DIR_PATH . DIRECTORY_SEPARATOR . 'EmailTemplate.json';
