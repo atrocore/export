@@ -203,7 +203,9 @@ class LinkMultipleType extends LinkType
 
         if (!empty($sp['orderBy']) && strpos($sp['orderBy'], '.')) {
             $orderByParts = explode('.', $sp['orderBy'], 2);
-            if (!empty($orderByEntity = $this->getMetadata()->get(['entityDefs', $linkDefs['entity'], 'links', $orderByParts[0], 'entity']))) {
+            $orderByEntity = $this->getMetadata()->get(['entityDefs', $linkDefs['entity'], 'links', $orderByParts[0], 'entity']);
+            $subFieldDefs = !empty($orderByEntity) ? $this->getMetadata()->get(['entityDefs', $orderByEntity, 'fields', $orderByParts[1] ?? '']) : null;
+            if (!empty($orderByEntity) && !empty($subFieldDefs) && empty($subFieldDefs['notStorable'])) {
                 $joinTable  = $mapper->getQueryConverter()->toDb($orderByEntity);
                 $joinColumn = $mapper->getQueryConverter()->toDb($orderByParts[0] . 'Id');
 
@@ -211,8 +213,9 @@ class LinkMultipleType extends LinkType
                 $orderByParts[0] = $orderByHash;
                 $orderBy         = $mapper->getQueryConverter()->toDb(implode('.', $orderByParts));
 
+                $direction = strtoupper((string)($sp['order'] ?? '')) === 'DESC' ? 'DESC' : 'ASC';
                 $qb1->leftJoin($mtAlias, $joinTable, $orderByHash, "$mtAlias.$joinColumn = $orderByHash.id");
-                $qb1->orderBy($orderBy, $sp['order'] ?? 'ASC');
+                $qb1->orderBy($orderBy, $direction);
             }
         }
 
