@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Export\Repositories;
 
+use Atro\Core\Exceptions\BadRequest;
 use Doctrine\DBAL\ParameterType;
 use Atro\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
@@ -43,8 +44,56 @@ class ExportConfiguratorItem extends Base
         }
     }
 
+    protected function validateSortFieldRelation(Entity $entity): void
+    {
+        $value = (string)$entity->get('sortFieldRelation');
+        if ($value === '' || $value === 'id' || !$entity->isAttributeChanged('sortFieldRelation')) {
+            return;
+        }
+
+        // sortFieldRelation is only used for linkMultiple fields; for any other field it is never put into SQL, so skip
+        if ($this->getMetadata()->get(['entityDefs', $entity->get('entity'), 'fields', $entity->get('name'), 'type']) !== 'linkMultiple') {
+            return;
+        }
+
+        $relatedEntity = $this->getMetadata()->get(['entityDefs', $entity->get('entity'), 'links', $entity->get('name'), 'entity']);
+        $notAllowedTypes = ['jsonObject', 'linkMultiple'];
+
+        $isAllowedField = function (?string $scope, string $field) use ($notAllowedTypes): bool {
+            if (empty($scope)) {
+                return false;
+            }
+            $name = str_ends_with($field, 'Id') ? substr($field, 0, -2) : $field;
+            $defs = $this->getMetadata()->get(['entityDefs', $scope, 'fields', $name]);
+            if (empty($defs) || !empty($defs['notStorable']) || !empty($defs['exportDisabled']) || in_array($defs['type'], $notAllowedTypes, true)) {
+                return false;
+            }
+            return !str_ends_with($field, 'Id') || in_array($defs['type'], ['link', 'file'], true);
+        };
+
+        $allowed = false;
+        if (!empty($relatedEntity)) {
+            if (strpos($value, '.') !== false) {
+                [$link, $sub] = explode('.', $value, 2);
+                $linkDefs = $this->getMetadata()->get(['entityDefs', $relatedEntity, 'fields', $link]);
+                if (!empty($linkDefs) && in_array($linkDefs['type'] ?? '', ['link', 'file'], true)) {
+                    $foreignEntity = $this->getMetadata()->get(['entityDefs', $relatedEntity, 'links', $link, 'entity']);
+                    $allowed = $isAllowedField($foreignEntity, $sub);
+                }
+            } else {
+                $allowed = $isAllowedField($relatedEntity, $value);
+            }
+        }
+
+        if (!$allowed) {
+            throw new BadRequest(sprintf($this->getLanguage()->translate('filterContainsUnknownField', 'exceptions', 'Global'), $value));
+        }
+    }
+
     protected function beforeSave(Entity $entity, array $options = [])
     {
+        $this->validateSortFieldRelation($entity);
+
         if ($entity->isNew() && !$entity->has('previousItem')) {
             $field = 'export_feed_id';
             $value = $entity->get('exportFeedId');
