@@ -23,12 +23,7 @@ class ExportFeed extends Base
      */
     public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
     {
-        $exportTypes = [];
-        foreach ($this->getMetadata()->get(['app', 'services'], []) as $serviceName => $serviceClassName) {
-            if (strpos($serviceName, 'ExportType') !== false) {
-                $exportTypes[] = lcfirst(str_replace('ExportType', '', $serviceName));
-            }
-        }
+        $exportTypes = $this->getMetadata()->get(['entityDefs', 'ExportFeed', 'fields', 'type', 'options'], []);
 
         // filtering by ExportFeed types
         $params['where'][] = [
