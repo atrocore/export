@@ -91,7 +91,10 @@
         "confirmNumberOfHeadersChange": "A fejlécek számának módosítása minden konfigurátorelemnél hozzáadhat vagy eltávolíthat fejlécsorokat és azok konfigurációját. Folytatja?",
         "delimitersMustBeDifferent": "Minden feedparaméternek egyedi értékkel kell rendelkeznie.",
         "noExportFeedSelected": "Nincs kiválasztva exportfeed.",
-        "columnAlreadyExist": "Már létezik ilyen nevű oszlop."
+        "columnAlreadyExist": "Már létezik ilyen nevű oszlop.",
+        "duplicateAsImport": "Biztosan importfolyamot szeretne létrehozni ebből az exportfolyamból ?",
+        "noFieldSelected": "Nincs kiválasztott mező",
+        "contentLanguageRequired": "A tartalom nyelvének megadása kötelező."
     },
     "tooltips": {
         "nullValue": "Az érték „NULL” értékként lesz értelmezve.",
@@ -99,7 +102,12 @@
         "exportByMaxDepth": "A „Kapcsolódó entitás mezői” konfigurációs mezőben a kapcsolatok maximális mélységét adja meg.",
         "useQuoteForAll": "Az exportált fájlban minden érték idézőjelek közé kerül.",
         "limit": "Nagyobb érték esetén kevesebb háttérfeladatot kell végrehajtani.",
-        "separateJob": "A rendszer minden exportfeladathoz külön exportfájlt hoz létre."
+        "separateJob": "A rendszer minden exportfeladathoz külön exportfájlt hoz létre.",
+        "maxWorkers": "Ez határozza meg, hogy hány feldolgozó futtathatja párhuzamosan ezt a feedet.",
+        "template": "Használhatja a <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> sablonmotor szintaxisát.",
+        "convertCollectionToString": "A következő típusú mezők és attribútumok: többértékű felsorolás, tömb, egy-a-többhöz kapcsolat.",
+        "convertRelationsToString": "A kapcsolati mezőket a kapcsolat mezőelválasztója választja el.",
+        "markForNoRelation": "Adja meg a nem összekapcsolt kapcsolat címkéjét."
     },
     "boolFilters": {
         "onlyExportFailed24Hours": "Csak az elmúlt 24 órában meghiúsult exportfeedek",
@@ -115,5 +123,21 @@
             "filename": "A rendszer által létrehozott alapértelmezett fájlnév",
             "interation": "Feladat iterációjának sorszáma"
         }
+    },
+    "additionalTranslates": {
+        "exportName": "Export: a(z) %s",
+        "createExportJobs": "Exportvégrehajtások létrehozása a(z) %s számára"
+    },
+    "exceptions": {
+        "toManyAttributesSelected": "A kiválasztott attribútumok maximális száma 2000 alatt kell legyen.",
+        "noSuchAttribute": "A(z) „%s” attribútum nem létezik.",
+        "noDataFound": "Az adatfolyam nem tartalmaz exportálható adatot.",
+        "exportValidationFailed": "Ilyen fájl nem exportálható. Ellenőrizze az űrlapot, majd próbálja újra.",
+        "lastRecordIsRequired": "A konfigurátor utolsó rekordja nem távolítható el.",
+        "noFieldLabel": "A(z) „%s” mezőhöz tartozó, „%s” nyelvű címke nincs beállítva.",
+        "noAttributeLabel": "A(z) „%s” attribútum „%s” nyelvű címkéje nincs beállítva.",
+        "noConfiguratorItems": "A feed futtatásához hozzon létre legalább egy konfigurátorszabályt.",
+        "noSheets": "A feed futtatásához hozzon létre legalább egy munkalapot.",
+        "exportFeedIsInvalid": "Az exportfeed hibákat tartalmaz. A folytatás előtt javítsa ki őket."
     }
 }
