@@ -1,49 +1,52 @@
 {
-  "fields": {
-    "name": "Campo",
-    "exportFeed": "Esportazione di mangimi",
-    "entityAttribute": "Attributo",
-    "exportBy": "Campi entità correlati",
-    "channels": "Canale(i)",
-    "exportIntoSeparateColumns": "Separato",
-    "type": "Tipo",
-    "mask": "Maschera",
-    "offsetRelation": "Offset",
-    "limitRelation": "Limite",
-    "sortFieldRelation": "Ordine di ordinamento (campo)",
-    "sortOrderRelation": "Ordine di ordinamento (direzione)",
-    "fixedValue": "Valore fisso",
-    "previousItem": "Articolo precedente",
-    "zip": "Esportazione di file in un archivio ZIP",
-    "fileNameTemplate": "Modello di nome del file",
-    "exportByForListAttribute": "Campi entità correlati per gli elenchi",
-    "script": "Scrittura",
-    "exportStaticListLabel": "Etichetta di esportazione",
-    "headerText": "Nome della colonna",
-    "headerProperty": "Etichetta della colonna"
-  },
-  "options": {
-    "type": {
-      "Field": "Campo",
-      "allAttributes": "Tutti gli attributi",
-      "Fixed value": "Valore fisso",
-      "script": "Scrittura"
+    "fields": {
+        "name": "Campo",
+        "exportFeed": "Esportazione di mangimi",
+        "entityAttribute": "Attributo",
+        "exportBy": "Campi entità correlati",
+        "channels": "Canale(i)",
+        "exportIntoSeparateColumns": "Separato",
+        "type": "Tipo",
+        "mask": "Maschera",
+        "offsetRelation": "Offset",
+        "limitRelation": "Limite",
+        "sortFieldRelation": "Ordine di ordinamento (campo)",
+        "sortOrderRelation": "Ordine di ordinamento (direzione)",
+        "fixedValue": "Valore fisso",
+        "previousItem": "Articolo precedente",
+        "zip": "Esportazione di file in un archivio ZIP",
+        "fileNameTemplate": "Modello di nome del file",
+        "exportByForListAttribute": "Campi entità correlati per gli elenchi",
+        "script": "Scrittura",
+        "exportStaticListLabel": "Etichetta di esportazione",
+        "headerText": "Nome della colonna",
+        "headerProperty": "Etichetta della colonna",
+        "selectedLanguageOnly": "Solo lingua selezionata"
     },
-    "headerProperty": {
-      "name": "Nome",
-      "custom": "Nome personalizzato"
+    "options": {
+        "type": {
+            "Field": "Campo",
+            "allAttributes": "Tutti gli attributi",
+            "Fixed value": "Valore fisso",
+            "script": "Scrittura"
+        },
+        "headerProperty": {
+            "name": "Nome",
+            "custom": "Nome personalizzato"
+        }
+    },
+    "labels": {
+        "withoutChannel": "Senza canale",
+        "allAttributes": "Tutti (%s) Attributi",
+        "notFoundAttribute": "Attributo non trovato",
+        "notFoundField": "Campo non trovato"
+    },
+    "tooltips": {
+        "exportIntoSeparateColumns": "I record di dati correlati saranno esportati come campi/colonne diversi, utilizzando per il nome il suffisso \"_1\", \"_2\" e così via.",
+        "headerText": "Può utilizzare i campi delle entità correlate nel nome della colonna. Utilizzi il nome del campo nel database come variabile, ad esempio {{nome}}. La casella di controllo \"Colonne separate\" deve essere attivata."
+    },
+    "exceptions": {
+        "noSuchAttribute": "L'attributo con il codice '%s' non esiste.",
+        "unknownModifier": "Il modificatore '%s' è sconosciuto."
     }
-  },
-  "labels": {
-    "withoutChannel": "Senza canale",
-    "allAttributes": "Tutti (%s) Attributi"
-  },
-  "tooltips": {
-    "exportIntoSeparateColumns": "I record di dati correlati saranno esportati come campi/colonne diversi, utilizzando per il nome il suffisso \"_1\", \"_2\" e così via.",
-    "headerText": "Può utilizzare i campi delle entità correlate nel nome della colonna. Utilizzi il nome del campo nel database come variabile, ad esempio {{nome}}. La casella di controllo \"Colonne separate\" deve essere attivata."
-  },
-  "exceptions": {
-    "noSuchAttribute": "L'attributo con il codice '%s' non esiste.",
-    "unknownModifier": "Il modificatore '%s' è sconosciuto."
-  }
 }
