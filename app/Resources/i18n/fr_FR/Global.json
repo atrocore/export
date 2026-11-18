@@ -46,6 +46,9 @@
       "backslashNToBr": "Convertit les caractères de retour à la ligne (\\n) en balises de retour à la ligne HTML (<br>)"
     }
   },
+  "scopeDescriptions": {
+    "ExportFeed": "Définit quels enregistrements, champs et attributs sont exportés, dans quel format et où le résultat est livré."
+  },
   "subtypeDescriptions": {
     "ActionTypeExport": "Exécute un flux d'export.",
     "ActionTypeReExportFailedJob": "Relance une tâche d'export échouée.",

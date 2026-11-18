@@ -46,6 +46,9 @@
       "backslashNToBr": "Konvertiert Zeilenumbruchzeichen (\\n) in HTML-Zeilenumbruch-Tags (<br>)"
     }
   },
+  "scopeDescriptions": {
+    "ExportFeed": "Legt fest, welche Datensätze, Felder und Attribute exportiert werden, in welchem Format und wohin das Ergebnis geliefert wird."
+  },
   "subtypeDescriptions": {
     "ActionTypeExport": "Führt einen Export-Feed aus.",
     "ActionTypeReExportFailedJob": "Führt einen fehlgeschlagenen Export-Job erneut aus.",

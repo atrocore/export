@@ -48,6 +48,9 @@
       "backslashNToBr": "Converts newline characters (\\n) to HTML line break tags (<br>)"
     }
   },
+  "scopeDescriptions": {
+    "ExportFeed": "Defines which records, fields and attributes are exported, in what format and where the result is delivered."
+  },
   "subtypeDescriptions": {
     "ActionTypeExport": "Runs an export feed.",
     "ActionTypeReExportFailedJob": "Runs a failed export job again.",

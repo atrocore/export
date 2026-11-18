@@ -46,6 +46,9 @@
       "backslashNToBr": "Перетворює символи нового рядка (\\n) на теги розриву рядка HTML (<br>)"
     }
   },
+  "scopeDescriptions": {
+    "ExportFeed": "Визначає, які записи, поля й атрибути експортуються, у якому форматі та куди доставляється результат."
+  },
   "subtypeDescriptions": {
     "ActionTypeExport": "Запускає фід експорту.",
     "ActionTypeReExportFailedJob": "Повторно запускає невдале завдання експорту.",
