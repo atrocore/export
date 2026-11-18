@@ -38,7 +38,9 @@
         "fieldList": "Lista de campos",
         "useExistingExportFeed": "Utilizar la alimentación de exportación existente",
         "useQuoteForAll": "Utilice comillas para todos los valores",
-        "files": "Archivos"
+        "files": "Archivos",
+        "numberOfHeaders": "Número de encabezados",
+        "contentLanguage": "Idioma del contenido"
     },
     "options": {
         "fileType": {
@@ -47,6 +49,9 @@
             "json": "JSON",
             "xml": "XML",
             "sql": "SQL"
+        },
+        "type": {
+            "simple": "Archivo"
         }
     },
     "labels": {
@@ -71,7 +76,11 @@
         "Running": "Correr",
         "Failed": "Fallida",
         "Canceled": "Canceled",
-        "allAttributesAlreadyAdded": "Ya se han añadido todos los atributos."
+        "allAttributesAlreadyAdded": "Ya se han añadido todos los atributos.",
+        "DynamicExport": "Exportación dinámica",
+        "selectAllLanguages": "Seleccionar (todos los idiomas)",
+        "exportParameters": "Parámetros de exportación",
+        "contentLanguage": "Idioma del contenido"
     },
     "actions": {
         "cancelExportJob": "Cancelar",
@@ -83,7 +92,9 @@
         "noExportFeedSelected": "No se ha seleccionado ExportFeed.",
         "columnAlreadyExist": "Ya existe una columna con ese nombre.",
         "duplicateAsImport": "¿Está seguro de que desea crear un feed de importación a partir de este feed de exportación?",
-        "noFieldSelected": "No hay campos seleccionados"
+        "noFieldSelected": "No hay campos seleccionados",
+        "confirmNumberOfHeadersChange": "Cambiar el número de encabezados puede agregar o quitar filas de encabezado y su configuración en cada elemento del configurador. ¿Continuar?",
+        "contentLanguageRequired": "El idioma del contenido es obligatorio."
     },
     "additionalTranslates": {
         "exportName": "Exportar: %s",
