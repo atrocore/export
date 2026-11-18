@@ -15,6 +15,7 @@ namespace Export\Repositories;
 
 use Atro\Core\Exceptions\BadRequest;
 use Atro\Core\Templates\Repositories\Base;
+use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Export\Core\ExportTypes\AbstractExportType;
 
@@ -36,7 +37,6 @@ class ExportJob extends Base
         parent::init();
 
         $this->addDependency('language');
-        $this->addDependency('fileManager');
     }
 
     protected function beforeSave(Entity $entity, array $options = [])
@@ -77,7 +77,7 @@ class ExportJob extends Base
 
             // delete tmp dir
             if (in_array($entity->get('state'), ['Success', 'Failed', 'Canceled'])) {
-                $this->getInjection('fileManager')->removeAllInDir(AbstractExportType::TMP_DIR . DIRECTORY_SEPARATOR . $entity->get('id'));
+                Util::removeDir(AbstractExportType::TMP_DIR . DIRECTORY_SEPARATOR . $entity->get('id'));
             }
 
             // update last status
