@@ -1,19 +1,21 @@
 {
-  "fields": {
-    "exportFeed": "Експортний фід",
-    "payload": "Корисне навантаження"
-  },
-  "options": {
-    "type": {
-      "export": "Експортний фід",
-      "reExportFailedJob": "Повторити невдалий експорт"
+    "fields": {
+        "exportFeed": "Експортний фід",
+        "payload": "Корисне навантаження",
+        "contentLanguage": "Мова вмісту",
+        "locale": "Локаль"
+    },
+    "options": {
+        "type": {
+            "export": "Експортний фід",
+            "reExportFailedJob": "Повторити невдалий експорт"
+        }
+    },
+    "twigVariables": {
+        "payload": {
+            "sourceEntities": "Збір суб'єктів для експорту",
+            "sourceEntitiesIds": "Масив ідентифікаторів сутностей для експорту",
+            "entity": "Перший об'єкт колекції для експорту"
+        }
     }
-  },
-  "twigVariables": {
-    "payload": {
-      "sourceEntities": "Збір суб'єктів для експорту",
-      "sourceEntitiesIds": "Масив ідентифікаторів сутностей для експорту",
-      "entity": "Перший об'єкт колекції для експорту"
-    }
-  }
 }
