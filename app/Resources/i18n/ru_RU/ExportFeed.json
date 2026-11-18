@@ -38,7 +38,9 @@
         "useQuoteForAll": "Используйте кавычки для всех значений",
         "locale": "Локаль",
         "folder": "Папка",
-        "files": "Файлы"
+        "files": "Файлы",
+        "numberOfHeaders": "Количество заголовков",
+        "contentLanguage": "Язык контента"
     },
     "labels": {
         "typeToSearch": "Введите для поиска...",
@@ -62,10 +64,15 @@
         "Canceled": "Отменено",
         "DuplicateAsImport": "Дублировать как импорт",
         "allAttributesAlreadyAdded": "Все атрибуты уже добавлены.",
-        "generateTemplate": "Создайте шаблон"
+        "generateTemplate": "Создайте шаблон",
+        "DynamicExport": "Динамический экспорт",
+        "selectAllLanguages": "Выбрать (все языки)",
+        "exportParameters": "Параметры экспорта",
+        "contentLanguage": "Язык содержимого"
     },
     "actions": {
-        "tryAgainExportJob": "Повторить попытку"
+        "tryAgainExportJob": "Повторить попытку",
+        "cancelExportJob": "Отменить"
     },
     "messages": {
         "delimitersMustBeDifferent": "Все параметры фида должны иметь уникальные значения.",
@@ -73,7 +80,9 @@
         "columnAlreadyExist": "Колонка с таким названием уже существует.",
         "noFieldSelected": "Поля не выбраны",
         "confirmTemplateGeneration": "Вы уверены, что хотите генерировать Шаблон?",
-        "duplicateAsImport": "Вы уверены, что хотите создать импортный фид из этого экспортного фида?"
+        "duplicateAsImport": "Вы уверены, что хотите создать импортный фид из этого экспортного фида?",
+        "confirmNumberOfHeadersChange": "Изменение количества заголовков может добавить или удалить строки заголовков и их настройки для каждого элемента конфигуратора. Продолжить?",
+        "contentLanguageRequired": "Необходимо указать язык содержимого."
     },
     "additionalTranslates": {
         "exportName": "Экспорт: %s",
@@ -111,6 +120,9 @@
             "json": "JSON",
             "xml": "XML",
             "sql": "SQL"
+        },
+        "type": {
+            "simple": "Файл"
         }
     },
     "boolFilters": {
