@@ -38,7 +38,9 @@
         "useQuoteForAll": "Anführungszeichen für alle Werte verwenden",
         "files": "Dateien",
         "maxWorkers": "Maximale Worker-Anzahl",
-        "locale": "Gebietsschema"
+        "locale": "Gebietsschema",
+        "numberOfHeaders": "Anzahl der Kopfzeilen",
+        "contentLanguage": "Inhaltssprache"
     },
     "labels": {
         "generateTemplate": "Vorlage generieren",
@@ -62,7 +64,11 @@
         "Running": "In Arbeit",
         "Failed": "Fehlgeschlagen",
         "Canceled": "Abgebrochen",
-        "allAttributesAlreadyAdded": "Alle Attribute sind bereits hinzugefügt worden."
+        "allAttributesAlreadyAdded": "Alle Attribute sind bereits hinzugefügt worden.",
+        "DynamicExport": "Dynamischer Export",
+        "selectAllLanguages": "Auswählen (alle Sprachen)",
+        "exportParameters": "Exportparameter",
+        "contentLanguage": "Inhaltssprache"
     },
     "actions": {
         "cancelExportJob": "Abbrechen",
@@ -74,7 +80,9 @@
         "noExportFeedSelected": "Kein Exportfeed ausgewählt.",
         "columnAlreadyExist": "Eine Spalte mit diesem Namen existiert bereits.",
         "duplicateAsImport": "Sind Sie sicher, dass Sie aus diesem Export-Feed einen Import-Feed erstellen möchten?",
-        "noFieldSelected": "Keine Felder ausgewählt"
+        "noFieldSelected": "Keine Felder ausgewählt",
+        "confirmNumberOfHeadersChange": "Wenn Sie die Anzahl der Kopfzeilen ändern, werden bei jedem Konfigurationselement Kopfzeilen und deren Konfiguration hinzugefügt oder entfernt. Möchten Sie fortfahren?",
+        "contentLanguageRequired": "Inhaltssprache ist erforderlich."
     },
     "additionalTranslates": {
         "exportName": "Datenexport im Feed %s",
