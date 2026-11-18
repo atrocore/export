@@ -1,35 +1,36 @@
 {
-  "fields": {
-    "exportFeed": "Экспортный фид",
-    "file": "Файл экспорта",
-    "state": "Статус",
-    "stateMessage": "Сообщение",
-    "start": "Начато в",
-    "end": "Завершено в",
-    "count": "Количество",
-    "files": "Файлы"
-  },
-  "labels": {
-    "Pending": "В ожидании",
-    "Success": "Успешно",
-    "Running": "Выполняется",
-    "Failed": "Не выполнено",
-    "Canceled": "Отменено",
-    "exportDownloadNotification": "Экспорт завершен. Вы можете <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">download</a> файл."
-  },
-  "exceptions": {
-    "wrongJobState": "Нельзя установить такой статус.",
-    "notExecutableJob": "Нельзя повторить попытку."
-  },
-  "boolFilters": {
-    "onlyExportFailed24Hours": "Только те задания на экспорт, которые не были выполнены в течение последних 24 часов",
-    "onlyExportFailed7Days": "Только те задания на экспорт, которые не были выполнены в течение последних 7 дней",
-    "onlyExportFailed28Days": "Только те задания на экспорт, которые не были выполнены в течение последних 28 дней"
-  },
-  "messages": {
-    "xmlValidationFailed": "Проверка XML Schema не удалась:"
-  },
-  "actions": {
-    "tryAgainExportJob": "Повторить попытку"
-  }
+    "fields": {
+        "exportFeed": "Экспортный фид",
+        "file": "Файл экспорта",
+        "state": "Статус",
+        "stateMessage": "Сообщение",
+        "start": "Начато в",
+        "end": "Завершено в",
+        "count": "Количество",
+        "files": "Файлы",
+        "number": "Номер"
+    },
+    "labels": {
+        "Pending": "В ожидании",
+        "Success": "Успешно",
+        "Running": "Выполняется",
+        "Failed": "Не выполнено",
+        "Canceled": "Отменено",
+        "exportDownloadNotification": "Экспорт завершен. Вы можете <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">download</a> файл."
+    },
+    "exceptions": {
+        "wrongJobState": "Нельзя установить такой статус.",
+        "notExecutableJob": "Нельзя повторить попытку."
+    },
+    "boolFilters": {
+        "onlyExportFailed24Hours": "Только те задания на экспорт, которые не были выполнены в течение последних 24 часов",
+        "onlyExportFailed7Days": "Только те задания на экспорт, которые не были выполнены в течение последних 7 дней",
+        "onlyExportFailed28Days": "Только те задания на экспорт, которые не были выполнены в течение последних 28 дней"
+    },
+    "messages": {
+        "xmlValidationFailed": "Проверка XML Schema не удалась:"
+    },
+    "actions": {
+        "tryAgainExportJob": "Повторить попытку"
+    }
 }
