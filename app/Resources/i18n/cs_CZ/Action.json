@@ -1,19 +1,21 @@
 {
-  "fields": {
-    "exportFeed": "Exportní kanál",
-    "payload": "Payload (užitečná data)"
-  },
-  "options": {
-    "type": {
-      "export": "Exportní kanál",
-      "reExportFailedJob": "Znovu exportovat neúspěšnou úlohu"
+    "fields": {
+        "exportFeed": "Exportní kanál",
+        "payload": "Payload (užitečná data)",
+        "contentLanguage": "Jazyk obsahu",
+        "locale": "Národní prostředí"
+    },
+    "options": {
+        "type": {
+            "export": "Exportní kanál",
+            "reExportFailedJob": "Znovu exportovat neúspěšnou úlohu"
+        }
+    },
+    "twigVariables": {
+        "payload": {
+            "sourceEntities": "Kolekce entit k exportu",
+            "sourceEntitiesIds": "Pole identifikátorů entit, které se mají exportovat",
+            "entity": "První entita kolekce, která se má exportovat"
+        }
     }
-  },
-  "twigVariables": {
-    "payload": {
-      "sourceEntities": "Kolekce entit k exportu",
-      "sourceEntitiesIds": "Pole identifikátorů entit, které se mají exportovat",
-      "entity": "První entita kolekce, která se má exportovat"
-    }
-  }
 }
