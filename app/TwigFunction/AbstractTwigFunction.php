@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Export\TwigFunction;
 
-use Espo\Core\Injectable;
-
 abstract class AbstractTwigFunction extends \Atro\Core\Twig\AbstractTwigFunction
 {
     public function getFeedData(): array

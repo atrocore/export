@@ -15,17 +15,10 @@ namespace Export\TwigFunction;
 
 use Atro\Core\KeyValueStorages\MemoryStorage;
 use Espo\Core\ORM\EntityManager;
-use Espo\Core\ServiceFactory;
+use Atro\Core\ServiceFactory;
 
 class GetSharedUrl extends AbstractTwigFunction
 {
-    public function __construct()
-    {
-        $this->addDependency('serviceFactory');
-        $this->addDependency('entityManager');
-        $this->addDependency('memoryStorage');;
-    }
-
     public function run(string $fileId, ?string $type = null)
     {
         if (empty($fileId)) {
@@ -66,16 +59,16 @@ class GetSharedUrl extends AbstractTwigFunction
      */
     protected function getServiceFactory(): ServiceFactory
     {
-        return $this->getInjection('serviceFactory');
+        return $this->container->get('serviceFactory');
     }
 
     protected function getEntityManager(): EntityManager
     {
-        return $this->getInjection('entityManager');
+        return $this->container->get('entityManager');
     }
 
     protected function getMemoryStorage(): MemoryStorage
     {
-        return $this->getInjection('memoryStorage');
+        return $this->container->get('memoryStorage');
     }
 }

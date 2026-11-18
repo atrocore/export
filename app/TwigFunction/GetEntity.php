@@ -13,15 +13,10 @@ declare(strict_types=1);
 
 namespace Export\TwigFunction;
 
-use Espo\Core\ServiceFactory;
+use Atro\Core\ServiceFactory;
 
 class GetEntity extends AbstractTwigFunction
 {
-    public function __construct()
-    {
-        $this->addDependency('serviceFactory');
-    }
-
     public function run(string $entityType, string $id)
     {
         if (empty($entityType) || empty($id)) {
@@ -46,6 +41,6 @@ class GetEntity extends AbstractTwigFunction
      */
     protected function getServiceFactory(): ServiceFactory
     {
-        return $this->getInjection('serviceFactory');
+        return $this->container->get('serviceFactory');
     }
 }

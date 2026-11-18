@@ -20,7 +20,6 @@ use Espo\ORM\Entity;
 
 class ExportConfiguratorItem extends Base
 {
-
     protected $mandatorySelectAttributeList
         = [
             'exportFeedId',
@@ -283,15 +282,7 @@ class ExportConfiguratorItem extends Base
 
     protected function getLocalizedLanguage(string $locale): Language
     {
-        return ExportFeed::getLocalizedLanguage($this->getInjection('container'), $locale);
-    }
-
-    protected function init()
-    {
-        parent::init();
-
-        $this->addDependency('language');
-        $this->addDependency('container');
+        return ExportFeed::getLocalizedLanguage($this->container, $locale);
     }
 
     protected function getFieldsThatConflict(Entity $entity, \stdClass $data): array
