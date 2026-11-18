@@ -1,49 +1,56 @@
 {
-  "scopeNames": {
-    "ExportFeed": "Экспортный фид",
-    "ExportJob": "Выполнение экспорта",
-    "ExportConfiguratorItem": "Конфигуратор",
-    "ActionTypeExport": "Действие: Экспортный фид",
-    "ActionTypeReExportFailedJob": "Действие: Повторить неудавшийся экспорт"
-  },
-  "scopeNamesPlural": {
-    "ExportFeed": "Экспортные фиды",
-    "ExportJob": "Экспортные операции",
-    "ExportConfiguratorItem": "Конфигуратор",
-    "ActionTypeExport": "Действие: Экспортный фид",
-    "ActionTypeReExportFailedJob": "Действие: Повторить неудавшийся экспорт"
-  },
-  "labels": {
-    "Generate": "Сгенерировать",
-    "tryAgain": "Повторить попытку",
-    "filter": "Фильтр",
-    "selectAttributes": "Выбрать атрибут(ы)",
-    "removeAllItems": "Удалить все правила",
-    "exportErrorDuring24Hours": "Ошибка экспорта Feeds/Executions в течение 24 часов",
-    "selectFields": "Выберите поле (поля)",
-    "addFixed": "Добавьте фиксированное значение",
-    "addScript": "Добавьте скрипт",
-    "exportErrorDuring7Days": "Ошибка экспорта Feeds/Executions в течение 7 дней",
-    "exportErrorDuring28Days": "Ошибка экспорта Feeds/Executions в течение 28 дней",
-    "addAllAttributes": "Добавьте все атрибуты"
-  },
-  "boolFilters": {
-    "unexported": "Неэкспортированный"
-  },
-  "dashlets": {
-    "DataSyncErrorsExport": "Ошибки синхронизации данных при экспорте"
-  },
-  "twig": {
-    "functions": {
-      "getPreviousCategoryId": "Извлекает ID предыдущей категории в иерархической структуре категорий",
-      "getEntity": "Извлекает объект сущности по его идентификатору",
-      "getSharedUrl": "Получает общий URL-адрес для файла"
+    "scopeNames": {
+        "ExportFeed": "Экспортный фид",
+        "ExportJob": "Выполнение экспорта",
+        "ExportConfiguratorItem": "Конфигуратор",
+        "ActionTypeExport": "Действие: Экспортный фид",
+        "ActionTypeReExportFailedJob": "Действие: Повторить неудавшийся экспорт",
+        "ExportFeedTypeSimple": "Поток экспорта: файл"
     },
-    "filters": {
-      "prepareEntity": "Подготавливает сущность к экспорту",
-      "isImage": "Проверяет, представляет ли предоставленное значение изображение, проверяя расширения файлов или типы MIME.",
-      "escapeDoubleQuote": "Выводит двойные кавычки в строке, добавляя обратные слеши (\" становится \\\").",
-      "backslashNToBr": "Преобразует символы новой строки (\\n) в теги переноса строки HTML (<br>)"
+    "scopeNamesPlural": {
+        "ExportFeed": "Экспортные фиды",
+        "ExportJob": "Экспортные операции",
+        "ExportConfiguratorItem": "Конфигуратор",
+        "ActionTypeExport": "Действие: Экспортный фид",
+        "ActionTypeReExportFailedJob": "Действие: Повторить неудавшийся экспорт",
+        "ExportFeedTypeSimple": "Канал экспорта: файл"
+    },
+    "labels": {
+        "Generate": "Сгенерировать",
+        "tryAgain": "Повторить попытку",
+        "filter": "Фильтр",
+        "selectAttributes": "Выбрать атрибут(ы)",
+        "removeAllItems": "Удалить все правила",
+        "exportErrorDuring24Hours": "Ошибка экспорта Feeds/Executions в течение 24 часов",
+        "selectFields": "Выберите поле (поля)",
+        "addFixed": "Добавьте фиксированное значение",
+        "addScript": "Добавьте скрипт",
+        "exportErrorDuring7Days": "Ошибка экспорта Feeds/Executions в течение 7 дней",
+        "exportErrorDuring28Days": "Ошибка экспорта Feeds/Executions в течение 28 дней",
+        "addAllAttributes": "Добавьте все атрибуты"
+    },
+    "boolFilters": {
+        "unexported": "Неэкспортированный"
+    },
+    "dashlets": {
+        "DataSyncErrorsExport": "Ошибки синхронизации данных при экспорте"
+    },
+    "twig": {
+        "functions": {
+            "getPreviousCategoryId": "Извлекает ID предыдущей категории в иерархической структуре категорий",
+            "getEntity": "Извлекает объект сущности по его идентификатору",
+            "getSharedUrl": "Получает общий URL-адрес для файла"
+        },
+        "filters": {
+            "prepareEntity": "Подготавливает сущность к экспорту",
+            "isImage": "Проверяет, представляет ли предоставленное значение изображение, проверяя расширения файлов или типы MIME.",
+            "escapeDoubleQuote": "Выводит двойные кавычки в строке, добавляя обратные слеши (\" становится \\\").",
+            "backslashNToBr": "Преобразует символы новой строки (\\n) в теги переноса строки HTML (<br>)"
+        }
+    },
+    "subtypeDescriptions": {
+        "ActionTypeExport": "Запускает поток экспорта.",
+        "ActionTypeReExportFailedJob": "Повторно запускает неудачную задачу экспорта.",
+        "ExportFeedTypeSimple": "Экспортирует данные в файл, который можно скачать."
     }
-  }
 }
