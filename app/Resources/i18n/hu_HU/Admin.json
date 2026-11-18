@@ -1,8 +1,8 @@
 {
     "labels": {
-        "exportFeed": ""
+        "exportFeed": "Exportadatfolyamok"
     },
     "descriptions": {
-        "exportFeed": ""
+        "exportFeed": "Az AtroCore-entitások adatainak exportálásához használható exportálási sablonok konfigurálása."
     }
 }
