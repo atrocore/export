@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Export\TwigFunction;
 
 use Atro\Core\KeyValueStorages\MemoryStorage;
-use Espo\Core\ORM\EntityManager;
+use Espo\ORM\EntityManager;
 use Atro\Core\ServiceFactory;
 
 class GetSharedUrl extends AbstractTwigFunction
