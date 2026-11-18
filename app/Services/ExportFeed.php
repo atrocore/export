@@ -20,7 +20,6 @@ use Atro\Core\Exceptions;
 use Atro\Core\Templates\Services\Base;
 use Atro\Core\Utils\IdGenerator;
 use Atro\Core\Utils\Language;
-use Espo\Core\Utils\Json;
 use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Atro\Core\EventManager\Event;
@@ -817,7 +816,7 @@ class ExportFeed extends Base
                 ];
             }
         } else {
-            $result['data']->configuration = Json::decode(Json::encode($this->prepareFeedDataConfiguration($feed, $contentLanguageCode, $contentLocaleId)));
+            $result['data']->configuration = json_decode(json_encode($this->prepareFeedDataConfiguration($feed, $contentLanguageCode, $contentLocaleId)));
         }
 
         return $this

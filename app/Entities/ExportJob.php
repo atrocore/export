@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Export\Entities;
 
 use Atro\Core\Templates\Entities\Base;
-use Espo\Core\Utils\Json;
 
 class ExportJob extends Base
 {
@@ -22,6 +21,6 @@ class ExportJob extends Base
 
     public function getData(): array
     {
-        return empty($this->get('data')) ? [] : Json::decode(Json::encode($this->get('data')), true);
+        return empty($this->get('data')) ? [] : json_decode(json_encode($this->get('data')), true);
     }
 }

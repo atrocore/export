@@ -22,7 +22,6 @@ use Atro\ORM\DB\RDB\Mapper;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Atro\Core\Twig\Twig;
 use Atro\Core\Utils\Config;
-use Espo\Core\Utils\Json;
 use Atro\Core\Utils\Language;
 use Atro\Core\Utils\Metadata;
 use Atro\Core\Utils\Util;
@@ -133,7 +132,7 @@ abstract class AbstractExportType
 
     public function setData(array $data): void
     {
-        $this->data = Json::decode(Json::encode($data), true);
+        $this->data = json_decode(json_encode($data), true);
     }
 
     protected function getExportFileName(string $extension): string
@@ -559,7 +558,7 @@ abstract class AbstractExportType
                     }
                     $rowData[] = $result;
                 }
-                fwrite($file, Json::encode($rowData) . PHP_EOL);
+                fwrite($file, json_encode($rowData) . PHP_EOL);
             }
         }
         fclose($file);
@@ -837,7 +836,7 @@ abstract class AbstractExportType
                     $rowData[] = $result;
                 }
 
-                fwrite($file, Json::encode($rowData) . PHP_EOL);
+                fwrite($file, json_encode($rowData) . PHP_EOL);
                 $res['count']++;
 
             }
