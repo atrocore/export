@@ -38,7 +38,9 @@
         "useQuoteForAll": "Proszę używać cudzysłowów dla wszystkich wartości",
         "locale": "Lokalizacja",
         "folder": "Folder",
-        "files": "Pliki"
+        "files": "Pliki",
+        "numberOfHeaders": "Liczba nagłówków",
+        "contentLanguage": "Język treści"
     },
     "options": {
         "fileType": {
@@ -47,6 +49,9 @@
             "json": "JSON",
             "xml": "XML",
             "sql": "SQL"
+        },
+        "type": {
+            "simple": "Plik"
         }
     },
     "labels": {
@@ -71,7 +76,11 @@
         "Running": "Uruchamianie",
         "Failed": "Niepowodzenie",
         "Canceled": "Anulowano",
-        "allAttributesAlreadyAdded": "Wszystkie atrybuty zostały już dodane."
+        "allAttributesAlreadyAdded": "Wszystkie atrybuty zostały już dodane.",
+        "DynamicExport": "Eksport dynamiczny",
+        "selectAllLanguages": "Wybierz (wszystkie języki)",
+        "exportParameters": "Parametry eksportu",
+        "contentLanguage": "Język treści"
     },
     "actions": {
         "cancelExportJob": "Anuluj",
@@ -83,7 +92,9 @@
         "noExportFeedSelected": "Nie wybrano przesyłki eksportowej.",
         "columnAlreadyExist": "Kolumna o takiej nazwie już istnieje.",
         "duplicateAsImport": "Czy na pewno chcesz utworzyć przesyłkę importu z tej przesyłki eksportowej?",
-        "noFieldSelected": "Nie wybrano żadnych pól"
+        "noFieldSelected": "Nie wybrano żadnych pól",
+        "confirmNumberOfHeadersChange": "Zmiana liczby nagłówków może dodać lub usunąć wiersze nagłówków i ich konfigurację w każdym elemencie konfiguratora. Kontynuować?",
+        "contentLanguageRequired": "Język treści jest wymagany."
     },
     "additionalTranslates": {
         "exportName": "Eksport: %s",
