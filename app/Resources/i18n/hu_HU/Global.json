@@ -1,1 +1,56 @@
-{}
+{
+    "scopeNames": {
+        "ExportFeed": "Exportfolyam",
+        "ExportConfiguratorItem": "Konfigurátor",
+        "ExportJob": "Exportfeladat",
+        "ActionTypeExport": "Művelet: exportfolyam exportálása",
+        "ActionTypeReExportFailedJob": "Művelet: sikertelen feladat újraexportálása",
+        "ExportFeedTypeSimple": "Exportfolyam: fájl"
+    },
+    "scopeNamesPlural": {
+        "ExportFeed": "Exportfolyamok",
+        "ExportConfiguratorItem": "Konfigurátor",
+        "ExportJob": "Exportfeladatok",
+        "ActionTypeExport": "Művelet: Feed exportálása",
+        "ActionTypeReExportFailedJob": "Művelet: Sikertelen feladat újbóli exportálása",
+        "ExportFeedTypeSimple": "Exportadatfolyam: Fájl"
+    },
+    "labels": {
+        "Generate": "Generálás",
+        "tryAgain": "Újraexportálás",
+        "filter": "Szűrés",
+        "selectFields": "Mezők kiválasztása",
+        "selectAttributes": "Attribútumok kiválasztása",
+        "addAllAttributes": "Összes attribútum hozzáadása",
+        "addFixed": "Rögzített érték hozzáadása",
+        "addScript": "Szkript hozzáadása",
+        "removeAllItems": "Összes eltávolítása",
+        "exportErrorDuring24Hours": "Exportálási adatfolyamok/végrehajtások hibái az elmúlt 24 órában",
+        "exportErrorDuring7Days": "Exportálási adatfolyamok/végrehajtások hibái az elmúlt 7 napban",
+        "exportErrorDuring28Days": "Exportálási adatfolyamok/végrehajtások hibái az elmúlt 28 napban"
+    },
+    "boolFilters": {
+        "unexported": "Nincs exportálva"
+    },
+    "dashlets": {
+        "DataSyncErrorsExport": "Adatszinkronizálási hibák exportáláskor"
+    },
+    "twig": {
+        "functions": {
+            "getPreviousCategoryId": "Lekéri az előző kategória azonosítóját egy hierarchikus kategóriaszerkezetben",
+            "getEntity": "Lekér egy Entitás objektumot az azonosítója alapján",
+            "getSharedUrl": "Lekér egy megosztott URL-t egy Fájlhoz"
+        },
+        "filters": {
+            "prepareEntity": "Előkészít egy Entitást exportálásra",
+            "isImage": "Ellenőrzi, hogy a megadott érték képet jelöl-e a fájlkiterjesztés vagy a MIME-típus alapján",
+            "escapeDoubleQuote": "Escape-eli a karakterlánc kettős idézőjeleit backslash karakterek hozzáadásával (\" helyett \\\")",
+            "backslashNToBr": "A sortörés karaktereket (\\n) HTML sortöréscímkékké (<br>) alakítja"
+        }
+    },
+    "subtypeDescriptions": {
+        "ActionTypeExport": "Exportálási adatfolyamot futtat.",
+        "ActionTypeReExportFailedJob": "Újra futtat egy sikertelen exportálási feladatot.",
+        "ExportFeedTypeSimple": "Adatokat exportál egy letölthető Fájlba."
+    }
+}
