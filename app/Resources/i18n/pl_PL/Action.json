@@ -1,19 +1,21 @@
 {
-  "fields": {
-    "exportFeed": "Eksportuj kanał",
-    "payload": "Ładunek"
-  },
-  "options": {
-    "type": {
-      "export": "Eksportuj kanał",
-      "reExportFailedJob": "Ponów nieudane zadanie eksportu"
+    "fields": {
+        "exportFeed": "Eksportuj kanał",
+        "payload": "Ładunek",
+        "contentLanguage": "Język treści",
+        "locale": "Ustawienia regionalne"
+    },
+    "options": {
+        "type": {
+            "export": "Eksportuj kanał",
+            "reExportFailedJob": "Ponów nieudane zadanie eksportu"
+        }
+    },
+    "twigVariables": {
+        "payload": {
+            "sourceEntities": "Zbiór podmiotów do wyeksportowania",
+            "sourceEntitiesIds": "Tablica identyfikatorów podmiotów do wyeksportowania",
+            "entity": "Pierwszy podmiot kolekcji do wyeksportowania"
+        }
     }
-  },
-  "twigVariables": {
-    "payload": {
-      "sourceEntities": "Zbiór podmiotów do wyeksportowania",
-      "sourceEntitiesIds": "Tablica identyfikatorów podmiotów do wyeksportowania",
-      "entity": "Pierwszy podmiot kolekcji do wyeksportowania"
-    }
-  }
 }
