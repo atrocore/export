@@ -91,33 +91,9 @@
         "confirmNumberOfHeadersChange": "A fejlécek számának módosítása minden konfigurátorelemnél hozzáadhat vagy eltávolíthat fejlécsorokat és azok konfigurációját. Folytatja?",
         "delimitersMustBeDifferent": "Minden feedparaméternek egyedi értékkel kell rendelkeznie.",
         "noExportFeedSelected": "Nincs kiválasztva exportfeed.",
-        "columnAlreadyExist": "Már létezik ilyen nevű oszlop.",
-        "duplicateAsImport": "",
-        "noFieldSelected": "",
-        "contentLanguageRequired": ""
-    },
-    "additionalTranslates": {
-        "exportName": "",
-        "createExportJobs": ""
-    },
-    "exceptions": {
-        "toManyAttributesSelected": "",
-        "noSuchAttribute": "",
-        "noDataFound": "",
-        "exportValidationFailed": "",
-        "lastRecordIsRequired": "",
-        "noFieldLabel": "",
-        "noAttributeLabel": "",
-        "noConfiguratorItems": "",
-        "noSheets": "",
-        "exportFeedIsInvalid": ""
+        "columnAlreadyExist": "Már létezik ilyen nevű oszlop."
     },
     "tooltips": {
-        "maxWorkers": "",
-        "template": "",
-        "convertCollectionToString": "",
-        "convertRelationsToString": "",
-        "markForNoRelation": "",
         "nullValue": "Az érték „NULL” értékként lesz értelmezve.",
         "emptyValue": "Az érték „üres” értékként lesz értelmezve az üres cellán felül.",
         "exportByMaxDepth": "A „Kapcsolódó entitás mezői” konfigurációs mezőben a kapcsolatok maximális mélységét adja meg.",
