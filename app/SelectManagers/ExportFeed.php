@@ -21,7 +21,7 @@ class ExportFeed extends Base
     /**
      * @inheritdoc
      */
-    public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
+    public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false): array
     {
         $exportTypes = $this->getMetadata()->get(['entityDefs', 'ExportFeed', 'fields', 'type', 'options'], []);
 
