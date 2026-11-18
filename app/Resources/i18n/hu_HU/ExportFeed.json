@@ -1,0 +1,143 @@
+{
+    "fields": {
+        "folder": "",
+        "maxWorkers": "",
+        "replaceExistingFile": "",
+        "template": "",
+        "sortOrderField": "",
+        "sortOrderDirection": "",
+        "locale": "",
+        "entity": "",
+        "type": "",
+        "isActive": "",
+        "lastStatus": "",
+        "lastTime": "",
+        "fileType": "",
+        "numberOfHeaders": "",
+        "csvFieldDelimiter": "",
+        "csvTextQualifier": "",
+        "field": "",
+        "fieldOrAttribute": "",
+        "delimiter": "",
+        "exportJobs": "",
+        "emptyValue": "",
+        "nullValue": "",
+        "markForNoRelation": "",
+        "markForUnlinkedAttribute": "",
+        "fieldDelimiterForRelation": "",
+        "limit": "",
+        "separateJob": "",
+        "configuratorItems": "",
+        "convertCollectionToString": "",
+        "convertRelationsToString": "",
+        "exportByMaxDepth": "",
+        "originTemplateName": "",
+        "originTemplate": "",
+        "isTemplateEditable": "",
+        "fileNameMask": "",
+        "exportAllField": "",
+        "fieldList": "",
+        "contentLanguage": "",
+        "useExistingExportFeed": "",
+        "useQuoteForAll": "",
+        "files": ""
+    },
+    "options": {
+        "fileType": {
+            "xlsx": "",
+            "csv": "",
+            "json": "",
+            "xml": "",
+            "sql": ""
+        },
+        "type": {
+            "simple": ""
+        }
+    },
+    "labels": {
+        "generateTemplate": "",
+        "simple": "",
+        "typeToSearch": "",
+        "removeAllItemsConfirmation": "",
+        "fields": "",
+        "ignoreFilter": "",
+        "Export Data Settings": "",
+        "Feed Settings": "",
+        "entityFilter": "",
+        "entityFilterResult": "",
+        "Configurator": "",
+        "addEntityField": "",
+        "doubleQuote": "",
+        "singleQuote": "",
+        "Export": "",
+        "DynamicExport": "",
+        "DuplicateAsImport": "",
+        "Pending": "",
+        "Success": "",
+        "Running": "",
+        "Failed": "",
+        "Canceled": "",
+        "allAttributesAlreadyAdded": "",
+        "selectAllLanguages": "",
+        "exportParameters": "",
+        "contentLanguage": ""
+    },
+    "actions": {
+        "cancelExportJob": "",
+        "tryAgainExportJob": ""
+    },
+    "messages": {
+        "confirmTemplateGeneration": "",
+        "confirmNumberOfHeadersChange": "",
+        "delimitersMustBeDifferent": "",
+        "noExportFeedSelected": "",
+        "columnAlreadyExist": "",
+        "duplicateAsImport": "",
+        "noFieldSelected": "",
+        "contentLanguageRequired": ""
+    },
+    "additionalTranslates": {
+        "exportName": "",
+        "createExportJobs": ""
+    },
+    "exceptions": {
+        "toManyAttributesSelected": "",
+        "noSuchAttribute": "",
+        "noDataFound": "",
+        "exportValidationFailed": "",
+        "lastRecordIsRequired": "",
+        "noFieldLabel": "",
+        "noAttributeLabel": "",
+        "noConfiguratorItems": "",
+        "noSheets": "",
+        "exportFeedIsInvalid": ""
+    },
+    "tooltips": {
+        "maxWorkers": "",
+        "template": "",
+        "convertCollectionToString": "",
+        "convertRelationsToString": "",
+        "markForNoRelation": "",
+        "nullValue": "",
+        "emptyValue": "",
+        "exportByMaxDepth": "",
+        "useQuoteForAll": "",
+        "limit": "",
+        "separateJob": ""
+    },
+    "boolFilters": {
+        "onlyExportFailed24Hours": "",
+        "onlyExportFailed7Days": "",
+        "onlyExportFailed28Days": ""
+    },
+    "twigVariables": {
+        "template": {
+            "entities": ""
+        },
+        "fileNameMask": {
+            "feed": "",
+            "filename": "",
+            "interation": ""
+        }
+    }
+}
