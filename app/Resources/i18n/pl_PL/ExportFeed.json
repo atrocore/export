@@ -1,133 +1,132 @@
 {
-  "fields": {
-    "template": "Szablon",
-    "sortOrderField": "Pole sortowania",
-    "sortOrderDirection": "Kierunek sortowania",
-    "entity": "Encja",
-    "type": "Typ",
-    "isActive": "Aktywny",
-    "lastStatus": "Ostatni status",
-    "lastTime": "Ostatnie uruchomienie",
-    "fileType": "Format pliku",
-    "isFileHeaderRow": "Wiersz nagłówka",
-    "csvFieldDelimiter": "Separator pól CSV",
-    "csvTextQualifier": "Określenie tekstu CSV",
-    "field": "Pole",
-    "fieldOrAttribute": "Pole/Atrybut",
-    "delimiter": "Separator wartości listy",
-    "exportJobs": "Wykonanie eksportu",
-    "emptyValue": "Znacznik pustej wartości",
-    "nullValue": "Znacznik wartości zerowej",
-    "markForNoRelation": "Znacznik braku związku",
-    "fieldDelimiterForRelation": "Separator pól dla relacji",
-    "limit": "Maksymalna liczba rekordów na iterację",
-    "separateJob": "Oddzielne zadanie na iterację",
-    "configuratorItems": "Konfigurator",
-    "convertCollectionToString": "Konwertuj kolekcję na ciąg znaków",
-    "convertRelationsToString": "Konwertuj relacje na ciąg znaków",
-    "exportByMaxDepth": "Maksymalna głębokość relacji do pokazania",
-    "originTemplateName": "Nazwa szablonu",
-    "originTemplate": "Szablon źródłowy",
-    "isTemplateEditable": "Edytowalny",
-    "fileNameMask": "Maska nazwy pliku",
-    "exportAllField": "Eksportuj wszystkie pola",
-    "fieldList": "Lista pól",
-    "useExistingExportFeed": "Proszę użyć istniejącego kanału eksportu",
-    "replaceExistingFile": "Zastąp istniejący plik",
-    "markForUnlinkedAttribute": "Marker dla niepowiązanego atrybutu",
-    "maxWorkers": "Maksymalna liczba pracowników",
-    "useQuoteForAll": "Proszę używać cudzysłowów dla wszystkich wartości",
-    "locale": "Lokalizacja",
-    "folder": "Folder",
-    "files": "Pliki"
-  },
-  "options": {
-    "fileType": {
-      "xlsx": "XLSX (Excel)",
-      "csv": "CSV",
-      "json": "JSON",
-      "xml": "XML",
-      "sql": "SQL"
-    }
-  },
-  "labels": {
-    "generateTemplate": "Generuj szablon",
-    "simple": "Plik",
-    "typeToSearch": "Wpisz, aby wyszukać...",
-    "removeAllItemsConfirmation": "Czy na pewno chcesz usunąć wszystkie reguły konfiguratora?",
-    "fields": "Pola",
-    "ignoreFilter": "Ignoruj filtr w przesyłce",
-    "Export Data Settings": "Ustawienia eksportu danych",
-    "Feed Settings": "Ustawienia przesyłki",
-    "entityFilter": "Filtr",
-    "entityFilterResult": "Wynik filtra",
-    "Configurator": "Konfigurator",
-    "addEntityField": "Dodaj pole encji",
-    "doubleQuote": "Cudzysłów",
-    "singleQuote": "Apostrof",
-    "Export": "Eksport",
-    "DuplicateAsImport": "Duplikuj jako import",
-    "Pending": "Oczekujący",
-    "Success": "Sukces",
-    "Running": "Uruchamianie",
-    "Failed": "Niepowodzenie",
-    "Canceled": "Anulowano",
-    "allAttributesAlreadyAdded": "Wszystkie atrybuty zostały już dodane."
-  },
-  "actions": {
-    "cancelExportJob": "Anuluj",
-    "tryAgainExportJob": "Eksportuj ponownie"
-  },
-  "messages": {
-    "confirmTemplateGeneration": "Czy na pewno chcesz wygenerować szablon?",
-    "delimitersMustBeDifferent": "Wszystkie parametry przesyłki powinny mieć unikalne wartości.",
-    "noExportFeedSelected": "Nie wybrano przesyłki eksportowej.",
-    "columnAlreadyExist": "Kolumna o takiej nazwie już istnieje.",
-    "duplicateAsImport": "Czy na pewno chcesz utworzyć przesyłkę importu z tej przesyłki eksportowej?",
-    "noFieldSelected": "Nie wybrano żadnych pól"
-  },
-  "additionalTranslates": {
-    "exportName": "Eksport: %s",
-    "createExportJobs": "Create Export Executions for %s"
-  },
-  "exceptions": {
-    "toManyAttributesSelected": "Maksymalna liczba wybranych atrybutów powinna być poniżej 2000 rekordów.",
-    "noSuchAttribute": "Atrybut '%s' nie istnieje.",
-    "noDataFound": "Przesyłka nie ma nic do wyeksportowania.",
-    "exportValidationFailed": "Nie można wyeksportować takiego pliku. Sprawdź formularz i spróbuj ponownie.",
-    "lastRecordIsRequired": "Ostatni rekord w konfiguratorze nie może być usunięty.",
-    "noFieldLabel": "Etykieta dla pola '%s' dla języka '%s' nie jest ustawiona.",
-    "noAttributeLabel": "Etykieta dla atrybutu '%s' dla języka '%s' nie jest ustawiona.",
-    "noConfiguratorItems": "Proszę utwórz przynajmniej jedną regułę konfiguratora, aby móc wykonać tę przesyłkę.",
-    "noSheets": "Proszę utwórz przynajmniej jedną arkusz, aby móc wykonać tę przesyłkę.",
-    "exportFeedIsInvalid": "Kanał eksportu zawiera błędy. Proszę je poprawić przed kontynuowaniem."
-  },
-  "tooltips": {
-    "template": "Możesz używać składni silnika szablonów <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
-    "convertCollectionToString": "Pola i atrybuty typu: multi-enum, tablica, relacja jeden do wielu.",
-    "convertRelationsToString": "Pola relacji będą oddzielone separatorem pól dla relacji.",
-    "exportByMaxDepth": "Określa maksymalną głębokość relacji w polu konfiguratora \"Powiązane pola encji\"",
-    "markForNoRelation": "Określa, jak powinna być oznaczana relacja niepowiązana.",
-    "nullValue": "Wartość zostanie zinterpretowana jako wartość \"NULL\".",
-    "emptyValue": "Wartość zostanie zinterpretowana jako \"pusta\" wartość dodatkowo do pustej komórki.",
-    "maxWorkers": "Określa to, ilu pracowników może równolegle wykonać ten feed.",
-    "useQuoteForAll": "Wszystkie wartości w wyeksportowanym pliku zostaną ujęte w cudzysłów",
-    "limit": "Wyższa wartość oznacza mniejszą liczbę zadań wykonywanych w tle.",
-    "separateJob": "System wygeneruje oddzielny plik eksportu dla każdego zadania eksportu."
-  },
-  "boolFilters": {
-    "onlyExportFailed24Hours": "Tylko przesyłki eksportu, które nie powiodły się w ciągu ostatnich 24 godzin",
-    "onlyExportFailed7Days": "Tylko przesyłki eksportu, które nie powiodły się w ciągu ostatnich 7 dni",
-    "onlyExportFailed28Days": "Tylko przesyłki eksportu, które nie powiodły się w ciągu ostatnich 28 dni"
-  },
-  "twigVariables": {
-    "template": {
-      "entities": "Zbiór podmiotów do wyeksportowania"
+    "fields": {
+        "template": "Szablon",
+        "sortOrderField": "Pole sortowania",
+        "sortOrderDirection": "Kierunek sortowania",
+        "entity": "Encja",
+        "type": "Typ",
+        "isActive": "Aktywny",
+        "lastStatus": "Ostatni status",
+        "lastTime": "Ostatnie uruchomienie",
+        "fileType": "Format pliku",
+        "csvFieldDelimiter": "Separator pól CSV",
+        "csvTextQualifier": "Określenie tekstu CSV",
+        "field": "Pole",
+        "fieldOrAttribute": "Pole/Atrybut",
+        "delimiter": "Separator wartości listy",
+        "exportJobs": "Wykonanie eksportu",
+        "emptyValue": "Znacznik pustej wartości",
+        "nullValue": "Znacznik wartości zerowej",
+        "markForNoRelation": "Znacznik braku związku",
+        "fieldDelimiterForRelation": "Separator pól dla relacji",
+        "limit": "Maksymalna liczba rekordów na iterację",
+        "separateJob": "Oddzielne zadanie na iterację",
+        "configuratorItems": "Konfigurator",
+        "convertCollectionToString": "Konwertuj kolekcję na ciąg znaków",
+        "convertRelationsToString": "Konwertuj relacje na ciąg znaków",
+        "exportByMaxDepth": "Maksymalna głębokość relacji do pokazania",
+        "originTemplateName": "Nazwa szablonu",
+        "originTemplate": "Szablon źródłowy",
+        "isTemplateEditable": "Edytowalny",
+        "fileNameMask": "Maska nazwy pliku",
+        "exportAllField": "Eksportuj wszystkie pola",
+        "fieldList": "Lista pól",
+        "useExistingExportFeed": "Proszę użyć istniejącego kanału eksportu",
+        "replaceExistingFile": "Zastąp istniejący plik",
+        "markForUnlinkedAttribute": "Marker dla niepowiązanego atrybutu",
+        "maxWorkers": "Maksymalna liczba pracowników",
+        "useQuoteForAll": "Proszę używać cudzysłowów dla wszystkich wartości",
+        "locale": "Lokalizacja",
+        "folder": "Folder",
+        "files": "Pliki"
     },
-    "fileNameMask": {
-      "feed": "Dane zasilające",
-      "filename": "Domyślna nazwa pliku generowana przez system",
-      "interation": "Numer iteracji zadania"
+    "options": {
+        "fileType": {
+            "xlsx": "XLSX (Excel)",
+            "csv": "CSV",
+            "json": "JSON",
+            "xml": "XML",
+            "sql": "SQL"
+        }
+    },
+    "labels": {
+        "generateTemplate": "Generuj szablon",
+        "simple": "Plik",
+        "typeToSearch": "Wpisz, aby wyszukać...",
+        "removeAllItemsConfirmation": "Czy na pewno chcesz usunąć wszystkie reguły konfiguratora?",
+        "fields": "Pola",
+        "ignoreFilter": "Ignoruj filtr w przesyłce",
+        "Export Data Settings": "Ustawienia eksportu danych",
+        "Feed Settings": "Ustawienia przesyłki",
+        "entityFilter": "Filtr",
+        "entityFilterResult": "Wynik filtra",
+        "Configurator": "Konfigurator",
+        "addEntityField": "Dodaj pole encji",
+        "doubleQuote": "Cudzysłów",
+        "singleQuote": "Apostrof",
+        "Export": "Eksport",
+        "DuplicateAsImport": "Duplikuj jako import",
+        "Pending": "Oczekujący",
+        "Success": "Sukces",
+        "Running": "Uruchamianie",
+        "Failed": "Niepowodzenie",
+        "Canceled": "Anulowano",
+        "allAttributesAlreadyAdded": "Wszystkie atrybuty zostały już dodane."
+    },
+    "actions": {
+        "cancelExportJob": "Anuluj",
+        "tryAgainExportJob": "Eksportuj ponownie"
+    },
+    "messages": {
+        "confirmTemplateGeneration": "Czy na pewno chcesz wygenerować szablon?",
+        "delimitersMustBeDifferent": "Wszystkie parametry przesyłki powinny mieć unikalne wartości.",
+        "noExportFeedSelected": "Nie wybrano przesyłki eksportowej.",
+        "columnAlreadyExist": "Kolumna o takiej nazwie już istnieje.",
+        "duplicateAsImport": "Czy na pewno chcesz utworzyć przesyłkę importu z tej przesyłki eksportowej?",
+        "noFieldSelected": "Nie wybrano żadnych pól"
+    },
+    "additionalTranslates": {
+        "exportName": "Eksport: %s",
+        "createExportJobs": "Create Export Executions for %s"
+    },
+    "exceptions": {
+        "toManyAttributesSelected": "Maksymalna liczba wybranych atrybutów powinna być poniżej 2000 rekordów.",
+        "noSuchAttribute": "Atrybut '%s' nie istnieje.",
+        "noDataFound": "Przesyłka nie ma nic do wyeksportowania.",
+        "exportValidationFailed": "Nie można wyeksportować takiego pliku. Sprawdź formularz i spróbuj ponownie.",
+        "lastRecordIsRequired": "Ostatni rekord w konfiguratorze nie może być usunięty.",
+        "noFieldLabel": "Etykieta dla pola '%s' dla języka '%s' nie jest ustawiona.",
+        "noAttributeLabel": "Etykieta dla atrybutu '%s' dla języka '%s' nie jest ustawiona.",
+        "noConfiguratorItems": "Proszę utwórz przynajmniej jedną regułę konfiguratora, aby móc wykonać tę przesyłkę.",
+        "noSheets": "Proszę utwórz przynajmniej jedną arkusz, aby móc wykonać tę przesyłkę.",
+        "exportFeedIsInvalid": "Kanał eksportu zawiera błędy. Proszę je poprawić przed kontynuowaniem."
+    },
+    "tooltips": {
+        "template": "Możesz używać składni silnika szablonów <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
+        "convertCollectionToString": "Pola i atrybuty typu: multi-enum, tablica, relacja jeden do wielu.",
+        "convertRelationsToString": "Pola relacji będą oddzielone separatorem pól dla relacji.",
+        "exportByMaxDepth": "Określa maksymalną głębokość relacji w polu konfiguratora \"Powiązane pola encji\"",
+        "markForNoRelation": "Określa, jak powinna być oznaczana relacja niepowiązana.",
+        "nullValue": "Wartość zostanie zinterpretowana jako wartość \"NULL\".",
+        "emptyValue": "Wartość zostanie zinterpretowana jako \"pusta\" wartość dodatkowo do pustej komórki.",
+        "maxWorkers": "Określa to, ilu pracowników może równolegle wykonać ten feed.",
+        "useQuoteForAll": "Wszystkie wartości w wyeksportowanym pliku zostaną ujęte w cudzysłów",
+        "limit": "Wyższa wartość oznacza mniejszą liczbę zadań wykonywanych w tle.",
+        "separateJob": "System wygeneruje oddzielny plik eksportu dla każdego zadania eksportu."
+    },
+    "boolFilters": {
+        "onlyExportFailed24Hours": "Tylko przesyłki eksportu, które nie powiodły się w ciągu ostatnich 24 godzin",
+        "onlyExportFailed7Days": "Tylko przesyłki eksportu, które nie powiodły się w ciągu ostatnich 7 dni",
+        "onlyExportFailed28Days": "Tylko przesyłki eksportu, które nie powiodły się w ciągu ostatnich 28 dni"
+    },
+    "twigVariables": {
+        "template": {
+            "entities": "Zbiór podmiotów do wyeksportowania"
+        },
+        "fileNameMask": {
+            "feed": "Dane zasilające",
+            "filename": "Domyślna nazwa pliku generowana przez system",
+            "interation": "Numer iteracji zadania"
+        }
     }
-  }
 }

@@ -1,136 +1,135 @@
 {
-  "fields": {
-    "template": "Шаблон",
-    "sortOrderField": "Порядок сортування (поле)",
-    "sortOrderDirection": "Порядок сортування (напрямок)",
-    "entity": "Сутність",
-    "type": "Тип",
-    "isActive": "Активний",
-    "lastStatus": "Останній статус",
-    "lastTime": "Останнє виконання",
-    "fileType": "Формат",
-    "isFileHeaderRow": "Рядок заголовка",
-    "csvFieldDelimiter": "Роздільник полів",
-    "csvTextQualifier": "Класифікатор тексту",
-    "field": "Поле",
-    "fieldOrAttribute": "Поле/Атрибут",
-    "delimiter": "Роздільник значень списку",
-    "exportJobs": "Виконання експортних контрактів",
-    "emptyValue": "Маркер для порожнього значення",
-    "nullValue": "Маркер значення Null",
-    "markForNoRelation": "Маркер для відсутності відношення",
-    "markForUnlinkedAttribute": "Маркер для неприлінкованого атрибуту",
-    "fieldDelimiterForRelation": "Роздільник полів для зв'язку",
-    "limit": "Максимальне число записів для ітерації",
-    "separateJob": "Окреме завдання для ітерації",
-    "configuratorItems": "Конфігуратор",
-    "convertCollectionToString": "Конвертувати список у рядок",
-    "convertRelationsToString": "Конвертувати поля зв'язку в рядок",
-    "exportByMaxDepth": "Показати максимальну глибину відносин",
-    "originTemplateName": "Назва шаблону",
-    "originTemplate": "Оригінальний шаблон",
-    "isTemplateEditable": "Редагувати",
-    "fileNameMask": "Маска імені файлу",
-    "exportAllField": "Експортувати всі поля",
-    "fieldList": "Список полів",
-    "useExistingExportFeed": "Використовуйте наявний канал експорту",
-    "useQuoteForAll": "Використовувати лапки для усіх значень",
-    "maxWorkers": "Максимальна кількість працівників",
-    "folder": "Папка",
-    "replaceExistingFile": "Замінити існуючий файл",
-    "locale": "Локаль",
-    "files": "Файли"
-  },
-  "labels": {
-    "generateTemplate": "Згенерувати шаблон",
-    "typeToSearch": "Введіть для пошуку...",
-    "removeAllItemsConfirmation": "Ви впевнені, що хочете видалити всі правила конфігуратора?",
-    "fields": "Поля",
-    "ignoreFilter": "Ігнорувати фільтр у фіді",
-    "Export Data Settings": "Налаштування експорту даних",
-    "Feed Settings": "Налаштування фіду",
-    "entityFilter": "Фільтр",
-    "entityFilterResult": "Результат фільтрації",
-    "Configurator": "Конфігуратор",
-    "addEntityField": "Створити сутність поле",
-    "simple": "Файл",
-    "doubleQuote": "Подвійні лапки",
-    "singleQuote": "Одинарна лапка",
-    "Export": "Експорт",
-    "DuplicateAsImport": "Створити дублікат як імпортний фід",
-    "Pending": "В очікуванні",
-    "Success": "Успішно",
-    "Running": "Виконується",
-    "Failed": "Не виконано",
-    "Canceled": "Скасовано",
-    "allAttributesAlreadyAdded": "Всі атрибути вже додано."
-  },
-  "actions": {
-    "cancelExportJob": "Скасувати",
-    "tryAgainExportJob": "Повторити спробу"
-  },
-  "messages": {
-    "confirmTemplateGeneration": "Ви впевнені, що хочете згенерувати шаблон?",
-    "delimitersMustBeDifferent": "Усі параметри фіду повинні мати унікальні значення.",
-    "noExportFeedSelected": "Експортний фід не обрано.",
-    "columnAlreadyExist": "Колонка з такою назвою вже існує.",
-    "duplicateAsImport": "Ви впевнені, що хочете створити канал імпорту з цього каналу експорту?",
-    "noFieldSelected": "Не вибрано жодного поля"
-  },
-  "additionalTranslates": {
-    "exportName": "Експорт: %s",
-    "createExportJobs": "Створити виконання експорту для %s"
-  },
-  "exceptions": {
-    "toManyAttributesSelected": "Максимальна кількість обраних атрибутів не може бути більшою за 2000.",
-    "noSuchAttribute": "Атрибут '%s' не існує.",
-    "noDataFound": "Не знайдено даних для фіда.",
-    "exportValidationFailed": "Ви не можете експортувати такий файл. Будь ласка, перевірте форму введення даних і спробуйте ще раз.",
-    "lastRecordIsRequired": "Не можна видалити останній запис у конфігураторі.",
-    "noFieldLabel": "Мітка для поля '%s' для мови '%s' не назначена.",
-    "noAttributeLabel": "Мітка для атрибута '%s' для мови '%s' не назначена.",
-    "noConfiguratorItems": "Будь ласка, створіть хоча б одне правило конфігуратора, щоб мати можливість виконати фід.",
-    "noSheets": "Будь ласка, створіть хоча б один Лист, щоб мати можливість виконати фід.",
-    "exportFeedIsInvalid": "Експортний фід містить помилки. Будь ласка, виправте їх перед продовженням."
-  },
-  "tooltips": {
-    "maxWorkers": "Це визначає максимальну кількість воркерів, які можуть виконувати цю задачу паралельно.",
-    "template": "Ви можете використовувати синтаксис шаблонізатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
-    "convertCollectionToString": "Поля та атрибути типів: multi-enum, array, one-to-many relation.",
-    "convertRelationsToString": "Поля зв'язку будуть розділені \"Роздільником полів для зв'язку\".",
-    "markForNoRelation": "Позначка для незв'язаних відношень",
-    "nullValue": "Значення буде інтерпретовано як \"NULL\".",
-    "emptyValue": "Значення буде інтерпретовано як порожнє, надодачу до порожньої комірки.",
-    "exportByMaxDepth": "Задає максимальну глибину зв'язків у полі конфігуратора \"Пов'язані поля сутностей\"",
-    "useQuoteForAll": "Всі значення в експортованому файлі будуть взяті в лапки",
-    "limit": "Більша кількість означає, що потрібно виконати менше фонових завдань.",
-    "separateJob": "Система створить окремий файл експорту для кожного завдання експорту."
-  },
-  "boolFilters": {
-    "onlyExportFailed24Hours": "Eкспортний фід , які зазнали невдачі протягом останніх 24 годин",
-    "onlyExportFailed7Days": "Eкспортний фід , які зазнали невдачі протягом останніх 7 днів",
-    "onlyExportFailed28Days": "Eкспортний фід , які зазнали невдачі протягом останніх 28 днів"
-  },
-  "twigVariables": {
-    "template": {
-      "entities": "Збір суб'єктів для експорту"
+    "fields": {
+        "template": "Шаблон",
+        "sortOrderField": "Порядок сортування (поле)",
+        "sortOrderDirection": "Порядок сортування (напрямок)",
+        "entity": "Сутність",
+        "type": "Тип",
+        "isActive": "Активний",
+        "lastStatus": "Останній статус",
+        "lastTime": "Останнє виконання",
+        "fileType": "Формат",
+        "csvFieldDelimiter": "Роздільник полів",
+        "csvTextQualifier": "Класифікатор тексту",
+        "field": "Поле",
+        "fieldOrAttribute": "Поле/Атрибут",
+        "delimiter": "Роздільник значень списку",
+        "exportJobs": "Виконання експортних контрактів",
+        "emptyValue": "Маркер для порожнього значення",
+        "nullValue": "Маркер значення Null",
+        "markForNoRelation": "Маркер для відсутності відношення",
+        "markForUnlinkedAttribute": "Маркер для неприлінкованого атрибуту",
+        "fieldDelimiterForRelation": "Роздільник полів для зв'язку",
+        "limit": "Максимальне число записів для ітерації",
+        "separateJob": "Окреме завдання для ітерації",
+        "configuratorItems": "Конфігуратор",
+        "convertCollectionToString": "Конвертувати список у рядок",
+        "convertRelationsToString": "Конвертувати поля зв'язку в рядок",
+        "exportByMaxDepth": "Показати максимальну глибину відносин",
+        "originTemplateName": "Назва шаблону",
+        "originTemplate": "Оригінальний шаблон",
+        "isTemplateEditable": "Редагувати",
+        "fileNameMask": "Маска імені файлу",
+        "exportAllField": "Експортувати всі поля",
+        "fieldList": "Список полів",
+        "useExistingExportFeed": "Використовуйте наявний канал експорту",
+        "useQuoteForAll": "Використовувати лапки для усіх значень",
+        "maxWorkers": "Максимальна кількість працівників",
+        "folder": "Папка",
+        "replaceExistingFile": "Замінити існуючий файл",
+        "locale": "Локаль",
+        "files": "Файли"
     },
-    "fileNameMask": {
-      "feed": "Дані подачі",
-      "filename": "Ім'я файлу за замовчуванням, згенероване системою",
-      "interation": "Номер ітерації завдання"
-    }
-  },
-  "options": {
-    "fileType": {
-      "xlsx": "XLSX (Excel)",
-      "csv": "CSV",
-      "json": "JSON",
-      "xml": "XML",
-      "sql": "SQL"
+    "labels": {
+        "generateTemplate": "Згенерувати шаблон",
+        "typeToSearch": "Введіть для пошуку...",
+        "removeAllItemsConfirmation": "Ви впевнені, що хочете видалити всі правила конфігуратора?",
+        "fields": "Поля",
+        "ignoreFilter": "Ігнорувати фільтр у фіді",
+        "Export Data Settings": "Налаштування експорту даних",
+        "Feed Settings": "Налаштування фіду",
+        "entityFilter": "Фільтр",
+        "entityFilterResult": "Результат фільтрації",
+        "Configurator": "Конфігуратор",
+        "addEntityField": "Створити сутність поле",
+        "simple": "Файл",
+        "doubleQuote": "Подвійні лапки",
+        "singleQuote": "Одинарна лапка",
+        "Export": "Експорт",
+        "DuplicateAsImport": "Створити дублікат як імпортний фід",
+        "Pending": "В очікуванні",
+        "Success": "Успішно",
+        "Running": "Виконується",
+        "Failed": "Не виконано",
+        "Canceled": "Скасовано",
+        "allAttributesAlreadyAdded": "Всі атрибути вже додано."
     },
-    "type": {
-      "simple": "Файл"
+    "actions": {
+        "cancelExportJob": "Скасувати",
+        "tryAgainExportJob": "Повторити спробу"
+    },
+    "messages": {
+        "confirmTemplateGeneration": "Ви впевнені, що хочете згенерувати шаблон?",
+        "delimitersMustBeDifferent": "Усі параметри фіду повинні мати унікальні значення.",
+        "noExportFeedSelected": "Експортний фід не обрано.",
+        "columnAlreadyExist": "Колонка з такою назвою вже існує.",
+        "duplicateAsImport": "Ви впевнені, що хочете створити канал імпорту з цього каналу експорту?",
+        "noFieldSelected": "Не вибрано жодного поля"
+    },
+    "additionalTranslates": {
+        "exportName": "Експорт: %s",
+        "createExportJobs": "Створити виконання експорту для %s"
+    },
+    "exceptions": {
+        "toManyAttributesSelected": "Максимальна кількість обраних атрибутів не може бути більшою за 2000.",
+        "noSuchAttribute": "Атрибут '%s' не існує.",
+        "noDataFound": "Не знайдено даних для фіда.",
+        "exportValidationFailed": "Ви не можете експортувати такий файл. Будь ласка, перевірте форму введення даних і спробуйте ще раз.",
+        "lastRecordIsRequired": "Не можна видалити останній запис у конфігураторі.",
+        "noFieldLabel": "Мітка для поля '%s' для мови '%s' не назначена.",
+        "noAttributeLabel": "Мітка для атрибута '%s' для мови '%s' не назначена.",
+        "noConfiguratorItems": "Будь ласка, створіть хоча б одне правило конфігуратора, щоб мати можливість виконати фід.",
+        "noSheets": "Будь ласка, створіть хоча б один Лист, щоб мати можливість виконати фід.",
+        "exportFeedIsInvalid": "Експортний фід містить помилки. Будь ласка, виправте їх перед продовженням."
+    },
+    "tooltips": {
+        "maxWorkers": "Це визначає максимальну кількість воркерів, які можуть виконувати цю задачу паралельно.",
+        "template": "Ви можете використовувати синтаксис шаблонізатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
+        "convertCollectionToString": "Поля та атрибути типів: multi-enum, array, one-to-many relation.",
+        "convertRelationsToString": "Поля зв'язку будуть розділені \"Роздільником полів для зв'язку\".",
+        "markForNoRelation": "Позначка для незв'язаних відношень",
+        "nullValue": "Значення буде інтерпретовано як \"NULL\".",
+        "emptyValue": "Значення буде інтерпретовано як порожнє, надодачу до порожньої комірки.",
+        "exportByMaxDepth": "Задає максимальну глибину зв'язків у полі конфігуратора \"Пов'язані поля сутностей\"",
+        "useQuoteForAll": "Всі значення в експортованому файлі будуть взяті в лапки",
+        "limit": "Більша кількість означає, що потрібно виконати менше фонових завдань.",
+        "separateJob": "Система створить окремий файл експорту для кожного завдання експорту."
+    },
+    "boolFilters": {
+        "onlyExportFailed24Hours": "Eкспортний фід , які зазнали невдачі протягом останніх 24 годин",
+        "onlyExportFailed7Days": "Eкспортний фід , які зазнали невдачі протягом останніх 7 днів",
+        "onlyExportFailed28Days": "Eкспортний фід , які зазнали невдачі протягом останніх 28 днів"
+    },
+    "twigVariables": {
+        "template": {
+            "entities": "Збір суб'єктів для експорту"
+        },
+        "fileNameMask": {
+            "feed": "Дані подачі",
+            "filename": "Ім'я файлу за замовчуванням, згенероване системою",
+            "interation": "Номер ітерації завдання"
+        }
+    },
+    "options": {
+        "fileType": {
+            "xlsx": "XLSX (Excel)",
+            "csv": "CSV",
+            "json": "JSON",
+            "xml": "XML",
+            "sql": "SQL"
+        },
+        "type": {
+            "simple": "Файл"
+        }
     }
-  }
 }
