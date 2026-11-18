@@ -38,7 +38,9 @@
         "fieldList": "Elenco dei campi",
         "useExistingExportFeed": "Utilizza il feed di esportazione esistente",
         "useQuoteForAll": "Utilizzi le virgolette per tutti i valori",
-        "files": "File"
+        "files": "File",
+        "numberOfHeaders": "Numero di intestazioni",
+        "contentLanguage": "Lingua dei contenuti"
     },
     "options": {
         "fileType": {
@@ -47,6 +49,9 @@
             "json": "JSON",
             "xml": "XML",
             "sql": "SQL"
+        },
+        "type": {
+            "simple": "File"
         }
     },
     "labels": {
@@ -71,7 +76,11 @@
         "Running": "In esecuzione",
         "Failed": "Fallito",
         "Canceled": "Annullato",
-        "allAttributesAlreadyAdded": "Tutti gli attributi sono già stati aggiunti."
+        "allAttributesAlreadyAdded": "Tutti gli attributi sono già stati aggiunti.",
+        "DynamicExport": "Esportazione dinamica",
+        "selectAllLanguages": "Seleziona (tutte le lingue)",
+        "exportParameters": "Parametri di esportazione",
+        "contentLanguage": "Lingua dei contenuti"
     },
     "actions": {
         "cancelExportJob": "Annulla",
@@ -83,7 +92,9 @@
         "noExportFeedSelected": "Non è stato selezionato alcun ExportFeed.",
         "columnAlreadyExist": "Una colonna con tale nome esiste già.",
         "duplicateAsImport": "È sicuro di voler creare un feed di importazione da questo feed di esportazione?",
-        "noFieldSelected": "Nessun campo selezionato"
+        "noFieldSelected": "Nessun campo selezionato",
+        "confirmNumberOfHeadersChange": "La modifica del numero di intestazioni può aggiungere o rimuovere righe di intestazione e la relativa configurazione in ogni elemento di configurazione. Continuare?",
+        "contentLanguageRequired": "La lingua dei contenuti è obbligatoria."
     },
     "additionalTranslates": {
         "exportName": "Esportazione: %s",
