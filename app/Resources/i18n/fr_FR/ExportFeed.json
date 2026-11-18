@@ -38,7 +38,9 @@
         "replaceExistingFile": "Remplacer le fichier existant",
         "locale": "Paramètre régional",
         "folder": "Dossier",
-        "files": "Fichiers"
+        "files": "Fichiers",
+        "numberOfHeaders": "Nombre d’en-têtes",
+        "contentLanguage": "Langue du contenu"
     },
     "options": {
         "fileType": {
@@ -74,7 +76,11 @@
         "Running": "En cours d'exécution",
         "Failed": "Échec",
         "Canceled": "Annulé",
-        "allAttributesAlreadyAdded": "Tous les attributs ont déjà été ajoutés."
+        "allAttributesAlreadyAdded": "Tous les attributs ont déjà été ajoutés.",
+        "DynamicExport": "Export dynamique",
+        "selectAllLanguages": "Sélectionner (toutes les langues)",
+        "exportParameters": "Paramètres d’export",
+        "contentLanguage": "Langue du contenu"
     },
     "actions": {
         "cancelExportJob": "Annuler",
@@ -86,7 +92,9 @@
         "noExportFeedSelected": "Aucun flux d'export n'est sélectionné.",
         "columnAlreadyExist": "Une colonne portant ce nom existe déjà.",
         "duplicateAsImport": "Êtes-vous sûr de vouloir créer un flux d'import à partir de ce flux d'export ?",
-        "noFieldSelected": "Aucun champ sélectionné"
+        "noFieldSelected": "Aucun champ sélectionné",
+        "confirmNumberOfHeadersChange": "Modifier le nombre d’en-têtes peut ajouter ou supprimer des lignes d’en-tête et leur configuration pour chaque élément du configurateur. Continuer ?",
+        "contentLanguageRequired": "La langue du contenu est obligatoire."
     },
     "additionalTranslates": {
         "exportName": "Export : %s",
