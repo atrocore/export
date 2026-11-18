@@ -38,7 +38,9 @@
         "fieldList": "Seznam polí",
         "useExistingExportFeed": "Použití stávajícího exportního kanálu",
         "useQuoteForAll": "Pro všechny hodnoty použijte uvozovky",
-        "files": "Soubory"
+        "files": "Soubory",
+        "numberOfHeaders": "Počet záhlaví",
+        "contentLanguage": "Jazyk obsahu"
     },
     "options": {
         "fileType": {
@@ -47,6 +49,9 @@
             "json": "JSON",
             "xml": "XML",
             "sql": "SQL"
+        },
+        "type": {
+            "simple": "Soubor"
         }
     },
     "labels": {
@@ -71,7 +76,11 @@
         "Running": "Běh",
         "Failed": "Neúspěšný",
         "Canceled": "Zrušeno",
-        "allAttributesAlreadyAdded": "Všechny položky atributů již byly přidány."
+        "allAttributesAlreadyAdded": "Všechny položky atributů již byly přidány.",
+        "DynamicExport": "Dynamický export",
+        "selectAllLanguages": "Vybrat (všechny jazyky)",
+        "exportParameters": "Parametry exportu",
+        "contentLanguage": "Jazyk obsahu"
     },
     "actions": {
         "cancelExportJob": "Zrušit",
@@ -83,7 +92,9 @@
         "noExportFeedSelected": "Není vybrán žádný ExportFeed.",
         "columnAlreadyExist": "Sloupec s takovým názvem již existuje.",
         "duplicateAsImport": "Jste si jisti, že chcete vytvořit importní kanál z tohoto exportního kanálu ?",
-        "noFieldSelected": "Nejsou vybrána žádná pole"
+        "noFieldSelected": "Nejsou vybrána žádná pole",
+        "confirmNumberOfHeadersChange": "Změna počtu záhlaví může u každé položky konfigurátoru přidat nebo odebrat řádky záhlaví a jejich konfiguraci. Pokračovat?",
+        "contentLanguageRequired": "Jazyk obsahu je povinný."
     },
     "additionalTranslates": {
         "exportName": "Export: %s",
