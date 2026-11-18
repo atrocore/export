@@ -1,0 +1,21 @@
+{
+    "fields": {
+        "exportFeed": "",
+        "contentLanguage": "",
+        "locale": "",
+        "payload": ""
+    },
+    "options": {
+        "type": {
+            "export": "",
+            "reExportFailedJob": ""
+        }
+    },
+    "twigVariables": {
+        "payload": {
+            "sourceEntities": "",
+            "sourceEntitiesIds": "",
+            "entity": ""
+        }
+    }
+}
