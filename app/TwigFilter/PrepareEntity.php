@@ -17,18 +17,13 @@ use Espo\ORM\Entity;
 
 class PrepareEntity extends AbstractTwigFilter
 {
-    public function __construct()
-    {
-        $this->addDependency('serviceFactory');
-    }
-
     public function filter($value)
     {
         if (empty($value) || !is_object($value) || !($value instanceof Entity)) {
             return null;
         }
 
-       $this->getInjection('serviceFactory')
+       $this->container->get('serviceFactory')
             ->create($value->getEntityType())
             ->prepareEntityForOutput($value);
 

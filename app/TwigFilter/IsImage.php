@@ -17,11 +17,6 @@ use Espo\ORM\Entity;
 
 class IsImage extends AbstractTwigFilter
 {
-    public function __construct()
-    {
-        $this->addDependency('metadata');
-    }
-
     public function filter($value)
     {
         if (empty($value) || !is_object($value) || !($value instanceof Entity) || $value->getEntityType() !== 'File') {
@@ -31,6 +26,6 @@ class IsImage extends AbstractTwigFilter
         $fileNameParts = explode('.', $value->get("name"));
         $fileExt = strtolower(array_pop($fileNameParts));
 
-        return in_array($fileExt, $this->getInjection('metadata')->get('app.file.image.extensions', []));
+        return in_array($fileExt, $this->container->get('metadata')->get('app.file.image.extensions', []));
     }
 }

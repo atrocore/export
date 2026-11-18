@@ -131,7 +131,6 @@ class ExportFeed extends Base
                 ->setParameter('true', true, ParameterType::BOOLEAN)
                 ->executeQuery();
         } catch (\Throwable $e) {
-
         }
 
         $this->getEntityManager()->getRepository('ExportConfiguratorItem')->where([lcfirst($entityType) . 'Id' => $id])->removeCollection();
@@ -309,7 +308,7 @@ class ExportFeed extends Base
     {
         parent::afterRemove($entity, $options);
 
-        $currentMax = (int)($this->getInjection('dataManager')->getCacheData(self::MAX_NUMBER_OF_HEADERS_CACHE_KEY) ?? 1);
+        $currentMax = (int)($this->container->get('dataManager')->getCacheData(self::MAX_NUMBER_OF_HEADERS_CACHE_KEY) ?? 1);
         if ((int)($entity->get('numberOfHeaders') ?? 0) < $currentMax) {
             return;
         }
@@ -323,7 +322,7 @@ class ExportFeed extends Base
         $newMax = max(1, $newMax);
 
         if ($newMax !== $currentMax) {
-            $this->getInjection('dataManager')->clearCache();
+            $this->container->get('dataManager')->clearCache();
         }
     }
 
@@ -334,10 +333,10 @@ class ExportFeed extends Base
             return;
         }
 
-        $currentMax = (int)($this->getInjection('dataManager')->getCacheData(self::MAX_NUMBER_OF_HEADERS_CACHE_KEY) ?? 1);
+        $currentMax = (int)($this->container->get('dataManager')->getCacheData(self::MAX_NUMBER_OF_HEADERS_CACHE_KEY) ?? 1);
 
         if ($numberOfHeaders > $currentMax) {
-            $this->getInjection('dataManager')->clearCache();
+            $this->container->get('dataManager')->clearCache();
         }
     }
 
@@ -362,14 +361,6 @@ class ExportFeed extends Base
         }
     }
 
-    protected function init()
-    {
-        parent::init();
-
-        $this->addDependency('language');
-        $this->addDependency('dataManager');
-    }
-
     protected function isDelimiterValid(ExportFeedEntity $entity): void
     {
         $delimiters = [
@@ -384,7 +375,7 @@ class ExportFeed extends Base
         }
 
         if (count(array_unique($delimiters)) !== count($delimiters)) {
-            throw new BadRequest($this->getInjection('language')->translate('delimitersMustBeDifferent', 'messages', 'ExportFeed'));
+            throw new BadRequest($this->container->get('language')->translate('delimitersMustBeDifferent', 'messages', 'ExportFeed'));
         }
     }
 }

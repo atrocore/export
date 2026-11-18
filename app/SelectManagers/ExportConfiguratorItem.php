@@ -15,7 +15,7 @@ use Atro\Core\SelectManagers\Base;
 
 class ExportConfiguratorItem extends Base
 {
-    protected function accessOnlyOwn(&$result)
+    protected function accessOnlyOwn(&$result): void
     {
     }
 }

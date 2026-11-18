@@ -114,7 +114,6 @@ class ExportConfiguratorItem extends Base
             $entity->set('sortOrder', $lastSortOrder + 10);
         }
 
-
         parent::beforeSave($entity, $options);
     }
 
@@ -170,10 +169,4 @@ class ExportConfiguratorItem extends Base
         }
     }
 
-    protected function init()
-    {
-        parent::init();
-
-        $this->addDependency('language');
-    }
 }

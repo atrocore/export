@@ -17,12 +17,6 @@ use Pim\Entities\Category;
 
 class PreviousCategoryId extends AbstractTwigFunction
 {
-    public function __construct()
-    {
-        $this->addDependency('entityManager');
-        $this->addDependency('serviceFactory');
-    }
-
     public function run($category)
     {
         if (empty($category) || !($category instanceof Category)) {
@@ -45,7 +39,7 @@ class PreviousCategoryId extends AbstractTwigFunction
         }
 
         $categories = $this
-            ->getInjection('serviceFactory')
+            ->container->get('serviceFactory')
             ->create('Category')
             ->findEntities(['where' => $where, 'sortBy' => 'sortOrder', 'asc' => true]);
 

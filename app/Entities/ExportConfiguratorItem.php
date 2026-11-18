@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Export\Entities;
 
 use Atro\Core\Templates\Entities\Base;
-use Espo\Core\Utils\Json;
 
 class ExportConfiguratorItem extends Base
 {
@@ -48,7 +47,7 @@ class ExportConfiguratorItem extends Base
     public function getDataFields(): array
     {
         if (!empty($data = $this->get('data'))) {
-            $data = Json::decode(Json::encode($data), true);
+            $data = json_decode(json_encode($data), true);
             if (!empty($data) && is_array($data)) {
                 return $data;
             }

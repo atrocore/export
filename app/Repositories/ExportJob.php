@@ -15,6 +15,7 @@ namespace Export\Repositories;
 
 use Atro\Core\Exceptions\BadRequest;
 use Atro\Core\Templates\Repositories\Base;
+use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Export\Core\ExportTypes\AbstractExportType;
 
@@ -31,27 +32,19 @@ class ExportJob extends Base
         return $this->getEntityManager()->getRepository('Job')->get($exportJob->get('queueItemId'));
     }
 
-    protected function init()
-    {
-        parent::init();
-
-        $this->addDependency('language');
-        $this->addDependency('fileManager');
-    }
-
     protected function beforeSave(Entity $entity, array $options = [])
     {
         if (!$entity->isNew() && $entity->isAttributeChanged('state')) {
             if ($entity->get('state') === 'Canceled' && !in_array($entity->getFetched('state'), ['Pending', 'Running'])) {
-                throw new BadRequest($this->getInjection('language')->translate('wrongJobState', 'exceptions', 'ExportJob'));
+                throw new BadRequest($this->container->get('language')->translate('wrongJobState', 'exceptions', 'ExportJob'));
             }
             if ($entity->get('state') === 'Pending') {
                 if ($entity->getFetched('state') === 'Running') {
-                    throw new BadRequest($this->getInjection('language')->translate('wrongJobState', 'exceptions', 'ExportJob'));
+                    throw new BadRequest($this->container->get('language')->translate('wrongJobState', 'exceptions', 'ExportJob'));
                 }
                 $qmJob = $this->getExportJob($entity);
                 if (empty($qmJob)) {
-                    throw new BadRequest($this->getInjection('language')->translate('notExecutableJob', 'exceptions', 'ExportJob'));
+                    throw new BadRequest($this->container->get('language')->translate('notExecutableJob', 'exceptions', 'ExportJob'));
                 }
                 $entity->set('start', (new \DateTime())->format('Y-m-d H:i:s'));
             }
@@ -77,7 +70,7 @@ class ExportJob extends Base
 
             // delete tmp dir
             if (in_array($entity->get('state'), ['Success', 'Failed', 'Canceled'])) {
-                $this->getInjection('fileManager')->removeAllInDir(AbstractExportType::TMP_DIR . DIRECTORY_SEPARATOR . $entity->get('id'));
+                Util::removeDir(AbstractExportType::TMP_DIR . DIRECTORY_SEPARATOR . $entity->get('id'));
             }
 
             // update last status

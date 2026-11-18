@@ -20,7 +20,6 @@ use Atro\Core\Exceptions;
 use Atro\Core\Templates\Services\Base;
 use Atro\Core\Utils\IdGenerator;
 use Atro\Core\Utils\Language;
-use Espo\Core\Utils\Json;
 use Atro\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Atro\Core\EventManager\Event;
@@ -188,7 +187,7 @@ class ExportFeed extends Base
 
         $numberOfHeaders = (int)($exportFeed->get('numberOfHeaders') ?? 0);
 
-        $languageObj = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
+        $languageObj = self::getLocalizedLanguage($this->container, $exportFeed->get('localeId'));
 
         $feedEntity = $feed->get('entity');
 
@@ -645,16 +644,6 @@ class ExportFeed extends Base
         return $res;
     }
 
-    protected function init()
-    {
-        parent::init();
-
-        $this->addDependency('container');
-        $this->addDependency('serviceFactory');
-        $this->addDependency('language');
-        $this->addDependency('user');
-    }
-
     public function prepareFeedDataConfiguration(Entity $sheet, ?string $contentLanguageCode = null, ?string $contentLocaleId = null): array
     {
         if ($sheet->getEntityName() === 'ExportFeed') {
@@ -670,7 +659,7 @@ class ExportFeed extends Base
         $configuration = [];
 
         /** @var \Export\Services\ExportConfiguratorItem $eciService */
-        $eciService = $this->getInjection('serviceFactory')->create('ExportConfiguratorItem');
+        $eciService = $this->container->get('serviceFactory')->create('ExportConfiguratorItem');
 
         $effectiveLocaleId = $contentLocaleId ?? $feed->get('localeId');
         $numberOfHeaders   = (int)($feed->get('numberOfHeaders') ?? 0);
@@ -817,7 +806,7 @@ class ExportFeed extends Base
                 ];
             }
         } else {
-            $result['data']->configuration = Json::decode(Json::encode($this->prepareFeedDataConfiguration($feed, $contentLanguageCode, $contentLocaleId)));
+            $result['data']->configuration = json_decode(json_encode($this->prepareFeedDataConfiguration($feed, $contentLanguageCode, $contentLocaleId)));
         }
 
         return $this
@@ -876,7 +865,7 @@ class ExportFeed extends Base
         if (!empty($data['executeNow'])) {
             $data['ownerUserId'] = $this->getUser()->get('id');
             $data['priority']    = AbstractExportType::PRIORITIES[$priority];
-            $this->getInjection('container')->get(ExportJobCreator::class)->runNow($data);
+            $this->container->get(ExportJobCreator::class)->runNow($data);
         } else {
             $data['exportJobCreatorId'] = Util::generateId();
             $jobEntity                  = $this->getEntityManager()->getEntity('Job');
@@ -902,7 +891,7 @@ class ExportFeed extends Base
     {
         if (!empty($className = $this->getMetadata()->get(['app', 'templateLoaders', $template]))) {
             if (is_a($className, AbstractTemplate::class, true)) {
-                $templateClass = $this->getInjection('container')->get($className);
+                $templateClass = $this->container->get($className);
 
                 return $templateClass->loadTemplateFromFile();
             }
@@ -917,7 +906,7 @@ class ExportFeed extends Base
 
         foreach ($this->getMetadata()->get(['app', 'templateLoaders'], []) as $name => $className) {
             if (is_a($className, AbstractTemplate::class, true)) {
-                $templateClass = $this->getInjection('container')->get($className);
+                $templateClass = $this->container->get($className);
 
                 if ($templateClass->isTemplateCompatible($data)) {
                     $result[] = ['template' => $name, 'name' => $templateClass->getName()];
@@ -1096,7 +1085,6 @@ class ExportFeed extends Base
             ]
         ];
 
-
         if (!empty($requestData->entityFilterData)) {
             if (!empty($requestData->entityFilterData->byWhere)) {
                 $data['feed']['data']->where = array_merge($data['feed']['data']->where, $requestData->entityFilterData->where);
@@ -1111,7 +1099,6 @@ class ExportFeed extends Base
 
         return $this->pushExport($data);
     }
-
 
     protected function isEntityUpdated(Entity $entity, \stdClass $data): bool
     {
@@ -1246,10 +1233,10 @@ class ExportFeed extends Base
                 return;
             }
             $entityName = $feedData['entity'];
-            $language   = $this->getInjection('container')->get('language');
+            $language   = $this->container->get('language');
         } else {
             $entityName           = $exportFeed->get('entity');
-            $language             = self::getLocalizedLanguage($this->getInjection('container'), $exportFeed->get('localeId'));
+            $language             = self::getLocalizedLanguage($this->container, $exportFeed->get('localeId'));
             $hadLocaleIdOverride  = array_key_exists('localeId', $GLOBALS);
             $previousLocaleId     = $GLOBALS['localeId'] ?? null;
             $GLOBALS['localeId']  = $exportFeed->get('localeId');
@@ -1385,7 +1372,7 @@ class ExportFeed extends Base
                 ->getAttributesByIds(array_values($attributesIds));
             if (!empty($attributes)) {
                 $localeId = $effectiveLocaleId ?? $feed->get('localeId');
-                $language = self::getLocalizedLanguage($this->getInjection('container'), $localeId);
+                $language = self::getLocalizedLanguage($this->container, $localeId);
 
                 $hadLocaleIdOverride = array_key_exists('localeId', $GLOBALS);
                 $previousLocaleId    = $GLOBALS['localeId'] ?? null;
@@ -1408,17 +1395,17 @@ class ExportFeed extends Base
 
     protected function getAttributeFieldConverter(): AttributeFieldConverter
     {
-        return $this->getInjection('container')->get(AttributeFieldConverter::class);
+        return $this->container->get(AttributeFieldConverter::class);
     }
 
     protected function getEventManager(): Manager
     {
-        return $this->getInjection('eventManager');
+        return $this->container->get('eventManager');
     }
 
     protected function getLanguage(): Language
     {
-        return $this->getInjection('language');
+        return $this->container->get('language');
     }
 
     public static function getLocalizedLanguage(Container $container, $locale)
