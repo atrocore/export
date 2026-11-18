@@ -1,49 +1,56 @@
 {
-  "scopeNames": {
-    "ExportFeed": "Eksportuj kanał",
-    "ExportConfiguratorItem": "Konfigurator",
-    "ExportJob": "Realizacja eksportu",
-    "ActionTypeExport": "Akcja: Eksportuj kanał",
-    "ActionTypeReExportFailedJob": "Akcja: Ponów nieudane zadanie eksportu"
-  },
-  "scopeNamesPlural": {
-    "ExportFeed": "Eksportuj kanały",
-    "ExportConfiguratorItem": "Konfigurator",
-    "ExportJob": "Wykonanie eksportu",
-    "ActionTypeExport": "Akcja: Eksportuj kanał",
-    "ActionTypeReExportFailedJob": "Akcja: Ponów nieudane zadanie eksportu"
-  },
-  "labels": {
-    "Generate": "Generuj",
-    "tryAgain": "Eksportuj ponownie",
-    "filter": "Filtruj",
-    "selectAttributes": "Wybierz atrybut(y)",
-    "removeAllItems": "Usuń wszystko",
-    "exportErrorDuring24Hours": "Błąd eksportu kanałów/wykonań w ciągu 24 godzin",
-    "exportErrorDuring7Days": "Błąd eksportu kanałów/wykonań w ciągu 7 dni",
-    "exportErrorDuring28Days": "Błąd eksportu kanałów/wykonań w ciągu 28 dni",
-    "selectFields": "Proszę wybrać pole(a)",
-    "addFixed": "Proszę dodać stałą wartość",
-    "addScript": "Proszę dodać skrypt",
-    "addAllAttributes": "Proszę dodać wszystkie atrybuty"
-  },
-  "dashlets": {
-    "DataSyncErrorsExport": "Błędy synchronizacji danych podczas eksportu"
-  },
-  "boolFilters": {
-    "unexported": "Niewyeksportowany"
-  },
-  "twig": {
-    "functions": {
-      "getPreviousCategoryId": "Pobiera identyfikator poprzedniej kategorii w hierarchicznej strukturze kategorii",
-      "getEntity": "Pobiera obiekt encji według jego identyfikatora",
-      "getSharedUrl": "Pobiera udostępniony adres URL dla pliku"
+    "scopeNames": {
+        "ExportFeed": "Eksportuj kanał",
+        "ExportConfiguratorItem": "Konfigurator",
+        "ExportJob": "Realizacja eksportu",
+        "ActionTypeExport": "Akcja: Eksportuj kanał",
+        "ActionTypeReExportFailedJob": "Akcja: Ponów nieudane zadanie eksportu",
+        "ExportFeedTypeSimple": "Kanał eksportu: Plik"
     },
-    "filters": {
-      "prepareEntity": "Przygotowuje podmiot do eksportu",
-      "isImage": "Sprawdza, czy podana wartość reprezentuje obraz, sprawdzając rozszerzenia plików lub typy MIME",
-      "escapeDoubleQuote": "Unika podwójnych cudzysłowów w ciągu znaków, dodając odwrotne ukośniki (\" staje się \\\")",
-      "backslashNToBr": "Konwertuje znaki nowej linii (\\n) na znaczniki podziału wiersza HTML (<br>)."
+    "scopeNamesPlural": {
+        "ExportFeed": "Eksportuj kanały",
+        "ExportConfiguratorItem": "Konfigurator",
+        "ExportJob": "Wykonanie eksportu",
+        "ActionTypeExport": "Akcja: Eksportuj kanał",
+        "ActionTypeReExportFailedJob": "Akcja: Ponów nieudane zadanie eksportu",
+        "ExportFeedTypeSimple": "Plik kanału eksportu"
+    },
+    "labels": {
+        "Generate": "Generuj",
+        "tryAgain": "Eksportuj ponownie",
+        "filter": "Filtruj",
+        "selectAttributes": "Wybierz atrybut(y)",
+        "removeAllItems": "Usuń wszystko",
+        "exportErrorDuring24Hours": "Błąd eksportu kanałów/wykonań w ciągu 24 godzin",
+        "exportErrorDuring7Days": "Błąd eksportu kanałów/wykonań w ciągu 7 dni",
+        "exportErrorDuring28Days": "Błąd eksportu kanałów/wykonań w ciągu 28 dni",
+        "selectFields": "Proszę wybrać pole(a)",
+        "addFixed": "Proszę dodać stałą wartość",
+        "addScript": "Proszę dodać skrypt",
+        "addAllAttributes": "Proszę dodać wszystkie atrybuty"
+    },
+    "dashlets": {
+        "DataSyncErrorsExport": "Błędy synchronizacji danych podczas eksportu"
+    },
+    "boolFilters": {
+        "unexported": "Niewyeksportowany"
+    },
+    "twig": {
+        "functions": {
+            "getPreviousCategoryId": "Pobiera identyfikator poprzedniej kategorii w hierarchicznej strukturze kategorii",
+            "getEntity": "Pobiera obiekt encji według jego identyfikatora",
+            "getSharedUrl": "Pobiera udostępniony adres URL dla pliku"
+        },
+        "filters": {
+            "prepareEntity": "Przygotowuje podmiot do eksportu",
+            "isImage": "Sprawdza, czy podana wartość reprezentuje obraz, sprawdzając rozszerzenia plików lub typy MIME",
+            "escapeDoubleQuote": "Unika podwójnych cudzysłowów w ciągu znaków, dodając odwrotne ukośniki (\" staje się \\\")",
+            "backslashNToBr": "Konwertuje znaki nowej linii (\\n) na znaczniki podziału wiersza HTML (<br>)."
+        }
+    },
+    "subtypeDescriptions": {
+        "ActionTypeExport": "Uruchamia kanał eksportu.",
+        "ActionTypeReExportFailedJob": "Ponownie uruchamia nieudane zadanie eksportu.",
+        "ExportFeedTypeSimple": "Eksportuje dane do pliku, który można pobrać."
     }
-  }
 }
