@@ -1,0 +1,12 @@
+{
+    "fields": {
+        "exportFeed": "Exportálási adatfolyam",
+        "maximumHoursToLookBack": "Visszatekintési idő maximuma órában",
+        "maximumDaysForJobExist": "Maximális megőrzési idő napokban"
+    },
+    "options": {
+        "type": {
+            "ExportFeed": "Exportfolyam"
+        }
+    }
+}

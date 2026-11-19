@@ -1,49 +1,56 @@
 {
-  "scopeNames": {
-    "ExportFeed": "Exportní kanál",
-    "ExportConfiguratorItem": "Konfigurátor",
-    "ExportJob": "Provedení exportu",
-    "ActionTypeExport": "Akce: Exportní kanál",
-    "ActionTypeReExportFailedJob": "Akce: Znovu exportovat neúspěšnou úlohu"
-  },
-  "scopeNamesPlural": {
-    "ExportFeed": "Exportní kanály",
-    "ExportConfiguratorItem": "Konfigurátor",
-    "ExportJob": "Provádění exportu",
-    "ActionTypeExport": "Akce: Exportní kanál",
-    "ActionTypeReExportFailedJob": "Akce: Znovu exportovat neúspěšnou úlohu"
-  },
-  "labels": {
-    "Generate": "Generovat",
-    "tryAgain": "Znovu exportovat",
-    "selectFields": "Vyberte pole",
-    "selectAttributes": "Vyberte atribut(y)",
-    "addAllAttributes": "Přidání všech atributů",
-    "addFixed": "Přidání pevné hodnoty",
-    "addScript": "Přidat skript",
-    "removeAllItems": "Odstranění všech",
-    "exportErrorDuring24Hours": "Chyba při exportu krmiv/výkonů během 24 hodin",
-    "exportErrorDuring7Days": "Chyba exportu krmiv/výkonů během 7 dnů",
-    "exportErrorDuring28Days": "Chyby při exportu krmiv/výkonů během 28 dnů",
-    "filter": "Filtr"
-  },
-  "boolFilters": {
-    "unexported": "Neexportované"
-  },
-  "dashlets": {
-    "DataSyncErrorsExport": "Chyby synchronizace dat při exportu"
-  },
-  "twig": {
-    "functions": {
-      "getPreviousCategoryId": "Vyhledá ID předchozí kategorie v hierarchické struktuře kategorií.",
-      "getEntity": "Vyhledá objekt entity podle jeho identifikátoru",
-      "getSharedUrl": "načte sdílenou adresu URL souboru"
+    "scopeNames": {
+        "ExportFeed": "Exportní kanál",
+        "ExportConfiguratorItem": "Konfigurátor",
+        "ExportJob": "Provedení exportu",
+        "ActionTypeExport": "Akce: Exportní kanál",
+        "ActionTypeReExportFailedJob": "Akce: Znovu exportovat neúspěšnou úlohu",
+        "ExportFeedTypeSimple": "Exportní kanál: Soubor"
     },
-    "filters": {
-      "prepareEntity": "Připraví entitu na export",
-      "isImage": "Ověří, zda zadaná hodnota představuje obrázek, a to ověřením přípon souborů nebo typů MIME.",
-      "escapeDoubleQuote": "Unikne dvojitým uvozovkám v řetězci přidáním zpětných lomítek (\" se stane \\\").",
-      "backslashNToBr": "Převádí znaky nového řádku (\\n) na značky zalomení řádku HTML (<br>)."
+    "scopeNamesPlural": {
+        "ExportFeed": "Exportní kanály",
+        "ExportConfiguratorItem": "Konfigurátor",
+        "ExportJob": "Provádění exportu",
+        "ActionTypeExport": "Akce: Exportní kanál",
+        "ActionTypeReExportFailedJob": "Akce: Znovu exportovat neúspěšnou úlohu",
+        "ExportFeedTypeSimple": "Exportní feed: soubory"
+    },
+    "labels": {
+        "Generate": "Generovat",
+        "tryAgain": "Znovu exportovat",
+        "selectFields": "Vyberte pole",
+        "selectAttributes": "Vyberte atribut(y)",
+        "addAllAttributes": "Přidání všech atributů",
+        "addFixed": "Přidání pevné hodnoty",
+        "addScript": "Přidat skript",
+        "removeAllItems": "Odstranění všech",
+        "exportErrorDuring24Hours": "Chyba při exportu krmiv/výkonů během 24 hodin",
+        "exportErrorDuring7Days": "Chyba exportu krmiv/výkonů během 7 dnů",
+        "exportErrorDuring28Days": "Chyby při exportu krmiv/výkonů během 28 dnů",
+        "filter": "Filtr"
+    },
+    "boolFilters": {
+        "unexported": "Neexportované"
+    },
+    "dashlets": {
+        "DataSyncErrorsExport": "Chyby synchronizace dat při exportu"
+    },
+    "twig": {
+        "functions": {
+            "getPreviousCategoryId": "Vyhledá ID předchozí kategorie v hierarchické struktuře kategorií.",
+            "getEntity": "Vyhledá objekt entity podle jeho identifikátoru",
+            "getSharedUrl": "načte sdílenou adresu URL souboru"
+        },
+        "filters": {
+            "prepareEntity": "Připraví entitu na export",
+            "isImage": "Ověří, zda zadaná hodnota představuje obrázek, a to ověřením přípon souborů nebo typů MIME.",
+            "escapeDoubleQuote": "Unikne dvojitým uvozovkám v řetězci přidáním zpětných lomítek (\" se stane \\\").",
+            "backslashNToBr": "Převádí znaky nového řádku (\\n) na značky zalomení řádku HTML (<br>)."
+        }
+    },
+    "subtypeDescriptions": {
+        "ActionTypeExport": "Spustí exportní kanál.",
+        "ActionTypeReExportFailedJob": "Znovu spustí neúspěšnou úlohu exportu.",
+        "ExportFeedTypeSimple": "Exportuje data do souboru, který lze stáhnout."
     }
-  }
 }

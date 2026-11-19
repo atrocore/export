@@ -1,49 +1,56 @@
 {
-  "scopeNames": {
-    "ExportFeed": "Exportación",
-    "ExportConfiguratorItem": "Configurador",
-    "ExportJob": "Ejecución de exportaciones",
-    "ActionTypeExport": "Acción: Exportación",
-    "ActionTypeReExportFailedJob": "Acción: Reexportar trabajo fallido"
-  },
-  "twig": {
-    "filters": {
-      "escapeDoubleQuote": "Escapa las comillas dobles en una cadena añadiendo barras invertidas (\" se convierte en \\\")",
-      "prepareEntity": "Prepara una entidad para la exportación",
-      "isImage": "Comprueba si el valor proporcionado representa una imagen, validando las extensiones de archivo o los tipos MIME.",
-      "backslashNToBr": "Convierte los caracteres de nueva línea (\\n) en etiquetas de salto de línea HTML (<br>)"
+    "scopeNames": {
+        "ExportFeed": "Exportación",
+        "ExportConfiguratorItem": "Configurador",
+        "ExportJob": "Ejecución de exportaciones",
+        "ActionTypeExport": "Acción: Exportación",
+        "ActionTypeReExportFailedJob": "Acción: Reexportar trabajo fallido",
+        "ExportFeedTypeSimple": "Feed de exportación: archivo"
     },
-    "functions": {
-      "getPreviousCategoryId": "Recupera el ID de la categoría anterior en una estructura jerárquica de categorías",
-      "getEntity": "Recupera un objeto entidad por su identificador",
-      "getSharedUrl": "Recupera una URL compartida para un archivo"
+    "twig": {
+        "filters": {
+            "escapeDoubleQuote": "Escapa las comillas dobles en una cadena añadiendo barras invertidas (\" se convierte en \\\")",
+            "prepareEntity": "Prepara una entidad para la exportación",
+            "isImage": "Comprueba si el valor proporcionado representa una imagen, validando las extensiones de archivo o los tipos MIME.",
+            "backslashNToBr": "Convierte los caracteres de nueva línea (\\n) en etiquetas de salto de línea HTML (<br>)"
+        },
+        "functions": {
+            "getPreviousCategoryId": "Recupera el ID de la categoría anterior en una estructura jerárquica de categorías",
+            "getEntity": "Recupera un objeto entidad por su identificador",
+            "getSharedUrl": "Recupera una URL compartida para un archivo"
+        }
+    },
+    "scopeNamesPlural": {
+        "ExportFeed": "Exportación",
+        "ExportConfiguratorItem": "Configurador",
+        "ExportJob": "Ejecuciones de exportación",
+        "ActionTypeExport": "Acción: Exportación",
+        "ActionTypeReExportFailedJob": "Acción: Reexportar trabajo fallido",
+        "ExportFeedTypeSimple": "Feed de exportación: archivo"
+    },
+    "labels": {
+        "tryAgain": "Exportar de nuevo",
+        "selectFields": "Seleccione campo(s)",
+        "selectAttributes": "Seleccione atributo(s)",
+        "addAllAttributes": "Añadir todos los atributos",
+        "addFixed": "Añadir valor fijo",
+        "addScript": "Añadir script",
+        "removeAllItems": "Eliminar todo",
+        "exportErrorDuring24Hours": "Error de exportación de feeds/ejecuciones durante 24 horas",
+        "exportErrorDuring7Days": "Error de exportación de feeds/ejecuciones durante 7 días",
+        "exportErrorDuring28Days": "Errores en las alimentaciones/ejecuciones de exportación durante 28 días",
+        "Generate": "Generar",
+        "filter": "Filtro"
+    },
+    "boolFilters": {
+        "unexported": "Sin exportar"
+    },
+    "dashlets": {
+        "DataSyncErrorsExport": "Errores de sincronización de datos para la exportación"
+    },
+    "subtypeDescriptions": {
+        "ActionTypeExport": "Ejecuta un feed de exportación.",
+        "ActionTypeReExportFailedJob": "Vuelve a ejecutar una tarea de exportación fallida.",
+        "ExportFeedTypeSimple": "Exporta los datos a un archivo que se puede descargar."
     }
-  },
-  "scopeNamesPlural": {
-    "ExportFeed": "Exportación",
-    "ExportConfiguratorItem": "Configurador",
-    "ExportJob": "Ejecuciones de exportación",
-    "ActionTypeExport": "Acción: Exportación",
-    "ActionTypeReExportFailedJob": "Acción: Reexportar trabajo fallido"
-  },
-  "labels": {
-    "tryAgain": "Exportar de nuevo",
-    "selectFields": "Seleccione campo(s)",
-    "selectAttributes": "Seleccione atributo(s)",
-    "addAllAttributes": "Añadir todos los atributos",
-    "addFixed": "Añadir valor fijo",
-    "addScript": "Añadir script",
-    "removeAllItems": "Eliminar todo",
-    "exportErrorDuring24Hours": "Error de exportación de feeds/ejecuciones durante 24 horas",
-    "exportErrorDuring7Days": "Error de exportación de feeds/ejecuciones durante 7 días",
-    "exportErrorDuring28Days": "Errores en las alimentaciones/ejecuciones de exportación durante 28 días",
-    "Generate": "Generar",
-    "filter": "Filtro"
-  },
-  "boolFilters": {
-    "unexported": "Sin exportar"
-  },
-  "dashlets": {
-    "DataSyncErrorsExport": "Errores de sincronización de datos para la exportación"
-  }
 }

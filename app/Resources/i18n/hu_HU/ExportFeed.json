@@ -1,0 +1,143 @@
+{
+    "fields": {
+        "folder": "Mappa",
+        "maxWorkers": "Feldolgozók maximális száma",
+        "replaceExistingFile": "Meglévő fájl cseréje",
+        "template": "Sablon",
+        "sortOrderField": "Rendezési sorrend (mező)",
+        "sortOrderDirection": "Rendezési sorrend (irány)",
+        "locale": "Területi beállítás",
+        "entity": "Entitás",
+        "type": "Típus",
+        "isActive": "Aktív",
+        "lastStatus": "Utolsó állapot",
+        "lastTime": "Utolsó futtatás",
+        "fileType": "Formátum",
+        "numberOfHeaders": "Fejlécek száma",
+        "csvFieldDelimiter": "Mezőelválasztó",
+        "csvTextQualifier": "Szöveghatároló",
+        "field": "Mező",
+        "fieldOrAttribute": "Mező/Attribútum",
+        "delimiter": "Listaelemek elválasztója",
+        "exportJobs": "Exportálási végrehajtások",
+        "emptyValue": "Üres érték jelölője",
+        "nullValue": "Null érték jelölője",
+        "markForNoRelation": "Nincs kapcsolat jelölője",
+        "markForUnlinkedAttribute": "Nem kapcsolt attribútum jelölője",
+        "fieldDelimiterForRelation": "Kapcsolat mezőelválasztója",
+        "limit": "Rekordok maximális száma iterációnként",
+        "separateJob": "Külön feladat iterációnként",
+        "configuratorItems": "Konfigurátor",
+        "convertCollectionToString": "Gyűjtemény karakterlánccá alakítása",
+        "convertRelationsToString": "Kapcsolatok karakterlánccá alakítása",
+        "exportByMaxDepth": "Megjelenítendő kapcsolatok maximális mélysége",
+        "originTemplateName": "Sablon neve",
+        "originTemplate": "Eredeti sablon",
+        "isTemplateEditable": "Szerkeszthető",
+        "fileNameMask": "Fájlnévmaszk",
+        "exportAllField": "Összes mező exportálása",
+        "fieldList": "Mezőlista",
+        "contentLanguage": "Tartalom nyelve",
+        "useExistingExportFeed": "Meglévő exportadatfolyam használata",
+        "useQuoteForAll": "Minden érték idézőjelezése",
+        "files": "Fájlok"
+    },
+    "options": {
+        "fileType": {
+            "xlsx": "XLSX (Excel)",
+            "csv": "CSV",
+            "json": "JSON",
+            "xml": "XML",
+            "sql": "SQL"
+        },
+        "type": {
+            "simple": "Fájl"
+        }
+    },
+    "labels": {
+        "generateTemplate": "Sablon létrehozása",
+        "simple": "Fájl",
+        "typeToSearch": "Kezdjen gépelni a kereséshez...",
+        "removeAllItemsConfirmation": "Biztosan el szeretné távolítani az összes konfigurátorszabályt?",
+        "fields": "Mezők",
+        "ignoreFilter": "Szűrő figyelmen kívül hagyása a feedben",
+        "Export Data Settings": "Adatok exportálásának beállításai",
+        "Feed Settings": "Feed beállításai",
+        "entityFilter": "Szűrő",
+        "entityFilterResult": "Szűrési eredmény",
+        "Configurator": "Konfigurátor",
+        "addEntityField": "Entitásmező hozzáadása",
+        "doubleQuote": "Kettős idézőjel",
+        "singleQuote": "Egyszeres idézőjel",
+        "Export": "Exportálás",
+        "DynamicExport": "Dinamikus exportálás",
+        "DuplicateAsImport": "Duplikálás importként",
+        "Pending": "Függőben",
+        "Success": "Sikeres",
+        "Running": "Folyamatban",
+        "Failed": "Sikertelen",
+        "Canceled": "Megszakítva",
+        "allAttributesAlreadyAdded": "Minden attribútum már hozzá lett adva.",
+        "selectAllLanguages": "Kiválasztás (összes nyelv)",
+        "exportParameters": "Exportálási paraméterek",
+        "contentLanguage": "Tartalom nyelve"
+    },
+    "actions": {
+        "cancelExportJob": "Mégse",
+        "tryAgainExportJob": "Újraexportálás"
+    },
+    "messages": {
+        "confirmTemplateGeneration": "Biztosan létrehozza a sablont?",
+        "confirmNumberOfHeadersChange": "A fejlécek számának módosítása minden konfigurátorelemnél hozzáadhat vagy eltávolíthat fejlécsorokat és azok konfigurációját. Folytatja?",
+        "delimitersMustBeDifferent": "Minden feedparaméternek egyedi értékkel kell rendelkeznie.",
+        "noExportFeedSelected": "Nincs kiválasztva exportfeed.",
+        "columnAlreadyExist": "Már létezik ilyen nevű oszlop.",
+        "duplicateAsImport": "Biztosan importfolyamot szeretne létrehozni ebből az exportfolyamból ?",
+        "noFieldSelected": "Nincs kiválasztott mező",
+        "contentLanguageRequired": "A tartalom nyelvének megadása kötelező."
+    },
+    "tooltips": {
+        "nullValue": "Az érték „NULL” értékként lesz értelmezve.",
+        "emptyValue": "Az érték „üres” értékként lesz értelmezve az üres cellán felül.",
+        "exportByMaxDepth": "A „Kapcsolódó entitás mezői” konfigurációs mezőben a kapcsolatok maximális mélységét adja meg.",
+        "useQuoteForAll": "Az exportált fájlban minden érték idézőjelek közé kerül.",
+        "limit": "Nagyobb érték esetén kevesebb háttérfeladatot kell végrehajtani.",
+        "separateJob": "A rendszer minden exportfeladathoz külön exportfájlt hoz létre.",
+        "maxWorkers": "Ez határozza meg, hogy hány feldolgozó futtathatja párhuzamosan ezt a feedet.",
+        "template": "Használhatja a <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> sablonmotor szintaxisát.",
+        "convertCollectionToString": "A következő típusú mezők és attribútumok: többértékű felsorolás, tömb, egy-a-többhöz kapcsolat.",
+        "convertRelationsToString": "A kapcsolati mezőket a kapcsolat mezőelválasztója választja el.",
+        "markForNoRelation": "Adja meg a nem összekapcsolt kapcsolat címkéjét."
+    },
+    "boolFilters": {
+        "onlyExportFailed24Hours": "Csak az elmúlt 24 órában meghiúsult exportfeedek",
+        "onlyExportFailed7Days": "Csak az elmúlt 7 napban meghiúsult exportfeedek",
+        "onlyExportFailed28Days": "Csak az elmúlt 28 napban meghiúsult exportfeedek"
+    },
+    "twigVariables": {
+        "template": {
+            "entities": "Exportálandó entitások gyűjteménye"
+        },
+        "fileNameMask": {
+            "feed": "Feedadatok",
+            "filename": "A rendszer által létrehozott alapértelmezett fájlnév",
+            "interation": "Feladat iterációjának sorszáma"
+        }
+    },
+    "additionalTranslates": {
+        "exportName": "Export: a(z) %s",
+        "createExportJobs": "Exportvégrehajtások létrehozása a(z) %s számára"
+    },
+    "exceptions": {
+        "toManyAttributesSelected": "A kiválasztott attribútumok maximális száma 2000 alatt kell legyen.",
+        "noSuchAttribute": "A(z) „%s” attribútum nem létezik.",
+        "noDataFound": "Az adatfolyam nem tartalmaz exportálható adatot.",
+        "exportValidationFailed": "Ilyen fájl nem exportálható. Ellenőrizze az űrlapot, majd próbálja újra.",
+        "lastRecordIsRequired": "A konfigurátor utolsó rekordja nem távolítható el.",
+        "noFieldLabel": "A(z) „%s” mezőhöz tartozó, „%s” nyelvű címke nincs beállítva.",
+        "noAttributeLabel": "A(z) „%s” attribútum „%s” nyelvű címkéje nincs beállítva.",
+        "noConfiguratorItems": "A feed futtatásához hozzon létre legalább egy konfigurátorszabályt.",
+        "noSheets": "A feed futtatásához hozzon létre legalább egy munkalapot.",
+        "exportFeedIsInvalid": "Az exportfeed hibákat tartalmaz. A folytatás előtt javítsa ki őket."
+    }
+}
