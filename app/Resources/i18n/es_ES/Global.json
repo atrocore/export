@@ -52,5 +52,8 @@
         "ActionTypeExport": "Ejecuta un feed de exportación.",
         "ActionTypeReExportFailedJob": "Vuelve a ejecutar una tarea de exportación fallida.",
         "ExportFeedTypeSimple": "Exporta los datos a un archivo que se puede descargar."
+    },
+    "scopeDescriptions": {
+        "ExportFeed": "Define qué registros, campos y atributos se exportan, en qué formato y dónde se entrega el resultado."
     }
 }
