@@ -52,5 +52,8 @@
         "ActionTypeExport": "Spustí exportní kanál.",
         "ActionTypeReExportFailedJob": "Znovu spustí neúspěšnou úlohu exportu.",
         "ExportFeedTypeSimple": "Exportuje data do souboru, který lze stáhnout."
+    },
+    "scopeDescriptions": {
+        "ExportFeed": "Určuje, které záznamy, pole a atributy se exportují, v jakém formátu a kam se výsledek doručí."
     }
 }
