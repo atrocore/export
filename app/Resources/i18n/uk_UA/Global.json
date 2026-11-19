@@ -1,54 +1,56 @@
 {
-  "scopeNames": {
-    "ExportFeed": "Експортний фід",
-    "ExportJob": "Здійснення експорту",
-    "ExportConfiguratorItem": "Конфігуратор",
-    "ActionTypeExport": "Дія: Експортний фід",
-    "ActionTypeReExportFailedJob": "Дія: Повторити невдалий експорт"
-  },
-  "scopeNamesPlural": {
-    "ExportFeed": "Експортний фіди",
-    "ExportJob": "Виконання експортних контрактів",
-    "ExportConfiguratorItem": "Конфігуратор",
-    "ActionTypeExport": "Дія: Експортний фід",
-    "ActionTypeReExportFailedJob": "Дія: Повторити невдалий експорт"
-  },
-  "labels": {
-    "Generate": "Згенерувати",
-    "tryAgain": "Повторити спробу",
-    "filter": "Фільтр",
-    "selectAttributes": "Вибрати атрибут(и)",
-    "addAllAttributes": "Додати всі атрибути",
-    "removeAllItems": "Видалити всі правила",
-    "exportErrorDuring24Hours": "Помилка експорту каналів/виконань протягом 24 годин",
-    "exportErrorDuring7Days": "Помилка експорту каналів/виконань протягом 7 днів",
-    "exportErrorDuring28Days": "Помилка експорту каналів/виконань протягом 28 днів",
-    "selectFields": "Виберіть поле(и)",
-    "addFixed": "Додати фіксоване значення",
-    "addScript": "Додати скрипт"
-  },
-  "dashlets": {
-    "DataSyncErrorsExport": "Помилки синхронізації експорту даних"
-  },
-  "boolFilters": {
-    "unexported": "Не експортується"
-  },
-  "twig": {
-    "functions": {
-      "getPreviousCategoryId": "Отримує ідентифікатор попередньої категорії в ієрархічній структурі категорій",
-      "getEntity": "Отримує об'єкт сутності за його ідентифікатором",
-      "getSharedUrl": "Отримує спільну URL-адресу для файлу"
+    "scopeNames": {
+        "ExportFeed": "Експортний фід",
+        "ExportJob": "Здійснення експорту",
+        "ExportConfiguratorItem": "Конфігуратор",
+        "ActionTypeExport": "Дія: Експортний фід",
+        "ActionTypeReExportFailedJob": "Дія: Повторити невдалий експорт",
+        "ExportFeedTypeSimple": "Фід експорту: файл"
     },
-    "filters": {
-      "prepareEntity": "Готує підприємство до експорту",
-      "isImage": "Перевіряє, чи надане значення є зображенням, перевіряючи розширення або MIME-типи файлів",
-      "escapeDoubleQuote": "Екранує подвійні лапки в рядку шляхом додавання зворотних косих рисок (\" стає \\\")",
-      "backslashNToBr": "Перетворює символи нового рядка (\\n) на теги розриву рядка HTML (<br>)"
+    "scopeNamesPlural": {
+        "ExportFeed": "Експортний фіди",
+        "ExportJob": "Виконання експортних контрактів",
+        "ExportConfiguratorItem": "Конфігуратор",
+        "ActionTypeExport": "Дія: Експортний фід",
+        "ActionTypeReExportFailedJob": "Дія: Повторити невдалий експорт",
+        "ExportFeedTypeSimple": "Фід експорту: файл"
+    },
+    "labels": {
+        "Generate": "Згенерувати",
+        "tryAgain": "Повторити спробу",
+        "filter": "Фільтр",
+        "selectAttributes": "Вибрати атрибут(и)",
+        "addAllAttributes": "Додати всі атрибути",
+        "removeAllItems": "Видалити всі правила",
+        "exportErrorDuring24Hours": "Помилка експорту каналів/виконань протягом 24 годин",
+        "exportErrorDuring7Days": "Помилка експорту каналів/виконань протягом 7 днів",
+        "exportErrorDuring28Days": "Помилка експорту каналів/виконань протягом 28 днів",
+        "selectFields": "Виберіть поле(и)",
+        "addFixed": "Додати фіксоване значення",
+        "addScript": "Додати скрипт"
+    },
+    "dashlets": {
+        "DataSyncErrorsExport": "Помилки синхронізації експорту даних"
+    },
+    "boolFilters": {
+        "unexported": "Не експортується"
+    },
+    "twig": {
+        "functions": {
+            "getPreviousCategoryId": "Отримує ідентифікатор попередньої категорії в ієрархічній структурі категорій",
+            "getEntity": "Отримує об'єкт сутності за його ідентифікатором",
+            "getSharedUrl": "Отримує спільну URL-адресу для файлу"
+        },
+        "filters": {
+            "prepareEntity": "Готує підприємство до експорту",
+            "isImage": "Перевіряє, чи надане значення є зображенням, перевіряючи розширення або MIME-типи файлів",
+            "escapeDoubleQuote": "Екранує подвійні лапки в рядку шляхом додавання зворотних косих рисок (\" стає \\\")",
+            "backslashNToBr": "Перетворює символи нового рядка (\\n) на теги розриву рядка HTML (<br>)"
+        }
+    },
+    "subtypeDescriptions": {
+        "ActionTypeExport": "Запускає фід експорту.",
+        "ActionTypeReExportFailedJob": "Повторно запускає невдале завдання експорту.",
+        "ExportFeedTypeSimple": "Експортує дані у файл, який можна завантажити."
     }
-  },
-  "subtypeDescriptions": {
-    "ActionTypeExport": "Запускає фід експорту.",
-    "ActionTypeReExportFailedJob": "Повторно запускає невдале завдання експорту.",
-    "ExportFeedTypeSimple": "Експортує дані у файл, який можна завантажити."
-  }
 }

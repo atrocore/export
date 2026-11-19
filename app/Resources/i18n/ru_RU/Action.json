@@ -1,19 +1,21 @@
 {
-  "fields": {
-    "exportFeed": "Экспортный фид",
-    "payload": "Параметры"
-  },
-  "options": {
-    "type": {
-      "export": "Экспортный фид",
-      "reExportFailedJob": "Повторить неудавшийся экспорт"
+    "fields": {
+        "exportFeed": "Экспортный фид",
+        "payload": "Параметры",
+        "contentLanguage": "Язык контента",
+        "locale": "Локаль"
+    },
+    "options": {
+        "type": {
+            "export": "Экспортный фид",
+            "reExportFailedJob": "Повторить неудавшийся экспорт"
+        }
+    },
+    "twigVariables": {
+        "payload": {
+            "sourceEntities": "Коллекция сущностей для экспорта",
+            "sourceEntitiesIds": "Массив идентификаторов сущностей для экспорта",
+            "entity": "Первая сущность экспортируемой коллекции"
+        }
     }
-  },
-  "twigVariables": {
-    "payload": {
-      "sourceEntities": "Коллекция сущностей для экспорта",
-      "sourceEntitiesIds": "Массив идентификаторов сущностей для экспорта",
-      "entity": "Первая сущность экспортируемой коллекции"
-    }
-  }
 }

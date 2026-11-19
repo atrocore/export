@@ -1,19 +1,21 @@
 {
-  "fields": {
-    "exportFeed": "Flux d'export",
-    "payload": "Charge utile"
-  },
-  "options": {
-    "type": {
-      "export": "Flux d'export",
-      "reExportFailedJob": "Réexporter la tâche échouée"
+    "fields": {
+        "exportFeed": "Flux d'export",
+        "payload": "Charge utile",
+        "contentLanguage": "Langue du contenu",
+        "locale": "Paramètres régionaux"
+    },
+    "options": {
+        "type": {
+            "export": "Flux d'export",
+            "reExportFailedJob": "Réexporter la tâche échouée"
+        }
+    },
+    "twigVariables": {
+        "payload": {
+            "sourceEntities": "Collection d'entités à exporter",
+            "sourceEntitiesIds": "Tableau d'identifiants d'entités à exporter",
+            "entity": "Première entité de la collection à exporter"
+        }
     }
-  },
-  "twigVariables": {
-    "payload": {
-      "sourceEntities": "Collection d'entités à exporter",
-      "sourceEntitiesIds": "Tableau d'identifiants d'entités à exporter",
-      "entity": "Première entité de la collection à exporter"
-    }
-  }
 }

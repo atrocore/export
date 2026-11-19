@@ -1,19 +1,21 @@
 {
-  "fields": {
-    "exportFeed": "Export-Feed",
-    "payload": "Nutzlast"
-  },
-  "options": {
-    "type": {
-      "export": "Export-Feed",
-      "reExportFailedJob": "Fehlgeschlagenen Export erneut ausführen"
+    "fields": {
+        "exportFeed": "Export-Feed",
+        "payload": "Nutzlast",
+        "contentLanguage": "Inhaltssprache",
+        "locale": "Gebietsschema"
+    },
+    "options": {
+        "type": {
+            "export": "Export-Feed",
+            "reExportFailedJob": "Fehlgeschlagenen Export erneut ausführen"
+        }
+    },
+    "twigVariables": {
+        "payload": {
+            "sourceEntities": "Sammlung der zu exportierenden Entitäten",
+            "sourceEntitiesIds": "Sammlung der zu exportierenden Entitäts-IDs",
+            "entity": "Erste Entität der zu exportierenden Sammlung"
+        }
     }
-  },
-  "twigVariables": {
-    "payload": {
-      "sourceEntities": "Sammlung der zu exportierenden Entitäten",
-      "sourceEntitiesIds": "Sammlung der zu exportierenden Entitäts-IDs",
-      "entity": "Erste Entität der zu exportierenden Sammlung"
-    }
-  }
 }

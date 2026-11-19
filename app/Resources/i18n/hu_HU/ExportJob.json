@@ -1,0 +1,36 @@
+{
+    "fields": {
+        "number": "Szám",
+        "exportFeed": "Exportálási adatfolyam",
+        "file": "Exportált fájl",
+        "state": "Állapot",
+        "stateMessage": "Üzenet",
+        "start": "Kezdés időpontja",
+        "end": "Befejezés időpontja",
+        "count": "Darabszám",
+        "files": "Fájlok"
+    },
+    "labels": {
+        "Pending": "Függőben",
+        "Success": "Sikeres",
+        "Running": "Folyamatban",
+        "Failed": "Sikertelen",
+        "Canceled": "Megszakítva",
+        "exportDownloadNotification": "Az exportálás befejeződött. A fájlt <a href=\"?entryPoint=download&amp;id=%s\" target=\"_blank\">letöltheti</a>."
+    },
+    "exceptions": {
+        "wrongJobState": "Ez a feladatállapot nem állítható be.",
+        "notExecutableJob": "A feladat nem hajtható végre újra."
+    },
+    "boolFilters": {
+        "onlyExportFailed24Hours": "Csak az elmúlt 24 órában sikertelen exportfeladatok",
+        "onlyExportFailed7Days": "Csak az elmúlt 7 napban sikertelen exportfeladatok",
+        "onlyExportFailed28Days": "Csak az elmúlt 28 napban sikertelen exportfeladatok"
+    },
+    "actions": {
+        "tryAgainExportJob": "Újraexportálás"
+    },
+    "messages": {
+        "xmlValidationFailed": "Az XML-séma ellenőrzése nem sikerült:"
+    }
+}

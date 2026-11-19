@@ -1,49 +1,52 @@
 {
-  "fields": {
-    "name": "Pole",
-    "exportFeed": "Eksportuj kanał",
-    "exportBy": "Powiązane pola encji",
-    "exportIntoSeparateColumns": "Oddzielne",
-    "type": "Typ",
-    "mask": "Maska",
-    "offsetRelation": "Przesunięcie",
-    "limitRelation": "Limit",
-    "sortFieldRelation": "Kolejność sortowania (pole)",
-    "sortOrderRelation": "Kolejność sortowania (kierunek)",
-    "fixedValue": "Wartość stała",
-    "previousItem": "Poprzedni element",
-    "zip": "Eksportuj zasoby do archiwum ZIP",
-    "fileNameTemplate": "Szablon nazwy pliku",
-    "exportByForListAttribute": "Powiązane pola encji dla list",
-    "entityAttribute": "Atrybut",
-    "script": "Skrypt",
-    "channels": "Kanał(y)",
-    "exportStaticListLabel": "Etykieta eksportowa",
-    "headerText": "Nazwa kolumny",
-    "headerProperty": "Etykieta kolumny"
-  },
-  "options": {
-    "type": {
-      "Field": "Pole",
-      "Fixed value": "Wartość stała",
-      "script": "Skrypt",
-      "allAttributes": "Wszystkie atrybuty"
+    "fields": {
+        "name": "Pole",
+        "exportFeed": "Eksportuj kanał",
+        "exportBy": "Powiązane pola encji",
+        "exportIntoSeparateColumns": "Oddzielne",
+        "type": "Typ",
+        "mask": "Maska",
+        "offsetRelation": "Przesunięcie",
+        "limitRelation": "Limit",
+        "sortFieldRelation": "Kolejność sortowania (pole)",
+        "sortOrderRelation": "Kolejność sortowania (kierunek)",
+        "fixedValue": "Wartość stała",
+        "previousItem": "Poprzedni element",
+        "zip": "Eksportuj zasoby do archiwum ZIP",
+        "fileNameTemplate": "Szablon nazwy pliku",
+        "exportByForListAttribute": "Powiązane pola encji dla list",
+        "entityAttribute": "Atrybut",
+        "script": "Skrypt",
+        "channels": "Kanał(y)",
+        "exportStaticListLabel": "Etykieta eksportowa",
+        "headerText": "Nazwa kolumny",
+        "headerProperty": "Etykieta kolumny",
+        "selectedLanguageOnly": "Tylko wybrany język"
     },
-    "headerProperty": {
-      "name": "Nazwa",
-      "custom": "Nazwa niestandardowa"
+    "options": {
+        "type": {
+            "Field": "Pole",
+            "Fixed value": "Wartość stała",
+            "script": "Skrypt",
+            "allAttributes": "Wszystkie atrybuty"
+        },
+        "headerProperty": {
+            "name": "Nazwa",
+            "custom": "Nazwa niestandardowa"
+        }
+    },
+    "tooltips": {
+        "exportIntoSeparateColumns": "Powiązane rekordy danych zostaną wyeksportowane jako różne pola/kolumny, używając dla nazwy przyrostka \"_1\", \"_2\" i tak dalej.",
+        "headerText": "Możesz użyć pól powiązanej encji w nazwie kolumny. Użyj nazwy pola w bazie danych jako zmiennej, np. {{nazwa}}. Pole wyboru \"Oddzielne kolumny\" powinno być aktywowane."
+    },
+    "exceptions": {
+        "noSuchAttribute": "Atrybut o takim kodzie '%s' nie istnieje.",
+        "unknownModifier": "Modyfikator '%s' jest nieznany."
+    },
+    "labels": {
+        "withoutChannel": "Bez kanału",
+        "allAttributes": "Wszystkie (%s) atrybuty",
+        "notFoundAttribute": "Nie znaleziono atrybutu",
+        "notFoundField": "Nie znaleziono pola"
     }
-  },
-  "tooltips": {
-    "exportIntoSeparateColumns": "Powiązane rekordy danych zostaną wyeksportowane jako różne pola/kolumny, używając dla nazwy przyrostka \"_1\", \"_2\" i tak dalej.",
-    "headerText": "Możesz użyć pól powiązanej encji w nazwie kolumny. Użyj nazwy pola w bazie danych jako zmiennej, np. {{nazwa}}. Pole wyboru \"Oddzielne kolumny\" powinno być aktywowane."
-  },
-  "exceptions": {
-    "noSuchAttribute": "Atrybut o takim kodzie '%s' nie istnieje.",
-    "unknownModifier": "Modyfikator '%s' jest nieznany."
-  },
-  "labels": {
-    "withoutChannel": "Bez kanału",
-    "allAttributes": "Wszystkie (%s) atrybuty"
-  }
 }

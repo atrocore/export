@@ -1,0 +1,8 @@
+{
+    "fields": {
+        "sharedDownloadUrl": "Letöltési URL (megosztott)",
+        "sharedViewUrl": "Megtekintési URL (megosztott)",
+        "exportFeed": "Exportálási feed",
+        "exportJob": "Exportálási feladat"
+    }
+}

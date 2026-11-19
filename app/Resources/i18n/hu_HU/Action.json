@@ -1,0 +1,21 @@
+{
+    "fields": {
+        "exportFeed": "Exportálási feed",
+        "contentLanguage": "Tartalom nyelve",
+        "locale": "Területi beállítás",
+        "payload": "Adattartalom"
+    },
+    "options": {
+        "type": {
+            "export": "Exportadatfolyam",
+            "reExportFailedJob": "Sikertelen feladat újraexportálása"
+        }
+    },
+    "twigVariables": {
+        "payload": {
+            "sourceEntities": "Exportálandó entitások gyűjteménye",
+            "sourceEntitiesIds": "Exportálandó entitásazonosítók tömbje",
+            "entity": "Az exportálandó gyűjtemény első entitása"
+        }
+    }
+}

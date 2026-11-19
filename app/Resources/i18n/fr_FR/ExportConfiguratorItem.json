@@ -1,49 +1,52 @@
 {
-  "fields": {
-    "name": "Champ",
-    "exportFeed": "Flux d'export",
-    "exportBy": "Champs de l’entité associée",
-    "exportIntoSeparateColumns": "Séparer",
-    "type": "Type",
-    "mask": "Masque",
-    "offsetRelation": "Décalage",
-    "limitRelation": "Limite",
-    "sortFieldRelation": "Ordre de tri (champ)",
-    "sortOrderRelation": "Ordre de tri (direction)",
-    "fixedValue": "Valeur fixe",
-    "previousItem": "Point précédent",
-    "zip": "Exporter des fichiers vers une archive ZIP",
-    "fileNameTemplate": "Modèle de nom de fichier",
-    "exportByForListAttribute": "Champs de l’entité associée pour la liste",
-    "script": "Script",
-    "entityAttribute": "Attribut",
-    "channels": "Canaux",
-    "exportStaticListLabel": "Libellé de l'export",
-    "headerText": "Nom de la colonne",
-    "headerProperty": "Étiquette de la colonne"
-  },
-  "options": {
-    "type": {
-      "Field": "Champ",
-      "Fixed value": "Valeur fixe",
-      "script": "Script",
-      "allAttributes": "Tous les attributs"
+    "fields": {
+        "name": "Champ",
+        "exportFeed": "Flux d'export",
+        "exportBy": "Champs de l’entité associée",
+        "exportIntoSeparateColumns": "Séparer",
+        "type": "Type",
+        "mask": "Masque",
+        "offsetRelation": "Décalage",
+        "limitRelation": "Limite",
+        "sortFieldRelation": "Ordre de tri (champ)",
+        "sortOrderRelation": "Ordre de tri (direction)",
+        "fixedValue": "Valeur fixe",
+        "previousItem": "Point précédent",
+        "zip": "Exporter des fichiers vers une archive ZIP",
+        "fileNameTemplate": "Modèle de nom de fichier",
+        "exportByForListAttribute": "Champs de l’entité associée pour la liste",
+        "script": "Script",
+        "entityAttribute": "Attribut",
+        "channels": "Canaux",
+        "exportStaticListLabel": "Libellé de l'export",
+        "headerText": "Nom de la colonne",
+        "headerProperty": "Étiquette de la colonne",
+        "selectedLanguageOnly": "Langue sélectionnée uniquement"
     },
-    "headerProperty": {
-      "name": "Nom",
-      "custom": "Nom personnalisé"
+    "options": {
+        "type": {
+            "Field": "Champ",
+            "Fixed value": "Valeur fixe",
+            "script": "Script",
+            "allAttributes": "Tous les attributs"
+        },
+        "headerProperty": {
+            "name": "Nom",
+            "custom": "Nom personnalisé"
+        }
+    },
+    "tooltips": {
+        "exportIntoSeparateColumns": "Les enregistrements de données associés seront exportés sous forme de champs/colonnes distincts, en utilisant pour le nom le suffixe “_1”, “_2”, et ainsi de suite.",
+        "headerText": "Vous pouvez utiliser des champs d'entités connexes dans le nom de la colonne. Utilisez le nom du champ dans la base de données comme variable, par exemple {{nom}}. La case à cocher \"Séparer les colonnes\" doit être activée."
+    },
+    "exceptions": {
+        "noSuchAttribute": "L'attribut portant le code \"%s\" n'existe pas.",
+        "unknownModifier": "Le modificateur \"%s\" est inconnu."
+    },
+    "labels": {
+        "withoutChannel": "Sans canal",
+        "allAttributes": "Tous (%s) Attributs",
+        "notFoundAttribute": "Attribut introuvable",
+        "notFoundField": "Champ introuvable"
     }
-  },
-  "tooltips": {
-    "exportIntoSeparateColumns": "Les enregistrements de données associés seront exportés sous forme de champs/colonnes distincts, en utilisant pour le nom le suffixe “_1”, “_2”, et ainsi de suite.",
-    "headerText": "Vous pouvez utiliser des champs d'entités connexes dans le nom de la colonne. Utilisez le nom du champ dans la base de données comme variable, par exemple {{nom}}. La case à cocher \"Séparer les colonnes\" doit être activée."
-  },
-  "exceptions": {
-    "noSuchAttribute": "L'attribut portant le code \"%s\" n'existe pas.",
-    "unknownModifier": "Le modificateur \"%s\" est inconnu."
-  },
-  "labels": {
-    "withoutChannel": "Sans canal",
-    "allAttributes": "Tous (%s) Attributs"
-  }
 }
