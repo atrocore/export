@@ -832,7 +832,7 @@ class ExportFeed extends Base
         }
 
         foreach ($this->getMetadata()->get(['entityDefs', $subtypeRecord->getEntityName(), 'fields'], []) as $field => $defs) {
-            if (empty($defs['type']) || !empty($defs['supertypeField']) || !empty($defs['notStorable']) || $field === 'supertype') {
+            if (empty($defs['type']) || !empty($defs['supertypeField']) || !empty($defs['notStorable'])) {
                 continue;
             }
 

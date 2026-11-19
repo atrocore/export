@@ -11,19 +11,19 @@
 
 declare(strict_types=1);
 
-namespace Export\Handlers\Action;
+namespace Export\Handlers\ActionTypeReExportFailedJob;
 
 use Atro\Core\Routing\Route;
 use Atro\Handlers\Action\AbstractActionTypeAsyncHandler;
 
 #[Route(
-    path: '/Action/{id}/exportAsync',
+    path: '/ActionTypeReExportFailedJob/{id}/reExportFailedJobAsync',
     methods: [
         'POST',
     ],
-    summary: 'Execute Export action asynchronously',
-    description: 'Schedules the specified Export action as a background job and returns immediately with the job ID.',
-    tag: 'Action',
+    summary: 'Execute Re-export failed job action asynchronously',
+    description: 'Schedules the specified Re-export failed job action as a background job and returns immediately with the job ID.',
+    tag: 'ActionTypeReExportFailedJob',
     parameters: [
         [
             'name'        => 'id',
@@ -44,11 +44,11 @@ use Atro\Handlers\Action\AbstractActionTypeAsyncHandler;
                     'properties' => [
                         'entityId' => [
                             'type'        => 'string',
-                            'description' => 'ID of the entity record that provides context for condition evaluation and template rendering. Its fields are accessible as `{{ entity.* }}` in Twig expressions. Does not select which records the action operates on — use `where` for that.',
+                            'description' => 'ID of a single ExportJob record to retry. Only used when the action is configured to apply to preselected records.',
                         ],
                         'where'    => [
                             'type'        => 'array',
-                            'description' => 'Standard AtroCore filter conditions that select the records the action operates on. The action runs once for every matching record.',
+                            'description' => 'Standard AtroCore filter conditions that select the ExportJob records to retry. Only used when the action is configured to apply to preselected records.',
                             'items'       => ['type' => 'object'],
                         ],
                     ],
@@ -75,6 +75,6 @@ use Atro\Handlers\Action\AbstractActionTypeAsyncHandler;
         ],
     ],
 )]
-class ExportAsyncHandler extends AbstractActionTypeAsyncHandler
+class ReExportFailedJobAsyncHandler extends AbstractActionTypeAsyncHandler
 {
 }

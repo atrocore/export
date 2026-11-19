@@ -74,7 +74,7 @@ Espo.define('export:views/export-feed/record/detail', ['views/subtype/record/det
          * The record is shown via its subtype record, the actions of the export feed need the id of the feed.
          */
         getExportFeedId() {
-            return this.model.get('supertypeId') || this.model.id;
+            return this.model.id;
         },
 
         hasExportNow() {

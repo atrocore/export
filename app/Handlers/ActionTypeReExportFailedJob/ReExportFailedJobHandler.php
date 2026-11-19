@@ -11,19 +11,19 @@
 
 declare(strict_types=1);
 
-namespace Export\Handlers\Action;
+namespace Export\Handlers\ActionTypeReExportFailedJob;
 
 use Atro\Core\Routing\Route;
 use Atro\Handlers\Action\AbstractActionTypeSyncHandler;
 
 #[Route(
-    path: '/Action/{id}/export',
+    path: '/ActionTypeReExportFailedJob/{id}/reExportFailedJob',
     methods: [
         'POST',
     ],
-    summary: 'Execute Export action',
-    description: 'Executes the specified Export action synchronously. Runs the configured export feed.',
-    tag: 'Action',
+    summary: 'Execute Re-export failed job action',
+    description: 'Executes the specified Re-export failed job action synchronously. Retries every matching ExportJob currently in the Failed state.',
+    tag: 'ActionTypeReExportFailedJob',
     parameters: [
         [
             'name'        => 'id',
@@ -44,11 +44,11 @@ use Atro\Handlers\Action\AbstractActionTypeSyncHandler;
                     'properties' => [
                         'entityId' => [
                             'type'        => 'string',
-                            'description' => 'ID of the entity record that provides context for condition evaluation and template rendering. Its fields are accessible as `{{ entity.* }}` in Twig expressions. Does not select which records the action operates on — use `where` for that.',
+                            'description' => 'ID of a single ExportJob record to retry. Only used when the action is configured to apply to preselected records.',
                         ],
                         'where'    => [
                             'type'        => 'array',
-                            'description' => 'Standard AtroCore filter conditions that select the records the action operates on. The action runs once for every matching record.',
+                            'description' => 'Standard AtroCore filter conditions that select the ExportJob records to retry. Only used when the action is configured to apply to preselected records.',
                             'items'       => ['type' => 'object'],
                         ],
                     ],
@@ -65,15 +65,13 @@ use Atro\Handlers\Action\AbstractActionTypeSyncHandler;
                         'type'       => 'object',
                         'properties' => [
                             'success' => [
-                                'type' => 'boolean',
-                            ],
-                            'executed' => [
                                 'type'        => 'boolean',
-                                'description' => 'False when the action did not run (conditions not met, nothing to do).',
+                                'description' => 'Whether at least one matching ExportJob was successfully retried.',
                             ],
                             'message' => [
-                                'type'     => 'string',
-                                'nullable' => true,
+                                'type'        => 'string',
+                                'nullable'    => true,
+                                'description' => 'Optional status message.',
                             ],
                         ],
                     ],
@@ -85,6 +83,6 @@ use Atro\Handlers\Action\AbstractActionTypeSyncHandler;
         ],
     ],
 )]
-class ExportHandler extends AbstractActionTypeSyncHandler
+class ReExportFailedJobHandler extends AbstractActionTypeSyncHandler
 {
 }
