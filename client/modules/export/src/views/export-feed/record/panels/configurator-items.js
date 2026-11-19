@@ -197,7 +197,7 @@ Espo.define('export:views/export-feed/record/panels/configurator-items', 'views/
         },
 
         getOwnerId() {
-            return this.model.get('supertypeId') || this.model.id;
+            return this.model.id;
         },
 
         actionRemoveAllItems() {
