@@ -11,19 +11,19 @@
 
 declare(strict_types=1);
 
-namespace Export\Handlers\Action;
+namespace Export\Handlers\ActionTypeExport;
 
 use Atro\Core\Routing\Route;
-use Atro\Handlers\Action\AbstractActionTypeSyncHandler;
+use Atro\Handlers\Action\AbstractActionTypeAsyncHandler;
 
 #[Route(
-    path: '/Action/{id}/reExportFailedJob',
+    path: '/ActionTypeExport/{id}/exportAsync',
     methods: [
         'POST',
     ],
-    summary: 'Execute Re-export failed job action',
-    description: 'Executes the specified Re-export failed job action synchronously. Retries every matching ExportJob currently in the Failed state.',
-    tag: 'Action',
+    summary: 'Execute Export action asynchronously',
+    description: 'Schedules the specified Export action as a background job and returns immediately with the job ID.',
+    tag: 'ActionTypeExport',
     parameters: [
         [
             'name'        => 'id',
@@ -44,11 +44,11 @@ use Atro\Handlers\Action\AbstractActionTypeSyncHandler;
                     'properties' => [
                         'entityId' => [
                             'type'        => 'string',
-                            'description' => 'ID of a single ExportJob record to retry. Only used when the action is configured to apply to preselected records.',
+                            'description' => 'ID of the entity record that provides context for condition evaluation and template rendering. Its fields are accessible as `{{ entity.* }}` in Twig expressions. Does not select which records the action operates on — use `where` for that.',
                         ],
                         'where'    => [
                             'type'        => 'array',
-                            'description' => 'Standard AtroCore filter conditions that select the ExportJob records to retry. Only used when the action is configured to apply to preselected records.',
+                            'description' => 'Standard AtroCore filter conditions that select the records the action operates on. The action runs once for every matching record.',
                             'items'       => ['type' => 'object'],
                         ],
                     ],
@@ -58,31 +58,23 @@ use Atro\Handlers\Action\AbstractActionTypeSyncHandler;
     ],
     responses: [
         200 => [
-            'description' => 'Execution result.',
+            'description' => 'The action has been scheduled as a background job.',
             'content'     => [
                 'application/json' => [
                     'schema' => [
                         'type'       => 'object',
                         'properties' => [
-                            'success' => [
-                                'type'        => 'boolean',
-                                'description' => 'Whether at least one matching ExportJob was successfully retried.',
-                            ],
-                            'message' => [
+                            'jobId' => [
                                 'type'        => 'string',
-                                'nullable'    => true,
-                                'description' => 'Optional status message.',
+                                'description' => 'ID of the created background job.',
                             ],
                         ],
                     ],
                 ],
             ],
         ],
-        404 => [
-            'description' => 'Action record not found.',
-        ],
     ],
 )]
-class ReExportFailedJobHandler extends AbstractActionTypeSyncHandler
+class ExportAsyncHandler extends AbstractActionTypeAsyncHandler
 {
 }
