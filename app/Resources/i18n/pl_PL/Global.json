@@ -52,5 +52,8 @@
         "ActionTypeExport": "Uruchamia kanał eksportu.",
         "ActionTypeReExportFailedJob": "Ponownie uruchamia nieudane zadanie eksportu.",
         "ExportFeedTypeSimple": "Eksportuje dane do pliku, który można pobrać."
+    },
+    "scopeDescriptions": {
+        "ExportFeed": "Określa, które rekordy, pola i atrybuty są eksportowane, w jakim formacie i gdzie dostarczany jest wynik."
     }
 }
