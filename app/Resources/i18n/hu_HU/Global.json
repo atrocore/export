@@ -52,5 +52,8 @@
         "ActionTypeExport": "Exportálási adatfolyamot futtat.",
         "ActionTypeReExportFailedJob": "Újra futtat egy sikertelen exportálási feladatot.",
         "ExportFeedTypeSimple": "Adatokat exportál egy letölthető Fájlba."
+    },
+    "scopeDescriptions": {
+        "ExportFeed": "Meghatározza, hogy mely rekordok, mezők és attribútumok kerülnek exportálásra, milyen formátumban, és hová kerül az eredmény."
     }
 }
