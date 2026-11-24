@@ -15,6 +15,7 @@ namespace Export\ActionTypes;
 
 use Atro\ActionTypes\AbstractAction;
 use Atro\Core\EventManager\Event;
+use Atro\Core\Utils\Note as NoteUtil;
 use Atro\DTOs\ActionResultDTO;
 use Atro\Entities\ActionExecution;
 use Espo\ORM\Entity;
@@ -49,7 +50,7 @@ class Export extends AbstractAction
         }
 
         $payload = empty($action->get('payload')) ? '' : (string)$action->get('payload');
-        $templateData = [];
+        $templateData = $this->prepareInputTemplateData($input);
 
         if (!empty($action->get('sourceEntity'))) {
             $service = $this->getServiceFactory()->create($action->get('sourceEntity'));
@@ -95,11 +96,12 @@ class Export extends AbstractAction
             $payload = [];
         }
 
-        if (!empty($input->_relationData)) {
+        $relationData = $this->getRelationData($input);
+        if (!empty($relationData)) {
             $payload['relation'] = [
-                'action'       => $input->_relationData['action'],
-                'relationName' => $input->_relationData['relationName'],
-                'foreignId'    => $input->_relationData['foreignId']
+                'action'       => $relationData['action'],
+                'relationName' => $relationData['relationName'],
+                'foreignId'    => $relationData['foreignId']
             ];
         }
 
@@ -148,5 +150,49 @@ class Export extends AbstractAction
         }
 
         return ActionResultDTO::done();
+    }
+
+    /**
+     * The context of the execution that is available in the payload template, e.g. the workflow that triggered the action
+     * and the fields of the triggered record that were changed.
+     */
+    protected function prepareInputTemplateData(\stdClass $input): array
+    {
+        $templateData = [];
+
+        foreach (['triggeredEntity', 'triggeredEntityType', 'triggeredEntityId', 'workflowData', 'actionUser', 'importJobId'] as $key) {
+            if (property_exists($input, $key)) {
+                $templateData[$key] = $input->{$key};
+            }
+        }
+
+        $templateData['executedViaWorkflow'] = !empty($input->executedViaWorkflow);
+
+        $triggeredEntity = $input->triggeredEntity ?? null;
+        if ($triggeredEntity instanceof Entity && !$triggeredEntity->isNew()) {
+            $changedFieldsData = $this->getNoteUtil()->getChangedFieldsData($triggeredEntity);
+            if (!empty($changedFieldsData['fields'])) {
+                $templateData['changedFieldsData'] = $changedFieldsData;
+            }
+        }
+
+        return $templateData;
+    }
+
+    /**
+     * The workflow passes the relation data within the workflow data, other callers pass it directly.
+     */
+    protected function getRelationData(\stdClass $input): array
+    {
+        if (!empty($input->_relationData)) {
+            return (array)$input->_relationData;
+        }
+
+        return (array)($input->workflowData['_relationData'] ?? []);
+    }
+
+    protected function getNoteUtil(): NoteUtil
+    {
+        return $this->container->get(NoteUtil::class);
     }
 }
