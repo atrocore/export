@@ -31,6 +31,11 @@ class PrepareEntity extends AbstractTwigFilter
         $service = $this->getInjection('serviceFactory')->create($value->getEntityType());
         if ($value->getEntityType() === 'ProductAttributeValue' && method_exists($service, 'prepareEntity')) {
             $service->prepareEntity($value, false);
+
+            // the values of the script and alias attributes are calculated by the listeners of the output preparation
+            if (in_array($value->get('attributeType'), ['script', 'alias'])) {
+                $service->prepareEntityForOutput($value);
+            }
         } else {
             $service->prepareEntityForOutput($value);
         }
