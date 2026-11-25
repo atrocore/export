@@ -2,7 +2,17 @@
   "fields": {
     "exportFeed": {
       "type": "link",
-      "readOnly": true
+      "readOnly": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "exportFeedId"
+            }
+          ]
+        }
+      }
     }
   },
   "links": {
