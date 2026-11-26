@@ -1,7 +1,6 @@
 {
   "fields": {
     "exportFeed": "Exportación",
-    "maximumHoursToLookBack": "Horas máximas para mirar atrás",
     "maximumDaysForJobExist": "Periodo máximo de conservación en días"
   },
   "options": {

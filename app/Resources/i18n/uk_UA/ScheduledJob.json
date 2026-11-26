@@ -1,7 +1,6 @@
 {
   "fields": {
     "exportFeed": "Експортний фід",
-    "maximumHoursToLookBack": "Максимальна кількість годин для ретроспективи",
     "maximumDaysForJobExist": "Максимальний термін зберігання в днях"
   },
   "options": {
