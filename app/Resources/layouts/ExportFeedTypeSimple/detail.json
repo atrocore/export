@@ -48,6 +48,12 @@
         {
           "name": "lastTime"
         }
+      ],
+      [
+        {
+          "name": "disableNotifications"
+        },
+        false
       ]
     ]
   },

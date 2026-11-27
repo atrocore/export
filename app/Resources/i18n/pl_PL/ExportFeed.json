@@ -28,6 +28,7 @@
         "originTemplateName": "Nazwa szablonu",
         "originTemplate": "Szablon źródłowy",
         "isTemplateEditable": "Edytowalny",
+        "disableNotifications": "Wyłącz powiadomienia",
         "fileNameMask": "Maska nazwy pliku",
         "exportAllField": "Eksportuj wszystkie pola",
         "fieldList": "Lista pól",

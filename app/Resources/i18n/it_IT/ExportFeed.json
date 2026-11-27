@@ -33,6 +33,7 @@
         "originTemplateName": "Nome del modello",
         "originTemplate": "Modello di origine",
         "isTemplateEditable": "Modificabile",
+        "disableNotifications": "Disattiva notifiche",
         "fileNameMask": "Nome file Maschera",
         "exportAllField": "Esporta tutti i campi",
         "fieldList": "Elenco dei campi",

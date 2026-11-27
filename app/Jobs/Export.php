@@ -40,6 +40,8 @@ class Export extends AbstractJob implements JobInterface
 
         $entityName = $data['feed']['entity'] ?? null;
 
+        $exportFeed = $exportJob->get('exportFeed');
+
         try {
             /** @var \Export\Services\ExportFeed $exportFeedService */
             $exportFeedService = $this->getServiceFactory()->create('ExportFeed');
@@ -63,7 +65,7 @@ class Export extends AbstractJob implements JobInterface
             $exportJob->set('end', (new \DateTime())->format('Y-m-d H:i:s'));
             $this->getEntityManager()->saveEntity($exportJob);
 
-            if (!empty($file)) {
+            if (!empty($file) && !$exportFeed?->get('disableNotifications')) {
                 $this->createExportNotification(sprintf($this->translate('exportDownloadNotification', 'labels', 'ExportJob'), $file->get('id')), $job);
             }
 
@@ -86,6 +88,10 @@ class Export extends AbstractJob implements JobInterface
     {
         $ownerUserId = $this->getUser()->get('id');
 
+        if ($ownerUserId === $this->getConfig()->get('systemUserId')) {
+            return;
+        }
+
         $notification = $this->getEntityManager()->getEntity('Notification');
         $notification->set('type', 'Message');
         $notification->set('message', $message);
@@ -97,9 +103,6 @@ class Export extends AbstractJob implements JobInterface
         }
 
         $notification->set('userId', $ownerUserId);
-
-        if ($ownerUserId !== $this->getConfig()->get('systemUserId')) {
-            $this->getEntityManager()->saveEntity($notification);
-        }
+        $this->getEntityManager()->saveEntity($notification);
     }
 }
