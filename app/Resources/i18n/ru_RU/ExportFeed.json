@@ -40,7 +40,8 @@
         "folder": "Папка",
         "files": "Файлы",
         "numberOfHeaders": "Количество заголовков",
-        "contentLanguage": "Язык контента"
+        "contentLanguage": "Язык контента",
+        "disableNotifications": "Отключить уведомления"
     },
     "labels": {
         "typeToSearch": "Введите для поиска...",
