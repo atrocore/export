@@ -29,6 +29,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Verify that export feed is correctly configured and contains ID column',
     description: 'Verify that export feed is correctly configured and contains ID column.',
     tag: 'ExportFeed',
+    operationId: 'verifyExportFeedByCode',
     parameters: [
         [
             'name'     => 'code',

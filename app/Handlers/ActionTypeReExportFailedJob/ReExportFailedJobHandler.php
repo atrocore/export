@@ -24,6 +24,7 @@ use Atro\Handlers\Action\AbstractActionTypeSyncHandler;
     summary: 'Execute Re-export failed job action',
     description: 'Executes the specified Re-export failed job action synchronously. Retries every matching ExportJob currently in the Failed state.',
     tag: 'ActionTypeReExportFailedJob',
+    operationId: 'executeReExportFailedJobAction',
     parameters: [
         [
             'name'        => 'id',

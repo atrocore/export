@@ -24,6 +24,7 @@ use Atro\Handlers\Action\AbstractActionTypeAsyncHandler;
     summary: 'Execute Re-export failed job action asynchronously',
     description: 'Schedules the specified Re-export failed job action as a background job and returns immediately with the job ID.',
     tag: 'ActionTypeReExportFailedJob',
+    operationId: 'executeReExportFailedJobActionAsync',
     parameters: [
         [
             'name'        => 'id',

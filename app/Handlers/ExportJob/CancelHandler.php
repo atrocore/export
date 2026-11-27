@@ -28,6 +28,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Cancel export job',
     description: 'Cancel a pending or running export job.',
     tag: 'ExportJob',
+    operationId: 'cancelExportJob',
     parameters: [
         [
             'name'        => 'id',

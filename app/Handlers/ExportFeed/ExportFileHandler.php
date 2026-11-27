@@ -28,6 +28,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Export data to file',
     description: 'Triggers an export job for the specified export feed.',
     tag: 'ExportFeed',
+    operationId: 'exportFeedToFile',
     parameters: [
         [
             'name'        => 'id',

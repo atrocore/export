@@ -29,6 +29,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Add all attributes to export feed',
     description: 'Adds all available attributes for the given entity to the export feed configurator.',
     tag: 'ExportFeed',
+    operationId: 'addAllAttributesToExportFeed',
     parameters: [
         [
             'name'        => 'id',

@@ -24,6 +24,7 @@ use Atro\Handlers\Action\AbstractActionTypeAsyncHandler;
     summary: 'Execute Export action asynchronously',
     description: 'Schedules the specified Export action as a background job and returns immediately with the job ID.',
     tag: 'ActionTypeExport',
+    operationId: 'executeExportActionAsync',
     parameters: [
         [
             'name'        => 'id',

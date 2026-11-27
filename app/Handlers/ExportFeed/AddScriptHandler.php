@@ -29,6 +29,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Add script column to export feed',
     description: 'Adds a script-computed column to the export feed configurator.',
     tag: 'ExportFeed',
+    operationId: 'addScriptColumnToExportFeed',
     parameters: [
         [
             'name'        => 'id',

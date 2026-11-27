@@ -29,6 +29,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Add fixed column to export feed',
     description: 'Adds a fixed-value column to the export feed configurator.',
     tag: 'ExportFeed',
+    operationId: 'addFixedColumnToExportFeed',
     parameters: [
         [
             'name'        => 'id',

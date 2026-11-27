@@ -24,6 +24,7 @@ use Atro\Handlers\Action\AbstractActionTypeSyncHandler;
     summary: 'Execute Export action',
     description: 'Executes the specified Export action synchronously. Runs the configured export feed.',
     tag: 'ActionTypeExport',
+    operationId: 'executeExportAction',
     parameters: [
         [
             'name'        => 'id',

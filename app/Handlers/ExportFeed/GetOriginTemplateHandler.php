@@ -29,6 +29,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Get origin export template',
     description: 'Returns the content of the specified export template file.',
     tag: 'ExportFeed',
+    operationId: 'getExportFeedOriginTemplate',
     parameters: [
         [
             'name'     => 'template',

@@ -29,6 +29,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Remove all configurator items from export feed',
     description: 'Removes all configurator items for the specified entity type from the export feed.',
     tag: 'ExportFeed',
+    operationId: 'removeAllExportFeedItems',
     parameters: [
         [
             'name'        => 'id',

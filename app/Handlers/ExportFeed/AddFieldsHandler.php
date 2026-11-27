@@ -29,6 +29,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Add fields to export feed',
     description: 'Adds the specified fields to the export feed configurator.',
     tag: 'ExportFeed',
+    operationId: 'addFieldsToExportFeed',
     parameters: [
         [
             'name'        => 'id',

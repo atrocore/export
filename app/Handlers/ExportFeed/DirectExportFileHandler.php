@@ -29,6 +29,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Directly export records of an entity to file',
     description: 'Generates an export file directly for the selected records and fields. Only supports simple entity types; for complex types use an Export Feed.',
     tag: 'ExportFeed',
+    operationId: 'exportRecordsToFile',
     requestBody: [
         'required' => true,
         'content'  => [

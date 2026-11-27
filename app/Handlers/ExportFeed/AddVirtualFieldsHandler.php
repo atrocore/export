@@ -29,6 +29,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Add virtual fields to export feed',
     description: 'Adds the specified virtual fields - values a module gives a record on request, such as the values of quality checks - to the export feed configurator.',
     tag: 'ExportFeed',
+    operationId: 'addVirtualFieldsToExportFeed',
     parameters: [
         [
             'name'        => 'id',

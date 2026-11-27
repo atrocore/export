@@ -29,6 +29,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Get exported data',
     description: 'Returns exported data for the export feed identified by code.',
     tag: 'ExportFeed',
+    operationId: 'getExportData',
     parameters: [
         [
             'name'     => 'code',

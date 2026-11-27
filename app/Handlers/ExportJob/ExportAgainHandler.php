@@ -29,6 +29,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Retry export job',
     description: 'Retries a failed or canceled export job.',
     tag: 'ExportJob',
+    operationId: 'retryExportJob',
     parameters: [
         [
             'name'        => 'id',

@@ -29,6 +29,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Resend export request',
     description: 'Resends the export request without recalculating the body — reuses the same parameters as the original job.',
     tag: 'ExportJob',
+    operationId: 'resendExportJobRequest',
     parameters: [
         [
             'name'        => 'id',

@@ -28,6 +28,7 @@ use Psr\Http\Server\RequestHandlerInterface;
     summary: 'Load available export templates',
     description: 'Returns export templates available for the given entity and export feed configuration.',
     tag: 'ExportFeed',
+    operationId: 'listAvailableExportTemplates',
     requestBody: [
         'required' => true,
         'content'  => [
