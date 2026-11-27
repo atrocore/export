@@ -521,6 +521,11 @@
         }
       }
     },
+    "disableNotifications": {
+      "type": "bool",
+      "notNull": true,
+      "default": false
+    },
     "originTemplate": {
       "type": "code",
       "rowsMax": 20,

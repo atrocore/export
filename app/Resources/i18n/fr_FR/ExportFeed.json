@@ -28,6 +28,7 @@
         "originTemplateName": "Nom du modèle",
         "originTemplate": "Modèle d'origine",
         "isTemplateEditable": "Modifiable",
+        "disableNotifications": "Désactiver les notifications",
         "exportAllField": "Exporter tous les champs",
         "fieldList": "Liste des champs",
         "useExistingExportFeed": "Utiliser le flux d'export existant",

@@ -31,6 +31,7 @@
         "originTemplateName": "Vorlagenname",
         "originTemplate": "Ursprungsvorlage",
         "isTemplateEditable": "Editierbar",
+        "disableNotifications": "Benachrichtigungen deaktivieren",
         "fileNameMask": "Dateinamenmaske",
         "exportAllField": "Alle Felder exportieren",
         "fieldList": "Liste der Felder",

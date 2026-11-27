@@ -34,6 +34,7 @@
         "originTemplateName": "Sablon neve",
         "originTemplate": "Eredeti sablon",
         "isTemplateEditable": "Szerkeszthető",
+        "disableNotifications": "Értesítések letiltása",
         "fileNameMask": "Fájlnévmaszk",
         "exportAllField": "Összes mező exportálása",
         "fieldList": "Mezőlista",

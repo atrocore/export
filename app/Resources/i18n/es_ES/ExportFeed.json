@@ -33,6 +33,7 @@
         "originTemplateName": "Nombre de la plantilla",
         "originTemplate": "Plantilla de origen",
         "isTemplateEditable": "Editable",
+        "disableNotifications": "Desactivar notificaciones",
         "fileNameMask": "Máscara de nombre de archivo",
         "exportAllField": "Exportar todos los campos",
         "fieldList": "Lista de campos",

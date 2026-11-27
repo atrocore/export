@@ -33,6 +33,7 @@
         "originTemplateName": "Název šablony",
         "originTemplate": "Šablona původu",
         "isTemplateEditable": "Upravitelné",
+        "disableNotifications": "Zakázat oznámení",
         "fileNameMask": "Název souboru Maska",
         "exportAllField": "Exportovat všechna pole",
         "fieldList": "Seznam polí",

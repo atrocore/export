@@ -29,6 +29,7 @@
         "originTemplateName": "Назва шаблону",
         "originTemplate": "Оригінальний шаблон",
         "isTemplateEditable": "Редагувати",
+        "disableNotifications": "Вимкнути сповіщення",
         "fileNameMask": "Маска імені файлу",
         "exportAllField": "Експортувати всі поля",
         "fieldList": "Список полів",

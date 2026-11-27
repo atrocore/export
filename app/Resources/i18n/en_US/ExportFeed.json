@@ -34,6 +34,7 @@
     "originTemplateName": "Template Name",
     "originTemplate": "Origin Template",
     "isTemplateEditable": "Editable",
+    "disableNotifications": "Disable Notifications",
     "fileNameMask": "File Name Mask",
     "exportAllField": "Export All fields",
     "fieldList": "Field List",
